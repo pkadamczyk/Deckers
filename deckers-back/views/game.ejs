@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YelpCamp</title>
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+        
+        <link rel="stylesheet" href="/css/card.css" >
+        <link rel="stylesheet" href="/css/gameUi.css" >
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+        
+    </head>
+    <body>
+        
+        <!--Loading screen-->
+        <% include ./partials/game/loadingScreen %>
+        
+        
+        <div>
+            <!--Player Ui-->
+            <div style="position:absolute;left:10px;bottom:10px;">
+                <div><%= player.username %></div>
+                <div>Hp: <span id="playerHp">10</span></div>
+                <div>Mana: <span id="playerMp">8</span></div>
+                <div>Armor: <span id="playerArmor">0</span></div>
+            </div>
+            <!--Enemy Ui-->
+            <div style="position:absolute;right:10px;top:10px;">
+                <div><span id="enemy-username"></span></div>
+                <div>Hp: <span id="enemyHp">10</span></div>
+                <div>Mana: <span id="enemyMp">8</span></div>
+                <div>Armor: <span id="enemyArmor">0</span></div>
+            </div>
+            
+            
+            
+            <div style="background-color:blue" class="play-zone">
+                <span id="player-slot"></span>
+                <div id="current-turn"></div>
+            </div>
+            
+            <a class="btn btn-primary" style="position:absolute; right:10px; bottom:10px;" id="end-turn-btn">End turn</a>
+            
+            
+            <div class="flip-container" id="enemy-card">
+            	<div class="flipper">
+            		<div class="front " style="background-color:grey;">
+            			<!-- front content -->
+            			<p style="position:absolute;left:5px;top:23px;"><span class="enemy-card-name"></span></p>
+            		    <div style="position:absolute;left:5px;top:5px;">C: <span class="enemy-card-cost"></span></div>
+            		    <div style="position:absolute;right:5px;top:5px;">H: <span class="enemy-card-health"></span></div>
+            			<div style="position:absolute;right:5px;bottom:5px;">D: <span class="enemy-card-damage"></span></div>
+            			<div style="position:absolute;left:5px;bottom:5px;">A: <span class="enemy-card-armor"></span></div>
+            		</div>
+            		<div class="back" style="background-color:black">
+            			<!-- back content -->
+            		</div>
+            	</div>
+            </div>
+    
+            
+            <div class="container fixed-bottom" style="width:60%; margin: auto;" >
+                <div class="row justify-content-center" id="player-deck">
+                    
+                    
+                </div>
+            </div>
+            
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        
+        
+        
+        <script>
+            // Connect to server into game namespace
+            var socket = io("/game"); 
+            
+    // =================================================================
+    // Game Variables
+            
+            // Save data from server to variables
+            var PLAYER_SLOT = <%= role %>;
+            var ENEMY_USERNAME;
+            var CURRENT_PLAYER;
+            
+            // Not sure if legit
+            var PLAYER_STATS = createNewHero(true);
+            var ENEMY_STATS = createNewHero();
+            
+            function createNewHero(isPlayer){
+                hero = {
+                    maxMana: 8,
+                    maxHealth: 10,
+                    
+                    mana: 8,
+                    health:10,
+                    armor: 0,
+                    
+                    hand : {
+                        cards: [],
+                        currentCard: 0
+                    }
+                }
+                if(isPlayer) hero.deck = <%-JSON.stringify(deck)%>;
+                return hero;
+            }
+            
+            
+            // Event invoked when player enters game room
+            // Send informations for server to use
+            socket.emit('join', {
+                gameID: "<%= GAME._id%>",
+                role: PLAYER_SLOT,
+                username: "<%= player.username %>",
+                player: PLAYER_STATS
+            } );
+            
+            // Invoked when both players join game
+            socket.on("game-ready", function(data){
+                console.log("Game ready!");
+                // Depending on role, set enemy username
+                if(PLAYER_SLOT == 0) ENEMY_USERNAME = data.juliet;
+                else ENEMY_USERNAME = data.romeo;
+                
+                CURRENT_PLAYER = data.currentPlayer;
+                
+                
+                GameManager.newRound(CURRENT_PLAYER);
+                UpdateUi.gameStartUi();
+            })
+        
+            // Event handling new round server call
+            socket.on("new-round", function(data){
+                GameManager.newRound(data.currentPlayer);
+            })
+        
+            // Event handling card played server call
+            // Adds card to player hand or shows animation depending on current player
+            socket.on("card-played", function(data){
+                if(data.currentPlayer != PLAYER_SLOT) GameManager.cardPlayedByEnemy(data.card);
+            })
+            
+        
+            // Handles cards being droped into droping zone
+            $( ".play-zone" ).droppable({
+                classes: {
+                "ui-droppable-active": "bg-success",
+                "ui-droppable-hover": "active"
+                },
+                drop: function( event, ui ) {
+                    GameManager.cardPlayedByPlayer(ui.draggable);
+                }
+            })
+            
+            // Handles changing turn events
+            $( "#end-turn-btn" ).click(function() {
+                //  Reset your mana pool
+                PLAYER_STATS.mana = PLAYER_STATS.maxMana;
+                ENEMY_STATS.mana = ENEMY_STATS.maxMana;
+                console.log("Player mana: " + PLAYER_STATS.mana)
+                UpdateUi.updatePlayerStatsUi();
+                UpdateUi.updateEnemyStatsUi();
+                GameManager.manaCheck();
+                
+                socket.emit('end-turn',{
+                    currentPlayer: PLAYER_SLOT
+                })
+            });
+            
+            socket.on("gameover", function(data){
+                UpdateUi.gameover(data.winner);
+            })
+        
+    //=====================================================================
+    // Gameplay functions
+        var GameManager = {
+            
+            // Set the UI depending on current players
+            newRound: function(currentPlayer){
+                // console.log(currentPlayer + " " + PLAYER_SLOT);
+                if(currentPlayer == PLAYER_SLOT) UpdateUi.setPlayerRound(currentPlayer);
+                else UpdateUi.setEnemyRound(currentPlayer);
+                CURRENT_PLAYER = currentPlayer;
+            },
+            
+            applyCardEfectsForPlayer: function($card){
+                card =  PLAYER_STATS.deck[$card.attr("data-card-index")].card;
+                //  Substract card mana cost from your mana pool
+                PLAYER_STATS.mana -= card.stats.cost;
+                GameManager.manaCheck()
+                
+                // Adds armor to player armor pool
+                PLAYER_STATS.armor += card.stats.armor;
+                
+                // Adds health to player health and check for overflow
+                PLAYER_STATS.health += card.stats.heal;
+                if(PLAYER_STATS.health > PLAYER_STATS.maxHealth) PLAYER_STATS.health = PLAYER_STATS.maxHealth;
+                
+                //  Deal damage
+                GameManager.dealDamageToEnemy(card.stats.damage);
+                
+                // ENEMY_STATS.health -= card.stats.damage;
+                
+                // if(ENEMY_STATS.health <= 0)GameManager.checkGameOver();
+                // console.log("Winner is: " + PLAYER_SLOT);
+            },
+            
+            
+            applyCardEfectsForEnemy: function(card){
+                //  Substract card mana cost from enemy mana pool
+                ENEMY_STATS.mana -= card.stats.cost;
+                console.log("Enemy mana is: " + ENEMY_STATS.mana);
+                
+                // Adds armor to enemy armor pool
+                ENEMY_STATS.armor += card.stats.armor;
+                
+                // Adds health to enemy health and check for overflow
+                ENEMY_STATS.health += card.stats.heal;
+                if(ENEMY_STATS.health > ENEMY_STATS.maxHealth) ENEMY_STATS.health = ENEMY_STATS.maxHealth;
+                
+                //  Deal damage
+                GameManager.dealDamageToPlayer(card.stats.damage);
+            },
+            
+            dealDamageToEnemy: function(damageToBeDone){
+                if(ENEMY_STATS.armor >= damageToBeDone) ENEMY_STATS.armor -= damageToBeDone;
+                else {
+                    damageToBeDone -= ENEMY_STATS.armor;
+                    ENEMY_STATS.armor = 0;
+                    ENEMY_STATS.health -= damageToBeDone;
+                }
+            },
+            
+            dealDamageToPlayer: function(damageToBeDone){
+                if(PLAYER_STATS.armor >= damageToBeDone) PLAYER_STATS.armor -= damageToBeDone;
+                else {
+                    damageToBeDone -= PLAYER_STATS.armor;
+                    PLAYER_STATS.armor = 0;
+                    PLAYER_STATS.health -= damageToBeDone;
+                }
+            },
+            
+            // checkGameOver: function(){
+            //     socket.emit('check-gameover',{winner: PLAYER_SLOT});
+            // },
+            
+            manaCheck: function(){
+                // For each card in hand do a mana check
+                PLAYER_STATS.hand.cards.forEach(function(cardIndex){
+                    GameManager.cardManaCheck(cardIndex);
+                })
+            },
+            
+            cardManaCheck: function(cardIndex){
+                if(PLAYER_STATS.deck[cardIndex].card.stats.cost > PLAYER_STATS.mana){
+                    UpdateUi.lockCard(cardIndex);
+                }
+                else{
+                    UpdateUi.unlockCard(cardIndex);
+                }
+            },
+            
+            // Emits call to server, send card index - cardPlayed
+            cardPlayedByPlayer: function($card){
+                
+                // Makes sure all card efects are applied
+                GameManager.applyCardEfectsForPlayer($card);
+                
+                // Updates player object (hand)
+                GameManager.removeCardFromHand(PLAYER_SLOT,$card);
+                
+                //  Update Ui
+                UpdateUi.updatePlayerStatsUi();
+                UpdateUi.updateEnemyStatsUi();
+                
+                // PLAYER_STATS.hand.currentCard
+                UpdateUi.appendCard();
+                
+                // Call sever about card played
+                socket.emit("card-played", {
+                    playerHand: PLAYER_STATS.hand,
+                    cardIndex: $card.attr("data-card-index")
+                })
+            },
+            
+            // Once called, animate card thow - cardThrown
+            cardPlayedByEnemy: function(card){
+                 // Makes sure all card efects are applied
+                GameManager.applyCardEfectsForEnemy(card)
+                UpdateUi.updatePlayerStatsUi();
+                UpdateUi.updateEnemyStatsUi();
+                
+                console.log("Enemy played: " + card.name)
+            },
+            
+            cardAppended: function(index){
+                PLAYER_STATS.hand.cards.push(index);
+                PLAYER_STATS.hand.currentCard = index;
+                
+                PLAYER_STATS.hand.currentCard++;
+                // console.log(PLAYER_STATS.hand.currentCard);
+                
+                console.log("Player hand: " + PLAYER_STATS.hand.cards + " : " + PLAYER_STATS.hand.currentCard);
+            },
+            
+            removeCardFromHand: function(handOwner,$card){
+                if(handOwner == PLAYER_SLOT){
+                    let cardIndexInArray = PLAYER_STATS.hand.cards.findIndex(function(index){
+                        
+                        return $card.attr("data-card-index") == index;
+                    })
+                    
+                    console.log("Card index: " + cardIndexInArray);
+                    PLAYER_STATS.hand.cards.splice(cardIndexInArray,1);
+                    $card.remove();
+                    
+                    // console.log("Player hand: " + PLAYER_STATS.hand.cards + " : " + PLAYER_STATS.hand.currentCard);
+                }
+            }
+        }
+        
+    // ====================================================================
+    // Update UI and other Ui
+    
+        var UpdateUi = {
+            updatePlayerStatsUi: function(){
+                $("#playerHp").html( PLAYER_STATS.health);
+                $("#playerMp").html( PLAYER_STATS.mana);
+                $("#playerArmor").html( PLAYER_STATS.armor);
+            },
+            
+            updateEnemyStatsUi: function(){
+                $("#enemyHp").html( ENEMY_STATS.health);
+                $("#enemyMp").html( ENEMY_STATS.mana);
+                $("#enemyArmor").html( ENEMY_STATS.armor);
+            },
+            
+            appendCard: function(cardIndex, reconnect){
+                if(!cardIndex && cardIndex != 0) cardIndex = PLAYER_STATS.hand.currentCard;
+                if(cardIndex >= PLAYER_STATS.deck.length) cardIndex = 0;
+                
+                setTimeout(function(){ 
+                    $("#player-deck").append("<div class='flip-container draggable col-sm-2'" + "data-card-index='" + cardIndex + "'>" +
+                    	"<div class='flipper'>" +
+                    		"<div class='front '>" +
+                    			"<!-- front content -->" +
+                    			"<p style='position:absolute;left:5px;top:23px;'>" + PLAYER_STATS.deck[cardIndex].card.name + "</p>" +
+                    		    "<div style='position:absolute;left:5px;top:5px;'>C:" + PLAYER_STATS.deck[cardIndex].card.stats.cost + "</div>" +
+                    		    "<div style='position:absolute;right:5px;top:5px;'>H:" + PLAYER_STATS.deck[cardIndex].card.stats.heal + "</div>" +
+                    			"<div style='position:absolute;right:5px;bottom:5px;'>D:" + PLAYER_STATS.deck[cardIndex].card.stats.damage + "</div>" +
+                    			"<div style='position:absolute;left:5px;bottom:5px;'>A:" +  PLAYER_STATS.deck[cardIndex].card.stats.armor + "</div>" +
+                    		"</div>" +
+                    		"<div class='back'>" +
+                    			"<!-- back content -->" +
+                    		"</div>" +
+                    	"</div>" +
+                    "</div>" );
+                    
+                    // Enable on draggable option on new card
+                    $( "div[data-card-index='" + cardIndex + "']" ).draggable({ revert: "invalid" });
+                    
+                    if(CURRENT_PLAYER != PLAYER_SLOT){
+                        $( "div[data-card-index='" + cardIndex + "']" ).draggable("disable");
+                        $( "div[data-card-index='" + cardIndex + "']" ).css('bottom', '-50'+'px');
+                    } 
+                    else GameManager.cardManaCheck(cardIndex);
+                }, 1000);
+                
+                // Updates game status
+                if(!reconnect) GameManager.cardAppended(cardIndex);
+            },
+            
+            lockCard: function(cardIndex){
+                $( "div[data-card-index='" + cardIndex + "']" ).draggable("disable");
+                $( "div[data-card-index='" + cardIndex + "']" ).css("background-color", "red");
+            },
+            
+            unlockCard: function(cardIndex){
+                $( "div[data-card-index='" + cardIndex + "']" ).draggable("enable");
+                $( "div[data-card-index='" + cardIndex + "']" ).css("background-color", "grey");
+            },
+            
+            // Set the UI for enemy round - disables cards
+            setEnemyRound: function(){
+                console.log("Setting enemy round!");
+                $('.draggable').draggable( "disable" );
+                $('.draggable').css('bottom', '-50'+'px');
+                $("#end-turn-btn").addClass('disabled');
+            },
+            
+            // Set the UI for player round - enables cards setMyRound
+            setPlayerRound: function(){
+                console.log("Setting your round!");
+                $('.draggable').draggable( "enable" );
+                $('.draggable').css('bottom', '0'+'px');
+                $("#end-turn-btn").removeClass('disabled');
+            },
+            
+            setEnemyCardUi: function(card){
+                $('#enemy-card').css('display', 'block');
+                
+                $(".enemy-card-name").html( card.name);
+                $(".enemy-card-cost").html( card.stats.cost);
+                $(".enemy-card-damage").html( card.stats.damage);
+                $(".enemy-card-armor").html( card.stats.armor);
+                $(".enemy-card-heal").html( card.stats.heal);
+                
+                // Fade out and delete enemy card
+                setTimeout(function(){
+                    $('#enemy-card').fadeOut("slow", function() {
+                        $(this).hide();
+                    });
+                }, 2000);
+            },
+            
+            // Open curtain and fades out waiting text, invoked when game starts
+            gameStartUi: function(reconnect){
+                // console.log("Enemy: " + ENEMY_USERNAME);
+
+                $("#enemy-username").html(ENEMY_USERNAME);
+                $('.curtain-content').fadeOut("slow", function() {
+                    $('#game-curtain').prop('checked', false);
+                    $('#game-curtain').hide();
+                    $(this).hide();
+                });
+                
+                UpdateUi.renderHand()
+                
+            },
+            
+            renderHand: function(){
+                let i = 0;
+                var cardsLoop = setInterval(function(){
+                    i++;
+                    if(i == 5) clearInterval(cardsLoop);
+                    UpdateUi.appendCard();
+                    
+                }, 1000);
+            },
+            
+            // Sets game Ui to let player know about process
+            playerReconnectUi: function(data){
+                $('.curtain-content').fadeOut("slow", function() {
+                    console.log("Game start reconnecting")
+                    $('#curtain-content-text').html("Reconnecting");
+                    $('.curtain-content').fadeIn("slow")
+                });
+            },
+            
+            gameover: function(winner){
+                console.log("Winner: " + winner);
+                $('#game-curtain').prop('checked', true);
+                if(PLAYER_SLOT == winner) $('#curtain-content-text').html("You won!");
+                else if(PLAYER_SLOT != winner) $('#curtain-content-text').html("You lost!");
+                
+                UpdateUi.setEnemyRound();
+                $('.curtain-content').fadeIn("slow", function() {
+                    $('.curtain-content').append('<a href="/<%= currentUser.username %>/play">Back</a>');
+                    // $('#game-curtain').hide();
+                    // $(this).hide();
+                });
+            }
+        }
+            
+    // =================================================================
+    // Reconnect functions
+    
+            // Invoked when player reconnect
+            socket.on("player-reconnect", function(data){
+                // console.log(data.player.hand)
+                Reconnect.reconnect(data);
+                
+                
+                // UpdateUi.playerReconnectUi(data);
+                
+                
+                // GameManager.newRound(data.currentPlayer);
+                
+            })
+            
+            var Reconnect = {
+                reconnect : function(data){
+                    if(data.role == PLAYER_SLOT){
+                        Reconnect.setGameData(data);
+                        console.log("Player reconnected");
+                        GameManager.newRound(CURRENT_PLAYER);
+                        Reconnect.gameStartUi();
+                    } 
+                    else console.log("Enemy reconnected");
+                    
+                    UpdateUi.updatePlayerStatsUi();
+                    UpdateUi.updateEnemyStatsUi();
+                },
+                
+                gameStartUi : function(){
+                    $("#enemy-username").html(ENEMY_USERNAME);
+                    $('.curtain-content').fadeOut("slow", function() {
+                        $('#game-curtain').prop('checked', false);
+                        $('#game-curtain').hide();
+                        $(this).hide();
+                    });
+                    
+                    Reconnect.renderHand();
+                    
+                },
+                
+                renderHand : function(){
+                    let i = 0;
+                    var cardsLoop = setInterval(function(){
+                        
+                        console.log(PLAYER_STATS.hand.cards);
+                        
+                        UpdateUi.appendCard(PLAYER_STATS.hand.cards[i],true);
+                        i++;
+                        if(i == 5) clearInterval(cardsLoop);
+                        // console.log(PLAYER_STATS.hand.cards);
+                    }, 1000);
+                },
+                
+                // Sets game variables acording do server data
+                setGameData : function(data){
+                    PLAYER_STATS = {
+                        maxMana: data.player.maxMana,
+                        maxHealth: data.player.maxHealth,
+                        
+                        mana: data.player.mana,
+                        health:data.player.health,
+                        armor: data.player.armor,
+                    
+                        hand : data.player.hand,
+                        
+                        deck: data.player.deck
+                    }
+                    
+                    ENEMY_STATS = {
+                        maxMana: data.enemy.maxMana,
+                        maxHealth: data.enemy.maxHealth,
+                        
+                        mana: data.enemy.mana,
+                        health:data.enemy.health,
+                        armor: data.enemy.armor,
+                        
+                        hand : data.enemy.hand
+                    }
+                    
+                    ENEMY_USERNAME = data.enemy.username;
+                    CURRENT_PLAYER = data.currentPlayer;
+                }
+            }
+            
+    
+            
+            
+            
+            
+            // =================================================================
+            // Set view size
+            
+            $( document ).ready(
+                function() {
+                    $('.play-zone').css('height', (60*window.innerHeight)/100+'px');
+                    $('#enemy-card').css('top', (20*window.innerHeight)/100+'px');
+                    $('#enemy-card').css('display', 'none');
+                }
+            )
+            
+            $(window).resize(function() {
+                $('.play-zone').css('height', (60*window.innerHeight)/100+'px');
+                $('#enemy-card').css('top', (20*window.innerHeight)/100+'px');
+            });
+            
+            
+        </script>
+    </body>
+</html>
+
+
+

@@ -1,0 +1,37 @@
+<% include ../partials/header %>
+
+    <div class="container">
+    
+    <div class="jumbotron">
+      <h1 class="display-4">Card list</h1>
+      <p class="lead">View all cards here</p>
+      <hr class="my-4">
+      <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+      <a class="btn btn-primary btn-lg" href="/cards/new" role="button">Add new</a>
+    </div>
+    
+    
+    <div class="row" style="display:flex; flex-wrap: wrap;">
+        
+        <table class="table table-striped table-dark">
+          <thead>
+            <tr>
+              <th scope="col">Class</th>
+              <th scope="col">Name</th>
+              <th scope="col">More</th>
+            </tr>
+          </thead>
+          <tbody>
+              <% cards.forEach(function(card){ %>
+                <tr>
+                  <th scope="row"> <%= card.cardClass %></th>
+                  <th scope="col"> <%= card.name %></th>
+                  <td style="text-align: center; vertical-align: middle;"><a href="/cards/<%= card._id %>" class="btn btn-primary"> Show more </a></td>
+                </tr>
+            <% }) %>
+          </tbody>
+        </table>
+    </div>
+</div> <!-- container -->
+
+<% include ../partials/footer %>

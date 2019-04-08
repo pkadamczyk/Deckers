@@ -1,0 +1,55 @@
+<div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="decks-panel">
+        
+        <div class="sidebar-header">
+            <h3>Bootstrap Sidebar</h3>
+        </div>
+    
+        <div style="width:220px;margin:auto">
+            <button type="button" class="btn btn-light btn-lg casual" >Casual</button>
+            <button type="button" class="btn btn-light btn-lg" disabled>Ranked</button>
+        </div>
+        <a class="btn btn-success ready-btn disabled" style="position:absolute;bottom:100px;left:115px">
+            Ready
+        </a>
+        <% if(user.inGame) {%>
+            <a class="btn btn-success" style="position:absolute;bottom:150px;left:50px"  href="/game/<%= user.currentGame %>">
+                Reconnect
+            </a>
+            <a class="btn btn-danger" id="abandonButton" style="position:absolute;bottom:150px;left:170px">
+                Abandon
+            </a>
+        <% } %>
+        
+        <button type="button" class="btn btn-success btn-circle btn-xl play-button" style="position:absolute;bottom:20px;left:115px" disabled>
+            <i class="fa fa-check"></i>
+        </button>
+    </nav>
+</div>
+
+<script>
+    function getCards(){
+        var cards = [];
+        $(".card-slot").each(function(){
+                cards.push(parseInt($( this ).children().attr("data-card-index")))
+        });
+        console.log("===================");
+        console.log(cards);
+        return cards;
+    }
+    
+    $('#abandonButton').on('click', function () {
+        $.ajax({
+            method: "POST",
+            url: "/game/abandon",
+            data: {
+                user: "<%= currentUser.username %>"
+            }
+        })
+        .done(function(msg) {
+            location.reload(true);
+            console.log("Game Abandoned");
+        });
+    });
+</script>

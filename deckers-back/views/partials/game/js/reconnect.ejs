@@ -1,0 +1,21 @@
+// Invoked when player reconect
+socket.on("player-reconnect", function(data){
+    console.log("Player reconnected");
+    playerReconnectUi(data);
+});
+
+
+
+//  ============================================================================
+//  Ui
+
+// Sets game Ui acording to server data
+function playerReconnectUi(data){
+    $('.curtain-content').fadeOut("slow", function() {
+        console.log("Game ready after reconnect")
+        $('#curtain-content-text').html("Reconnecting");
+        $('.curtain-content').fadeIn("slow")
+    });
+}
+
+<!---->

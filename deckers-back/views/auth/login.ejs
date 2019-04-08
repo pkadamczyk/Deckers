@@ -1,0 +1,28 @@
+<% include ../partials/auth/header %>
+
+<div class="container login-container">
+    <div class="row">
+        <div class="col login-form-1">
+            <form action="/login" method="POST">
+                <h1>Login In</h1>
+                
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" placeholder="username" />
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="password" />
+                </div>
+                <span class="text-danger" id="login-error"></span>
+                <div class="form-group">
+                    <input type="submit" class="btnSubmit" value="Login" style=" margin-top: 2%"/>
+                    <span class="float-right " style="color:white; margin-top: 4%">No account? <a href="/register" class="btnForgetPwd" >Register</a></span>
+                </div>
+                <div class="form-group" style="display:inline">
+                    
+                </div>
+            </form>
+        </div>         
+    </div>
+</div>
+
+<% include ../partials/auth/footer %>

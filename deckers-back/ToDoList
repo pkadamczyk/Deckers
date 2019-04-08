@@ -1,0 +1,36 @@
+deck creation rework
+cards stats change on levels
+gold reward after game win // needs rework - to use database
+general options
+matchmaking rework
+    leave matchmaking after disconect ?
+    leave game search
+    status on left panel
+    reject button after game found
+
+bugs
+    after card upgrade, page does not refresh buttons about affordable upgrades
+    nie odblokowuje przyciskow w sklepie po kupnie // done
+
+    features
+daily quests
+archivments
+friends
+backstory
+code for gold and gems
+
+implement max card level // done
+implement card gold cost front/back end // done
+
+matchmaking rework
+    current system works only for first player // done
+    global variables to locals ?
+    isFinished and inGame implementation // done 
+
+    user inGame variable //
+    connect back buttons
+    game isFinished variable //
+    game rework //
+    
+front end max card level implementation // done
+abadon the game button // done

@@ -1,0 +1,34 @@
+<% include ../partials/header %>
+
+<div class="container ">
+    <div class="jumbotron text-white bg-dark">
+        <a><h4 style="display: inline"><%= option.name %></h4></a>
+        <p><%= option.description %></p>
+        <a class="btn btn-primary" href="/options/">Back</a>
+        <a class="btn btn-warning" href="/options/<%= option._id %>/edit">Edit</a>
+        <form action="/options/<%= optionGroup %>/<%= option._id %>?_method=DELETE" method="POST" style="display:inline">
+            <button class="btn btn-danger">Delete</button>
+        </form>
+        
+        <table class="table table-striped table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Short</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td > <%= option.name %></td>
+                    <td > <%= option.short %></td>
+                    <td > <%= option.description %></td>
+                    <td > <%= option.value %></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<% include ../partials/footer %>

@@ -1,0 +1,53 @@
+<% include ../partials/client/header %>
+
+<div class="container">
+    <% chests.forEach(function(chest){%>
+    
+        <div class="jumbotron text-center col-md-3" style="margin:10px">
+            <h1><%= chest.name %></h1>
+            <% let allCards = chest.cardAmount.common + chest.cardAmount.rare + chest.cardAmount.epic + chest.cardAmount.legendary %>
+            <p>
+                You will recive <%= allCards %> cards, <%= chest.cardAmount.common %> common , <%= chest.cardAmount.rare %> rare,
+                <%= chest.cardAmount.epic %> epic, <%= chest.cardAmount.legendary %> legendary granted
+            </p>
+            <% let cur = (chest.price.currency == 0) ? currentUser.currency.gold : currentUser.currency.gems %>
+            
+            <% if(cur >= chest.price.amount){ %>
+                <button class="btn btn-success " id="<%= chest.name %>"><%= chest.price.amount %> <%= Object.keys(currencyList)[chest.price.currency] %></button>
+            <% } else { %>
+                <button class="btn btn-danger disabled" id="<%= chest.name %>" disabled><%= chest.price.amount %>  <%= Object.keys(currencyList)[chest.price.currency] %></button>
+            <% } %>
+            
+            
+        </div>
+    
+    <% }) %>
+    
+</div>
+
+<script>
+    console.log("Your gold is: <%= currentUser.currency.gold %>" );
+    console.log("Your gems is: <%= currentUser.currency.gems %>" );
+
+    $("button").click( function(){
+        self = $(this);
+        self.attr("disabled", true);
+
+        $.ajax({
+            method: "POST",
+            url: "/shop/buy/chest",
+            data: {
+                chestName: $(this).attr("id"),
+            }
+        })
+        .done(function(msg) {
+            if(msg.currencyLeft >= msg.chestCost ) self.attr("disabled", false);
+            else self.removeClass("btn-success").addClass("btn-danger");
+            msg.cards.forEach(function(card){
+                console.log(card.name);
+            })
+        });
+    })
+</script>
+
+<% include ../partials/client/footer %>

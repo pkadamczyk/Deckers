@@ -1,0 +1,6 @@
+export const FIND_GAME = "FIND_GAME";
+export const LEAVE_QUE = "LEAVE_QUE";
+export const ACCEPT_GAME = "ACCEPT_GAME";
+export const DISCONNECT_FROM_GAME = "DISCONNECT_FROM_GAME";
+export const ABANDON_GAME = "ABANDON_GAME";
+export const RECONNECT_GAME = "RECONNECT_GAME";

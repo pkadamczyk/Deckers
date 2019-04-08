@@ -1,0 +1,65 @@
+<% include ../partials/client/header %>
+
+<% user.decks.forEach(function(deck, idx){ %>
+    <% if(deck.cards){ %>
+    
+        <div class=" deck float-left bg-light w-25" style="margin:4%; height: 500px">
+            <h3 style="text-align:center; padding-top:10px"> <%= deck.name %></h3>
+            <div class='deck-head' style="position: relative;" >
+            
+                <% deck.cards.forEach(function(card, index){ %>
+                    <div class="card-wrap">
+                        <div style='background-color:grey; z-index:<%= index + 3 %>; position: absolute; top: <%= 10 + index*50 %>px; left: 10px' class="card" data-card-index="<%= index %>">
+                            <div> <%= card.card.name %></div>
+                        </div>
+                    </div>
+                <% } )%>
+            </div>
+            
+            
+        </div>
+    <% } %>
+<% }) %>
+
+<% include ../partials/client/chooseGamePanel %>
+
+<script src = "/socket.io/socket.io.js"></script>
+<script>
+    $( ".play-button" ).click(function(){
+        $(this).prop( "disabled", true );
+        var socket = io('/matchmaking');
+        socket.emit('join', { username: "<%=currentUser.username%>"} );
+        
+        socket.on('game-ready',function(gameID) {
+            $(".ready-btn").removeClass( "disabled");
+            $(".ready-btn").attr("href", "/game/" + gameID)
+        });
+        
+        // window.location.replace(...)
+    })
+</script>
+
+<script>
+    var GAMETYPE = null;
+    var DECK = null;
+
+    $( ".deck" ).click(function(){
+        $( this ).addClass("bg-dark text-white");
+        DECK = 0;
+        if(DECK != null && GAMETYPE != null){
+            $( ".play-button" ).prop( "disabled", false );
+        } 
+    })
+    
+    $( ".casual" ).click(function(){
+        $( this ).addClass("bg-dark text-white");
+        GAMETYPE = 0;
+        if(DECK != null && GAMETYPE != null){
+            $( ".play-button" ).prop( "disabled", false );
+        }
+    })
+    
+</script>
+
+
+<% include ../partials/client/footer %>

@@ -1,0 +1,16 @@
+<% include ../partials/header %>
+
+    <div class="container ">
+        <div class="jumbotron text-white bg-dark">
+            <a><h4 style="display: inline"><%=chest.name%></h4></a>
+            <a class="btn btn-primary" href="/chests/">Back</a>
+            <a class="btn btn-warning" href="/chests/<%= chest._id %>/edit">Edit</a>
+            <form action="/chests/<%= chest._id %>?_method=DELETE" method="POST" style="display:inline">
+                <button class="btn btn-danger">Delete</button>
+            </form>
+            
+        </div>
+        
+    </div>
+
+<% include ../partials/footer %>

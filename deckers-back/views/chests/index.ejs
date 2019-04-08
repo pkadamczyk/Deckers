@@ -1,0 +1,68 @@
+<% include ../partials/header %>
+
+    <div class="container">
+    
+    <div class="jumbotron">
+        <h1 class="display-4">Chest list</h1>
+        <hr class="my-4">
+        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+        <a class="btn btn-primary btn-lg" href="/chests/new" role="button">Add new</a>
+    </div>
+    
+    
+    <!--<div class="row" style="display:flex; flex-wrap: wrap;">-->
+        
+        <table class="table table-striped table-dark">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">isEnabled</th>
+              <th scope="col">More</th>
+            </tr>
+          </thead>
+          <tbody>
+              <% chests.forEach(function(chest){ %>
+                <tr>
+                    <th scope="col"> <%= chest.name %></th>
+                    <th scope="col"> <input type="checkbox" class="is-avilable" id="<%= chest._id %>"
+                        <% if(chest.isAvailable){ %>
+                            checked
+                        <% } %>>
+                    </th>
+                  <td style="text-align: center; vertical-align: middle;"><a href="/chests/<%= chest._id %>" class="btn btn-primary"> Show more </a></td>
+                </tr>
+            <% }) %>
+          </tbody>
+        </table>
+    <!--</div>-->
+</div> <!-- container -->
+
+<script>
+
+
+    $(".is-avilable").click(function(){
+        self = $(this)
+        console.log("Checkbox clicked");
+        $(this).prop( "disabled", true );
+        
+        $.ajax({
+            method: "POST",
+            url: "/chest/enable",
+            data: {
+                chestId: $(this).attr("id"),
+            }
+        })
+        .done(function() {
+            console.log("Saved!")
+            self.prop( "disabled", false );
+        });
+    })
+    
+    
+</script>
+
+
+
+
+
+<% include ../partials/footer %>

@@ -1,0 +1,56 @@
+<% include ../partials/header %>
+
+
+    <div class="container">
+        
+        <div class="jumbotron" style="margin:auto;margin-top:30px; width: 80%">
+            <h1 style="text-align: center">Add something</h1>
+            <form action="/chests" method="POST">
+
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Name" name="new[name]">
+                </div>
+                
+                <h3 style="text-align: center">Price</h3>
+                <div class="form-group">
+                    <label for="cost">Amount</label>
+                    <input type="text" class="form-control" id="amount" placeholder="Cost" name="price[amount]">
+                </div>
+                <div class="form-group">
+                    <label for="card-rarity">Rarity</label>
+                    <select class="form-control" id="card-rarity" name="price[currency]">
+                        <option value="<%= currencyList.gold %>"><%= Object.keys(currencyList)[0] %></option>
+                        <option value="<%= currencyList.gems %>"><%= Object.keys(currencyList)[1] %></option>
+                    </select>
+                </div>
+                
+                <h3 style="text-align: center">Card amount</h3>
+                <div class="form-group">
+                    <label for="common">Random cards amount</label>
+                    <input type="text" class="form-control" id="common" placeholder="Random amount" name="cardAmount[random]">
+                </div>
+                
+                <div class="form-group">
+                    <label for="common">Common amount</label>
+                    <input type="text" class="form-control" id="common" placeholder="Common amount" name="cardAmount[common]">
+                </div>
+                <div class="form-group">
+                    <label for="rare">Rare amount</label>
+                    <input type="text" class="form-control" id="rare" placeholder="Rare amount" name="cardAmount[rare]">
+                </div>
+                <div class="form-group">
+                    <label for="epic">Epic amount</label>
+                    <input type="text" class="form-control" id="epic" placeholder="Epic amount" name="cardAmount[epic]">
+                </div>
+                <div class="form-group">
+                    <label for="legendary">Legendary amount</label>
+                    <input type="text" class="form-control" id="legendary" placeholder="Legendary amount" name="cardAmount[legendary]">
+                </div>
+                
+                <button class="btn btn-lg btn-primary btn-block">Submit!</button>
+           </form>
+        </div>
+    </div>
+    
+<% include ../partials/footer %>

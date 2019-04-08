@@ -1,0 +1,33 @@
+.card {
+
+    width: 130px;
+    height: 200px;
+
+    position: absolute;
+    z-index: 100;
+}
+
+.deck-head {
+    margin: 20px auto;
+    width: 150px;
+    height: 40px;
+
+    background-color: #222930;
+}
+
+.placeholder-card {
+
+    width: 130px;
+    height: 200px;
+
+    position: absolute;
+    z-index: 1;
+}
+
+.card-wrapper {
+    margin: 5px;
+    width: 130px;
+    height: 200px;
+
+    position: relative;
+}

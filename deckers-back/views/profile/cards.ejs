@@ -1,0 +1,106 @@
+<% include ../partials/client/header %>
+
+
+<% var i=0 ;%>
+<% user.cards.forEach(function(card){ %>
+    <div class="card-wrapper float-left">
+        <div class="card-wrap">
+            <div style='background-color:grey; z-index:3; position: absolute' class="card" data-card-index="<%= i %>">
+                <div> <%= card.card.name %> - <span id="<%= i %>-level"><%= card.level %></span></div>
+                <div> Rarity - <%= card.card.rarity %></div>
+                
+                <% if(card.amount == 0 && card.level == 1){ %>
+                    <a class="btn btn-primary btn-lg btn-block disabled" href="#" role="button" style="position: absolute; bottom:0;z-index:10">Locked</a>
+                <% } else if(card.amount < upgradeCardCost.options[card.level].option.value){%>
+                    <a class="btn btn-primary btn-lg btn-block disabled" href="#" role="button" style="position: absolute; bottom:0;z-index:10">
+                        <%= card.amount %> / <%= upgradeCardCost.options[card.level].option.value %>
+                    </a>
+                <% } else if(currentUser.currency.gold < upgradeGoldCost[card.card.rarity-1].options[card.level].option.value){%>
+                    <a class="btn btn-warning btn-lg btn-block disabled" href="#" role="button" style="position: absolute; bottom:0;z-index:10" id="<%= card.card.name %>">
+                        <span class="text-danger "> <%= upgradeGoldCost[card.card.rarity-1].options[card.level].option.value %> gold </span> 
+                    </a>
+                    
+                <% } else if(card.level >= maxCardLevel[card.card.rarity-1] ){%>
+                    <a class="btn btn-warning btn-lg btn-block disabled" href="#" role="button" style="position: absolute; bottom:0;z-index:10" id="<%= card.card.name %>">
+                        <span class="text-danger "> Max level </span> 
+                    </a>
+                <% } else {%>
+                    <a class="btn btn-success btn-lg btn-block ready" href="#" role="button" style="position: absolute; bottom:0;z-index:10" id="<%= card.card.name %>">
+                        <span id="<%= i %>-amount"><%= card.amount %></span> / <span id="<%= i %>-to-upgrade"><%= upgradeCardCost.options[card.level].option.value %></span>
+                    </a>
+                <% } %>
+                
+                
+            </div>
+            
+        </div>
+        
+        <div style='background-color:black' class="placeholder-card"></div>
+        
+    </div>
+    
+    <% i++; %>
+<% }) %>
+
+<!--Include decks panel-->
+<% include ../partials/client/decksPanel %>
+
+<script>
+    var CARDS_IN_DECK =0;
+    
+    
+    $( ".card" ).dblclick(function() {
+        var $newCard = $(this).parent().clone( true );
+        $(this).fadeOut();
+        
+        
+        $($newCard.html()).appendTo('.deck-head')
+            .css("top", (CARDS_IN_DECK * 50 + 10) + "px")
+            .css("left", "10px")
+            .css("z-index", CARDS_IN_DECK + 10)
+            .css("display", "none").fadeIn();
+
+        CARDS_IN_DECK++;
+        if(CARDS_IN_DECK == 5) $( "#accept-deck" ).prop( "disabled", false );
+    });
+    
+    $(".ready").click(function(){
+        self = $(this)
+        console.log("Upgrade clicked");
+        $(this).addClass("disabled");
+        
+        $.ajax({
+            method: "POST",
+            url: "/<%= currentUser.username %>/cards/upgrade",
+            data: {
+                cardName: $(this).attr("id"),
+            }
+        })
+        .done(function(msg) {
+            if(msg.error) location.reload(true);
+            console.log("Saved!")
+            
+            // Edit page html
+            $("#"+ self.parent().attr("data-card-index") + "-level").html( msg.currentLevel);
+            $("#"+ self.parent().attr("data-card-index") + "-amount").html( msg.newAmount);
+            $("#"+ self.parent().attr("data-card-index") + "-to-upgrade").html( msg.cardsToNextLevel);
+            
+            if(msg.newAmount < msg.cardsToNextLevel)self.removeClass("btn-success").addClass("btn-primary");
+            else self.removeClass( "disabled");
+
+        });
+    })
+    
+    // $( ".card-slot" ).sortable({
+    //     connectWith: '.card',
+    //     receive: function( event, ui ) {
+    //         CARDS_IN_DECK++;
+    //         if(CARDS_IN_DECK == 5) $( "#accept-deck" ).prop( "disabled", false );
+    //     }
+        
+    // })
+</script>
+
+
+
+<% include ../partials/client/footer %>

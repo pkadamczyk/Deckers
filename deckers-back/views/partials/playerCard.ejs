@@ -1,0 +1,17 @@
+
+<div class='flip-container draggable col-sm-2' data-card-index="<%= CURRENT_CARD %>">
+	<div class='flipper'>
+		<div class='front '>
+			<!-- front content -->
+		    <p style="position:absolute;left:5px;top:23px;"><%= deck[CURRENT_CARD].card.name %></p>
+		    <div style="position:absolute;left:5px;top:5px;">C: <%= deck[CURRENT_CARD].card.stats.cost %></div>
+		    <div style="position:absolute;right:5px;top:5px;">H: <%= deck[CURRENT_CARD].card.stats.heal %></div>
+			<div style="position:absolute;right:5px;bottom:5px;">D: <%= deck[CURRENT_CARD].card.stats.damage %></div>
+			<div style="position:absolute;left:5px;bottom:5px;">A: <%= deck[CURRENT_CARD].card.stats.armor %></div>
+		</div>
+		<div class='back'>
+			<!-- back content -->
+		</div>
+	</div>
+</div>
+<% CURRENT_CARD++;%>

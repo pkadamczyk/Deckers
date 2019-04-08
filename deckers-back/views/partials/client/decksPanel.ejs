@@ -1,0 +1,85 @@
+<div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="decks-panel">
+        <button type="button" id="sidebarCollapse" class="btn btn-info" style="position:absolute;left: -40px; top: 0" >
+            <i class="fas fa-align-left"></i>
+        </button>
+        
+        
+            
+        <div class="sidebar-header"  >
+            <p style="color: white">Double click to add cards</p>
+        </div>
+        
+        <div class='deck-head' style="position: relative;" >
+        </div>
+    
+        <!--<div class="clearfix" style="margin: 4px 10px;">-->
+        <!--    <div class='card-slot float-left' >-->
+        <!--    </div>-->
+        <!--    <div class='card-slot float-left' >-->
+        <!--    </div>-->
+        <!--</div>-->
+        <!--<div class="clearfix" style="margin: 4px 10px;">-->
+        <!--    <div class='card-slot float-left' >-->
+        <!--    </div>-->
+        <!--    <div class='card-slot float-left' >-->
+        <!--    </div>-->
+        <!--</div>-->
+        <!--<div class="clearfix" style="margin: 4px 10px;">-->
+        <!--    <div class='card-slot float-left' >-->
+        <!--    </div>-->
+        <!--    <div class='card-slot float-left' >-->
+        <!--    </div>-->
+        <!--</div>-->
+       
+        <div class="input-group" style="position:absolute;bottom: 40px; width: 90%; margin-left: 5% ">
+            <input type="text" class="form-control" placeholder="Deck name" id="deck-name">
+            <span class="input-group-btn">
+                <button type="button" id="accept-deck" class="btn btn-success"  disabled>
+                    <i class="fas fa-check"></i>
+                </button>
+            </span>
+        </div>
+        
+        
+        
+    </nav>
+</div>
+
+<script>
+    function getCards(){
+        var cards = [];
+        $(".deck-head").children().each(function(card){
+            // if($( this ).children().attr("data-card-index"))
+            if($(this).hasClass( "card" )){
+                console.log($( this ));
+                cards.push(parseInt($( this ).attr("data-card-index")))
+            }
+            
+        });
+        console.log("===================");
+        console.log(cards);
+        return cards;
+    }
+
+    
+    $('#accept-deck').on('click', function () {
+        $(this).prop( "disabled", true );
+        var cards = getCards();
+        var name = $("#deck-name").val();
+        console.log("Name: " + name);
+        $.ajax({
+            method: "POST",
+            url: "/decks/update",
+            data: {
+                cards: cards,
+                user: "<%= currentUser.username %>",
+                name: name
+            }
+        })
+        .done(function(msg) {
+            console.log(msg.deck);
+        });
+    });
+</script>
