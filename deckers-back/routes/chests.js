@@ -5,7 +5,7 @@ var Chest = require("../models/chest");
 // var User = require("../models/user");
 
 // INDEX ROUTE
-router.get("/chests", async function(req, res) {
+router.get("/chests", async function (req, res) {
 
     try {
         let chests = await Chest.find({});
@@ -13,20 +13,10 @@ router.get("/chests", async function(req, res) {
         // let foundUser = await db.User.findById(req.params.id);
 
         return res.status(200).json(chests);
-      } catch (err) {
+    } catch (err) {
         return next(err);
-      }
+    }
 
-
-
-
-
-
-
-
-
-
-    
     // Chest.find({}, function(err, chests) {
     //     if (err) {
     //         console.log(err)
@@ -38,9 +28,9 @@ router.get("/chests", async function(req, res) {
 });
 
 // AJAX ROUTE, ENABLE CHEST
-router.post("/chest/enable", function(req, res) {
+router.post("/chest/enable", function (req, res) {
     // req.body.chestName
-    Chest.findById(req.body.chestId, function(err, foundChest) {
+    Chest.findById(req.body.chestId, function (err, foundChest) {
         if (err) console.log(err)
         else {
             foundChest.isAvailable = !foundChest.isAvailable;
@@ -55,60 +45,64 @@ router.post("/chest/enable", function(req, res) {
 });
 
 // CREATE ROUTE
-router.post("/chests", function(req, res) {
+router.post("/chests", function (req, res) {
     let newChest = req.body.new
     newChest.cardAmount = req.body.cardAmount;
     newChest.price = req.body.price;
 
-    Chest.create(newChest, function(err, createChest) {
+    Chest.create(newChest, function (err, createChest) {
         if (err) {
             console.log(err);
-        }
-        else {
+        } else {
             res.redirect("/chests");
         }
     })
 });
 
 // NEW ROUTE
-router.get("/chests/new", function(req, res) {
-    res.render("chests/new", { currencyList: Chest.currencyList });
+router.get("/chests/new", function (req, res) {
+    res.render("chests/new", {
+        currencyList: Chest.currencyList
+    });
 })
 
 // SHOW ROUTE
-router.get("/chests/:id", function(req, res) {
+router.get("/chests/:id", function (req, res) {
 
-    Chest.findById(req.params.id, function(err, foundChest) {
+    Chest.findById(req.params.id, function (err, foundChest) {
         if (err) {
             console.log(err);
-        }
-        else {
-            res.render("chests/show", { chest: foundChest });
+        } else {
+            res.render("chests/show", {
+                chest: foundChest
+            });
         }
     });
 });
 
 //  EDIT ROUTE
-router.get("/chests/:id/edit", function(req, res) {
+router.get("/chests/:id/edit", function (req, res) {
 
-    Chest.findById(req.params.id, function(err, foundChest) {
+    Chest.findById(req.params.id, function (err, foundChest) {
         if (err) return res.redirect("/chests");
-        res.render("chests/edit", { chest: foundChest, currencyList: Chest.currencyList });
+        res.render("chests/edit", {
+            chest: foundChest,
+            currencyList: Chest.currencyList
+        });
     });
 });
 
 //  UPDATE ROUTE
-router.put("/chests/:id", function(req, res) {
+router.put("/chests/:id", function (req, res) {
     let newChest = req.body.new
     newChest.cardAmount = req.body.cardAmount;
     newChest.price = req.body.price;
 
     // find and update the correct item
-    Chest.findByIdAndUpdate(req.params.id, newChest, function(err, updatedChest) {
+    Chest.findByIdAndUpdate(req.params.id, newChest, function (err, updatedChest) {
         if (err) {
             res.redirect("/chests");
-        }
-        else {
+        } else {
             //redirect somewhere(show page)
             res.redirect("/chests/" + req.params.id);
         }
@@ -116,12 +110,11 @@ router.put("/chests/:id", function(req, res) {
 });
 
 //  DESTROY ROUTE
-router.delete("/chests/:id", function(req, res) {
-    Chest.findByIdAndRemove(req.params.id, function(err) {
+router.delete("/chests/:id", function (req, res) {
+    Chest.findByIdAndRemove(req.params.id, function (err) {
         if (err) {
             res.redirect("/chests");
-        }
-        else {
+        } else {
             res.redirect("/chests");
         }
     });

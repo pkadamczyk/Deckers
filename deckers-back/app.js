@@ -33,9 +33,13 @@ var profileRoutes = require("./routes/profile");
 
 
 // //APP CONFIG
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(express.static(__dirname + "/public"));
-mongoose.connect("mongodb://localhost:27017/deckers", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost:27017/deckers", {
+    useNewUrlParser: true
+});
 app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
 
@@ -52,14 +56,14 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // Middleware
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     if (req.user) {
         res.locals.currentUser = req.user;
     }
     next();
 });
 
-var isLoggedIn = function(req, res, next) {
+var isLoggedIn = function (req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
@@ -67,18 +71,20 @@ var isLoggedIn = function(req, res, next) {
 }
 
 //  ROOT ROUTE
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
     res.render("home");
 });
 
 // Ajax
 // Create new deck
-app.post("/decks/update", isLoggedIn, function(req, res) {
+app.post("/decks/update", isLoggedIn, function (req, res) {
     var newDeck = {
         cards: [],
         name: req.body.name
     };
-    User.findOne({ username: req.body.user }).deepPopulate('cards.card').exec(function(err, foundUser) {
+    User.findOne({
+        username: req.body.user
+    }).deepPopulate('cards.card').exec(function (err, foundUser) {
         if (err) return res.redirect("back");
 
         for (var i = 0; i < 6; i++) {
@@ -101,12 +107,14 @@ app.post("/decks/update", isLoggedIn, function(req, res) {
     })
 })
 
-app.post("/game/abandon", isLoggedIn, function(req, res) {
-    User.findOne({ username: req.user.username }, function(err, foundUser) {
+app.post("/game/abandon", isLoggedIn, function (req, res) {
+    User.findOne({
+        username: req.user.username
+    }, function (err, foundUser) {
         if (!foundUser.inGame) console.log("User is not in game!");
         else {
             foundUser.inGame = false;
-            foundUser.save(function(err) {
+            foundUser.save(function (err) {
                 console.log("Player abandoned game")
                 res.send();
             });
@@ -114,8 +122,10 @@ app.post("/game/abandon", isLoggedIn, function(req, res) {
     })
 })
 
-app.get("/game/:id", isLoggedIn, function(req, res) {
-    Game.findOne({ _id: req.params.id }).deepPopulate('players').exec(function(err, foundGame) {
+app.get("/game/:id", isLoggedIn, function (req, res) {
+    Game.findOne({
+        _id: req.params.id
+    }).deepPopulate('players').exec(function (err, foundGame) {
         if (err) return res.redirect("back");
 
         // Handle wrong user sytuation
@@ -125,7 +135,9 @@ app.get("/game/:id", isLoggedIn, function(req, res) {
         }
 
 
-        User.findOne({ username: req.user.username }).deepPopulate('decks.cards.card').exec(function(err, foundUser) {
+        User.findOne({
+            username: req.user.username
+        }).deepPopulate('decks.cards.card').exec(function (err, foundUser) {
             if (err) return res.redirect("back");
 
             let gameDeck = [];
@@ -146,7 +158,12 @@ app.get("/game/:id", isLoggedIn, function(req, res) {
             role = foundGame.players.findIndex(player => player.username == req.user.username)
             console.log("Role: " + role);
 
-            res.render("game", { player: foundUser, role: role, deck: gameDeck, GAME: foundGame });
+            res.render("game", {
+                player: foundUser,
+                role: role,
+                deck: gameDeck,
+                GAME: foundGame
+            });
         });
     });
 })
@@ -165,7 +182,7 @@ app.use(chestRoutes);
 app.use(profileRoutes);
 
 // SERVER CONFIG
-server.listen(process.env.PORT, process.env.IP, function() {
+server.listen(process.env.PORT, process.env.IP, function () {
     console.log("Server started!");
 });
 
