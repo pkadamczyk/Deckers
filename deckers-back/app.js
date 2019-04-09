@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(express.static(__dirname + "/public"));
-mongoose.connect("mongodb://localhost:27017/deckers", {
+mongoose.connect("mongodb+srv://kamo1234:kamo1234@cluster0-gklst.mongodb.net/deckers?retryWrites=true", {
     useNewUrlParser: true
 });
 app.set("view engine", "ejs");
@@ -182,7 +182,7 @@ app.use(chestRoutes);
 app.use(profileRoutes);
 
 // SERVER CONFIG
-server.listen(process.env.PORT, process.env.IP, function () {
+server.listen(8080, process.env.IP, function () {
     console.log("Server started!");
 });
 

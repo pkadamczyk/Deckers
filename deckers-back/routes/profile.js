@@ -7,54 +7,62 @@ var Card = require("../models/card");
 
 router.get("/:id/profile", async function (req, res) {
     try {
-        let foundUser = await User.findById(req.params.id);
+        foundUser = await fetchUser(req.params.id);
+        // foundUser = await fetchOptionsMany("upgradeCardCost");
         res.status(200).json(foundUser);
     } catch (err) {
-        next(err);
+        console.log(err);
     }
     // res.render("profile", { user: foundUser });
 });
 
-router.get("/:username/cards", isLoggedIn, function (req, res) {
-    User.findOne({
-        username: req.params.username
-    }).deepPopulate('cards.card').exec(function (err, foundUser) {
+router.get("/:id/cards", async function (req, res) {
+    let foundUser = await fetchUser(req.params.id);
+    let [maxCardLevel, upgradeCardCost] = await fetchOptionsMany("maxCardLevel", "upgradeCardCost")
 
-        OptionGroup.findOne({
-            short: "upgradeCardCost"
-        }).deepPopulate('options.option').exec(function (err, upgradeCardCost) {
-            OptionGroup.findOne({
-                short: "commonUpgradeGoldCost"
-            }).deepPopulate('options.option').exec(function (err, commonUpgradeGoldCost) {
-                OptionGroup.findOne({
-                    short: "rareUpgradeGoldCost"
-                }).deepPopulate('options.option').exec(function (err, rareUpgradeGoldCost) {
-                    OptionGroup.findOne({
-                        short: "epicUpgradeGoldCost"
-                    }).deepPopulate('options.option').exec(function (err, epicUpgradeGoldCost) {
-                        OptionGroup.findOne({
-                            short: "legendaryUpgradeGoldCost"
-                        }).deepPopulate('options.option').exec(function (err, legendaryUpgradeGoldCost) {
-                            OptionGroup.findOne({
-                                short: "maxCardLevel"
-                            }).deepPopulate('options.option').exec(function (err, maxCardLevel) {
-                                if (err) return res.redirect("back");
-                                let upgradeGoldCost = [commonUpgradeGoldCost, rareUpgradeGoldCost, epicUpgradeGoldCost, legendaryUpgradeGoldCost]
+    let upgradeGoldCost = await fetchOptionsMany("commonUpgradeGoldCost", "rareUpgradeGoldCost", "epicUpgradeGoldCost",
+        "legendaryUpgradeGoldCost");
 
-                                res.render("./profile/cards", {
-                                    user: foundUser,
-                                    upgradeCardCost: upgradeCardCost,
-                                    upgradeGoldCost: upgradeGoldCost,
-                                    maxCardLevel: maxCardLevel,
-                                });
-                            })
-                        })
-                    })
-                })
-            })
-        });
-    })
-});
+    res.status(200).json({
+        user: foundUser,
+        upgradeCardCost: upgradeCardCost,
+        upgradeGoldCost: upgradeGoldCost,
+        maxCardLevel: maxCardLevel,
+    });
+})
+
+async function fetchUser(id) {
+    let foundUser = await User.findById(id).deepPopulate('cards.card');
+    return foundUser;
+}
+
+async function fetchOptionsMany() {
+    arr = Array.from(arguments);
+
+    arr = await Promise.all(arr.map(value => OptionGroup.findOne({
+        short: value
+    }).deepPopulate('options.option')))
+
+    console.log(arr);
+
+    return arr;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 router.get("/:username/play", isLoggedIn, function (req, res) {
     User.findOne({

@@ -9,22 +9,26 @@ var Card = require("../models/card");
 // AUTH ROUTES
 
 //  REGISTER ROUTES
-router.get("/register", function(req, res) {
+router.get("/register", function (req, res) {
     res.render("auth/register");
 });
 
 //  Handle registration
-router.post("/register", function(req, res) {
+router.post("/register", function (req, res) {
 
-    var newUser = new User({ username: req.body.username });
-    User.register(newUser, req.body.password, function(err, user) {
+    var newUser = new User({
+        username: req.body.username
+    });
+    User.register(newUser, req.body.password, function (err, user) {
         if (err) {
             console.log(err);
             return res.redirect("/register");
         }
 
-        Card.find({ cardClass: User.Classes[0] }, function(err, foundCards) {
-            foundCards.forEach(function(card) {
+        Card.find({
+            cardClass: User.Classes[0]
+        }, function (err, foundCards) {
+            foundCards.forEach(function (card) {
                 let newCard = {
                     card: card._id,
                     amount: 0,
@@ -34,13 +38,16 @@ router.post("/register", function(req, res) {
             })
 
             newUser.decks = [];
-            newUser.currency = { gold: 100, gems: 0 };
+            newUser.currency = {
+                gold: 100,
+                gems: 0
+            };
 
-            newUser.save(function(err) {
+            newUser.save(function (err) {
                 if (err) return console.log("Register error");
             });
-            passport.authenticate("local")(req, res, function() {
-                res.redirect("/" + req.body.username);
+            passport.authenticate("local")(req, res, function () {
+                res.redirect(`/${newUser._id}/profile`);
             });
         })
 
@@ -49,18 +56,20 @@ router.post("/register", function(req, res) {
 });
 
 // LOGIN ROUTES
-router.get("/login", function(req, res) {
+router.get("/login", function (req, res) {
     res.render("auth/login");
 });
 
 router.post("/login",
-    passport.authenticate('local', { failureRedirect: '/login' }),
-    function(req, res) {
+    passport.authenticate('local', {
+        failureRedirect: '/login'
+    }),
+    function (req, res) {
         res.redirect('/' + req.user.username);
     });
 
 //  LOGOUT ROUTE
-router.get("/logout", function(req, res) {
+router.get("/logout", function (req, res) {
     console.log("Logged out!");
     req.logout();
     res.redirect("/campgrounds");
