@@ -5,15 +5,36 @@ var Chest = require("../models/chest");
 // var User = require("../models/user");
 
 // INDEX ROUTE
-router.get("/chests", function(req, res) {
-    Chest.find({}, function(err, chests) {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            res.render("chests/index", { chests: chests });
-        }
-    });
+router.get("/chests", async function(req, res) {
+
+    try {
+        let chests = await Chest.find({});
+
+        // let foundUser = await db.User.findById(req.params.id);
+
+        return res.status(200).json(chests);
+      } catch (err) {
+        return next(err);
+      }
+
+
+
+
+
+
+
+
+
+
+    
+    // Chest.find({}, function(err, chests) {
+    //     if (err) {
+    //         console.log(err)
+    //     }
+    //     else {
+    //         res.render("chests/index", { chests: chests });
+    //     }
+    // });
 });
 
 // AJAX ROUTE, ENABLE CHEST

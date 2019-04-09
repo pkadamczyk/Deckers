@@ -5,7 +5,7 @@ var OptionGroup = require("../models/optionGroup");
 var User = require("../models/user");
 var Card = require("../models/card");
 
-router.get("/:username", isLoggedIn, function(req, res) {
+router.get("/:id/profile", async function(req, res) {
     User.findOne({ username: req.params.username }, function(err, foundUser) {
         if (err) return res.redirect("back");
         res.render("profile", { user: foundUser });
