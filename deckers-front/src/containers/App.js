@@ -9,6 +9,16 @@ import jwtDecode from "jwt-decode";
 
 const store = configureStore();
 
+if (localStorage.jwtToken) {
+  setAuthorizationToken(localStorage.jwtToken);
+  // prevent someone from manually tampering with the key of jwtToken in localStorage
+  try {
+    store.dispatch(setCurrentUser(jwtDecode(localStorage.jwtToken)));
+  } catch (e) {
+    store.dispatch(setCurrentUser({}));
+  }
+}
+
 const App = () => (
   <Provider store={store}>
     <Router>

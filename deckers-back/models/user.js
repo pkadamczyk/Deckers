@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
-var passportLocalMongoose = require("passport-local-mongoose");
+//var passportLocalMongoose = require("passport-local-mongoose"); new Auth introduced - Pszemek
+const bcrypt = require("bcrypt"); // new Auth
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 const classes = Object.freeze({
@@ -15,7 +16,10 @@ const Classes = Object.keys(classes).map(function(key) {
 var UserSchema = new mongoose.Schema({
     username: String,
     password: String,
+    // added for future uses (already implemented in auth) - Pszemek
     email: String,
+    profileImageUrl: String,
+    //
     userClass: {
         type: String,
         enum: Classes,
@@ -57,7 +61,33 @@ Object.assign(UserSchema.statics, {
     Classes,
 });
 
-UserSchema.plugin(passportLocalMongoose);
+
+// NEW AUTH - Pszemek
+UserSchema.pre("save", async function(next) {
+    try {
+      if (!this.isModified("password")) {
+        return next();
+      }
+      let hashedPassword = await bcrypt.hash(this.password, 10);
+      this.password = hashedPassword;
+      return next();
+    } catch (err) {
+      return next(err);
+    }
+  });
+  
+UserSchema.methods.comparePassword = async function(candidatePassword, next) {
+    try {
+      let isMatch = await bcrypt.compare(candidatePassword, this.password);
+      return isMatch;
+    } catch (err) {
+      return next(err);
+    }
+  };
+
+// UserSchema.plugin(passportLocalMongoose); new Auth introduced - Pszemek
 UserSchema.plugin(deepPopulate);
 
-module.exports = mongoose.model("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
+
+module.exports = User;

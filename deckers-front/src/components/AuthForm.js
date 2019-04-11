@@ -8,6 +8,7 @@ class AuthForm extends Component {
       email: "",
       username: "",
       password: "",
+      profileImageUrl: ""
     };
   }
 
@@ -42,17 +43,16 @@ class AuthForm extends Component {
           <div className="col-md-6">
             <form onSubmit={this.handleSubmit}>
               <h2>{heading}</h2>
-              <label htmlFor="username">Username</label>
-                  <input
-                    autoComplete="off"
-                    className="form-control"
-                    id="username"
-                    name="username"
-                    onChange={this.handleChange}
-                    type="text"
-                    value={username}
-                  />
-              
+              <label htmlFor="email">E-mail</label>
+                <input
+                  autoComplete="off"
+                  className="form-control"
+                  id="email"
+                  name="email"
+                  onChange={this.handleChange}
+                  type="text"
+                  value={email}
+                />              
               <label htmlFor="password">Password</label>
               <input
                 autoComplete="off"
@@ -65,16 +65,16 @@ class AuthForm extends Component {
               />
               {signUp && (
                 <div>
-                  <label htmlFor="email">E-mail</label>
-                <input
-                  autoComplete="off"
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  onChange={this.handleChange}
-                  type="text"
-                  value={email}
-                />
+                  <label htmlFor="username">Username</label>
+                  <input
+                    autoComplete="off"
+                    className="form-control"
+                    id="username"
+                    name="username"
+                    onChange={this.handleChange}
+                    type="text"
+                    value={username}
+                  />
                 </div>
               )}
               <button

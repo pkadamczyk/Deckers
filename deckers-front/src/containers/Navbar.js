@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { findGame, leaveQue, acceptGame, disconnectFromGame, 
   abandonGame, reconnectGame } from "../store/actions/matchMaking";
+import currentUser from "../store/reducers/currentUser";
 
 class Navbar extends Component {
     render() {
+      const { user } = this.props;
       return (
 
         <div className="wrapper">
@@ -15,7 +17,7 @@ class Navbar extends Component {
               <img id="avatar" 
               src="https://i.pinimg.com/originals/ab/15/92/ab1592b6baabda0d6fcef84a9a734f77.jpg"
               alt="" />
-              <h2>Pszemek</h2>
+              <h2>{this.props.user.username}</h2>
               <p>Gold: 30 Gems: 0</p>
               <div className="matchMaking">
                 {this.props.mm_state==="lookingForGame"  && (
@@ -53,7 +55,8 @@ class Navbar extends Component {
 
   function mapStateToProps(state) {
     return {
-      mm_state: state.matchMaking.mm_state
+      mm_state: state.matchMaking.mm_state,
+      user: state.currentUser.user
     };
   }
 

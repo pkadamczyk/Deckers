@@ -1,8 +1,10 @@
+require("dotenv").config(); //new auth shit
 var express = require("express");
 var app = express();
+const cors = require("cors"); //new auth shit
 
-var passport = require("passport");
-var LocalStrategy = require("passport-local");
+// var passport = require("passport");
+// var LocalStrategy = require("passport-local"); new Auth introduced - Pszemek
 
 var server = require("http").Server(app);
 var io = require("socket.io")(server, {});
@@ -31,6 +33,9 @@ var chestRoutes = require("./routes/chests");
 
 var profileRoutes = require("./routes/profile");
 
+//PART OF NEW AUTH - Pszemek
+app.use(cors());
+app.use(bodyParser.json());
 
 // //APP CONFIG
 app.use(bodyParser.urlencoded({
@@ -40,35 +45,36 @@ app.use(express.static(__dirname + "/public"));
 mongoose.connect("mongodb+srv://kamo1234:kamo1234@cluster0-gklst.mongodb.net/deckers?retryWrites=true", {
     useNewUrlParser: true
 });
+mongoose.Promise = Promise; // DODATKOWY CONFIG PROMISOW MONGOOSA - Pszemek (Auth)
 app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
 
 //  PASSPORT CONIG
-app.use(require("express-session")({
-    secret: "Jebac policje",
-    resave: false,
-    saveUninitialized: false
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// app.use(require("express-session")({
+//     secret: "Jebac policje",
+//     resave: false,
+//     saveUninitialized: false
+// }));
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.use(new LocalStrategy(User.authenticate()));
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser()); new Auth introduced - Pszemek
 
 // Middleware
-app.use(function (req, res, next) {
-    if (req.user) {
-        res.locals.currentUser = req.user;
-    }
-    next();
-});
+// app.use(function (req, res, next) {
+//     if (req.user) {
+//         res.locals.currentUser = req.user;
+//     }
+//     next();
+// });
 
-var isLoggedIn = function (req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/login");
-}
+// var isLoggedIn = function (req, res, next) { new Auth introduced - Pszemek
+//     if (req.isAuthenticated()) {
+//         return next();
+//     }
+//     res.redirect("/login");
+// }
 
 //  ROOT ROUTE
 app.get("/", function (req, res) {
@@ -77,7 +83,7 @@ app.get("/", function (req, res) {
 
 // Ajax
 // Create new deck
-app.post("/decks/update", isLoggedIn, function (req, res) {
+app.post("/decks/update",  function (req, res) { //isLoggedIn removed, new Auth - Pszemek
     var newDeck = {
         cards: [],
         name: req.body.name
@@ -95,7 +101,7 @@ app.post("/decks/update", isLoggedIn, function (req, res) {
                 newDeck.cards.push(newCard);
             }
         }
-        console.log(newDeck);
+        console.log("New deck" + newDeck);
         // foundUser.decks.push(newDeck);
         foundUser.decks.splice(0, 1, newDeck);
         foundUser.save();
@@ -107,7 +113,7 @@ app.post("/decks/update", isLoggedIn, function (req, res) {
     })
 })
 
-app.post("/game/abandon", isLoggedIn, function (req, res) {
+app.post("/game/abandon", function (req, res) {//isLoggedIn removed, new Auth - Pszemek
     User.findOne({
         username: req.user.username
     }, function (err, foundUser) {
@@ -122,7 +128,7 @@ app.post("/game/abandon", isLoggedIn, function (req, res) {
     })
 })
 
-app.get("/game/:id", isLoggedIn, function (req, res) {
+app.get("/game/:id", function (req, res) {//isLoggedIn removed, new Auth - Pszemek
     Game.findOne({
         _id: req.params.id
     }).deepPopulate('players').exec(function (err, foundGame) {
