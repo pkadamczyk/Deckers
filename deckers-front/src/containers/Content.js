@@ -3,7 +3,7 @@ import Matchmaking from './Matchmaking';
 import Profile from './Profile';
 import Shop from './Shop';
 import Cards from './Cards';
-import { Switch, Route, withRouter, Redirect } from "react-router-dom";
+import { Switch, Route} from "react-router-dom";
 
 class Content extends Component {
     render() {

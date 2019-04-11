@@ -15,6 +15,7 @@ const Classes = Object.keys(classes).map(function(key) {
 var UserSchema = new mongoose.Schema({
     username: String,
     password: String,
+    email: String,
     userClass: {
         type: String,
         enum: Classes,

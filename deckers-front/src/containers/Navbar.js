@@ -13,7 +13,8 @@ class Navbar extends Component {
 
             <div>
               <img id="avatar" 
-              src="https://i.pinimg.com/originals/ab/15/92/ab1592b6baabda0d6fcef84a9a734f77.jpg" />
+              src="https://i.pinimg.com/originals/ab/15/92/ab1592b6baabda0d6fcef84a9a734f77.jpg"
+              alt="" />
               <h2>Pszemek</h2>
               <p>Gold: 30 Gems: 0</p>
               <div className="matchMaking">
