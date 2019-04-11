@@ -71,3 +71,9 @@ div{
   position: absolute; 
   bottom: 100px;
 }
+
+.chest-item{
+  background-color: gray;
+  text-align: center;
+  height: 200px;
+}

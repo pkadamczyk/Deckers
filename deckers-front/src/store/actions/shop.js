@@ -15,12 +15,10 @@ export const getChests = () => {
     console.log("getChests");
     return apiCall("GET", "/chests")
       .then(res => {
-        console.log(res);
         dispatch(getShopContent(res))
       })
       .catch(res => {
-        console.log("nie git");
-
+        console.log("Something went wrong with getting shop content");
       })
   };
 };

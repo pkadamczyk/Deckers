@@ -16,8 +16,8 @@ class Shop extends Component{
             />
           ));
         return(
-            <div>
-                <ul>{chestList}</ul>
+            <div className="col-3">
+                {chestList}
             </div>
             
         )
