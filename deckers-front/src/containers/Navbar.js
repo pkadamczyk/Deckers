@@ -3,22 +3,25 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { findGame, leaveQue, acceptGame, disconnectFromGame, 
   abandonGame, reconnectGame } from "../store/actions/matchMaking";
-import currentUser from "../store/reducers/currentUser";
+import {logout} from "../store/actions/auth";
 
 class Navbar extends Component {
     render() {
-      const { user } = this.props;
+      const { user, logout } = this.props;
       return (
-
         <div className="wrapper">
           <nav id="sidebar">
-
+            <div>
             <div>
               <img id="avatar" 
               src="https://i.pinimg.com/originals/ab/15/92/ab1592b6baabda0d6fcef84a9a734f77.jpg"
               alt="" />
-              <h2>{this.props.user.username}</h2>
+              <h2>{user.username}</h2>
               <p>Gold: 30 Gems: 0</p>
+              {!!Object.keys(user).length && (
+                <button className="btn btn-danger" onClick={logout}>Logout</button>
+              )}
+              </div>
               <div className="matchMaking">
                 {this.props.mm_state==="lookingForGame"  && (
                   <span><p>Looking for game...</p><button className="btn btn-xs btn-danger"
@@ -60,5 +63,5 @@ class Navbar extends Component {
     };
   }
 
-export default connect(mapStateToProps, { findGame, leaveQue, acceptGame,
+export default connect(mapStateToProps, { logout, findGame, leaveQue, acceptGame,
   disconnectFromGame, abandonGame, reconnectGame })(Navbar);
