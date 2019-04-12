@@ -6,43 +6,71 @@ var User = require("../models/user");
 var Chest = require("../models/chest");
 var OptionGroup = require("../models/optionGroup");
 
-router.get("/:username/shop", async function (req, res) {
-    foundChests = await Chest.find({})
-    let availableChests = foundChests.filter(chest => chest.isAvailable)
-    res.send("profile/shop", { chests: availableChests, currencyList: Chest.currencyList });
-    res.status(200).json({
-        user: foundUser
-    });
-});
-
 // /shop/buy/chest
 router.post("/:id/shop/buy/:chest", async function (req, res) {
+    try {
+        foundChest = await Chest.findOne({ name: req.params.chest })
+        let cardAmounts = calculateCardAmounts(foundChest);
 
-    foundChest = await Chest.findOne({ name: req.params.chest })
+        // Get the count of all items
+        let cardsInChest = cardAmounts.reduce((a, b) => a + b);
+        foundUser = await User.findById(req.params.id).deepPopulate('cards.card')
+        let currencyType = Object.keys(Chest.currencyList)[foundChest.price.currency]
 
-    let cards = [];
-    // let currencyLeft;
-    let cardAmounts = calculateCardAmounts(foundChest);
+        if (foundUser.currency[currencyType] >= foundChest.price.amount) {
+            foundUser.currency[currencyType] -= foundChest.price.amount
+        }
+        else {
+            console.log("Not enough " + Object.keys(Chest.currencyList)[foundChest.price.currency]);
+            throw new Error("Error i chuj")
+        }
 
-    // Get the count of all items
-    let cardsInChest = cardAmounts.reduce((a, b) => a + b);
+        //  Define the rarity of random cards
+        await randomCardsRarity(cardAmounts);
 
-    foundUser = await User.findOne({ username: req.params.id })
+        // Wait for rarity random, then random cards that will be added to player
+        cardAmounts.splice(0, 1);
+        cards = await addCardsToArray(cardAmounts);
 
-    let currencyType = Object.keys(Chest.currencyList)[foundChest.price.currency]
+        // let msg = { cards: cards, currencyLeft: currencyLeft, chestCost: foundChest.price.amount }
+        // res.send(msg);
 
-    if (foundUser.currency[currencyType] >= foundChest.price.amount) {
-        foundUser.currency[currencyType] -= foundChest.price.amount
+        let cardIndexes = cards.map(function (cardFromDb) {
+            // Add cards that player didnt have earlier
+            if (foundUser.cards.findIndex(card => cardFromDb._id.equals(card.card._id)) === -1) {
+                let newCard = {
+                    card: cardFromDb._id,
+                    amount: 0,
+                    level: 1
+                }
+                foundUser.cards.push(newCard);
+            }
+            return foundUser.cards.findIndex(card => cardFromDb._id.equals(card.card._id))
+        })
+        cardIndexes.forEach(function (cardIndex) { foundUser.cards[cardIndex].amount++ })
 
-        // foundUser.save();
+        foundUser.save()
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({
+            err: err.message
+        });
     }
-    else {
-        console.log("Not enough " + Object.keys(Chest.currencyList)[foundChest.price.currency]);
-        // TODO Error message
-    }
 
-    // Promise to find cards and return an array of found cards
-    //  Define the rarity of random cards
+});
+
+function calculateCardAmounts(chest) {
+    let array = [];
+    Object.keys(chest.cardAmount).forEach(function (key) {
+        array.push(chest.cardAmount[key]);
+    });
+    array.splice(0, 1);
+    return array;
+}
+
+module.exports = router;
+
+async function randomCardsRarity(cardAmounts) {
     foundOptions = await OptionGroup.findOne({ short: "randomCardRarity" }).deepPopulate('options.option')
     let max = foundOptions.options.reduce((a, b) => a + b.option.value, 0);
 
@@ -56,14 +84,16 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
             return (random > min && random <= (min + array[i]));
         }) + 1;
 
-        // console.log("Random rarity is: " + Object.keys(Card.rarityList)[x]);
+        console.log("Random rarity is: " + Object.keys(Card.rarityList)[x]);
         cardAmounts[x]++;
     }
+}
 
+async function addCardsToArray(cardAmounts) {
+    let cards = [];
 
-    // Wait for rarity random, then random cards that will be added to player
-    cardAmounts.splice(0, 1);
-    cardAmounts.forEach(async function (cardAmount, index) {
+    cards = await Promise.all(cardAmounts.map(async function (cardAmount, index) {
+        let arr = [];
         index++;
 
         let count = await Card.countDocuments({ rarity: index })
@@ -73,33 +103,12 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
 
             // Again query all items but only fetch one offset by our random #
             let foundCard = await Card.findOne({ rarity: index }).skip(random)
-            cards.push(foundCard);
+            arr.push(foundCard);
         }
-        console.log(`${cards.length} : ${cardsInChest}`)
-    })
+        return arr;
+    }))
 
-    // let msg = { cards: cards, currencyLeft: currencyLeft, chestCost: foundChest.price.amount }
-    // res.send(msg);
-
-    // cards.forEach(function(card) {
-    //     console.log(card.name);
-    // })
-
-    let cardIndexes = cards.map(function (cardFromDb) {
-        return foundUser.cards.findIndex(function (card) { return cardFromDb.name == card.card.name; });
-    })
-    cardIndexes.forEach(function (cardIndex) { foundUser.cards[cardIndex].amount++ })
-
-    // foundUser.save()
-});
-
-function calculateCardAmounts(chest) {
-    let array = [];
-    Object.keys(chest.cardAmount).forEach(function (key) {
-        array.push(chest.cardAmount[key]);
-    });
-    array.splice(0, 1);
-    return array;
-}
-
-module.exports = router;
+    return cards.reduce((total, amount) => {
+        return total.concat(amount);
+    }, []);;
+} 

@@ -12,8 +12,8 @@ var UserSchema = new mongoose.Schema({
     //
 
     currency: {
-        gold: { type: Number, default: '0' },
-        gems: { type: Number, default: '0' }
+        gold: { type: Number, default: 0 },
+        gems: { type: Number, default: 0 }
     },
 
     cards: [{
@@ -21,8 +21,8 @@ var UserSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Card"
         },
-        amount: { type: Number, default: '0' },
-        level: { type: Number, default: '0' }
+        amount: { type: Number, default: 0 },
+        level: { type: Number, default: 1 }
     }],
 
     decks: [{
