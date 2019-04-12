@@ -1,88 +1,64 @@
 <% include ../partials/header %>
 
 
-    <div class="container">
-        <div class="jumbotron" style="margin:auto;margin-top:30px; width: 80%">
-            <h1 style="text-align: center">Add something</h1>
-            <form action="/cards" method="POST">
+<div class="container">
+    <div class="jumbotron" style="margin:auto;margin-top:30px; width: 80%">
+        <h1 style="text-align: center">Add something</h1>
+        <form action="/cards" method="POST">
 
-                <div class="form-group">
-                    <label for="card-class">Example select</label>
-                    <select class="form-control" id="card-class" name="new[cardClass]">
-                        <option value="warrior">Warrior</option>
-                        <option value="rogue">Rogue</option>
-                        <option value="mage">Mage</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="card-rarity">Rarity</label>
-                    <select class="form-control" id="card-rarity" name="new[rarity]">
-                        <option value="<%= rarityList.common %>">Common</option>
-                        <option value="<%= rarityList.rare %>">Rare</option>
-                        <option value="<%= rarityList.epic %>">Epic</option>
-                        <option value="<%= rarityList.legendary %>">Legendary</option>
-                    </select>
-                </div>
+            <div class="form-group">
+                <label for="card-rarity">Rarity</label>
+                <select class="form-control" id="card-rarity" name="new[rarity]">
+                    <option value="<%= rarityList.common %>">Common</option>
+                    <option value="<%= rarityList.rare %>">Rare</option>
+                    <option value="<%= rarityList.epic %>">Epic</option>
+                    <option value="<%= rarityList.legendary %>">Legendary</option>
+                </select>
+            </div>
 
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" placeholder="Name" name="new[name]">
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" id="description" rows="3" name="new[description]" placeholder="Description"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="cost">Cost</label>
-                    <input type="text" class="form-control" id="cost" placeholder="Cost" name="stats[cost]">
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount</label>
-                    <input type="text" class="form-control" id="amount" placeholder="Amount" name="stats[amount]">
-                </div>
-                <div class="form-group">
-                    <label for="damage">Damage</label>
-                    <input type="text" class="form-control" id="damage" placeholder="Damage" name="stats[damage]">
-                </div>
-                <div class="form-group">
-                    <label for="armor">Armor</label>
-                    <input type="text" class="form-control" id="armor" placeholder="Armor" name="stats[armor]">
-                </div>
-                <div class="form-group">
-                    <label for="heal">Heal</label>
-                    <input type="text" class="form-control" id="heal" placeholder="Heal" name="stats[heal]">
-                </div>
-                <span id="warrior-specyfic" class="d-none">
-                    <div class="form-group">
-                        <label for="armor-to-dmg">Armor to Damage</label>
-                        <input type="text" class="form-control" id="armor-to-dmg" placeholder="Armor to Damage" name="stats[armorToDamage]">
-                    </div>
-                    <div class="form-group">
-                        <label for="armor-to-heal">Armor to Heal</label>
-                        <input type="text" class="form-control" id="armor-to-heal" placeholder="Armor to Heal" name="stats[armorToHeal]">
-                    </div>
-                </span>
-                
-                <button class="btn btn-lg btn-primary btn-block">Submit!</button>
-           </form>
-        </div>
+            <div class="form-group">
+                <label for="card-race">Race</label>
+                <select class="form-control" id="card-race" name="new[race]">
+                    <% Object.keys(raceList).forEach(function(race){ %>
+                        <option value="<%= raceList[race] %>"><%= race %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Name" name="new[name]">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" rows="3" name="new[description]"
+                    placeholder="Description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="cost">Cost</label>
+                <input type="text" class="form-control" id="cost" placeholder="Cost" name="stats[cost]">
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="text" class="form-control" id="amount" placeholder="Amount" name="stats[amount]">
+            </div>
+            <div class="form-group">
+                <label for="damage">Damage</label>
+                <input type="text" class="form-control" id="damage" placeholder="Damage" name="stats[damage]">
+            </div>
+            <div class="form-group">
+                <label for="armor">Armor</label>
+                <input type="text" class="form-control" id="armor" placeholder="Armor" name="stats[armor]">
+            </div>
+            <div class="form-group">
+                <label for="heal">Heal</label>
+                <input type="text" class="form-control" id="heal" placeholder="Heal" name="stats[heal]">
+            </div>
+
+            <button class="btn btn-lg btn-primary btn-block">Submit!</button>
+        </form>
     </div>
-    
-    <script>
-        console.log(<%= rarityList.common %>)
-    
-        showWarriorSpecyfic()
-        $( "#card-class" ).change(function() {
-            showWarriorSpecyfic()
-        });
-        
-        function showWarriorSpecyfic(){
-            if($("#card-class option:selected").index() == 0)
-                $("#warrior-specyfic").removeClass("d-none")
-            else $("#warrior-specyfic").addClass("d-none")
-        }
-    </script>
+</div>
 
 <% include ../partials/footer %>

@@ -109,15 +109,15 @@ router.put("/chests/:id", function (req, res) {
     });
 });
 
-//  DESTROY ROUTE
-router.delete("/chests/:id", function (req, res) {
-    Chest.findByIdAndRemove(req.params.id, function (err) {
-        if (err) {
-            res.redirect("/chests");
-        } else {
-            res.redirect("/chests");
-        }
-    });
-});
+// //  DESTROY ROUTE
+// router.delete("/chests/:id", function (req, res) {
+//     Chest.findByIdAndRemove(req.params.id, function (err) {
+//         if (err) {
+//             res.redirect("/chests");
+//         } else {
+//             res.redirect("/chests");
+//         }
+//     });
+// });
 
 module.exports = router;

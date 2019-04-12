@@ -9,6 +9,7 @@ router.post("/register", async function (req, res, next) {
 
         user.cards = []
         user.save()
+        let availableChests = await fetchChests();
 
         let { id, username, profileImageUrl } = user;
         let token = jwt.sign(
@@ -20,10 +21,8 @@ router.post("/register", async function (req, res, next) {
             process.env.SECRET_KEY
         );
         return res.status(200).json({
-            id,
-            username,
-            profileImageUrl,
-            cards,
+            user,
+            availableChests,
             token
         });
     } catch (err) {
@@ -40,10 +39,12 @@ router.post("/register", async function (req, res, next) {
 router.post("/login", async function (req, res, next) {
     // finding a user
     try {
+
         let user = await User.findOne({
             email: req.body.email
         });
         let { id, username, profileImageUrl } = user;
+        [foundUser, availableChests] = Promise.all(fetchUser(id), fetchChests())
         let isMatch = await user.comparePassword(req.body.password);
         if (isMatch) {
             let token = jwt.sign(
@@ -55,9 +56,8 @@ router.post("/login", async function (req, res, next) {
                 process.env.SECRET_KEY
             );
             return res.status(200).json({
-                id,
-                username,
-                profileImageUrl,
+                foundUser,
+                availableChests,
                 token
             });
         } else {
@@ -72,3 +72,14 @@ router.post("/login", async function (req, res, next) {
 });
 
 module.exports = router;
+
+async function fetchUser(id) {
+    let foundUser = await User.findById(id).deepPopulate('cards.card');
+    return foundUser;
+}
+
+async function fetchChests() {
+    foundChests = await Chest.find({})
+    let availableChests = foundChests.filter(chest => chest.isAvailable)
+    return availableChests;
+}
