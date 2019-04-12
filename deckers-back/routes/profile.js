@@ -80,20 +80,16 @@ router.post("/:id/cards/upgrade", async function (req, res) {
 });
 
 async function levelCheck(card) {
-    return new Promise((resolve, reject) => {
-        foundOptionGroup = await OptionGroup.findOne({ short: "maxCardLevel" }).deepPopulate('options.option');
-        if (card.level >= foundOptionGroup.options[card.card.rarity - 1].option.value) resolve(false);
-        resolve(true);
-    })
+    foundOptionGroup = await OptionGroup.findOne({ short: "maxCardLevel" }).deepPopulate('options.option');
+    if (card.level >= foundOptionGroup.options[card.card.rarity - 1].option.value) return false;
+    return true;
 }
 
 async function goldCheck(card, user) {
-    return new Promise((resolve, reject) => {
-        let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
-        foundOptionGroup = await OptionGroup.findOne({ short: optionName }).deepPopulate('options.option')
-        if (user.currency.gold < foundOptionGroup.options[card.level].option.value) resolve(false)
-        resolve(true)
-    })
+    let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
+    foundOptionGroup = await OptionGroup.findOne({ short: optionName }).deepPopulate('options.option')
+    if (user.currency.gold < foundOptionGroup.options[card.level].option.value) return false
+    return false;
 }
 
 module.exports = router;

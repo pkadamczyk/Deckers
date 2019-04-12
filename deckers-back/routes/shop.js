@@ -63,7 +63,7 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
 
     // Wait for rarity random, then random cards that will be added to player
     cardAmounts.splice(0, 1);
-    cardAmounts.forEach(function (cardAmount, index) {
+    cardAmounts.forEach(async function (cardAmount, index) {
         index++;
 
         let count = await Card.countDocuments({ rarity: index })
