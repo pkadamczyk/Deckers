@@ -5,17 +5,6 @@ var OptionGroup = require("../models/optionGroup");
 var User = require("../models/user");
 var Card = require("../models/card");
 
-router.get("/:id/profile", async function (req, res) {
-    try {
-        foundUser = await fetchUser(req.params.id);
-        // foundUser = await fetchOptionsMany("upgradeCardCost");
-        res.status(200).json(foundUser);
-    } catch (err) {
-        console.log(err);
-    }
-    // res.render("profile", { user: foundUser });
-});
-
 router.get("/:id/cards", async function (req, res) {
     let foundUser = await fetchUser(req.params.id);
     let [maxCardLevel, upgradeCardCost] = await fetchOptionsMany("maxCardLevel", "upgradeCardCost")
