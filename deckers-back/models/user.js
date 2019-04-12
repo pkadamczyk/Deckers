@@ -1,68 +1,67 @@
 var mongoose = require("mongoose");
-//var passportLocalMongoose = require("passport-local-mongoose"); new Auth introduced - Pszemek
 const bcrypt = require("bcrypt"); // new Auth
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 
 var UserSchema = new mongoose.Schema({
-  username: String,
-  password: String,
-  // added for future uses (already implemented in auth) - Pszemek
-  email: String,
-  profileImageUrl: String,
-  //
+    username: String,
+    password: String,
+    // added for future uses (already implemented in auth) - Pszemek
+    email: String,
+    profileImageUrl: String,
+    //
 
-  currency: {
-    gold: Number,
-    gems: Number
-  },
-
-  cards: [{
-    card: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Card"
+    currency: {
+        gold: { type: Number, default: '0' },
+        gems: { type: Number, default: '0' }
     },
-    amount: Number,
-    level: Number
-  }],
 
-  decks: [{
-    name: String,
     cards: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Card"
+        card: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Card"
+        },
+        amount: { type: Number, default: '0' },
+        level: { type: Number, default: '0' }
     }],
-  }],
 
-  inGame: Boolean,
+    decks: [{
+        name: String,
+        cards: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Card"
+        }],
+    }],
 
-  currentGame: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Game"
-  }
+    inGame: { type: Boolean, default: false },
+
+    currentGame: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Game"
+    }
 });
 
 // NEW AUTH - Pszemek
 UserSchema.pre("save", async function (next) {
-  try {
-    if (!this.isModified("password")) {
-      return next();
+    try {
+        if (!this.isModified("password")) {
+            return next();
+        }
+        let hashedPassword = await bcrypt.hash(this.password, 10);
+        this.password = hashedPassword;
+        return next();
+    } catch (err) {
+        return next(err);
     }
-    let hashedPassword = await bcrypt.hash(this.password, 10);
-    this.password = hashedPassword;
-    return next();
-  } catch (err) {
-    return next(err);
-  }
 });
 
 UserSchema.methods.comparePassword = async function (candidatePassword, next) {
-  try {
-    let isMatch = await bcrypt.compare(candidatePassword, this.password);
-    return isMatch;
-  } catch (err) {
-    return next(err);
-  }
+    try {
+        let isMatch = await bcrypt.compare(candidatePassword, this.password);
+        return isMatch;
+    } catch (err) {
+        return next(err);
+    }
 };
 
 // UserSchema.plugin(passportLocalMongoose); new Auth introduced - Pszemek

@@ -16,8 +16,6 @@ var bodyParser = require('body-parser');
 var mongoose = require("mongoose");
 var methodOverride = require("method-override");
 
-var roomdata = require('roomdata');
-
 // MODELS IMPORT
 var User = require("./models/user");
 var Game = require("./models/game");
