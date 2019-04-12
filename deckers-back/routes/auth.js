@@ -1,13 +1,6 @@
-//BEFORE PSZEMEK BROKE EVERYTHING
-// var User = require("../models/user");
-// var Card = require("../models/card");
-
-//AFTER PSZEMEK BROKE EVERYTHING
-
 const express = require("express");
 const router = express.Router();
 var User = require("../models/user");
-// var Card = require("../models/card");
 const jwt = require("jsonwebtoken");
 
 router.post("/register", async function (req, res, next) {
