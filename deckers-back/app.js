@@ -16,13 +16,9 @@ var bodyParser = require('body-parser');
 var mongoose = require("mongoose");
 var methodOverride = require("method-override");
 
-var roomdata = require('roomdata');
-
 // MODELS IMPORT
 var User = require("./models/user");
-var Card = require("./models/card");
 var Game = require("./models/game");
-var OptionGroup = require("./models/optionGroup");
 
 //  ROUTES SETUP
 var cardRoutes = require("./routes/cards");
@@ -49,41 +45,8 @@ mongoose.Promise = Promise; // DODATKOWY CONFIG PROMISOW MONGOOSA - Pszemek (Aut
 app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
 
-//  PASSPORT CONIG
-// app.use(require("express-session")({
-//     secret: "Jebac policje",
-//     resave: false,
-//     saveUninitialized: false
-// }));
-// app.use(passport.initialize());
-// app.use(passport.session());
-// passport.use(new LocalStrategy(User.authenticate()));
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser()); new Auth introduced - Pszemek
-
-// Middleware
-// app.use(function (req, res, next) {
-//     if (req.user) {
-//         res.locals.currentUser = req.user;
-//     }
-//     next();
-// });
-
-// var isLoggedIn = function (req, res, next) { new Auth introduced - Pszemek
-//     if (req.isAuthenticated()) {
-//         return next();
-//     }
-//     res.redirect("/login");
-// }
-
-//  ROOT ROUTE
-app.get("/", function (req, res) {
-    res.render("home");
-});
-
-// Ajax
 // Create new deck
-app.post("/decks/update",  function (req, res) { //isLoggedIn removed, new Auth - Pszemek
+app.post("/decks/update", function (req, res) { //isLoggedIn removed, new Auth - Pszemek
     var newDeck = {
         cards: [],
         name: req.body.name
@@ -113,7 +76,7 @@ app.post("/decks/update",  function (req, res) { //isLoggedIn removed, new Auth 
     })
 })
 
-app.post("/game/abandon", function (req, res) {//isLoggedIn removed, new Auth - Pszemek
+app.post("/game/abandon", async function (req, res) {//isLoggedIn removed, new Auth - Pszemek
     User.findOne({
         username: req.user.username
     }, function (err, foundUser) {
@@ -173,9 +136,6 @@ app.get("/game/:id", function (req, res) {//isLoggedIn removed, new Auth - Pszem
         });
     });
 })
-
-
-
 
 //===============================
 //  ROUTES CONNECTIONS TO EXPRESS

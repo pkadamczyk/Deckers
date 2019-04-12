@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-var User = require("./card");
 
 const rarityList = Object.freeze({
     random: 0,
@@ -9,17 +8,23 @@ const rarityList = Object.freeze({
     legendary: 4
 });
 
-var cardSchema = new mongoose.Schema({
-    cardClass: {
-        type: String,
-        enum: User.Classes
-    },
+const raceList = Object.freeze({
+    dwarf: 0,
+    elf: 1,
+    dragon: 2,
+});
 
+var cardSchema = new mongoose.Schema({
     name: String,
     description: String,
     rarity: {
         type: Number,
         enum: rarityList
+    },
+
+    race: {
+        type: Number,
+        enum: raceList
     },
 
     stats: {
@@ -28,15 +33,12 @@ var cardSchema = new mongoose.Schema({
         damage: Number,
         armor: Number,
         heal: Number,
-
-        //  Warrior specyfic
-        armorToDamage: Number,
-        armorToHeal: Number,
     }
 });
 
 Object.assign(cardSchema.statics, {
     rarityList,
+    raceList
 });
 
 module.exports = mongoose.model("Card", cardSchema);

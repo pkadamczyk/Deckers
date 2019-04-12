@@ -1,17 +1,7 @@
 var mongoose = require("mongoose");
-//var passportLocalMongoose = require("passport-local-mongoose"); new Auth introduced - Pszemek
 const bcrypt = require("bcrypt"); // new Auth
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
-const classes = Object.freeze({
-    Warrior: 'warrior',
-    Rogue: 'rogue',
-    Mage: 'mage',
-});
-
-const Classes = Object.keys(classes).map(function(key) {
-    return classes[key];
-});
 
 var UserSchema = new mongoose.Schema({
     username: String,
@@ -20,14 +10,10 @@ var UserSchema = new mongoose.Schema({
     email: String,
     profileImageUrl: String,
     //
-    userClass: {
-        type: String,
-        enum: Classes,
-    },
 
     currency: {
-        gold: Number,
-        gems: Number
+        gold: { type: Number, default: '0' },
+        gems: { type: Number, default: '0' }
     },
 
     cards: [{
@@ -35,21 +21,19 @@ var UserSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "Card"
         },
-        amount: Number,
-        level: Number
+        amount: { type: Number, default: '0' },
+        level: { type: Number, default: '0' }
     }],
 
     decks: [{
         name: String,
         cards: [{
-            card: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Card"
-            }
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Card"
         }],
     }],
 
-    inGame: Boolean,
+    inGame: { type: Boolean, default: false },
 
     currentGame: {
         type: mongoose.Schema.Types.ObjectId,
@@ -57,33 +41,28 @@ var UserSchema = new mongoose.Schema({
     }
 });
 
-Object.assign(UserSchema.statics, {
-    Classes,
+// NEW AUTH - Pszemek
+UserSchema.pre("save", async function (next) {
+    try {
+        if (!this.isModified("password")) {
+            return next();
+        }
+        let hashedPassword = await bcrypt.hash(this.password, 10);
+        this.password = hashedPassword;
+        return next();
+    } catch (err) {
+        return next(err);
+    }
 });
 
-
-// NEW AUTH - Pszemek
-UserSchema.pre("save", async function(next) {
+UserSchema.methods.comparePassword = async function (candidatePassword, next) {
     try {
-      if (!this.isModified("password")) {
-        return next();
-      }
-      let hashedPassword = await bcrypt.hash(this.password, 10);
-      this.password = hashedPassword;
-      return next();
+        let isMatch = await bcrypt.compare(candidatePassword, this.password);
+        return isMatch;
     } catch (err) {
-      return next(err);
+        return next(err);
     }
-  });
-  
-UserSchema.methods.comparePassword = async function(candidatePassword, next) {
-    try {
-      let isMatch = await bcrypt.compare(candidatePassword, this.password);
-      return isMatch;
-    } catch (err) {
-      return next(err);
-    }
-  };
+};
 
 // UserSchema.plugin(passportLocalMongoose); new Auth introduced - Pszemek
 UserSchema.plugin(deepPopulate);

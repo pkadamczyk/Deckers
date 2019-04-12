@@ -5,17 +5,6 @@ var OptionGroup = require("../models/optionGroup");
 var User = require("../models/user");
 var Card = require("../models/card");
 
-router.get("/:id/profile", async function (req, res) {
-    try {
-        foundUser = await fetchUser(req.params.id);
-        // foundUser = await fetchOptionsMany("upgradeCardCost");
-        res.status(200).json(foundUser);
-    } catch (err) {
-        console.log(err);
-    }
-    // res.render("profile", { user: foundUser });
-});
-
 router.get("/:id/cards", async function (req, res) {
     let foundUser = await fetchUser(req.params.id);
     let [maxCardLevel, upgradeCardCost] = await fetchOptionsMany("maxCardLevel", "upgradeCardCost")
@@ -38,112 +27,73 @@ async function fetchUser(id) {
 
 async function fetchOptionsMany() {
     arr = Array.from(arguments);
-
-    arr = await Promise.all(arr.map(value => OptionGroup.findOne({
-        short: value
-    }).deepPopulate('options.option')))
-
-    console.log(arr);
-
+    arr = await Promise.all(arr.map(value => OptionGroup.findOne({ short: value }).deepPopulate('options.option')))
     return arr;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-router.get("/:username/play", isLoggedIn, function (req, res) {
-    User.findOne({
-        username: req.params.username
-    }).deepPopulate('decks.cards.card').exec(function (err, foundUser) {
-        if (err) return res.redirect("back");
-        res.render("./profile/play", {
-            user: foundUser
-        });
-
+router.get("/:id/play", async function (req, res) {
+    let foundUser = await fetchUser(req.params.id);
+    res.status(200).json({
+        user: foundUser
     });
 });
 
-// AJAX
-router.post("/:username/cards/upgrade", isLoggedIn, function (req, res) {
+router.post("/:id/cards/upgrade", async function (req, res) {
+    let foundUser = await fetchUser(req.params.id);
 
-    User.findOne({
-        username: req.params.username
-    }).deepPopulate('cards.card').exec(function (err, foundUser) {
+    let index = foundUser.cards.findIndex(card => req.body.cardName == card.card.name);
+    let card = foundUser.cards[index];
 
-        let index = foundUser.cards.findIndex(card => req.body.cardName == card.card.name);
-        let card = foundUser.cards[index];
+    try {
+        if (Promise.all(levelCheck(card), goldCheck(card, username)).some(el => !el)) throw "error";
+    }
+    catch (error) {
+        console.error(error);
+    }
+    // foundUser.currency.gold -= foundOptionGroup.options[card.level].option.value;
+    // console.log(foundUser.currency.gold);
 
-        // Max level check
-        new Promise((resolve, reject) => {
-            OptionGroup.findOne({
-                short: "maxCardLevel"
-            }).deepPopulate('options.option').exec(function (err, foundOptionGroup) {
-                // console.log(card.card.rarity + " : " + foundOptionGroup.options[card.card.rarity - 1].option.value);
-                if (card.level >= foundOptionGroup.options[card.card.rarity - 1].option.value) res.send({
-                    error: "Card already on max level"
-                });
-                resolve()
-            })
-            // Gold check
-        }).then(function () {
-            return new Promise((resolve, reject) => {
-                let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
-                OptionGroup.findOne({
-                    short: optionName
-                }).deepPopulate('options.option').exec(function (err, foundOptionGroup) {
-                    if (foundUser.currency.gold < foundOptionGroup.options[card.level].option.value) res.send({
-                        error: "Not enough gold"
-                    });
-                    else {
-                        foundUser.currency.gold -= foundOptionGroup.options[card.level].option.value;
-                        console.log(foundUser.currency.gold);
-                        resolve()
-                    }
-                })
-            })
-        }).then(function () {
-            return new Promise((resolve, reject) => {
-                OptionGroup.findOne({
-                    short: "upgradeCardCost"
-                }).deepPopulate('options.option').exec(function (err, foundOptionGroup) {
-                    if (card.amount >= foundOptionGroup.options[card.level].option.value) {
-                        // Substract cards from player eq
-                        foundUser.cards[index].amount -= foundOptionGroup.options[card.level].option.value;
-                        foundUser.cards[index].level++;
+    let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
+    upgradeCardCost = OptionGroup.findOne({ short: "upgradeCardCost" }).deepPopulate('options.option');
+    upgradeGoldCost = OptionGroup.findOne({ short: optionName }).deepPopulate('options.option');
+    [upgradeCardCost, upgradeGoldCost] = Promise.all(upgradeCardCost, upgradeGoldCost);
+    console.log(upgradeCardCost);
 
-                        let msg = {
-                            currentLevel: foundUser.cards[index].level,
-                            newAmount: foundUser.cards[index].amount,
-                            cardsToNextLevel: foundOptionGroup.options[card.level].option.value
-                        }
-                        res.send(msg);
-                        foundUser.save();
-                    }
-                })
-            })
-        })
-    })
+    if (card.amount >= upgradeCardCost.options[card.level].option.value) {
+        // Substract cards from player eq
+        foundUser.cards[index].amount -= upgradeCardCost.options[card.level].option.value;
+        foundUser.cards[index].level++;
+
+        foundUser.currency.gold -= upgradeGoldCost.options[card.level].option.value;
+
+        // let msg = {
+        //     currentLevel: foundUser.cards[index].level,
+        //     newAmount: foundUser.cards[index].amount,
+        //     cardsToNextLevel: upgradeCardCost.options[card.level].option.value
+        // }
+
+        // res.status(200).json({
+        //     user: foundUser
+        // });
+        // foundUser.save();
+    }
 });
 
-//  Middleware
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/login");
+async function levelCheck(card) {
+    return new Promise((resolve, reject) => {
+        foundOptionGroup = await OptionGroup.findOne({ short: "maxCardLevel" }).deepPopulate('options.option');
+        if (card.level >= foundOptionGroup.options[card.card.rarity - 1].option.value) resolve(false);
+        resolve(true);
+    })
+}
+
+async function goldCheck(card, user) {
+    return new Promise((resolve, reject) => {
+        let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
+        foundOptionGroup = await OptionGroup.findOne({ short: optionName }).deepPopulate('options.option')
+        if (user.currency.gold < foundOptionGroup.options[card.level].option.value) resolve(false)
+        resolve(true)
+    })
 }
 
 module.exports = router;
