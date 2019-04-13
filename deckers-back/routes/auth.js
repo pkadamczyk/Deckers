@@ -1,15 +1,16 @@
 const express = require("express");
 const router = express.Router();
-var User = require("../models/user");
 const jwt = require("jsonwebtoken");
+
+var User = require("../models/user");
+var Chest = require("../models/chest");
 
 router.post("/register", async function (req, res, next) {
     try {
-        let user = await User.create(req.body);
+        let [user, availableChests] = await Promise.all([await User.create(req.body), await fetchChests()])
 
         user.cards = []
         user.save()
-        let availableChests = await fetchChests();
 
         let { id, username, profileImageUrl } = user;
         let token = jwt.sign(
@@ -39,13 +40,13 @@ router.post("/register", async function (req, res, next) {
 router.post("/login", async function (req, res, next) {
     // finding a user
     try {
+        console.log("a")
+        let [user, availableChests] = await Promise.all([fetchUser(req.body.email), fetchChests()])
+        console.log("aa")
 
-        let user = await User.findOne({
-            email: req.body.email
-        });
         let { id, username, profileImageUrl } = user;
-        [foundUser, availableChests] = Promise.all(fetchUser(id), fetchChests())
         let isMatch = await user.comparePassword(req.body.password);
+        console.log(isMatch)
         if (isMatch) {
             let token = jwt.sign(
                 {
@@ -56,7 +57,8 @@ router.post("/login", async function (req, res, next) {
                 process.env.SECRET_KEY
             );
             return res.status(200).json({
-                foundUser,
+                user,
+                // optionslist
                 availableChests,
                 token
             });
@@ -73,13 +75,14 @@ router.post("/login", async function (req, res, next) {
 
 module.exports = router;
 
-async function fetchUser(id) {
-    let foundUser = await User.findById(id).deepPopulate('cards.card');
+async function fetchUser(email) {
+    let foundUser = await User.findOne({ email: email })
     return foundUser;
 }
 
 async function fetchChests() {
     foundChests = await Chest.find({})
+
     let availableChests = foundChests.filter(chest => chest.isAvailable)
     return availableChests;
 }
