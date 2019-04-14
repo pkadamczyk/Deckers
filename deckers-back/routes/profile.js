@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 
-var OptionGroup = require("../models/optionGroup");
+var Option = require("../models/option");
 var User = require("../models/user");
 var Card = require("../models/card");
 
@@ -27,7 +27,7 @@ async function fetchUser(id) {
 
 async function fetchOptionsMany() {
     arr = Array.from(arguments);
-    arr = await Promise.all(arr.map(value => OptionGroup.findOne({ short: value }).deepPopulate('options.option')))
+    arr = await Promise.all(arr.map(value => Option.findOne({ short: value })))
     return arr;
 }
 
@@ -54,8 +54,8 @@ router.post("/:id/cards/upgrade", async function (req, res) {
     // console.log(foundUser.currency.gold);
 
     let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
-    upgradeCardCost = OptionGroup.findOne({ short: "upgradeCardCost" }).deepPopulate('options.option');
-    upgradeGoldCost = OptionGroup.findOne({ short: optionName }).deepPopulate('options.option');
+    upgradeCardCost = Option.findOne({ short: "upgradeCardCost" });
+    upgradeGoldCost = Option.findOne({ short: optionName });
     [upgradeCardCost, upgradeGoldCost] = Promise.all(upgradeCardCost, upgradeGoldCost);
     console.log(upgradeCardCost);
 
@@ -80,15 +80,15 @@ router.post("/:id/cards/upgrade", async function (req, res) {
 });
 
 async function levelCheck(card) {
-    foundOptionGroup = await OptionGroup.findOne({ short: "maxCardLevel" }).deepPopulate('options.option');
-    if (card.level >= foundOptionGroup.options[card.card.rarity - 1].option.value) return false;
+    foundOption = await Option.findOne({ short: "maxCardLevel" });
+    if (card.level >= foundOption.options[card.card.rarity - 1].option.value) return false;
     return true;
 }
 
 async function goldCheck(card, user) {
     let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
-    foundOptionGroup = await OptionGroup.findOne({ short: optionName }).deepPopulate('options.option')
-    if (user.currency.gold < foundOptionGroup.options[card.level].option.value) return false
+    foundOption = await Option.findOne({ short: optionName })
+    if (user.currency.gold < foundOption.options[card.level].option.value) return false
     return false;
 }
 

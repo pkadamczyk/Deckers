@@ -2,10 +2,9 @@
 
 
 <div class="container">
-    <!--<div class="row" >-->
     <div class="jumbotron" style="margin:auto;margin-top:30px; width: 80%">
         <h1 style="text-align: center">Add something</h1>
-        <form action="/options/<%= OG %>" method="POST">
+        <form action="/options" method="POST">
             
             <div class="form-group">
                 <label for="name">Name</label>
@@ -18,20 +17,48 @@
             </div>
             
             <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" id="description" rows="3" name="new[description]" placeholder="Description"></textarea>
+                <table class="table table-bordered table-hover" id="tab_logic">
+				<thead>
+					<tr>
+						<th class="text-center">
+							#
+						</th>
+						<th class="text-center"> Value </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr id='addr0'>
+						<td>1</td>
+						<td><input type="number" step="0.01" name='value[]'  placeholder='Enter Option Value' class="form-control"/></td>
+					</tr>
+                    <tr id='addr1'></tr>
+				</tbody>
+			</table>
             </div>
             
-            <div class="form-group">
-                <label for="value">Value</label>
-                <input type="text" class="form-control" id="value" placeholder="Value" name="new[value]">
-            </div>
-
-            <button class="btn btn-lg btn-primary btn-block">Submit!</button>
+            <span id="add_row" class="btn btn-default pull-left">Add Row</span><span id='delete_row' class="pull-right btn btn-default">Delete Row</span>
+            <input type="submit" class="btn btn-lg btn-primary btn-block">
        </form>
     </div>
      
-    <!--</div>-->
 </div>
 
 <% include ../partials/footer %>
+
+<script>
+$(document).ready(function(){
+      var i=1;
+     $("#add_row").click(function(){b=i-1;
+      $('#addr'+i).html($('#addr'+b).html()).find('td:first-child').html(i+1);
+      $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
+      i++; 
+  });
+     $("#delete_row").click(function(){
+    	 if(i>1){
+		 $("#addr"+(i-1)).html('');
+		 i--;
+		 }
+	 });
+
+});
+</script>
