@@ -6,3 +6,4 @@ export const ABANDON_GAME = "ABANDON_GAME";
 export const RECONNECT_GAME = "RECONNECT_GAME";
 export const GET_SHOP_CONTENT = "GET_SHOP_CONTENT";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
+export const CHOOSE_MODE = "CHOOSE_MODE";

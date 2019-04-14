@@ -1,4 +1,9 @@
-import { FIND_GAME, LEAVE_QUE, ACCEPT_GAME, DISCONNECT_FROM_GAME, ABANDON_GAME, RECONNECT_GAME } from "../actionTypes";
+import { CHOOSE_MODE, FIND_GAME, LEAVE_QUE, ACCEPT_GAME, DISCONNECT_FROM_GAME, ABANDON_GAME, RECONNECT_GAME } from "../actionTypes";
+
+export const setGameMode = (mode) => ({
+  type: CHOOSE_MODE,
+  mode
+}) 
 
 export const findGame = () => ({
   type: FIND_GAME,

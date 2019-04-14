@@ -33,11 +33,9 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
         cards = await addCardsToArray(cardAmounts);
 
         // let msg = { cards: cards, currencyLeft: currencyLeft, chestCost: foundChest.price.amount }
-<<<<<<< HEAD
-        // nowe karty i wszystkie obecne karty
-=======
+
         // nowe karty i wszystkie obecne karty, obecny hajs
->>>>>>> 275ae68... Update shop.js
+
         // res.send(msg);
 
         let cardIndexes = cards.map(function (cardFromDb) {
