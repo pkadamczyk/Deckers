@@ -46,7 +46,7 @@ const Main = props => {
           }}
         />
             <Route render={props => {
-              if (currentUser.isAuthenticated) {
+              //if (currentUser.isAuthenticated) {
                 return (
                     <div className="row">
                     <div className="col-3">
@@ -56,11 +56,11 @@ const Main = props => {
                     <Content />
                     </div> 
                 </div>)
-            }else{
-              return (
-              <Redirect to="/login"/>
-              )
-            }
+            // }else{
+            //   return (
+            //   <Redirect to="/login"/>
+            //   )
+            // }
           }}
             />
       </Switch>  
