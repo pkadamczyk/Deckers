@@ -1,24 +1,24 @@
 import {
-  GET_SHOP_CONTENT
+  SET_AVAILABLE_CHESTS
 } from "../actionTypes";
-import {
-  apiCall
-} from "../../services/api";
+// import {
+//   apiCall
+// } from "../../services/api";
 
-export const getShopContent = (chests) => ({
-  type: GET_SHOP_CONTENT,
-  content: chests
+export const setAvailableChests = (chests) => ({
+  type: SET_AVAILABLE_CHESTS,
+  chests: chests
 });
 
-export const getChests = () => {
-  return dispatch => {
-    console.log("getChests");
-    return apiCall("GET", "/chests")
-      .then(res => {
-        dispatch(getShopContent(res))
-      })
-      .catch(res => {
-        console.log("Something went wrong with getting shop content");
-      })
-  };
-};
+// export const getChests = () => {
+//   return dispatch => {
+//     console.log("getChests");
+//     return apiCall("GET", "/chests")
+//       .then(res => {
+//         dispatch(getShopContent(res))
+//       })
+//       .catch(res => {
+//         console.log("Something went wrong with getting shop content");
+//       })
+//   };
+// };
