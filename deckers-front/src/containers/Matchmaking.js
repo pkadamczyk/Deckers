@@ -5,15 +5,15 @@ import {setGameMode} from '../store/actions/matchMaking';
 import {connect} from 'react-redux';
 
 class Matchmaking extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            currentMode:"Standard"
-        }
-    }
+    // constructor(props){
+    //     super(props);
+    //     this.state = {
+    //         currentMode:"Standard"
+    //     }
+    // }
    
     handleModeChange(e){
-        this.setState({currentMode:e.target.value})
+        // this.setState({currentMode:e.target.value})
         // let mode = this.state.currentMode;
         this.props.setGameMode(e.target.value);
       }
