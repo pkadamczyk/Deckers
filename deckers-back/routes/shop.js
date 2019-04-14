@@ -4,7 +4,7 @@ var router = express.Router();
 var Card = require("../models/card");
 var User = require("../models/user");
 var Chest = require("../models/chest");
-var OptionGroup = require("../models/optionGroup");
+var Option = require("../models/option");
 
 // /shop/buy/chest
 router.post("/:id/shop/buy/:chest", async function (req, res) {
@@ -33,11 +33,7 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
         cards = await addCardsToArray(cardAmounts);
 
         // let msg = { cards: cards, currencyLeft: currencyLeft, chestCost: foundChest.price.amount }
-<<<<<<< HEAD
-        // nowe karty i wszystkie obecne karty
-=======
         // nowe karty i wszystkie obecne karty, obecny hajs
->>>>>>> 275ae68... Update shop.js
         // res.send(msg);
 
         let cardIndexes = cards.map(function (cardFromDb) {
@@ -75,8 +71,10 @@ function calculateCardAmounts(chest) {
 
 module.exports = router;
 
+
+// Need rework after options refactor
 async function randomCardsRarity(cardAmounts) {
-    foundOptions = await OptionGroup.findOne({ short: "randomCardRarity" }).deepPopulate('options.option')
+    foundOptions = await Option.findOne({ short: "randomCardRarity" })
     let max = foundOptions.options.reduce((a, b) => a + b.option.value, 0);
 
     for (var j = 0; j < cardAmounts[0]; j++) {

@@ -1,12 +1,10 @@
 var mongoose = require("mongoose");
 
 var optionSchema = new mongoose.Schema({
-
     name: String,
     short: String,
-    description: String,
 
-    value: Number
+    values: []
 });
 
-module.exports = mongoose.model("Option", optionSchema);
+module.exports = mongoose.model("OptionGroup", optionSchema);
