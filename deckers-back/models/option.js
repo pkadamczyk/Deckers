@@ -7,4 +7,4 @@ var optionSchema = new mongoose.Schema({
     values: []
 });
 
-module.exports = mongoose.model("OptionGroup", optionSchema);
+module.exports = mongoose.model("Option", optionSchema);

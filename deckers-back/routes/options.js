@@ -3,19 +3,23 @@ var router = express.Router();
 
 var Option = require("../models/option");
 
-// INDEX ROUTE
-router.get("/options", function (req, res) {
-    Option.find({}, function (err, option) {
-        if (err) console.log(err);
-        else {
-            res.render("options/index", { option: option });
-        }
-    });
-});
+// // INDEX ROUTE
+// router.get("/options", function (req, res) {
+//     Option.find({}, function (err, option) {
+//         if (err) console.log(err);
+//         else {
+//             res.render("options/index", { option: option });
+//         }
+//     });
+// });
 
 // CREATE ROUTE
 router.post("/options", function (req, res) {
-    Option.create(req.body.new, function (err) {
+    let newOption = req.body.new;
+    newOption.values = req.body.value;
+    console.log(newOption)
+
+    Option.create(newOption, function (err) {
         if (err) console.log(err);
         else res.redirect("/options");
     })
