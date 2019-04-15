@@ -1,6 +1,7 @@
 import { apiCall, setTokenHeader } from "../../services/api";
-import { SET_CURRENT_USER } from "../actionTypes";
+import { SET_CURRENT_USER, UPDATE_USER_AFTER_CHEST_PURCHASE } from "../actionTypes";
 import {setAvailableChests} from './shop';
+import {refreshNavbar} from '../../containers/Navbar';
 
 export function setCurrentUser(user) {
   return {
@@ -11,6 +12,15 @@ export function setCurrentUser(user) {
 
 export function setAuthorizationToken(token) {
   setTokenHeader(token);
+}
+
+export function updateUserAfterChestPurchase(res){
+  
+  return({
+    type: UPDATE_USER_AFTER_CHEST_PURCHASE,
+    currency: res.currency,
+    currentCards: res.currentCards
+  })
 }
 
 export function logout() {
@@ -32,7 +42,7 @@ export function authUser(type, userData) {
           dispatch(setCurrentUser(user.user));
           dispatch(setAvailableChests(availableChests));
           resolve(); // indicate that the API call succeeded
-        })
+        }).then(() => (refreshNavbar()))
         .catch(err => {
           reject(); // indicate the API call failed
         });

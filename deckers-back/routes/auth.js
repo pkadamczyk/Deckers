@@ -8,7 +8,7 @@ var Chest = require("../models/chest");
 router.post("/register", async function (req, res, next) {
     try {
         let [user, availableChests] = await Promise.all([await User.create(req.body), await fetchChests()])
-
+        user.currency = {gold: 200}
         user.cards = []
         user.save()
 

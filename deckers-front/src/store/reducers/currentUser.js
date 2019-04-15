@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER } from "../actionTypes";
+import { SET_CURRENT_USER, UPDATE_USER_AFTER_CHEST_PURCHASE } from "../actionTypes";
 
 const DEFAULT_STATE = {
   isAuthenticated: false, // hopefully be true, when logged in
@@ -13,6 +13,14 @@ export default (state = DEFAULT_STATE, action) => {
         isAuthenticated: !!Object.keys(action.user).length,
         user: action.user
       };
+      case UPDATE_USER_AFTER_CHEST_PURCHASE:
+        let updatedUser = state.user;
+        updatedUser.cards = action.currentCards;
+        updatedUser.currency = action.currency;
+        return {
+          ...state,
+          user:updatedUser
+        }
     default:
       return state;
   }
