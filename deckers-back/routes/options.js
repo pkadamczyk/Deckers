@@ -3,16 +3,6 @@ var router = express.Router();
 
 var Option = require("../models/option");
 
-// // INDEX ROUTE
-// router.get("/options", function (req, res) {
-//     Option.find({}, function (err, option) {
-//         if (err) console.log(err);
-//         else {
-//             res.render("options/index", { option: option });
-//         }
-//     });
-// });
-
 // CREATE ROUTE
 router.post("/options", function (req, res) {
     let newOption = req.body.new;

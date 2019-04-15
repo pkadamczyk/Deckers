@@ -1,12 +1,55 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
-var Card = require("../models/card");
-var User = require("../models/user");
-var Chest = require("../models/chest");
-var Option = require("../models/option");
+const Chest = require("./models/chest");
+const User = require("./models/user");
+const Option = require("./models/option");
+const Card = require("./models/card");
 
-// /shop/buy/chest
+// Route for card upgrade
+// Currently not working, need refactor
+router.post("/:id/cards/upgrade", async function (req, res) {
+    let foundUser = await fetchUser(req.params.id);
+
+    let index = foundUser.cards.findIndex(card => req.body.cardName == card.card.name);
+    let card = foundUser.cards[index];
+
+    try {
+        if (Promise.all(levelCheck(card), goldCheck(card, username)).some(el => !el)) throw "error";
+    }
+    catch (error) {
+        console.error(error);
+    }
+    // foundUser.currency.gold -= foundOptionGroup.options[card.level].option.value;
+    // console.log(foundUser.currency.gold);
+
+    let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
+    upgradeCardCost = Option.findOne({ short: "upgradeCardCost" });
+    upgradeGoldCost = Option.findOne({ short: optionName });
+    [upgradeCardCost, upgradeGoldCost] = Promise.all(upgradeCardCost, upgradeGoldCost);
+    console.log(upgradeCardCost);
+
+    if (card.amount >= upgradeCardCost.options[card.level].option.value) {
+        // Substract cards from player eq
+        foundUser.cards[index].amount -= upgradeCardCost.options[card.level].option.value;
+        foundUser.cards[index].level++;
+
+        foundUser.currency.gold -= upgradeGoldCost.options[card.level].option.value;
+
+        // let msg = {
+        //     currentLevel: foundUser.cards[index].level,
+        //     newAmount: foundUser.cards[index].amount,
+        //     cardsToNextLevel: upgradeCardCost.options[card.level].option.value
+        // }
+
+        // res.status(200).json({
+        //     user: foundUser
+        // });
+        // foundUser.save();
+    }
+});
+
+// Route for buying chests
 router.post("/:id/shop/buy/:chest", async function (req, res) {
     try {
         let [foundChest, foundUser] = await Promise.all([await Chest.findOne({ name: req.params.chest }), await User.findById(req.params.id).deepPopulate('cards.card')])
@@ -18,7 +61,7 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
         }
         else {
             console.log("Not enough " + Object.keys(Chest.currencyList)[foundChest.price.currency]);
-            throw new Error("Error i chuj")
+            throw new Error("Not enough currency")
         }
 
         //  Define the rarity of random cards
@@ -39,10 +82,6 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
 
         cards.forEach(card => console.log(card.name))
 
-        // let msg = { cards: cards, currencyLeft: currencyLeft, chestCost: foundChest.price.amount }
-        // nowe karty i wszystkie obecne karty, obecny hajs
-        // res.send(msg);
-
         res.status(200).json({
             newCards: cards,
             currentCards: foundUser.cards,
@@ -58,14 +97,36 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
     }
 });
 
+async function fetchUser(id) {
+    let foundUser = await User.findById(id).deepPopulate('cards.card');
+    return foundUser;
+}
+
+async function fetchOptionsMany() {
+    arr = Array.from(arguments);
+    arr = await Promise.all(arr.map(value => Option.findOne({ short: value })))
+    return arr;
+}
+
+async function levelCheck(card) {
+    foundOption = await Option.findOne({ short: "maxCardLevel" });
+    if (card.level >= foundOption.options[card.card.rarity - 1].option.value) return false;
+    return true;
+}
+
+async function goldCheck(card, user) {
+    let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
+    foundOption = await Option.findOne({ short: optionName })
+    if (user.currency.gold < foundOption.options[card.level].option.value) return false
+    return false;
+}
+
 function calculateCardAmounts(chest) {
     let array = [];
     Object.keys(chest.cardAmount).forEach(key => array.push(chest.cardAmount[key]))
     array.splice(0, 1);
     return array;
 }
-
-module.exports = router;
 
 async function randomCardsRarity(cardAmounts) {
     let foundOption = await Option.findOne({ short: "randomCardRarity" })
@@ -111,4 +172,6 @@ async function addCardsToArray(cardAmounts) {
     return cards.reduce((total, amount) => {
         return total.concat(amount);
     }, []);;
-} 
+}
+
+module.exports = router;

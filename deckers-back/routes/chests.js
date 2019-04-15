@@ -2,30 +2,6 @@ var express = require("express");
 var router = express.Router();
 
 var Chest = require("../models/chest");
-// var User = require("../models/user");
-
-// INDEX ROUTE
-router.get("/chests", async function (req, res) {
-
-    try {
-        let chests = await Chest.find({});
-
-        // let foundUser = await db.User.findById(req.params.id);
-
-        return res.status(200).json(chests);
-    } catch (err) {
-        return next(err);
-    }
-
-    // Chest.find({}, function(err, chests) {
-    //     if (err) {
-    //         console.log(err)
-    //     }
-    //     else {
-    //         res.render("chests/index", { chests: chests });
-    //     }
-    // });
-});
 
 // AJAX ROUTE, ENABLE CHEST
 router.post("/chest/enable", function (req, res) {
@@ -108,16 +84,5 @@ router.put("/chests/:id", function (req, res) {
         }
     });
 });
-
-// //  DESTROY ROUTE
-// router.delete("/chests/:id", function (req, res) {
-//     Chest.findByIdAndRemove(req.params.id, function (err) {
-//         if (err) {
-//             res.redirect("/chests");
-//         } else {
-//             res.redirect("/chests");
-//         }
-//     });
-// });
 
 module.exports = router;
