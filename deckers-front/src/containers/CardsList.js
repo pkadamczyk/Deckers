@@ -1,11 +1,24 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import CardItem from '../components/CardItem';
 
 class CardsList extends Component{
     render(){
+        const {cards} = this.props;
+        let cardList = cards.map(card => 
+            <CardItem
+                card={card}/>);
         return(
-            <h1> Cardslist dziala</h1>
+            <div>
+                {cardList}
+            </div>
         )
     }
 }
+function mapStateToProps(state){
+    return{
+        cards : state.currentUser.user.cards
+    }
+}
 
-export default CardsList;
+export default connect(mapStateToProps, null) (CardsList);
