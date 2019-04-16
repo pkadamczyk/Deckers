@@ -33,7 +33,6 @@ class Content extends Component {
           }}
         />
         <Route
-          exact
           path="/cards"
           render={props => {
             return (
