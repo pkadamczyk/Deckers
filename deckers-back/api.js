@@ -103,7 +103,7 @@ app.post("/:usr_id/decks/create", async function (req, res) {
         cards: [],
         name: req.body.name
     };
-    let foundUser = await User.findById(req.params.usr_id).deepPopulate('cards.card')
+    let foundUser = await fetchUser(req.params.usr_id);
     let indexArr = req.body.cards.map(card_id => foundUser.cards.findIndex(card => card._id.equals(card_id)))
 
     indexArr.forEach(index => newDeck.card.push(foundUser.cards[index].card._id))
@@ -111,6 +111,25 @@ app.post("/:usr_id/decks/create", async function (req, res) {
     console.log("New deck: " + newDeck);
     // foundUser.decks.push(newDeck);
     foundUser.decks.push(newDeck);
+
+    res.status(200).json({
+        decks: foundUser.decks,
+    });
+
+    // foundUser.save();
+})
+
+// delete deck
+app.post("/:usr_id/decks/:deck_id", async function (req, res) {
+    let newDeck = {
+        cards: [],
+        name: req.body.name
+    };
+    let foundUser = await fetchUser(req.params.usr_id);
+
+    // Find index of deleted deck
+    let idx = foundUser.decks.findIndex(deck => deck._id.equals(req.params.deck_id));
+    if (idx !== -1) foundUser.decks.splice(idx, 1);
 
     res.status(200).json({
         decks: foundUser.decks,
