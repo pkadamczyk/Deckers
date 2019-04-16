@@ -35,7 +35,7 @@
                     placeholder="Description"></textarea>
             </div>
 
-            <div class="form-group">
+            <%# <div class="form-group">
                 <label for="cost">Cost</label>
                 <input type="text" class="form-control" id="cost" placeholder="Cost" name="stats[cost]">
             </div>
@@ -54,11 +54,64 @@
             <div class="form-group">
                 <label for="heal">Heal</label>
                 <input type="text" class="form-control" id="heal" placeholder="Heal" name="stats[heal]">
+            </div> %>
+            <div class="form-group">
+			<table class="table table-bordered table-hover" id="tab_logic">
+				<thead>
+					<tr>
+						<th class="text-center">#</th>
+						<th class="text-center">Amount</th>
+						<th class="text-center">Cost</th>
+						<th class="text-center">Damage</th>
+                        <th class="text-center">Armor</th>
+                        <th class="text-center">Heal</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr id='addr0'>
+						<td>1</td>
+						<td>
+						<input type="number" name='amount[]'  placeholder='Amount' class="form-control"/>
+						</td>
+						<td>
+						<input type="number" name='cost[]' placeholder='Cost' class="form-control"/>
+						</td>
+						<td>
+						<input type="number" name='damage[]' placeholder='Damage' class="form-control"/>
+						</td>
+                        <td>
+						<input type="number" name='armor[]' placeholder='Armor' class="form-control"/>
+						</td>
+                        <td>
+						<input type="number" name='heal[]' placeholder='Heal' class="form-control"/>
+						</td>
+					</tr>
+                    <tr id='addr1'></tr>
+				</tbody>
+			</table>
+	        <span id="add_row" class="btn btn-default pull-left">Add Row</span><span id='delete_row' class="pull-right btn btn-default">Delete Row</span>
             </div>
-
             <button class="btn btn-lg btn-primary btn-block">Submit!</button>
         </form>
     </div>
 </div>
 
 <% include ../partials/footer %>
+
+<script>
+$(document).ready(function(){
+      var i=1;
+     $("#add_row").click(function(){b=i-1;
+      $('#addr'+i).html($('#addr'+b).html()).find('td:first-child').html(i+1);
+      $('#tab_logic').append('<tr id="addr'+(i+1)+'"></tr>');
+      i++; 
+  });
+     $("#delete_row").click(function(){
+    	 if(i>1){
+		 $("#addr"+(i-1)).html('');
+		 i--;
+		 }
+	 });
+
+});
+</script>

@@ -27,13 +27,13 @@ var cardSchema = new mongoose.Schema({
         enum: raceList
     },
 
-    stats: {
+    stats: [{
         cost: Number,
         amount: Number,
         damage: Number,
         armor: Number,
         heal: Number,
-    }
+    }]
 });
 
 Object.assign(cardSchema.statics, {
