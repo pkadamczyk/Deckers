@@ -166,6 +166,9 @@ body div{
   height:200px;
   width:75px;
   margin: 1px;
-  background-color: red;
+  background-color: rgb(44, 47, 60);
   border: 1px solid black;
+  color:white;
+  padding: 0;
+  text-align: center;
 }

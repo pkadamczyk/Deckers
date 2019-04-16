@@ -4,17 +4,8 @@ import { connect } from "react-redux";
 import { findGame, leaveQue, acceptGame, disconnectFromGame, 
   abandonGame, reconnectGame } from "../store/actions/matchMaking";
 import {logout} from "../store/actions/auth";
-import {refreshCurrency} from '../store/actions/general';
-export function refreshNavbar(){
-  this.forceUpdate();
-}
 
 class Navbar extends Component {
-  constructor(props){
-    super(props);
-    refreshNavbar = refreshNavbar.bind(this);
-  }
-  
   render() {
     const { user, logout } = this.props;
     return (
@@ -73,5 +64,5 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { refreshCurrency, logout, findGame, leaveQue, acceptGame,
+export default connect(mapStateToProps, { logout, findGame, leaveQue, acceptGame,
   disconnectFromGame, abandonGame, reconnectGame })(Navbar);

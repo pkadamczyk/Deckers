@@ -5,7 +5,7 @@ class CardItem extends Component{
         const {card} = this.props;
         return(
             <div className="col-2 card-item m-2">
-                <h3>{card.card.name}</h3>
+                <h3>{card.card.name}</h3><hr/>
                 <h4>Amount: {card.amount}</h4>
             </div>
         )

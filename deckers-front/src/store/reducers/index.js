@@ -2,14 +2,14 @@ import { combineReducers } from "redux";
 import matchMaking from './matchMaking';
 import shop from './shop';
 import currentUser from './currentUser';
-import general from './general';
+import cards from './cards';
 
 
 const rootReducer = combineReducers({
     matchMaking,
     shop,
     currentUser,
-    general
+    cards
   
 });
 

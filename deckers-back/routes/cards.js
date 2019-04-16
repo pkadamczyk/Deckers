@@ -18,9 +18,22 @@ router.get("/cards", function (req, res) {
 
 // CREATE ROUTE
 router.post("/cards", function (req, res) {
+    let stats = [];
+    for (let i = 0; i < req.body.amount.length; i++) {
+        let statObject = {
+            amount: parseInt(req.body.amount[i]),
+            cost: parseInt(req.body.cost[i]),
+            damage: parseInt(req.body.damage[i]),
+            armor: parseInt(req.body.armor[i]),
+            heal: parseInt(req.body.heal[i]),
+        }
+        stats.push(statObject);
+    }
+
     //new item logic
-    var newCard = req.body.new
-    newCard.stats = req.body.stats;
+    let newCard = req.body.new;
+    newCard.stats = stats;
+    console.log(newCard);
 
     Card.create(newCard, function (err, createdCard) {
         if (err) {
