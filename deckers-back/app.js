@@ -37,36 +37,7 @@ mongoose.Promise = Promise; // DODATKOWY CONFIG PROMISOW MONGOOSA - Pszemek (Aut
 app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
 
-// // Create new deck
-// app.post("/decks/update", function (req, res) { //isLoggedIn removed, new Auth - Pszemek
-//     var newDeck = {
-//         cards: [],
-//         name: req.body.name
-//     };
-//     User.findOne({
-//         username: req.body.user
-//     }).deepPopulate('cards.card').exec(function (err, foundUser) {
-//         if (err) return res.redirect("back");
 
-//         for (var i = 0; i < 6; i++) {
-//             if (!isNaN(req.body.cards[i])) {
-//                 var newCard = {
-//                     card: foundUser.cards[req.body.cards[i]].card._id
-//                 }
-//                 newDeck.cards.push(newCard);
-//             }
-//         }
-//         console.log("New deck" + newDeck);
-//         // foundUser.decks.push(newDeck);
-//         foundUser.decks.splice(0, 1, newDeck);
-//         foundUser.save();
-//         // //  Data send to front-end
-//         // var msg = {
-//         //     deck: newDeck,
-//         // }
-//         // res.send(msg);
-//     })
-// })
 
 // app.post("/game/abandon", async function (req, res) {//isLoggedIn removed, new Auth - Pszemek
 //     User.findOne({
