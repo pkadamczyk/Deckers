@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER, UPDATE_USER_AFTER_CHEST_PURCHASE } from "../actionTypes";
+import { SET_CURRENT_USER, UPDATE_USER_AFTER_CHEST_PURCHASE, UPDATE_USER_AFTER_DECK_CREATION } from "../actionTypes";
 
 const DEFAULT_STATE = {
   isAuthenticated: false, // hopefully be true, when logged in
@@ -20,6 +20,13 @@ export default (state = DEFAULT_STATE, action) => {
         return {
           ...state,
           user:updatedUser
+        }
+        case UPDATE_USER_AFTER_DECK_CREATION:
+        let anotherUpdatedUser = state.user;
+        anotherUpdatedUser.decks = action.currentDecks;
+        return {
+          ...state,
+          user:anotherUpdatedUser
         }
     default:
       return state;

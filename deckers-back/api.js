@@ -98,7 +98,7 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
 });
 
 // Create new deck
-app.post("/:usr_id/decks/create", async function (req, res) {
+router.post("/:usr_id/decks/create", async function (req, res) {
     let newDeck = {
         cards: [],
         name: req.body.name
@@ -120,7 +120,7 @@ app.post("/:usr_id/decks/create", async function (req, res) {
 })
 
 // delete deck
-app.post("/:usr_id/decks/:deck_id", async function (req, res) {
+router.post("/:usr_id/decks/:deck_id", async function (req, res) {
     let newDeck = {
         cards: [],
         name: req.body.name

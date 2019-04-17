@@ -1,11 +1,22 @@
-import {SELECT_RACE} from "../actionTypes";
+import {CREATE_NEW_DECK, ADD_CARD_TO_DECK} from "../actionTypes";
 
-const DEFAULT_STATE = {race:"Dwarves"};
+const DEFAULT_STATE = {
+  currentState:"idle",
+  cards:[],
+  nextAvailableSlot:0
+};
   
   export default (state = DEFAULT_STATE, action) => {
       switch (action.type){
-        case SELECT_RACE:
-          return {...state, race:action.race};
+        case CREATE_NEW_DECK:
+          return {...state, currentState:"creating"};
+        case ADD_CARD_TO_DECK:{
+          let updatedCards = state.cards;
+          updatedCards[action.slot] = action.card;
+          let nextSlot = state.nextAvailableSlot;
+          nextSlot++;
+          return {...state, cards:updatedCards, nextAvailableSlot:nextSlot}
+        }
         default:
           return state;
       }
