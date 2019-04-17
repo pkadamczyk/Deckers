@@ -93,9 +93,18 @@ body div{
 }
 
 .chest-item{
-  background-color: gray;
+  background-color: rgb(44, 47, 60);
   text-align: center;
-  height: 200px;
+  height: 300px;
+  width: 300px;
+  margin: 20px;
+  color:white;
+}
+.chest-item ul{
+  text-align: left;
+}
+hr{
+  color:white;
 }
 
 .col-9{
@@ -124,7 +133,6 @@ body div{
   padding-top: 60px;
   color:white;
   text-align: center;
-  
 }
 
 .gameModeOptions button{
@@ -136,10 +144,6 @@ body div{
 }
 .gameModeOptions{
   height:200px;
-}
-.gameModeDesc{
-  /* padding: 100px;
-  display: block; */
 }
 .gameModeDesc p{
   margin:0px;
@@ -171,4 +175,13 @@ body div{
   color:white;
   padding: 0;
   text-align: center;
+}
+.btn-deck-create{
+  background-color: white;
+  color:rgb(44, 47, 60);
+}
+.DeckCreationPanel{
+  position: absolute;
+  left: 60px;
+  top: 550px;
 }

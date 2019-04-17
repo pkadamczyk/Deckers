@@ -5,6 +5,9 @@ class CardsDeck extends Component{
         return(
             <div className="CardDeck">
                 <h2>Yours decks:</h2>
+                <div className="DeckCreationPanel">
+                    <button className="btn btn-deck-create">Create new deck</button>
+                </div>
             </div>
         )
     }

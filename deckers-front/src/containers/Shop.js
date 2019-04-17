@@ -13,10 +13,11 @@ class Shop extends Component{
               name={chest.name}
               handleClick = {buyChest}
               usr_id={usr_id}
+              cardAmount={chest.cardAmount}
             />
           ));
         return(
-            <div className="col-3">
+            <div>
                 {chestList}
             </div>
             
