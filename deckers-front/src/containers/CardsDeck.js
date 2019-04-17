@@ -16,7 +16,7 @@ class CardsDeck extends Component{
 
     handleSubmit = e => {
         let deckToSend= {
-            cards:this.props.cards,
+            cards:this.props.cards.map(card => card._id),
             name:this.state.deckName
         }
         this.props.submitDeck(this.props.usr_id, deckToSend)
@@ -38,7 +38,7 @@ class CardsDeck extends Component{
                </div> )}
                {currentState === "creating" && (<div>
                     <div className="DeckItself">
-                        <input type="text" placeholder="Deck name" name="deckName" onChange={this.handleChange}/>
+                        <input type="text" className="mb-2" placeholder="Deck name" name="deckName" onChange={this.handleChange}/>
                         <div className="deckSlot">{cards[0] ? cards[0].card.name : "Empty"}</div>
                         <div className="deckSlot">{cards[1] ? cards[1].card.name : "Empty"}</div>
                         <div className="deckSlot">{cards[2] ? cards[2].card.name : "Empty"}</div>

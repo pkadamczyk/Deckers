@@ -7,7 +7,7 @@ class CardItem extends Component{
         const {card, currentState, nextAvailableSlot, addCardToDeck} = this.props;
         return(
             <div className="col-2 card-item m-2">
-                <h4>{card.card.name}</h4><hr/>
+                <h4 className="mt-2">{card.card.name}</h4><hr/>
                 <p>Amount: {card.amount}</p>
                 {currentState==="creating" && (
                     <button onClick={(e)=>{addCardToDeck(card,nextAvailableSlot)}} className="btn">Add to deck</button>

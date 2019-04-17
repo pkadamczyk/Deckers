@@ -36,7 +36,7 @@ code {
 
 #sidebar {
   text-align: center;
-  max-width: 25%;
+  max-width: 16.7%;
   width: 100%;
   position: fixed;
   top: 0;
@@ -95,10 +95,11 @@ body div{
 .chest-item{
   background-color: rgb(44, 47, 60);
   text-align: center;
-  height: 300px;
+  height: 320px;
   width: 300px;
   margin: 20px;
   color:white;
+  border-radius: 20px;
 }
 .chest-item ul{
   text-align: left;
@@ -108,6 +109,10 @@ hr{
 }
 
 .col-9{
+  padding-right: 0px;
+  padding-left:0px;
+}
+.col-10{
   padding-right: 0px;
   padding-left:0px;
 }
@@ -175,20 +180,27 @@ hr{
   color:white;
   padding: 0;
   text-align: center;
+  border-radius: 8px;
 }
+
+.card-item h4{
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
 .btn-deck-create{
   background-color: white;
   color:rgb(44, 47, 60);
 }
 .DeckCreationPanel{
   position: absolute;
-  left: 60px;
+  left: 75px;
   top: 550px;
 }
 .DeckCreationPanel-creating{
   position: absolute;
-  left: 90px;
-  top: 550px;
+  left: 105px;
+  top: 570px;
 }
 .DeckList{
   padding-left: 5px;
@@ -205,4 +217,23 @@ hr{
   margin-top: 5px;
   widows: 100%;
   height:45px;
+}
+.AuthFormWrapper{
+  height:100%;
+  background-color: rgb(4, 7, 20);
+}
+
+.AuthFormItself{
+  background-color: white;
+  height:58%;
+  position: absolute;
+  top: 120px;
+  color: rgb(4, 7, 20);
+  border-radius: 20px;
+  padding-top:5px;
+}
+
+.AuthFormItself button{
+  background-color: rgb(4, 7, 20);
+  color:white;
 }

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import {Link} from 'react-router-dom';
 
 class AuthForm extends Component {
   constructor(props) {
@@ -33,14 +34,15 @@ class AuthForm extends Component {
     const { email, username, password} = this.state;
     const {
       signUp,
+      login,
       heading,
       buttonText,
     } = this.props;
 
     return (
-      <div>
+      <div className="AuthFormWrapper">
         <div className="row justify-content-md-center text-center">
-          <div className="col-md-6">
+          <div className="AuthFormItself col-md-3">
             <form onSubmit={this.handleSubmit}>
               <h2>{heading}</h2>
               <label htmlFor="email">E-mail</label>
@@ -79,10 +81,12 @@ class AuthForm extends Component {
               )}
               <button
                 type="submit"
-                className="btn btn-primary btn-block btn-lg"
+                className="btn btn-block btn-lg mt-3"
               >
                 {buttonText}
               </button>
+              {login && (<p className="mt-4">New here? Please signup <Link to="/register">here</Link></p>)}
+              {signUp && (<p className="mt-2">Already signed up? Login <Link to="/login">here</Link></p>)}
             </form>
           </div>
         </div>

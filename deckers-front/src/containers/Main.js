@@ -20,7 +20,8 @@ const Main = props => {
               <AuthForm
                 onAuth={authUser}
                 buttonText="Log in"
-                heading="Welcome Back."
+                login
+                heading="Nice to see you! Please log in."
                 {...props}
               />
             );
@@ -49,10 +50,10 @@ const Main = props => {
               if (currentUser.isAuthenticated) {
                 return (
                 <div className="row">
-                    <div className="col-3">
+                    <div className="col-2">
                     <Navbar />
                     </div>
-                    <div className="col-9">
+                    <div className="col-10">
                     <Content />
                     </div> 
                 </div>)
