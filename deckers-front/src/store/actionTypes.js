@@ -12,4 +12,4 @@ export const SET_CURRENT_USER = "SET_CURRENT_USER";
 
 
 export const CHOOSE_MODE = "CHOOSE_MODE";
-export const REFRESH_CURRENCY = "REFRESH_CURRENCY";
+export const SELECT_RACE = "SELECT_RACE";

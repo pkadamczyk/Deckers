@@ -3,8 +3,8 @@ import React, {Component} from 'react';
 class CardsDeck extends Component{
     render(){
         return(
-            <div className="bar">
-                <h1> CardsDeck dziala</h1>
+            <div className="CardDeck">
+                <h2>Yours decks:</h2>
             </div>
         )
     }
