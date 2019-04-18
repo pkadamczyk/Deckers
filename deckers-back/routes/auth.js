@@ -13,7 +13,7 @@ router.post("/register", async function (req, res, next) {
         user.cards = []
         user.save()
 
-        let a, b, c, d, e, f = fetchOptionList("maxCardLevel", "upgradeCardCost", "commonUpgradeGoldCost", "rareUpgradeGoldCost", "epicUpgradeGoldCost", "legendaryUpgradeGoldCost")
+        let [a, b, c, d, e, f] = await fetchOptionList("maxCardLevel", "upgradeCardCost", "commonUpgradeGoldCost", "rareUpgradeGoldCost", "epicUpgradeGoldCost", "legendaryUpgradeGoldCost")
 
         let { id, username, profileImageUrl } = user;
         let token = jwt.sign(
@@ -57,7 +57,7 @@ router.post("/login", async function (req, res, next) {
         let isMatch = await user.comparePassword(req.body.password);
         if (isMatch) {
 
-            let a, b, c, d, e, f = fetchOptionList("maxCardLevel", "upgradeCardCost", "commonUpgradeGoldCost", "rareUpgradeGoldCost", "epicUpgradeGoldCost", "legendaryUpgradeGoldCost")
+            let [a, b, c, d, e, f] = await fetchOptionList("maxCardLevel", "upgradeCardCost", "commonUpgradeGoldCost", "rareUpgradeGoldCost", "epicUpgradeGoldCost", "legendaryUpgradeGoldCost")
 
             let token = jwt.sign(
                 {
@@ -87,6 +87,7 @@ router.post("/login", async function (req, res, next) {
             });
         }
     } catch (e) {
+        console.log(e)
         return next({ status: 400, message: "Invalid Email/Password." });
     }
 });
@@ -107,6 +108,6 @@ async function fetchChests() {
 
 async function fetchOptionList() {
     let arr = Array.from(arguments);
-    let arr = await Promise.all(arr.map(value => Option.findOne({ short: value })))
+    arr = await Promise.all(arr.map(value => Option.findOne({ short: value })))
     return arr;
 }

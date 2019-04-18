@@ -200,7 +200,7 @@ router.post("/:usr_id/abandon", async function (req, res) {
 })
 
 // Join game endpoint
-router.post("/:usr_id/game/:game_id", function (req, res) {
+router.post("/:usr_id/game/:game_id", async function (req, res) {
 
     // need deck
 
