@@ -179,6 +179,26 @@ router.put("/:usr_id/decks/:deck_id", async function (req, res) {
     }
 })
 
+// Abandon game endpoint
+router.post("/:usr_id/abandon", async function (req, res) {
+    try {
+        let user = await User.findById(req.user.usr_id)
+
+        if (!user.inGame) throw new Error("User is not in game");
+
+        foundUser.inGame = false;
+        foundUser.save()
+
+        res.status(200).json({});
+
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({
+            err: err.message
+        });
+    }
+})
+
 async function fetchUser(id) {
     let foundUser = await User.findById(id).deepPopulate('cards.card');
     return foundUser;

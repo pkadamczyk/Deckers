@@ -37,23 +37,6 @@ mongoose.Promise = Promise; // DODATKOWY CONFIG PROMISOW MONGOOSA - Pszemek (Aut
 app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
 
-
-
-// app.post("/game/abandon", async function (req, res) {//isLoggedIn removed, new Auth - Pszemek
-//     User.findOne({
-//         username: req.user.username
-//     }, function (err, foundUser) {
-//         if (!foundUser.inGame) console.log("User is not in game!");
-//         else {
-//             foundUser.inGame = false;
-//             foundUser.save(function (err) {
-//                 console.log("Player abandoned game")
-//                 res.send();
-//             });
-//         }
-//     })
-// })
-
 // app.get("/game/:id", function (req, res) {//isLoggedIn removed, new Auth - Pszemek
 //     Game.findOne({
 //         _id: req.params.id
