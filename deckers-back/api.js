@@ -199,6 +199,72 @@ router.post("/:usr_id/abandon", async function (req, res) {
     }
 })
 
+// Join game endpoint
+router.post("/:usr_id/game/:game_id", function (req, res) {
+
+    // need deck
+
+    try {
+        let [foundGame, user] = await Promise.all([Game.findById(req.params.game_id).deepPopulate('players'), User.findById(req.params.usr_id).deepPopulate('decks.cards.card')]);
+        if (foundGame.isFinished) throw new Error("Game finished");
+        if (user.inGame) throw new Error("User already in some game");
+
+        // Handle wrong user sytuation
+        if (foundGame.players.findIndex(player => player.username == req.user.username) == -1) throw new Error("No such user in game data");
+
+        let gameDeck = [];
+        let role;
+
+        //  TODO Use declared deck instead of 0 index
+        for (var i = 0; i < user.decks[0].cards.length; i++) {
+            for (var j = 0; j < user.decks[0].cards[i].card.stats.amount; j++) {
+                var newCard = {
+                    card: user.decks[0].cards[i].card
+                }
+                gameDeck.push(newCard)
+            }
+        }
+
+        // Shuffle deck
+        gameDeck = shuffle(gameDeck);
+
+        role = foundGame.players.findIndex(player => player.username == req.user.username)
+        console.log("Role: " + role);
+
+        // TODO Response not declared in docs
+        // res.render("game", {
+        //     player: user,
+        //     role: role,
+        //     deck: gameDeck,
+        //     GAME: foundGame
+        // });
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({
+            err: err.message
+        });
+    }
+})
+
+function shuffle(array) {
+    var m = array.length,
+        t, i;
+
+    // While there remain elements to shuffle…
+    while (m) {
+
+        // Pick a remaining element…
+        i = Math.floor(Math.random() * m--);
+
+        // And swap it with the current element.
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+    }
+
+    return array;
+}
+
 async function fetchUser(id) {
     let foundUser = await User.findById(id).deepPopulate('cards.card');
     return foundUser;

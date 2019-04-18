@@ -37,52 +37,6 @@ mongoose.Promise = Promise; // DODATKOWY CONFIG PROMISOW MONGOOSA - Pszemek (Aut
 app.set("view engine", "ejs");
 app.use(methodOverride("_method"));
 
-// app.get("/game/:id", function (req, res) {//isLoggedIn removed, new Auth - Pszemek
-//     Game.findOne({
-//         _id: req.params.id
-//     }).deepPopulate('players').exec(function (err, foundGame) {
-//         if (err) return res.redirect("back");
-
-//         // Handle wrong user sytuation
-//         if (foundGame.players.find(player => player.username == req.user.username) == undefined) {
-//             console.log("ERROR no such user in game data");
-//             return res.redirect("back");
-//         }
-
-
-//         User.findOne({
-//             username: req.user.username
-//         }).deepPopulate('decks.cards.card').exec(function (err, foundUser) {
-//             if (err) return res.redirect("back");
-
-//             let gameDeck = [];
-//             let role;
-
-//             for (var i = 0; i < foundUser.decks[0].cards.length; i++) {
-//                 for (var j = 0; j < foundUser.decks[0].cards[i].card.stats.amount; j++) {
-//                     var newCard = {
-//                         card: foundUser.decks[0].cards[i].card
-//                     }
-//                     gameDeck.push(newCard)
-//                 }
-//             }
-
-//             // Shuffle deck
-//             gameDeck = shuffle(gameDeck);
-
-//             role = foundGame.players.findIndex(player => player.username == req.user.username)
-//             console.log("Role: " + role);
-
-//             res.render("game", {
-//                 player: foundUser,
-//                 role: role,
-//                 deck: gameDeck,
-//                 GAME: foundGame
-//             });
-//         });
-//     });
-// })
-
 //===============================
 //  ROUTES CONNECTIONS TO EXPRESS
 app.use(cardRoutes);
@@ -97,22 +51,3 @@ server.listen(8080, process.env.IP, function () {
     console.log("Server started!");
 });
 
-// =========================================
-function shuffle(array) {
-    var m = array.length,
-        t, i;
-
-    // While there remain elements to shuffle…
-    while (m) {
-
-        // Pick a remaining element…
-        i = Math.floor(Math.random() * m--);
-
-        // And swap it with the current element.
-        t = array[m];
-        array[m] = array[i];
-        array[i] = t;
-    }
-
-    return array;
-}
