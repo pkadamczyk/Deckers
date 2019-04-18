@@ -199,7 +199,7 @@ hr{
 }
 .DeckCreationPanel-creating{
   position: absolute;
-  left: 105px;
+  left: 55px;
   top: 570px;
 }
 .DeckList{
@@ -217,6 +217,12 @@ hr{
   margin-top: 5px;
   widows: 100%;
   height:45px;
+  border-radius: 5px;
+}
+
+.card-name{
+  padding-top:10px;
+  
 }
 .AuthFormWrapper{
   height:100%;
@@ -236,4 +242,15 @@ hr{
 .AuthFormItself button{
   background-color: rgb(4, 7, 20);
   color:white;
+}
+
+.cancel-card{
+  display: inline-block;
+  background-color: red;
+  color:white;
+  height: 45px;
+  width: 45px;
+  flex-direction: row-reverse;
+  
+
 }
