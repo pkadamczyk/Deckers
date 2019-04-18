@@ -106,9 +106,10 @@ router.post("/:usr_id/decks/create", async function (req, res) {
     let foundUser = await fetchUser(req.params.usr_id);
     let indexArr = req.body.cards.map(card_id => foundUser.cards.findIndex(card => card._id.equals(card_id)))
 
-    indexArr.forEach(index => newDeck.card.push(foundUser.cards[index].card._id))
+    indexArr.forEach(index => newDeck.cards.push(foundUser.cards[index].card._id))
 
-    console.log("New deck: " + newDeck);
+    console.log("New deck: ");
+    console.log(JSON.stringify(newDeck))
     // foundUser.decks.push(newDeck);
     foundUser.decks.push(newDeck);
 
