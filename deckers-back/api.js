@@ -108,24 +108,18 @@ router.post("/:usr_id/decks/create", async function (req, res) {
 
     indexArr.forEach(index => newDeck.cards.push(foundUser.cards[index].card._id))
 
-    console.log("New deck: ");
-    console.log(JSON.stringify(newDeck))
-    // foundUser.decks.push(newDeck);
     foundUser.decks.push(newDeck);
+    await foundUser.deepPopulate("decks.cards");
 
     res.status(200).json({
         decks: foundUser.decks,
     });
 
-    // foundUser.save();
+    foundUser.save();
 })
 
 // delete deck
 router.post("/:usr_id/decks/:deck_id", async function (req, res) {
-    let newDeck = {
-        cards: [],
-        name: req.body.name
-    };
     let foundUser = await fetchUser(req.params.usr_id);
 
     // Find index of deleted deck
@@ -136,7 +130,7 @@ router.post("/:usr_id/decks/:deck_id", async function (req, res) {
         decks: foundUser.decks,
     });
 
-    // foundUser.save();
+    foundUser.save();
 })
 
 async function fetchUser(id) {
