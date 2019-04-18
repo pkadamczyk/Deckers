@@ -7,45 +7,44 @@ const Option = require("./models/option");
 const Card = require("./models/card");
 
 // Route for card upgrade
-// Currently not working, need refactor
-router.post("/:id/cards/upgrade", async function (req, res) {
-    let foundUser = await fetchUser(req.params.id);
-
-    let index = foundUser.cards.findIndex(card => req.body.cardName == card.card.name);
-    let card = foundUser.cards[index];
+router.post("/:usr_id/:card_id/upgrade", async function (req, res) {
 
     try {
-        if (Promise.all(levelCheck(card), goldCheck(card, username)).some(el => !el)) throw "error";
-    }
-    catch (error) {
-        console.error(error);
-    }
-    // foundUser.currency.gold -= foundOptionGroup.options[card.level].option.value;
-    // console.log(foundUser.currency.gold);
+        let foundUser = await fetchUser(req.params.usr_id);
 
-    let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
-    upgradeCardCost = Option.findOne({ short: "upgradeCardCost" });
-    upgradeGoldCost = Option.findOne({ short: optionName });
-    [upgradeCardCost, upgradeGoldCost] = Promise.all(upgradeCardCost, upgradeGoldCost);
-    console.log(upgradeCardCost);
+        let index = foundUser.cards.findIndex(card => req.params.card_id == card._id);
+        let card = foundUser.cards[index];
 
-    if (card.amount >= upgradeCardCost.options[card.level].option.value) {
-        // Substract cards from player eq
-        foundUser.cards[index].amount -= upgradeCardCost.options[card.level].option.value;
+        let [levelCheckResult, goldCheckResult, cardsCheckResult] = await Promise.all([levelCheck(card), goldCheck(card, foundUser), cardsCheck(card, foundUser)])
+
+        if (!levelCheckResult) throw new Error("Card already on max level");
+        if (!goldCheckResult) throw new Error("Not enough gold");
+        if (!cardsCheckResult) throw new Error("Not enough cards");
+
+        let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
+        let upgradeCardCost = Option.findOne({ short: "upgradeCardCost" });
+        let upgradeGoldCost = Option.findOne({ short: optionName });
+        [upgradeCardCost, upgradeGoldCost] = await Promise.all([upgradeCardCost, upgradeGoldCost]);
+
+        // Substract cards and gold from player eq
+        foundUser.cards[index].amount -= upgradeCardCost.values[card.level];
+        foundUser.currency.gold -= upgradeGoldCost.values[card.level];
+
+        //  Add another level to upgraded card
         foundUser.cards[index].level++;
 
-        foundUser.currency.gold -= upgradeGoldCost.options[card.level].option.value;
+        res.status(200).json({
+            currency: foundUser.currency,
+            cards: foundUser.cards
+        });
+        foundUser.save();
 
-        // let msg = {
-        //     currentLevel: foundUser.cards[index].level,
-        //     newAmount: foundUser.cards[index].amount,
-        //     cardsToNextLevel: upgradeCardCost.options[card.level].option.value
-        // }
-
-        // res.status(200).json({
-        //     user: foundUser
-        // });
-        // foundUser.save();
+    }
+    catch (err) {
+        console.log(err)
+        res.status(404).json({
+            err: err.message
+        });
     }
 });
 
@@ -139,22 +138,29 @@ async function fetchUser(id) {
 }
 
 async function fetchOptionsMany() {
-    arr = Array.from(arguments);
-    arr = await Promise.all(arr.map(value => Option.findOne({ short: value })))
+    let arr = Array.from(arguments);
+    let arr = await Promise.all(arr.map(value => Option.findOne({ short: value })))
     return arr;
 }
 
 async function levelCheck(card) {
-    foundOption = await Option.findOne({ short: "maxCardLevel" });
-    if (card.level >= foundOption.options[card.card.rarity - 1].option.value) return false;
+    let foundOption = await Option.findOne({ short: "maxCardLevel" });
+    if (card.level >= foundOption.values[card.card.rarity - 1]) return false;
     return true;
 }
 
 async function goldCheck(card, user) {
     let optionName = Object.keys(Card.rarityList)[card.card.rarity] + "UpgradeGoldCost";
-    foundOption = await Option.findOne({ short: optionName })
-    if (user.currency.gold < foundOption.options[card.level].option.value) return false
-    return false;
+    let foundOption = await Option.findOne({ short: optionName })
+    if (user.currency.gold < foundOption.values[card.level]) return false
+    return true;
+}
+
+async function cardsCheck(card, user) {
+    let foundOption = await Option.findOne({ short: "upgradeCardCost" })
+    let index = user.cards.findIndex(c => c._id == card._id);
+    if (user.cards[index].amount < foundOption.values[card.level]) return false;
+    return true;
 }
 
 function calculateCardAmounts(chest) {
