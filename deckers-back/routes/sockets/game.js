@@ -29,15 +29,15 @@ var Game = require("../../models/game");
 
 
 
-module.exports.connect = function(io) {
+module.exports.connect = function (io) {
     var game = io.of('/game');
 
 
 
     // https://github.com/socketio/socket.io/blob/318d62/examples/chat/index.js#L36
     // https://www.npmjs.com/package/roomdata
-    game.on('connection', function(socket) {
-        socket.on('join', function(data) {
+    game.on('connection', function (socket) {
+        socket.on('join', function (data) {
             let reconnected = false;
             roomdata.joinRoom(socket, "game-" + data.gameID);
 
@@ -56,7 +56,7 @@ module.exports.connect = function(io) {
             }
         })
 
-        socket.on("card-played", function(data) {
+        socket.on("card-played", function (data) {
 
             let player = determinePlayer();
 
@@ -81,7 +81,7 @@ module.exports.connect = function(io) {
             calculateStats(card);
         })
 
-        socket.on("end-turn", function(data) {
+        socket.on("end-turn", function (data) {
             let currentPlayer = (data.currentPlayer + 1) % 2;
             // Set room variable to hold current player
             roomdata.set(socket, "currentPlayer", currentPlayer);
@@ -188,11 +188,11 @@ module.exports.connect = function(io) {
         function gameOver(data) {
             game.in("game-" + roomdata.get(socket, "gameID")).emit('gameover', { winner: roomdata.get(socket, "currentPlayer") });
 
-            Game.findById(roomdata.get(socket, "gameID")).deepPopulate('players').exec(function(err, foundGame) {
+            Game.findById(roomdata.get(socket, "gameID")).deepPopulate('players').exec(function (err, foundGame) {
                 foundGame.isFinished = true;
 
-                foundGame.players.forEach(function(player) {
-                    User.findOne({ username: player.username }, function(err, foundUser) {
+                foundGame.players.forEach(function (player) {
+                    User.findOne({ username: player.username }, function (err, foundUser) {
                         if (foundUser.username == roomdata.get(socket, determinePlayer().username)) foundUser.currency.gold += 10;
                         foundUser.inGame = false;
                         foundUser.save();

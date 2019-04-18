@@ -17,7 +17,7 @@ export function apiCall(method, path, data) {
       .catch(err => {
         console.log("tutaj sie wypierdala");
         return reject(err.res.data.error);
-        
+
       });
   });
 }
