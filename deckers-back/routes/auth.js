@@ -4,13 +4,16 @@ const jwt = require("jsonwebtoken");
 
 var User = require("../models/user");
 var Chest = require("../models/chest");
+var Option = require("../models/option");
 
 router.post("/register", async function (req, res, next) {
     try {
         let [user, availableChests] = await Promise.all([await User.create(req.body), await fetchChests()])
-        user.currency = {gold: 200}
+        user.currency = { gold: 200 }
         user.cards = []
         user.save()
+
+        let a, b, c, d, e, f = fetchOptionList("maxCardLevel", "upgradeCardCost", "commonUpgradeGoldCost", "rareUpgradeGoldCost", "epicUpgradeGoldCost", "legendaryUpgradeGoldCost")
 
         let { id, username, profileImageUrl } = user;
         let token = jwt.sign(
@@ -23,6 +26,14 @@ router.post("/register", async function (req, res, next) {
         );
         return res.status(200).json({
             user,
+            options: {
+                maxCardLevel: a,
+                upgradeCardCost: b,
+                commonUpgradeGoldCost: c,
+                rareUpgradeGoldCost: d,
+                epicUpgradeGoldCost: e,
+                legendaryUpgradeGoldCost: f
+            },
             availableChests,
             token
         });
@@ -40,14 +51,14 @@ router.post("/register", async function (req, res, next) {
 router.post("/login", async function (req, res, next) {
     // finding a user
     try {
-        console.log("a")
         let [user, availableChests] = await Promise.all([fetchUser(req.body.email), fetchChests()])
-        console.log("aa")
 
         let { id, username, profileImageUrl } = user;
         let isMatch = await user.comparePassword(req.body.password);
-        console.log(isMatch)
         if (isMatch) {
+
+            let a, b, c, d, e, f = fetchOptionList("maxCardLevel", "upgradeCardCost", "commonUpgradeGoldCost", "rareUpgradeGoldCost", "epicUpgradeGoldCost", "legendaryUpgradeGoldCost")
+
             let token = jwt.sign(
                 {
                     id,
@@ -58,7 +69,14 @@ router.post("/login", async function (req, res, next) {
             );
             return res.status(200).json({
                 user,
-                // optionslist
+                options: {
+                    maxCardLevel: a,
+                    upgradeCardCost: b,
+                    commonUpgradeGoldCost: c,
+                    rareUpgradeGoldCost: d,
+                    epicUpgradeGoldCost: e,
+                    legendaryUpgradeGoldCost: f
+                },
                 availableChests,
                 token
             });
@@ -85,4 +103,10 @@ async function fetchChests() {
 
     let availableChests = foundChests.filter(chest => chest.isAvailable)
     return availableChests;
+}
+
+async function fetchOptionList() {
+    let arr = Array.from(arguments);
+    let arr = await Promise.all(arr.map(value => Option.findOne({ short: value })))
+    return arr;
 }
