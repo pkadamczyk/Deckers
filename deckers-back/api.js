@@ -98,38 +98,85 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
 
 // Create new deck
 router.post("/:usr_id/decks/create", async function (req, res) {
-    let newDeck = {
-        cards: [],
-        name: req.body.name
-    };
-    let foundUser = await fetchUser(req.params.usr_id);
-    let indexArr = req.body.cards.map(card_id => foundUser.cards.findIndex(card => card._id.equals(card_id)))
+    try {
+        let newDeck = {
+            cards: [],
+            name: req.body.name
+        };
+        let foundUser = await fetchUser(req.params.usr_id);
+        let indexArr = req.body.cards.map(card_id => foundUser.cards.findIndex(card => card._id.equals(card_id)))
 
-    indexArr.forEach(index => newDeck.cards.push(foundUser.cards[index].card._id))
+        indexArr.forEach(index => newDeck.cards.push(foundUser.cards[index].card._id))
 
-    foundUser.decks.push(newDeck);
-    await foundUser.deepPopulate("decks.cards");
+        foundUser.decks.push(newDeck);
+        await foundUser.deepPopulate("decks.cards");
 
-    res.status(200).json({
-        decks: foundUser.decks,
-    });
+        res.status(200).json({
+            decks: foundUser.decks,
+        });
 
-    foundUser.save();
+        foundUser.save();
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({
+            err: err.message
+        });
+    }
 })
 
 // delete deck
 router.post("/:usr_id/decks/:deck_id", async function (req, res) {
-    let foundUser = await fetchUser(req.params.usr_id);
+    try {
+        let foundUser = await fetchUser(req.params.usr_id);
 
-    // Find index of deleted deck
-    let idx = foundUser.decks.findIndex(deck => deck._id.equals(req.params.deck_id));
-    if (idx !== -1) foundUser.decks.splice(idx, 1);
+        // Find index of deleted deck
+        let idx = foundUser.decks.findIndex(deck => deck._id.equals(req.params.deck_id));
 
-    res.status(200).json({
-        decks: foundUser.decks,
-    });
+        if (idx == -1) throw new Error("Deck not found");
+        foundUser.decks.splice(idx, 1);
 
-    foundUser.save();
+        res.status(200).json({
+            decks: foundUser.decks,
+        });
+
+        foundUser.save();
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({
+            err: err.message
+        });
+    }
+})
+
+// update deck
+router.put("/:usr_id/decks/:deck_id", async function (req, res) {
+    try {
+        let newDeck = {
+            cards: [],
+            name: req.body.name
+        };
+        let foundUser = await fetchUser(req.params.usr_id);
+
+        let indexArr = req.body.cards.map(card_id => foundUser.cards.findIndex(card => card._id.equals(card_id)))
+        indexArr.forEach(index => newDeck.cards.push(foundUser.cards[index].card._id))
+
+        let idx = foundUser.decks.findIndex(deck => deck._id.equals(req.params.deck_id));
+        if (idx == -1) throw new Error("Deck not found");
+
+        foundUser.decks.splice(idx, 1, newDeck);
+        await foundUser.deepPopulate("decks.cards");
+
+        res.status(200).json({
+            decks: foundUser.decks,
+        });
+
+        foundUser.save();
+    } catch (err) {
+        console.log(err)
+        res.status(404).json({
+            err: err.message
+        });
+    }
 })
 
 async function fetchUser(id) {
