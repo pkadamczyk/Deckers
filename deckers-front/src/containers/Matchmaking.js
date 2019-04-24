@@ -3,8 +3,8 @@ import DeckList from './DeckList';
 import MatchmakingNavbar from '../components/MatchmakingNavbar';
 import { setGameMode } from '../store/actions/matchMaking';
 import { connect } from 'react-redux';
-import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:8080');
+// import openSocket from 'socket.io-client';
+// const socket = openSocket('http://localhost:8080');
 class Matchmaking extends Component {
     // constructor(props){
     //     super(props);
@@ -25,62 +25,62 @@ class Matchmaking extends Component {
 
         return (
 
-            // <div className="row">
-            //     <div className="col-9">
-            //         <DeckList />
-            //     </div>
-            //     <div className="col-3">
-            //         <MatchmakingNavbar />
-            //     </div>
-            // </div>
-            <div className="gameMode">
-                <h1>Choose game mode:</h1>
-                <div className="gameModeOptions">
-                    <button className="btn btn-primary" onClick={e => {
-                        handleModeChange(e);
-                    }} value="Standard">
-                        Standard
-                    </button>
-                    <button className="btn btn-primary" onClick={e => {
-                        handleModeChange(e);
-                    }} value="Defined">
-                        Defined
-                    </button>
-                    <button className="btn btn-primary" onClick={e => {
-                        handleModeChange(e);
-                    }} value="Random">
-                        Random
-                    </button>
-                    <button className="btn btn-primary" onClick={e => {
-                        handleModeChange(e);
-                    }} value="Mixed">
-                        Mixed
-                    </button>
-
+            <div className="row">
+                <div className="col-9">
+                    <DeckList />
                 </div>
-                <div className="gameModeDesc">
-                    <h3>{mode}</h3>
-                    <p>{mode === "Standard" && descriptions[0]}</p>
-                    <p>{mode === "Defined" && descriptions[1]}</p>
-                    <p>{mode === "Random" && descriptions[2]}</p>
-                    <p>{mode === "Mixed" && descriptions[3]}</p>
+                <div className="col-3">
+                    <MatchmakingNavbar />
                 </div>
-
-                <button className="btn btn-primary mode-picked" onClick={() => {
-
-
-                    socket.emit('join',{});
-
-                    // socket.on('game-ready',function(gameID) {
-                    //     $(".ready-btn").removeClass( "disabled");
-                    //     $(".ready-btn").attr("href", "/game/" + gameID)
-                    // });
-
-                    // window.location.replace(...)
-                }}>Pick this mode</button>
-
-
             </div>
+            // <div className="gameMode">
+            //     <h1>Choose game mode:</h1>
+            //     <div className="gameModeOptions">
+            //         <button className="btn btn-primary" onClick={e => {
+            //             handleModeChange(e);
+            //         }} value="Standard">
+            //             Standard
+            //         </button>
+            //         <button className="btn btn-primary" onClick={e => {
+            //             handleModeChange(e);
+            //         }} value="Defined">
+            //             Defined
+            //         </button>
+            //         <button className="btn btn-primary" onClick={e => {
+            //             handleModeChange(e);
+            //         }} value="Random">
+            //             Random
+            //         </button>
+            //         <button className="btn btn-primary" onClick={e => {
+            //             handleModeChange(e);
+            //         }} value="Mixed">
+            //             Mixed
+            //         </button>
+
+            //     </div>
+            //     <div className="gameModeDesc">
+            //         <h3>{mode}</h3>
+            //         <p>{mode === "Standard" && descriptions[0]}</p>
+            //         <p>{mode === "Defined" && descriptions[1]}</p>
+            //         <p>{mode === "Random" && descriptions[2]}</p>
+            //         <p>{mode === "Mixed" && descriptions[3]}</p>
+            //     </div>
+
+            //     <button className="btn btn-primary mode-picked" onClick={() => {
+
+
+            //         socket.emit('join',{});
+
+            //         // socket.on('game-ready',function(gameID) {
+            //         //     $(".ready-btn").removeClass( "disabled");
+            //         //     $(".ready-btn").attr("href", "/game/" + gameID)
+            //         // });
+
+            //         // window.location.replace(...)
+            //     }}>Pick this mode</button>
+
+
+            // </div>
         )
     }
 

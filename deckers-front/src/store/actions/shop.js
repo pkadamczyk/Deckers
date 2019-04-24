@@ -9,11 +9,10 @@ export const setAvailableChests = (chests) => ({
 
 export const buyChest = (usr_id, chest_name) => {
   return dispatch => {
-    console.log("buyChest");
     return apiCall("POST", `/${usr_id}/shop/buy/${chest_name}`)
       .then(res => {
         dispatch(updateUserAfterChestPurchase(res))
-        console.log(res.currentCards);
+        console.log(JSON.stringify(res));
       })
       .catch(res => {
         console.log("Something went wrong with getting shop content");

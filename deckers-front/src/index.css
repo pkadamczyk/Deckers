@@ -53,8 +53,10 @@ code {
 
 .mm-nav{
   padding: 0;
-  width: 237px;
-  height: 608px;
+  /* width: 237px;
+  height: 608px; */
+  width: 100%;
+  height: 100%;
   background-color: rgb(4, 7, 20);
 }
 
@@ -251,6 +253,14 @@ hr{
   height: 45px;
   width: 45px;
   flex-direction: row-reverse;
-  
-
+}
+.CardListDeck{
+  background-color: white;
+  margin:0px 10px;
+  margin-top: 5px;
+  widows: 100%;
+  height:45px;
+  border-radius: 5px;
+  padding-top:5px;
+  color: rgb(4, 7, 20);
 }
