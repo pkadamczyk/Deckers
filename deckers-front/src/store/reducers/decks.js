@@ -1,40 +1,28 @@
-import {CREATE_NEW_DECK, ADD_CARD_TO_DECK, CANCEL_DECK_CREATION, REMOVE_CARD_FROM_DECK} from "../actionTypes";
+import {CREATE_NEW_DECK, ADD_CARD_TO_DECK, CANCEL_DECK_CREATION, REMOVE_CARD_FROM_DECK, EDIT_DECK} from "../actionTypes";
 
 const DEFAULT_STATE = {
   currentState:"idle",
   cards:[],
-  nextAvailableSlot:0,
-  freeSlots:[]
 };
   
   export default (state = DEFAULT_STATE, action) => {
       switch (action.type){
         case CREATE_NEW_DECK:
-          return {...state, currentState:"creating", cards:[], nextAvailableSlot:0, freeSlots:[]};
+        return {...state, currentState:"creating", cards:[]}
         case CANCEL_DECK_CREATION:
-          let resetState = state;
-          resetState.currentState = "idle";
-          resetState.cards = [];
-          resetState.nextAvailableSlot = 0;
-          return {currentState:"idle", cards:[],nextAvailableSlot:0}
+          return {currentState:"idle", cards:[]}
         case ADD_CARD_TO_DECK:
-          let updatedCards = state.cards;
-          let nextSlot = state.nextAvailableSlot;
-          let freeSlotCheck = state.freeSlots;
-          let properfreeSlots = state.freeSlots;
-          if(freeSlotCheck.length != 0){
-            updatedCards[freeSlotCheck[0]] = action.card;
-            properfreeSlots.shift();
-          }else{
-            updatedCards[action.slot] = action.card;
-            nextSlot++;
-          }
-          return {...state, cards:updatedCards, nextAvailableSlot:nextSlot, freeSlots:properfreeSlots}
+          //STUPID, but! it makes CardList component rerender and updates cards.
+          //Temporary (hope so)
+          let updatedCards = state.cards.filter(card => card!==0);
+          updatedCards.push(action.card);
+          return {...state, cards:updatedCards}
         case REMOVE_CARD_FROM_DECK:
-          state.freeSlots.push(action.slot);
-          let cardsAfterDeletion = state.cards;
-          cardsAfterDeletion[action.slot] = null;
+          let cardsAfterDeletion = state.cards.filter( (card,index) => index!==action.slot)
           return{...state, cards:cardsAfterDeletion}
+        case EDIT_DECK:
+          let currentCards = action.cards;
+          return{...state, currentState:"editing", cards:currentCards}
         default:
           return state;
       }

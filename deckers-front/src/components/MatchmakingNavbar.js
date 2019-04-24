@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
 import { findGame, leaveQue, acceptGame, disconnectFromGame, abandonGame, reconnectGame } from "../store/actions/matchMaking";
-
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:8080');
 class MatchmakingNavbar extends Component{
     constructor(props){
         super(props);
@@ -12,14 +13,12 @@ class MatchmakingNavbar extends Component{
     render(){
         return(
             <div className="mm-nav">
-                <div className="btn-group">
-                    <button className="btn btn-dark">Casual</button>
-                    <button className="btn btn-light">Ranked</button>
-                </div>
                 <div className="mm_options">
-                    {this.props.mm_state==="idle" && <button className="btn btn-success" onClick={this.props.findGame}>Find game</button>
-                    }
-                    {this.props.mm_state==="lookingForGame" &&
+                    <button className="btn btn-success" onClick={() => {
+                        socket.emit('join',{})}}>Find game</button>}
+{/*                   
+                    {this.props.mm_state==="idle" && <button className="btn btn-success" onClick={this.props.findGame}>Find game</button>}   
+                     {this.props.mm_state==="lookingForGame" &&
                         (<div>
                             <button className="btn btn-success" onClick={this.props.acceptGame}>Accept game</button>
                             <button className="btn btn-danger" onClick={this.props.leaveQue}>Leave que</button>
@@ -35,7 +34,7 @@ class MatchmakingNavbar extends Component{
                             <button className="btn btn-success" onClick={this.props.reconnectGame}>Reconnect</button>
                             <button className="btn btn-danger" onClick={this.props.abandonGame}>Abandon</button>
                         </div>)
-                    }
+                    } */}
                 </div>
             </div>
         )
