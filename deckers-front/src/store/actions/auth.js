@@ -16,7 +16,7 @@ export function setAuthorizationToken(token) {
 export function updateUserAfterDeckCreation(res) {
   return({
     type: UPDATE_USER_AFTER_DECK_CREATION,
-    currentDecks: res.decks
+    currentDecks: res.decks,
   })
 }
 

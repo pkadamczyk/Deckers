@@ -8,16 +8,18 @@ export const createNewDeck = () => ({
 
 export const addCardToDeck = (card) => ({
   type: ADD_CARD_TO_DECK,
-  card:card
+  card:card,
 });
 
 export const cancelDeckCreation = () => ({
   type: CANCEL_DECK_CREATION
 });
 
-export const editDeck = (cards) => ({
+export const editDeck = (cards, name, deck_id) => ({
   type: EDIT_DECK,
-  cards:cards
+  cards:cards,
+  name:name,
+  deck_id:deck_id
 });
 
 export const removeCardFromDeck =(slot) => ({
@@ -29,6 +31,20 @@ export const submitDeck = (usr_id, deckToSend) => {
   return dispatch => {
     console.log(usr_id);
     return apiCall("POST", `http://localhost:8080/${usr_id}/decks/create`, deckToSend)
+      .then(res => {
+        dispatch(updateUserAfterDeckCreation(res));
+        dispatch(cancelDeckCreation());
+        console.log(JSON.stringify(res));
+      })
+      .catch(res => {
+        console.log("Something went wrong with getting shop content");
+      })
+  };
+};
+export const updateDeck = (usr_id, deck_id, deckToSend) => {
+  return dispatch => {
+    console.log(usr_id);
+    return apiCall("POST", `http://localhost:8080/${usr_id}/decks/${deck_id}/?_method=put`, deckToSend)
       .then(res => {
         dispatch(updateUserAfterDeckCreation(res));
         dispatch(cancelDeckCreation());

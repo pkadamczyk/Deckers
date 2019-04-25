@@ -95,7 +95,7 @@ router.post("/login", async function (req, res, next) {
 module.exports = router;
 
 async function fetchUser(email) {
-    let foundUser = await User.findOne({ email: email }).deepPopulate('cards.card')
+    let foundUser = await User.findOne({ email: email }).deepPopulate('cards.card decks.cards.card')
     return foundUser;
 }
 

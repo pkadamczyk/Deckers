@@ -9,7 +9,7 @@ class CardItem extends Component{
             <div className="col-2 card-item m-2">
                 <h4 className="mt-2">{card.card.name}</h4><hr/>
                 <p>Amount: {card.amount}</p>
-                {currentState==="creating" && (
+                {(currentState==="creating" || currentState==="editing") && (
                     <button onClick={(e)=>{addCardToDeck(card)}} className="btn">Add to deck</button>
                 )}
             </div>
@@ -20,9 +20,7 @@ class CardItem extends Component{
 
 function mapStateToProps(state){
     return{
-        currentState:state.decks.currentState,
-        //nextAvailableSlot:state.decks.nextAvailableSlot,
-        // freeSlots:state.decks.freeSlots
+        currentState:state.decks.currentState
     }
 }
 

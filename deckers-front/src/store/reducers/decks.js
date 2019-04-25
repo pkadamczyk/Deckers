@@ -22,7 +22,9 @@ const DEFAULT_STATE = {
           return{...state, cards:cardsAfterDeletion}
         case EDIT_DECK:
           let currentCards = action.cards;
-          return{...state, currentState:"editing", cards:currentCards}
+          let currentName = action.name;
+          let deck_id = action.deck_id;
+          return{...state, currentState:"editing", cards:currentCards, name:currentName, deck_id:deck_id}
         default:
           return state;
       }
