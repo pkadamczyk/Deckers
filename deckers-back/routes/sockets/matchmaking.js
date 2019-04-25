@@ -1,11 +1,8 @@
-var roomdata = require('roomdata');
-
 var User = require("../../models/user");
 var Game = require("../../models/game");
 
 module.exports.connect = async function (io) {
 
-    let playersInQueue = 0;
     let Matchmaking = {
         gameMode: [{
             playersInQueue: []
@@ -15,8 +12,9 @@ module.exports.connect = async function (io) {
 
     gameSearch.on('connection', function (socket) {
 
-        socket.on('join', function (data) {
+        socket.on('join', async function (data) {
             // needs player id, searched mode(as number)
+            console.log("Player joined");
             try {
                 user = await User.findById(data.usr_id);
 
@@ -38,9 +36,8 @@ module.exports.connect = async function (io) {
             }
         });
 
+        // TODO
         socket.on('disconnect', function () {
-            playersInQueue--;
-            console.log('Players looking for game: ' + playersInQueue);
         });
     });
 
@@ -51,7 +48,7 @@ async function teamPlayers() {
     Matchmaking.gameMode.forEach(function (gameMode, i) {
         let pArray = gameMode.playersInQueue.slice();
         try {
-            gameMode.playersInQueue.forEach(function (player, i, arr) {
+            gameMode.playersInQueue.forEach(async function (player, i, arr) {
                 let p1 = arr[2 * i];
                 let p2 = arr[(2 * i) + 1];
 
@@ -84,65 +81,7 @@ async function teamPlayers() {
                 [p1, p2].forEach(player => player.socket.leave(roomName));
             })
         } catch (err) {
-
+            console.log(err)
         }
     })
 }
-
-
-
-
-
-
-
-
-
-
-
-
- // if (playersInQueue % 2 == 1) ROOM_NO++;
-
-                // roomdata.joinRoom(socket, "search-" + ROOM_NO);
-                // roomdata.set(socket, "roomno", ROOM_NO);
-
-                // Date.now() + Math.random()
-                // var room = gameSearch.adapter.rooms["search-" + roomdata.get(socket, "roomno")];
-                // console.log(room);
-
-                // let newGame;
-                // return new Promise((resolve, reject) => {
-                //     if (room.length == 1) {
-                //         newGame = new Game({
-                //             players: [],
-                //             isFinished: false
-                //         });
-
-                //         newGame.save(function (err) {
-                //             roomdata.set(socket, "gameid", newGame._id);
-                //             resolve();
-                //         });
-                //     }
-                //     else {
-                //         Game.findById(roomdata.get(socket, "gameid"), function (err, foundGame) {
-                //             if (err) console.log(err);
-                //             newGame = foundGame;
-                //             resolve();
-                //         })
-                //     }
-                // }).then(function () {
-                //     User.findOne({ username: data.username }, function (err, foundUser) {
-                //         foundUser.inGame = true;
-                //         foundUser.currentGame = newGame._id;
-                //         foundUser.save();
-
-                //         newGame.players.push(foundUser._id);
-                //         newGame.save();
-
-                //         if (newGame.players.length == 2) {
-                //             console.log("Game ready to save");
-
-                //             gameSearch.in("search-" + roomdata.get(socket, "roomno")).emit('game-ready', newGame._id);
-                //             playersInQueue -= 2;
-                //         }
-                //     });
-                // });

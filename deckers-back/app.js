@@ -7,14 +7,14 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server, {});
 
 io = require('./routes/sockets/matchmaking').connect(io);
-io = require('./routes/sockets/game').connect(io);
+// io = require('./routes/sockets/game').connect(io);
 
-io.on('connection', function (socket) {
-    console.log("connected")
-    socket.on("join", function () {
-        console.log("player joined")
-    })
-});
+// io.on('connection', function (socket) {
+//     console.log("connected")
+//     socket.on("join", function () {
+//         console.log("player joined")
+//     })
+// });
 
 var bodyParser = require('body-parser');
 var mongoose = require("mongoose");
