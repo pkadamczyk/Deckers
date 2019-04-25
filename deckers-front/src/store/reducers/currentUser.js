@@ -15,6 +15,7 @@ export default (state = DEFAULT_STATE, action) => {
       };
       case UPDATE_USER_AFTER_CHEST_PURCHASE:
         let updatedUser = state.user;
+        //let userCards = state.user.cards.filter(card => card!==0);
         updatedUser.cards = action.currentCards;
         updatedUser.currency = action.currency;
         return {
