@@ -1,7 +1,7 @@
 var User = require("../../models/user");
 var Game = require("../../models/game");
 
-module.exports.connect = async function (io) {
+module.exports.connect = function (io) {
 
     let Matchmaking = {
         gameMode: [{
