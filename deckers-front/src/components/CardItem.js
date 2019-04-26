@@ -5,10 +5,28 @@ import {addCardToDeck} from '../store/actions/decks';
 class CardItem extends Component{
     render(){
         const {card, currentState, addCardToDeck} = this.props;
+        const races = ['Dwarf', 'Forsaken', 'The Order', 'Skaven']
         return(
-            <div className="col-2 card-item m-2">
-                <h4 className="mt-2">{card.card.name}</h4><hr/>
-                <p>Amount: {card.amount}</p>
+            <div className=" card-item m-2">
+                <div className="card-item-cost">
+                    <p>{card.card.stats[0].cost}</p>
+                </div>
+                <div className="card-item-name">
+                    <p>{card.card.name}</p>
+                </div>
+                <div className="card-item-race">
+                    <p>{races[card.card.race]}</p>
+                </div>
+                {/* <p>Amount: {card.amount}</p> */}
+                <div className="card-item-stats">
+                    <span className="card-stats-damage"><p>{card.card.stats[0].damage}</p></span>
+                    <span className="card-stats-health"><p>{card.card.stats[0].health}</p></span>
+                </div>
+                <div className="card-item-description">
+                    {/* //<p>{card.card.role}</p> */}
+                    <p>{card.card.description}</p>
+                </div>
+                
                 {(currentState==="creating" || currentState==="editing") && (
                     <button onClick={(e)=>{addCardToDeck(card)}} className="btn">Add to deck</button>
                 )}
