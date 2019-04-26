@@ -172,6 +172,15 @@ hr{
   height: 100%;
   color: white;
   text-align: center;
+  width: 20.84%;
+  height: 100%;
+  position: fixed;
+
+}
+.CardDeck-wrapper{
+  width: 20.84%;
+  height: 100%;
+  position: fixed;
 }
 .card-item{
   height:255px;
