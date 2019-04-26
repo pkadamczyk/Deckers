@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {createNewDeck, submitDeck, cancelDeckCreation, removeCardFromDeck, editDeck, updateDeck} from '../store/actions/decks';
+import {createNewDeck, submitDeck, cancelDeckCreation, removeCardFromDeck, editDeck,
+    updateDeck, removeDeck} from '../store/actions/decks';
 import CardListDeck from '../components/CardListDeck';
 import CardDeckSlots from '../components/CardDeckSlots';
 import EditSlots from '../components/EditSlots';
@@ -33,6 +34,9 @@ class CardsDeck extends Component{
         }
         this.props.updateDeck(this.props.usr_id, this.props.deck_id, deckToSend)
     }
+    handleDeckDeletion = (deck_id) => {
+        this.props.removeDeck(this.props.usr_id, deck_id)
+    }
 
     
 
@@ -44,6 +48,7 @@ class CardsDeck extends Component{
                 key={deckItem._id}
                 deckContent={deckItem}
                 handleClick={editDeck}
+                handleDeckDeletion={this.handleDeckDeletion}
             />
         ));
         let creatingDeckSlots = cards.map( (card, index) => (
@@ -113,9 +118,10 @@ function mapStateToProps(state) {
         cards:state.decks.cards,
         usr_id:state.currentUser.user._id,
         editDeckName:state.decks.name,
-        deck_id:state.decks.deck_id
+        deck_id:state.decks.deck_id,
     }
 }
 
         
-export default connect(mapStateToProps, {updateDeck, submitDeck, createNewDeck, cancelDeckCreation, removeCardFromDeck, editDeck })(CardsDeck);
+export default connect(mapStateToProps, {updateDeck, submitDeck, createNewDeck, cancelDeckCreation,
+    removeCardFromDeck, editDeck, removeDeck })(CardsDeck);

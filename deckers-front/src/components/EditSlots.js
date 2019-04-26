@@ -6,7 +6,7 @@ class EditSlots extends Component{
         return(
             <div className="deckSlot">
                 <div className="row">
-                    <div className="col-10 card-name"><p>{deckSlot.name}</p></div><button onClick={() => 
+                    <div className="col-10 card-name"><p>{(deckSlot.name || deckSlot.card.name)}</p></div><button onClick={() => 
                 {removeCardFromDeck(deckSlotNumber)}} className="btn btn-danger cancel-card col-2"
                 >X</button></div>
             </div>
