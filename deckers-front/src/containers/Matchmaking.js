@@ -19,9 +19,9 @@ class Matchmaking extends Component {
         this.props.setGameMode(e.target.value);
     }
     render() {
-        let handleModeChange = this.handleModeChange.bind(this);
-        let { mode } = this.props;
-        const descriptions = ['Standard is a mode in which decks are picked before entering the game, but your hero selection options are dependent of your luck on field of battle!', 'Defined is a game mode which force players to choose both their decks and heroes before entering the battle.', 'In Random game mode both decks and heroes are picked by players after entering the battle, making it harder to complete full deck with symbiosis but more fun!', 'Mixed is a place to look not only for one mode but for as many as you want, whichever will be found sooner, you will be invited to!'];
+        // let handleModeChange = this.handleModeChange.bind(this);
+        // let { mode } = this.props;
+        // const descriptions = ['Standard is a mode in which decks are picked before entering the game, but your hero selection options are dependent of your luck on field of battle!', 'Defined is a game mode which force players to choose both their decks and heroes before entering the battle.', 'In Random game mode both decks and heroes are picked by players after entering the battle, making it harder to complete full deck with symbiosis but more fun!', 'Mixed is a place to look not only for one mode but for as many as you want, whichever will be found sooner, you will be invited to!'];
 
         return (
 

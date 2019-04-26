@@ -54,7 +54,6 @@ export const updateDeck = (usr_id, deck_id, deckToSend) => {
       .then(res => {
         dispatch(updateUserAfterDeckCreation(res));
         dispatch(cancelDeckCreation());
-        console.log(JSON.stringify(res));
       })
       .catch(res => {
         console.log("Something went wrong with getting shop content");
@@ -67,7 +66,6 @@ export const removeDeck = (usr_id, deck_id) => {
     return apiCall("POST", `http://localhost:8080/${usr_id}/decks/${deck_id}?_method=delete`, )
       .then(res => {
         dispatch(updateUserAfterDeckCreation(res));
-        console.log(JSON.stringify(res));
       })
       .catch(res => {
         console.log("Something went wrong with getting shop content");

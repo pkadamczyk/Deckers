@@ -177,23 +177,14 @@ hr{
   position: fixed;
 
 }
-.CardDeck-wrapper{
-  width: 20.84%;
-  height: 100%;
-  position: fixed;
-}
 .card-item{
   height:255px;
   width:173px;
   margin: 1px;
-  /* background-color: rgb(44, 47, 60); */
   background-image: url("../src/img/card.png");
   background-repeat: no-repeat;
-  /* border: 1px solid black; */
   color:white;
   padding: 0;
-  /* text-align: center; */
-  /* border-radius: 8px; */
 }
 .card-item-cost{
   display: inline-block;
