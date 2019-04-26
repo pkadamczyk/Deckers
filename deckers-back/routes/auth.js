@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 
-var User = require("../models/user");
-var Chest = require("../models/chest");
-var Option = require("../models/option");
+const User = require("../models/user");
+const Chest = require("../models/chest");
+const Option = require("../models/option");
+const Card = require("../models/card");
 
 router.post("/register", async function (req, res, next) {
     try {
@@ -34,6 +35,8 @@ router.post("/register", async function (req, res, next) {
                 epicUpgradeGoldCost: e,
                 legendaryUpgradeGoldCost: f
             },
+            raceList: Card.raceList,
+            roleList: Card.roleList,
             availableChests,
             token
         });
@@ -77,6 +80,8 @@ router.post("/login", async function (req, res, next) {
                     epicUpgradeGoldCost: e,
                     legendaryUpgradeGoldCost: f
                 },
+                raceList: Card.raceList,
+                roleList: Card.roleList,
                 availableChests,
                 token
             });

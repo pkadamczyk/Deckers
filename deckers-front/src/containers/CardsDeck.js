@@ -34,6 +34,8 @@ class CardsDeck extends Component{
         this.props.updateDeck(this.props.usr_id, this.props.deck_id, deckToSend)
     }
 
+    
+
     render(){
         const {createNewDeck, decks, currentState, cards, cancelDeckCreation, removeCardFromDeck,
             editDeck, editDeckName} = this.props;

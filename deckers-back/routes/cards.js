@@ -19,13 +19,11 @@ router.get("/cards", function (req, res) {
 // CREATE ROUTE
 router.post("/cards", function (req, res) {
     let stats = [];
-    for (let i = 0; i < req.body.amount.length; i++) {
+    for (let i = 0; i < req.body.cost.length; i++) {
         let statObject = {
-            amount: parseInt(req.body.amount[i]),
             cost: parseInt(req.body.cost[i]),
             damage: parseInt(req.body.damage[i]),
-            armor: parseInt(req.body.armor[i]),
-            heal: parseInt(req.body.heal[i]),
+            health: parseInt(req.body.health[i]),
         }
         stats.push(statObject);
     }
@@ -47,7 +45,7 @@ router.post("/cards", function (req, res) {
 
 // NEW ROUTE
 router.get("/cards/new", function (req, res) {
-    res.render("cards/new", { rarityList: Card.rarityList, raceList: Card.raceList });
+    res.render("cards/new", { rarityList: Card.rarityList, raceList: Card.raceList, roleList: Card.roleList });
 })
 
 // SHOW ROUTE

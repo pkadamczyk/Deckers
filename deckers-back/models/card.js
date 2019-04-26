@@ -10,8 +10,21 @@ const rarityList = Object.freeze({
 
 const raceList = Object.freeze({
     dwarf: 0,
-    elf: 1,
-    dragon: 2,
+    forsaken: 1,
+    order: 2,
+    skaven: 3,
+});
+
+const roleList = Object.freeze({
+    warrior: 0,
+    hunter: 1,
+    assasin: 2,
+    mage: 3,
+    knight: 4,
+    priest: 5,
+    warlock: 6,
+    merchant: 7,
+    spell: 8
 });
 
 var cardSchema = new mongoose.Schema({
@@ -27,18 +40,22 @@ var cardSchema = new mongoose.Schema({
         enum: raceList
     },
 
+    role: {
+        type: Number,
+        enum: roleList
+    },
+
     stats: [{
         cost: Number,
-        amount: Number,
         damage: Number,
-        armor: Number,
-        heal: Number,
+        health: Number,
     }]
 });
 
 Object.assign(cardSchema.statics, {
     rarityList,
-    raceList
+    raceList,
+    roleList
 });
 
 module.exports = mongoose.model("Card", cardSchema);
