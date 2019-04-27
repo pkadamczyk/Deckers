@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {addCardToDeck} from '../store/actions/decks';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { addCardToDeck } from '../store/actions/decks';
 
-class CardItem extends Component{
-    render(){
-        const {card, currentState, addCardToDeck,deckIsFull} = this.props;
+class CardItem extends Component {
+    render() {
+        const { card, currentState, addCardToDeck, deckIsFull } = this.props;
         const races = ['Dwarf', 'Forsaken', 'The Order', 'Skaven']
-        return(
+        return (
             <div className=" card-item m-2">
                 <div className="card-item-cost">
                     <p>{card.card.stats[0].cost}</p>
@@ -26,9 +26,9 @@ class CardItem extends Component{
                     {/* //<p>{card.card.role}</p> */}
                     <p>{card.card.description}</p>
                 </div>
-                
-                {(currentState==="creating" || currentState==="editing") && (deckIsFull===false) &&(
-                    <button onClick={(e)=>{addCardToDeck(card)}} className="btn addCardToDeck">Add to deck</button>
+
+                {(currentState === "creating" || currentState === "editing") && (deckIsFull === false) && (
+                    <button onClick={(e) => { addCardToDeck(card.card) }} className="btn addCardToDeck">Add to deck</button>
                 )}
             </div>
         )
@@ -36,11 +36,11 @@ class CardItem extends Component{
 
 }
 
-function mapStateToProps(state){
-    return{
-        currentState:state.decks.currentState,
-        deckIsFull:state.decks.full
+function mapStateToProps(state) {
+    return {
+        currentState: state.decks.currentState,
+        deckIsFull: state.decks.full
     }
 }
 
-export default connect(mapStateToProps, {addCardToDeck})(CardItem);
+export default connect(mapStateToProps, { addCardToDeck })(CardItem);
