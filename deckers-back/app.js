@@ -7,7 +7,7 @@ var server = require("http").Server(app);
 var io = require("socket.io")(server, {});
 
 //ZAKOMENTOWANE BO WYPIERDALA BACKEND - Pszemek
-// io = require('./routes/sockets/matchmaking').connect(io);
+io = require('./routes/sockets/matchmaking').connect(io);
 // io = require('./routes/sockets/game').connect(io);
 
 // io.on('connection', function (socket) {

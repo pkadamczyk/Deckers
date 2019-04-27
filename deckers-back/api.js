@@ -99,12 +99,16 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
 // Create new deck
 router.post("/:usr_id/decks/create", async function (req, res) {
     try {
+
+        if (req.body.cards.length != 10) throw new Error("Deck should contain 10 cards");
+
         let newDeck = {
             cards: [],
             name: req.body.name
         };
+
         let foundUser = await fetchUser(req.params.usr_id);
-        let indexArr = req.body.cards.map(card_id => foundUser.cards.findIndex(card => card._id.equals(card_id)))
+        let indexArr = req.body.cards.map(req_card_id => foundUser.cards.findIndex(usr_card_obj => usr_card_obj.card._id.equals(req_card_id)))
 
         indexArr.forEach(index => newDeck.cards.push(foundUser.cards[index].card._id))
 
@@ -118,7 +122,7 @@ router.post("/:usr_id/decks/create", async function (req, res) {
         foundUser.save();
     } catch (err) {
         console.log(err)
-        res.status(404).json({
+        res.status(400).json({
             err: err.message
         });
     }
@@ -157,7 +161,7 @@ router.put("/:usr_id/decks/:deck_id", async function (req, res) {
         };
         let foundUser = await fetchUser(req.params.usr_id);
 
-        let indexArr = req.body.cards.map(card_id => foundUser.cards.findIndex(card => card._id.equals(card_id)))
+        let indexArr = req.body.cards.map(req_card_id => foundUser.cards.findIndex(usr_card_obj => usr_card_obj.card._id.equals(req_card_id)))
         indexArr.forEach(index => newDeck.cards.push(foundUser.cards[index].card._id))
 
         let idx = foundUser.decks.findIndex(deck => deck._id.equals(req.params.deck_id));
