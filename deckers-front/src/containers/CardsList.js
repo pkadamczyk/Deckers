@@ -55,7 +55,7 @@ class CardsList extends Component{
                 <div className="list-group list-group-horizontal row" id="list-tab" role="tablist">
                     <div onClick={(e) => this.handleRaceChange("Dwarves")} className={ cL(staticClasses, tC(active, isDwarvesSelected)) } id="list-dwarves" data-toggle="list" role="tab" aria-controls="home" value="Dwarves">Dwarves</div>
                     <div onClick={(e) => this.handleRaceChange("Dragons")} className={ cL(staticClasses, tC(active, isDragonSelected)) } id="list-dragons" data-toggle="list" role="tab" aria-controls="profile" value="Dragons">Dragons</div>
-                    <div onClick={(e) => this.handleRaceChange("Elves")} className={ cL(staticClasses, tC(active, isElvesSelected)) } id="list-elves" data-toggle="list" role="tab" aria-controls="messages" value="Elvess">Elves</div>
+                    <div onClick={(e) => this.handleRaceChange("Elves")} className={ cL(staticClasses, tC(active, isElvesSelected)) } id="list-elves" data-toggle="list" role="tab" aria-controls="messages" value="Elvess">Forsakens</div>
                     <div onClick={(e) => this.handleRaceChange("Humans")} className={ cL(staticClasses, tC(active, isHumansSelected)) } id="list-humans" data-toggle="list" role="tab" aria-controls="settings" value="Humans">Humans</div>
                 </div>
                 {/* displaying cards */}

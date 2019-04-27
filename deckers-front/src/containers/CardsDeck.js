@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {createNewDeck, submitDeck, cancelDeckCreation, removeCardFromDeck, editDeck} from '../store/actions/decks';
+import {createNewDeck, submitDeck, cancelDeckCreation, removeCardFromDeck, editDeck,
+    updateDeck, removeDeck} from '../store/actions/decks';
 import CardListDeck from '../components/CardListDeck';
 import CardDeckSlots from '../components/CardDeckSlots';
+import EditSlots from '../components/EditSlots';
 
 class CardsDeck extends Component{
     constructor(props){
@@ -16,28 +18,58 @@ class CardsDeck extends Component{
         this.setState({ [e.target.name]: e.target.value });
       };
 
-    handleSubmit = e => {
+    handleSubmit = () => {
+        if(this.props.cards.length!==10){
+            alert("Invalid cards amount!");
+        }else{
+            if(this.state.deckName.length===0){
+                alert("Deck name cannot be blank!");    
+            }else{
         let deckToSend= {
             cards:this.props.cards.map(card => card._id),
             name:this.state.deckName
         }
         this.props.submitDeck(this.props.usr_id, deckToSend)
-    };
+    }}};
+    handleEdit = () => {
+        if(this.props.cards.length!==10){
+            alert("Invalid cards amount!");
+        let newName;
+        this.state.deckName==="" ? newName=this.props.editDeckName : newName=this.state.deckName;
+        let deckToSend= {
+            cards:this.props.cards.map(card => card._id),
+            name:newName
+        }
+        this.props.updateDeck(this.props.usr_id, this.props.deck_id, deckToSend)
+    }}
+    handleDeckDeletion = (deck_id) => {
+        this.props.removeDeck(this.props.usr_id, deck_id)
+    }
 
     
 
     render(){
-        const {createNewDeck, decks, currentState, cards, cancelDeckCreation, removeCardFromDeck, editDeck} = this.props;
+        const {createNewDeck, decks, currentState, cards, cancelDeckCreation, removeCardFromDeck,
+            editDeck, editDeckName} = this.props;
         let idleDecks = decks.map( deckItem => (
             <CardListDeck 
                 key={deckItem._id}
                 deckContent={deckItem}
                 handleClick={editDeck}
+                handleDeckDeletion={this.handleDeckDeletion}
             />
         ));
         let creatingDeckSlots = cards.map( (card, index) => (
             <CardDeckSlots 
-                key={card._id + index}
+                key={card._id + " " +index}
+                deckSlot={card}
+                deckSlotNumber={index}
+                removeCardFromDeck={removeCardFromDeck}
+            />
+        ));
+        let editingDeckSlots = cards.map( (card, index) => (
+            <EditSlots 
+                key={card._id + " " +index}
                 deckSlot={card}
                 deckSlotNumber={index}
                 removeCardFromDeck={removeCardFromDeck}
@@ -73,11 +105,11 @@ class CardsDeck extends Component{
             {/* WHILE EDITING */}
                 {currentState === "editing" && (<div>
                     <div className="DeckItself">
-                        <input type="text" className="mb-2" placeholder="{}" name="deckName" onChange={this.handleChange}/>
-                        {creatingDeckSlots}
+                        <input type="text" className="mb-2" placeholder={editDeckName} name="deckName" onChange={this.handleChange}/>
+                        {editingDeckSlots}
                         <div className="DeckCreationPanel-creating">
-                        <button onClick={this.handleSubmit} className="btn btn-success btn-deck-create mr-2">Confirm</button>
-                        <button onClick={cancelDeckCreation} className="btn btn-danger btn-deck-create ml-2">Cancel</button>
+                            <button onClick={this.handleEdit} className="btn btn-success btn-deck-create mr-2">Confirm</button>
+                            <button onClick={cancelDeckCreation} className="btn btn-danger btn-deck-create ml-2">Cancel</button>
                         </div>
                     </div>
                </div> )
@@ -93,8 +125,11 @@ function mapStateToProps(state) {
         decks:state.currentUser.user.decks,
         cards:state.decks.cards,
         usr_id:state.currentUser.user._id,
+        editDeckName:state.decks.name,
+        deck_id:state.decks.deck_id,
     }
 }
 
         
-export default connect(mapStateToProps, {submitDeck, createNewDeck, cancelDeckCreation, removeCardFromDeck, editDeck })(CardsDeck);
+export default connect(mapStateToProps, {updateDeck, submitDeck, createNewDeck, cancelDeckCreation,
+    removeCardFromDeck, editDeck, removeDeck })(CardsDeck);

@@ -172,17 +172,84 @@ hr{
   height: 100%;
   color: white;
   text-align: center;
+  width: 20.84%;
+  height: 100%;
+  position: fixed;
+
 }
 .card-item{
-  height:200px;
-  width:75px;
+  height:255px;
+  width:173px;
   margin: 1px;
-  background-color: rgb(44, 47, 60);
-  border: 1px solid black;
+  background-image: url("../src/img/card.png");
+  background-repeat: no-repeat;
   color:white;
   padding: 0;
+}
+.card-item-cost{
+  display: inline-block;
+  height: 24px;
+  width:10px;
+  position: relative;
+  top:7px;
+  left:20px;
+  color:rgb(44, 47, 60);
+}
+.card-item-cost p{
+  margin:0px;
+}
+.card-item-name{
+  display: inline-block;
+  height: 24px;
+  width:106px;
+  position: relative;
+  top:7px;
+  left:38px;
+  color:rgb(44, 47, 60);
   text-align: center;
-  border-radius: 8px;
+  max-lines: 1;
+}
+
+.card-item-race{
+  height: 24px;
+  width:142px;
+  position: relative;
+  top: 106px;
+  left:15px;
+  color:rgb(44, 47, 60);
+  text-align: center;
+  margin-bottom: 0px;
+  margin-block-end: 0px;
+}
+.card-item-stats{
+  height: 24px;
+  width:142px;
+  position: relative;
+  top: 105px;
+  left:15px;
+  color:white;
+}
+.card-stats-damage{
+  display: inline-block;
+  margin-right: 30px;
+  padding-left: 40px;
+}
+.card-stats-health{
+  display: inline-block;
+  margin-left: 43px;
+}
+.card-item-description{
+  height: 64px;
+  width:142px;
+  position: relative;
+  top:115px;
+  left:15px;
+  color:rgb(44, 47, 60);
+  text-align: center;
+  line-height: 18px;
+}
+.card-item-description p{
+  margin:0px;
 }
 
 .card-item h4{
@@ -226,6 +293,20 @@ hr{
   padding-top:10px;
   
 }
+.mm-deckSlot{
+  background-color: white;
+  margin:0px 10px;
+  margin-top: 5px;
+  widows: 100%;
+  height:45px;
+  border-radius: 5px;
+  color: rgb(44, 47, 60);
+}
+
+.mm-card-name{
+  padding-top:10px;
+  
+}
 .AuthFormWrapper{
   height:100%;
   background-color: rgb(4, 7, 20);
@@ -264,3 +345,30 @@ hr{
   padding-top:5px;
   color: rgb(4, 7, 20);
 }
+.mm-deckList{
+  height: 100%;
+}
+.mm-deck-item{
+  display: inline-block;
+  height: 95%;
+  width:30%;
+  background-color: rgb(44, 47, 60);
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+  margin: 1.25% 1.66%; 
+}
+.addCardToDeck{
+  position: relative;
+  top:-70px;
+  left:30px;
+}
+.delete-deck-btn{
+  display: none;
+  position: absolute;
+  right: 25px;
+}
+.CardListDeck h3{
+  display: inline-block;
+}
+.CardListDeck:hover .delete-deck-btn {display: inline-block;}

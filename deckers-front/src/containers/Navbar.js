@@ -7,7 +7,7 @@ import {logout} from "../store/actions/auth";
 
 class Navbar extends Component {
   render() {
-    const { user, logout } = this.props;
+    const { user, logout, currency } = this.props;
     return (
       <div className="wrapper">
         <nav id="sidebar">
@@ -17,7 +17,7 @@ class Navbar extends Component {
             src="https://i.pinimg.com/originals/ab/15/92/ab1592b6baabda0d6fcef84a9a734f77.jpg"
             alt="" />
             <h2>{user.username}</h2>
-            {user.currency && (<p>Gold: {user.currency.gold} Gems: {user.currency.gems}</p>)}
+            {user.currency && (<p>Gold: {currency.gold} Gems: {currency.gems}</p>)}
             
             {!!Object.keys(user).length && (
               <button className="btn btn-danger" onClick={logout}>Logout</button>
@@ -60,7 +60,8 @@ class Navbar extends Component {
 function mapStateToProps(state) {
   return {
     mm_state: state.matchMaking.mm_state,
-    user: state.currentUser.user
+    user: state.currentUser.user,
+    currency: state.currentUser.user.currency
   };
 }
 

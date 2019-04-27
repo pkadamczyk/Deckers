@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from "react-redux";
 import { findGame, leaveQue, acceptGame, disconnectFromGame, abandonGame, reconnectGame } from "../store/actions/matchMaking";
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:8080');
+const socket = openSocket('http://localhost:8080/matchmaking');
 class MatchmakingNavbar extends Component{
     constructor(props){
         super(props);
@@ -11,11 +11,12 @@ class MatchmakingNavbar extends Component{
         }
     }
     render(){
+        const usr_id = this.props;
         return(
             <div className="mm-nav">
                 <div className="mm_options">
                     <button className="btn btn-success" onClick={() => {
-                        socket.emit('join',{})}}>Find game</button>}
+                        socket.emit('join',{usr_id: usr_id, gameMode:1},)}}>Find game</button>}
 {/*                   
                     {this.props.mm_state==="idle" && <button className="btn btn-success" onClick={this.props.findGame}>Find game</button>}   
                      {this.props.mm_state==="lookingForGame" &&
@@ -43,7 +44,8 @@ class MatchmakingNavbar extends Component{
 
 function mapStateToProps(state) {
     return {
-      mm_state: state.matchMaking.mm_state
+      mm_state: state.matchMaking.mm_state,
+      usr_id: state.currentUser.user._id
     };
   }
 

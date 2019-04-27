@@ -124,8 +124,8 @@ router.post("/:usr_id/decks/create", async function (req, res) {
     }
 })
 
-// delete deck
-router.post("/:usr_id/decks/:deck_id", async function (req, res) {
+// delete deck ---> fix z router.post na router.delete -Pszemek (taki ze mnie fullstack hehs)
+router.delete("/:usr_id/decks/:deck_id", async function (req, res) {
     try {
         let foundUser = await fetchUser(req.params.usr_id);
 
