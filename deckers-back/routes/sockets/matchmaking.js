@@ -49,46 +49,54 @@ module.exports.connect = function (io) {
 async function teamPlayers() {
     try {
         Matchmaking.gameMode.forEach(function (gameMode, i) {
-            let pArray = gameMode.playersInQueue.slice();
-
-            gameMode.playersInQueue.forEach(async function (player, i, arr) {
-                try {
-                    let p1 = arr[2 * i];
-                    let p2 = arr[(2 * i) + 1];
-
-                    let [user1, user2] = await Promise.all([User.findById(arr[2 * i].usr_id), User.findById(arr[(2 * i) + 1].usr_id)])
-                    pArray.splice(2 * i, 2)
-
-                    // Crate game and add those players to it
-                    newGame = new Game({
-                        players: [],
-                        isFinished: false
-                    });
-
-                    newGame.players.push(p1._id, p2._id);
-                    newGame.save();
-
-                    // Modify players inGame variable
-                    [user1, user2].forEach(function (user) {
-                        user.inGame = true;
-                        user.currentGame = newGame._id;
-                        user.save();
-                    })
-
-                    // Send info about game to players
-                    let roomName = (Date.now() + Math.random()).toString();
-                    [p1, p2].forEach(player => player.socket.join(roomName));
-
-                    console.log("Game ready!");
-                    gameSearch.in(roomName).emit('game-ready', newGame._id);
-
-                    [p1, p2].forEach(player => player.socket.leave(roomName));
-                } catch (err) {
-                }
-            })
-
+            for (let i = 0; i < Math.floor(gameMode.playersInQueue.length / 2); i++) {
+                // gameMode.playersInQueue.forEach(async function (player, i, arr) {
+                pairPlayers();
+            }
         })
+
     } catch (err) {
         console.log(err)
+    }
+}
+
+async function pairPlayers() {
+    let playerArray = gameMode.playersInQueue.slice();
+    let arr = gameMode.playersInQueue;
+    try {
+        let p1 = arr[2 * i];
+        let p2 = arr[(2 * i) + 1];
+
+        let [user1, user2] = await Promise.all([User.findById(arr[2 * i].usr_id), User.findById(arr[(2 * i) + 1].usr_id)]);
+        playerArray.splice(2 * i, 2);
+
+        // Crate game and add those players to it
+        newGame = new Game({
+            players: [],
+            isFinished: false
+        });
+
+        newGame.players.push(p1.usr_id, p2.usr_id);
+        newGame.save();
+
+        // Modify players inGame variable
+        [user1, user2].forEach(function (user) {
+            user.inGame = true;
+            user.currentGame = newGame._id;
+            user.save();
+        })
+
+        // Send info about game to players
+        let roomName = (Date.now() + Math.random()).toString();
+        [p1, p2].forEach(player => player.socket.join(roomName));
+
+        console.log("Game ready!");
+        gameSearch.in(roomName).emit('game-ready', newGame._id);
+
+        [p1, p2].forEach(player => player.socket.leave(roomName));
+
+        // Saves edited players array to global object
+        gameMode.playersInQueue = playerArray;
+    } catch (err) {
     }
 }
