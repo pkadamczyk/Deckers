@@ -80,7 +80,7 @@ async function pairPlayers(gameMode, i) {
         [user1, user2].forEach(function (user) {
             user.inGame = true;
             user.currentGame = newGame._id;
-            // user.save();
+            user.save();
         })
 
         // Send info about game to players

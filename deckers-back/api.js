@@ -5,6 +5,7 @@ const Chest = require("./models/chest");
 const User = require("./models/user");
 const Option = require("./models/option");
 const Card = require("./models/card");
+const Game = require("./models/game");
 
 // Route for card upgrade
 router.post("/:usr_id/:card_id/upgrade", async function (req, res) {
@@ -211,31 +212,22 @@ router.post("/:usr_id/game/:game_id", async function (req, res) {
     try {
         let [foundGame, user] = await Promise.all([Game.findById(req.params.game_id).deepPopulate('players'), User.findById(req.params.usr_id).deepPopulate('decks.cards.card')]);
         if (foundGame.isFinished) throw new Error("Game finished");
-        if (user.inGame) throw new Error("User already in some game");
+        if (!user.inGame) throw new Error("User not in game");
 
         // Handle wrong user sytuation
-        if (foundGame.players.findIndex(player => player.username == req.user.username) == -1) throw new Error("No such user in game data");
+        if (foundGame.players.findIndex(player => player._id.equals(user._id)) == -1) throw new Error("No such user in game data");
 
         let gameDeck = [];
         let role;
 
-        //  TODO Use declared deck instead of 0 index
-        for (var i = 0; i < user.decks[0].cards.length; i++) {
-            for (var j = 0; j < user.decks[0].cards[i].card.stats.amount; j++) {
-                var newCard = {
-                    card: user.decks[0].cards[i].card
-                }
-                gameDeck.push(newCard)
-            }
-        }
-
         // Shuffle deck
-        gameDeck = shuffle(gameDeck);
+        gameDeck = shuffle(user.decks[0].cards);
 
-        role = foundGame.players.findIndex(player => player.username == req.user.username)
+        role = foundGame.players.findIndex(player => player._id.equals(user._id))
         console.log("Role: " + role);
 
         // TODO Response not declared in docs
+        res.status(200).json({});
         // res.render("game", {
         //     player: user,
         //     role: role,
@@ -244,7 +236,7 @@ router.post("/:usr_id/game/:game_id", async function (req, res) {
         // });
     } catch (err) {
         console.log(err)
-        res.status(404).json({
+        res.status(400).json({
             err: err.message
         });
     }
@@ -272,12 +264,6 @@ function shuffle(array) {
 async function fetchUser(id) {
     let foundUser = await User.findById(id).deepPopulate('cards.card');
     return foundUser;
-}
-
-async function fetchOptionsMany() {
-    let arr = Array.from(arguments);
-    let arr = await Promise.all(arr.map(value => Option.findOne({ short: value })))
-    return arr;
 }
 
 async function levelCheck(card) {
