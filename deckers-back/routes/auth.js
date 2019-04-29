@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const symbiosisList = require("../symbiosis");
 
 const User = require("../models/user");
 const Chest = require("../models/chest");
@@ -35,6 +36,7 @@ router.post("/register", async function (req, res, next) {
                 epicUpgradeGoldCost: e,
                 legendaryUpgradeGoldCost: f
             },
+            symbiosisList,
             raceList: Card.raceList,
             roleList: Card.roleList,
             availableChests,
@@ -80,6 +82,7 @@ router.post("/login", async function (req, res, next) {
                     epicUpgradeGoldCost: e,
                     legendaryUpgradeGoldCost: f
                 },
+                symbiosisList,
                 raceList: Card.raceList,
                 roleList: Card.roleList,
                 availableChests,
