@@ -1,9 +1,9 @@
 import React from "react";
-import Navbar from "./Navbar";
-import Content from "./Content";
-import AuthForm from "../components/AuthForm";
+import Navbar from "../menu/containers/Navbar";
+import Content from "../menu/containers/Content";
+import AuthForm from "../menu/components/AuthForm";
 import { Switch, Route, withRouter, Redirect} from "react-router-dom";
-import { authUser } from "../store/actions/auth";
+import { authUser } from "../menu/store/actions/auth";
 import { connect } from "react-redux";
 
 const Main = props => {
