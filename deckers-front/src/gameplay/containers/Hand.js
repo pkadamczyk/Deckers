@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import CardItem from '../components/CardItem';
+import React, { Component } from 'react';
+// import CardItem from '../components/CardItem';
 
-class Hand extends Component{
-    render(){
-        return(
+class Hand extends Component {
+    render() {
+        return (
             <div>
                 {/* <CardItem/> */}
                 {/* <div className='cards'>
@@ -58,7 +58,7 @@ class Hand extends Component{
                         </div>
                     </div>
                     </div> */}
-                </div>
+            </div>
         )
     }
 }
