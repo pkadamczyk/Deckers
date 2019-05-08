@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "../menu/containers/Navbar";
 import Content from "../menu/containers/Content";
 import AuthForm from "../menu/components/AuthForm";
+import Game from '../gameplay/containers/Game';
 import { Switch, Route, withRouter, Redirect} from "react-router-dom";
 import { authUser } from "../menu/store/actions/auth";
 import { connect } from "react-redux";
@@ -46,24 +47,34 @@ const Main = props => {
             }
           }}
         />
-            <Route render={props => {
-              if (currentUser.isAuthenticated) {
-                return (
-                <div className="row">
-                    <div className="col-2">
-                    <Navbar />
-                    </div>
-                    <div className="col-10">
-                    <Content />
-                    </div> 
-                </div>)
-            }else{
-              return (
-              <Redirect to="/login"/>
+         <Route exact path="/gameplay" render={props => {
+          if (currentUser.isAuthenticated) {
+            return (
+              <Game/>
               )
-            }
+            } else {
+            return (
+              <Redirect to="/login"/>);}
           }}
-            />
+        />
+        <Route render={props => {
+          if (currentUser.isAuthenticated) {
+            return (
+            <div className="row">
+                <div className="col-2">
+                <Navbar />
+                </div>
+                <div className="col-10">
+                <Content />
+                </div> 
+            </div>)
+        }else{
+          return (
+          <Redirect to="/login"/>
+          )
+        }
+      }}
+        />
       </Switch>  
       )
 }

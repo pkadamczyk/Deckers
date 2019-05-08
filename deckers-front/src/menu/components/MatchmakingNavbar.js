@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux";
+import { connect} from "react-redux";
 import { findGame, leaveQue, acceptGame, disconnectFromGame, abandonGame, reconnectGame } from "../store/actions/matchMaking";
 import openSocket from 'socket.io-client';
+import {Link} from 'react-router-dom';
 const socket = openSocket('http://localhost:8080/matchmaking');
 class MatchmakingNavbar extends Component {
     constructor(props) {
@@ -18,6 +19,9 @@ class MatchmakingNavbar extends Component {
                     <button className="btn btn-success" onClick={() => {
                         socket.emit('join', { usr_id: usr_id, gameMode: 0 })
                     }}>Find game</button>}
+                    <Link to="/gameplay">
+                        <button className="btn btn-danger">Test Gameplay</button>
+                    </Link>
 {/*                   
                     {this.props.mm_state==="idle" && <button className="btn btn-success" onClick={this.props.findGame}>Find game</button>}   
                      {this.props.mm_state==="lookingForGame" &&

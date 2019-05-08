@@ -22,6 +22,7 @@ class CardsList extends Component{
 
         //conditional classes to make tabs changing
         let isDwarvesSelected = false, isDragonSelected = false, isElvesSelected = false, isHumansSelected = false;
+        // eslint-disable-next-line
         switch(race){
             case "Dwarves":{ isDwarvesSelected = true; isDragonSelected = false; isElvesSelected = false; isHumansSelected = false;break;}
             case "Dragons":{ isDragonSelected = true; isDwarvesSelected = false; isElvesSelected = false; isHumansSelected = false;break;}
