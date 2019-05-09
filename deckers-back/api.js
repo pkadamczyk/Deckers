@@ -208,7 +208,6 @@ router.post("/:usr_id/abandon", async function (req, res) {
 router.post("/:usr_id/game/:game_id", async function (req, res) {
 
     // need deck
-
     try {
         let [foundGame, user] = await Promise.all([Game.findById(req.params.game_id).deepPopulate('players'), User.findById(req.params.usr_id).deepPopulate('decks.cards.card')]);
         if (foundGame.isFinished) throw new Error("Game finished");
@@ -221,19 +220,20 @@ router.post("/:usr_id/game/:game_id", async function (req, res) {
         let role;
 
         // Shuffle deck
-        gameDeck = shuffle(user.decks[0].cards);
+        console.log(req.body.deck_id);
+        let deckId = user.decks.findIndex(deck => deck._id.equals(req.body.deck_id));
+        console.log(deckId);
+        gameDeck = shuffle(user.decks[deckId].cards);
 
         role = foundGame.players.findIndex(player => player._id.equals(user._id))
         console.log("Role: " + role);
 
         // TODO Response not declared in docs
-        res.status(200).json({});
-        // res.render("game", {
-        //     player: user,
-        //     role: role,
-        //     deck: gameDeck,
-        //     GAME: foundGame
-        // });
+        res.status(200).json({
+            player: user,
+            role: role,
+            deck: gameDeck,
+        });
     } catch (err) {
         console.log(err)
         res.status(400).json({
