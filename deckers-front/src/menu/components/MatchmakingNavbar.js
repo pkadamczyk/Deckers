@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { findGame, leaveQue, acceptGame, disconnectFromGame, abandonGame, reconnectGame } from "../store/actions/matchMaking";
 import openSocket from 'socket.io-client';
 import { Link } from 'react-router-dom';
+import {connectToGame} from '../store/actions/matchMaking';
 const socket = openSocket('http://localhost:8080/matchmaking');
 
-socket.on("game-ready", function (data) {
-    // data.game_id
-    console.log(data.game_id)
-})
+
 
 class MatchmakingNavbar extends Component {
     constructor(props) {
@@ -19,11 +16,20 @@ class MatchmakingNavbar extends Component {
     }
     render() {
         const usr_id = this.props;
+
+        socket.on("game-ready", function (data) {
+            // data.game_id
+            console.log(data.game_id);
+            connectToGame(data.game_id, this.props.usr_id, );
+        
+        })
+
         return (
             <div className="mm-nav">
                 <div className="mm_options">
                     <button className="btn btn-success" onClick={() => {
-                        socket.emit('join', { usr_id: usr_id, gameMode: 0 })
+                        socket.emit('join', { usr_id: usr_id, gameMode: 0 });
+                        console.log("that happened");
                     }}>Find game</button>}
                     <Link to="/gameplay">
                         <button className="btn btn-danger">Test Gameplay</button>
@@ -56,9 +62,10 @@ class MatchmakingNavbar extends Component {
 function mapStateToProps(state) {
     return {
         mm_state: state.matchMaking.mm_state,
-        usr_id: state.currentUser.user._id
+        usr_id: state.currentUser.user._id,
+        deck_id: state.currentUser.user.decks[0]._id
     };
 }
 
 
-export default connect(mapStateToProps, { findGame, leaveQue, acceptGame, disconnectFromGame, abandonGame, reconnectGame })(MatchmakingNavbar);
+export default connect(mapStateToProps, { connectToGame })(MatchmakingNavbar);

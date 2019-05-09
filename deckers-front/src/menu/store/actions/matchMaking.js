@@ -1,30 +1,27 @@
-import { CHOOSE_MODE, FIND_GAME, LEAVE_QUE, ACCEPT_GAME, DISCONNECT_FROM_GAME, ABANDON_GAME, RECONNECT_GAME } from "../actionTypes";
+import { CHOOSE_MODE, FIND_GAME} from "../actionTypes";
+import {apiCall} from "../../services/api";
 
 export const setGameMode = (mode) => ({
   type: CHOOSE_MODE,
   mode
 }) 
 
-export const findGame = () => ({
+export const connectedToGame = (game) => ({
   type: FIND_GAME,
 });
 
-export const leaveQue = () => ({
-  type: LEAVE_QUE,
-});
-
-export const acceptGame = () => ({
-    type: ACCEPT_GAME,
-  });
-
-export const disconnectFromGame = () => ({
-    type: DISCONNECT_FROM_GAME,
-  });
-
-export const abandonGame = () => ({
-    type: ABANDON_GAME,
-  });
-
-export const reconnectGame = () => ({
-    type: RECONNECT_GAME,
-  });
+export function connectToGame(game_id, user_id, deck_id) {
+  return dispatch => {
+    // wrap our thunk in a promise so we can wait for the API call
+    return new Promise((resolve, reject) => {
+      return apiCall("post", `http://localhost:8080/${user_id}/game/${game_id}`, deck_id)
+      .then(res => {
+        console.log(res);
+        dispatch(connectedToGame(res));
+      })
+        .catch(err => {
+          reject(); // indicate the API call failed
+        });
+    });
+  };
+}

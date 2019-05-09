@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { findGame, leaveQue, acceptGame, disconnectFromGame, 
-  abandonGame, reconnectGame } from "../store/actions/matchMaking";
 import {logout} from "../store/actions/auth";
 
 class Navbar extends Component {
@@ -23,11 +21,11 @@ class Navbar extends Component {
               <button className="btn btn-danger" onClick={logout}>Logout</button>
             )}
             </div>
-            <div className="matchMaking">
+            {/* <div className="matchMaking">
               {this.props.mm_state==="lookingForGame"  && (
                 <span><p>Looking for game...</p><button className="btn btn-xs btn-danger"
                 onClick={this.props.leaveQue}>Leave que</button></span>)}
-            </div>
+            </div> */}
           </div>
         
           <div className="nav-item">
@@ -65,5 +63,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { logout, findGame, leaveQue, acceptGame,
-  disconnectFromGame, abandonGame, reconnectGame })(Navbar);
+export default connect(mapStateToProps, { logout})(Navbar);
