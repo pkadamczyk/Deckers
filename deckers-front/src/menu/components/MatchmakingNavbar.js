@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import openSocket from 'socket.io-client';
 import { Link } from 'react-router-dom';
 import {connectToGame} from '../store/actions/matchMaking';
+import axios from 'axios';
 const socket = openSocket('http://localhost:8080/matchmaking');
 
 
@@ -15,12 +16,22 @@ class MatchmakingNavbar extends Component {
         }
     }
     render() {
-        const usr_id = this.props;
+        const {usr_id, deck_id, connectToGame} = this.props;
+
 
         socket.on("game-ready", function (data) {
             // data.game_id
             console.log(data.game_id);
-            connectToGame(data.game_id, this.props.usr_id, );
+            console.log(deck_id);
+            fetch(`http://localhost:8080/${usr_id}/game/${data.game_id}`, {
+                method: 'POST', // or 'PUT'
+                body: JSON.stringify(deck_id), // data can be string or {object}!
+                headers:{
+                  'Content-Type': 'application/json'
+                }
+              })
+            
+            // connectToGame(data.game_id, usr_id, deck_id );
         
         })
 
@@ -63,7 +74,7 @@ function mapStateToProps(state) {
     return {
         mm_state: state.matchMaking.mm_state,
         usr_id: state.currentUser.user._id,
-        deck_id: state.currentUser.user.decks[0]._id
+        deck_id: {deck_id:state.currentUser.user.decks[0]._id}
     };
 }
 

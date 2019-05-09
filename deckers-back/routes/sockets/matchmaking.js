@@ -20,9 +20,10 @@ module.exports.connect = function (io) {
             // needs player id, searched mode(as number)
             console.log("Player joined!!");
             try {
-                data.usr_id = data.usr_id.usr_id; // Done badly need request rework
+                // data.usr_id = data.usr_id.usr_id; // Done badly need request rework
 
                 user = await User.findById(data.usr_id);
+                // console.log(data.usr_id);
                 if (user.inGame) throw new Error("Player already in game");
 
                 let player = {
@@ -90,7 +91,7 @@ async function pairPlayers(gameMode, i) {
         console.log("Game ready!");
         gameSearch.in(roomName).emit('game-ready', { game_id: newGame._id });
 
-        [p1, p2].forEach(player => player.socket.leave(roomName));
+        // [p1, p2].forEach(player => player.socket.leave(roomName));
 
         // Saves edited players array to global object
         gameMode.playersInQueue = playerArray;
