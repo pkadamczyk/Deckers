@@ -88,7 +88,7 @@ async function pairPlayers(gameMode, i) {
         [p1, p2].forEach(player => player.socket.join(roomName));
 
         console.log("Game ready!");
-        gameSearch.in(roomName).emit('game-ready', newGame._id);
+        gameSearch.in(roomName).emit('game-ready', { game_id: newGame._id });
 
         [p1, p2].forEach(player => player.socket.leave(roomName));
 
