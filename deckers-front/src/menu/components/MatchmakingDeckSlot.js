@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class MMDeckSlots extends Component{
+class MatchmakingDeckSlot extends Component{
     render(){
         const {deckSlot} = this.props;
         return(
@@ -10,4 +10,4 @@ class MMDeckSlots extends Component{
         )
     }
 }
-export default MMDeckSlots;
+export default MatchmakingDeckSlot;

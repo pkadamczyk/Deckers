@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import MMDeckSlots from '../components/MMDeckSlots'
+import MatchmakingDeckSlot from './MatchmakingDeckSlot'
 
-class DeckItem extends Component{
+class MatchmakingDeckItem extends Component{
     render(){
         const {deck} = this.props;
         let DeckSlots = deck.cards.map( (card, index) => (
-            <MMDeckSlots 
+            <MatchmakingDeckSlot 
                 key={card._id + " " +index}
                 deckSlot={card}
                 deckSlotNumber={index}
@@ -21,4 +21,4 @@ class DeckItem extends Component{
         )
     }
 }
-export default DeckItem;
+export default MatchmakingDeckItem;

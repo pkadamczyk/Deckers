@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addCardToDeck } from '../../store/actions/decks';
 
-class CardItem extends Component {
+class CardsCardItem extends Component {
     render() {
         const { card, currentState, addCardToDeck, deckIsFull } = this.props;
         const races = ['Dwarf', 'Forsaken', 'The Order', 'Skaven']
@@ -43,4 +43,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, { addCardToDeck })(CardItem);
+export default connect(mapStateToProps, { addCardToDeck })(CardsCardItem);

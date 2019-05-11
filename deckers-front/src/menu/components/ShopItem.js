@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class ChestItem extends Component{
+class ShopItem extends Component{
     render(){
         const {name, usr_id, handleClick, cardAmount} = this.props;
         return(
@@ -23,4 +23,4 @@ class ChestItem extends Component{
     }
 }
 
-export default ChestItem;
+export default ShopItem;

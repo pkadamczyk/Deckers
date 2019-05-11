@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
-import CardsDeck from './CardsDeck';
-import CardsList from './CardsList';
+import CardsContent from './CardsContent';
+import CardsNavbar from './CardsNavbar';
 
 class Cards extends Component{
     render(){
         return(
             <div className="row">
                 <div className="col-9">
-                    <CardsList />
+                    <CardsContent />
                 </div>
                 <div className="col-3">
-                    <CardsDeck />
+                    <CardsNavbar />
                 </div>
             </div>
         )

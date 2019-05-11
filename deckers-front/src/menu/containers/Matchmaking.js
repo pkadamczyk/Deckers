@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DeckList from './DeckList';
+import MatchmakingContent from './MatchmakingContent';
 import MatchmakingNavbar from '../components/MatchmakingNavbar';
 
 import { connect } from 'react-redux';
@@ -27,7 +27,7 @@ class Matchmaking extends Component {
 
             <div className="row">
                 <div className="col-9">
-                    <DeckList />
+                    <MatchmakingContent />
                 </div>
                 <div className="col-3">
                     <MatchmakingNavbar />

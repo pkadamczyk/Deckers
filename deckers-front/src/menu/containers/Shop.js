@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import ChestItem from '../components/ChestItem';
+import ShopItem from '../components/ShopItem';
 import { buyChest } from '../../store/actions/shop';
 
 class Shop extends Component{
@@ -8,7 +8,7 @@ class Shop extends Component{
     render(){
         const { chests, usr_id, buyChest } = this.props;
         let chestList = chests.map(chest => (
-            <ChestItem
+            <ShopItem 
               key={chest._id}
               name={chest.name}
               handleClick = {buyChest}

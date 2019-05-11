@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class CardListDeck extends Component{
+class CardsDeckItem extends Component{
     render(){
         const {deckContent, handleClick, handleDeckDeletion} = this.props;
         return(
@@ -13,4 +13,4 @@ class CardListDeck extends Component{
         )
     }
 }
-export default CardListDeck;
+export default CardsDeckItem;

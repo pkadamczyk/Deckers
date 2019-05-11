@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import CardItem from '../components/CardItem';
+import CardsCardItem from '../components/CardsCardItem';
 import { cL, tC } from 'react-classlist-helper';
 
-class CardsList extends Component{
+class CardsContent extends Component{
     constructor(props){
         super(props);
         this.state={
@@ -36,17 +36,17 @@ class CardsList extends Component{
 
         //filtering cards based on their race
         let dwarvesCards = cards.filter( card => card.card.race === 0).map(card => 
-            <CardItem
+            <CardsCardItem
                 card={card}
                 key={card._id}
             />);
         let elvesCards = cards.filter( card => card.card.race === 1).map(card => 
-            <CardItem
+            <CardsCardItem
                 card={card}
                 key={card._id}
             />);
         let dragonsCards = cards.filter( card => card.card.race === 2).map(card => 
-            <CardItem
+            <CardsCardItem
                 card={card}
                 key={card._id}
             />);
@@ -75,4 +75,4 @@ function mapStateToProps(state){
     }
 }
 
-export default connect(mapStateToProps, null) (CardsList);
+export default connect(mapStateToProps, null) (CardsContent);

@@ -9,7 +9,6 @@ class MatchmakingNavbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
         }
     }
     render() {
@@ -17,19 +16,7 @@ class MatchmakingNavbar extends Component {
 
 
         socket.on("game-ready", function (data) {
-            // data.game_id
-            // console.log(data.game_id);
-            // console.log(deck_id);
-            // fetch(`http://localhost:8080/${usr_id}/game/${data.game_id}`, {
-            //     method: 'POST', // or 'PUT'
-            //     body: JSON.stringify(deck_id), // data can be string or {object}!
-            //     headers:{
-            //       'Content-Type': 'application/json'
-            //     }
-            //   })
-            
             connectToGame(data.game_id, usr_id, deck_id );
-        
         })
 
         return (
@@ -42,25 +29,6 @@ class MatchmakingNavbar extends Component {
                     <Link to="/gameplay">
                         <button className="btn btn-danger">Test Gameplay</button>
                     </Link>
-                    {/*                   
-                    {this.props.mm_state==="idle" && <button className="btn btn-success" onClick={this.props.findGame}>Find game</button>}   
-                     {this.props.mm_state==="lookingForGame" &&
-                        (<div>
-                            <button className="btn btn-success" onClick={this.props.acceptGame}>Accept game</button>
-                            <button className="btn btn-danger" onClick={this.props.leaveQue}>Leave que</button>
-                        </div>)
-                    }
-                    {this.props.mm_state==="playing" &&
-                        (<div>
-                            <button className="btn btn-danger" onClick={this.props.disconnectFromGame}>Disconnect</button>
-                        </div>)
-                    }
-                    {this.props.mm_state==="disconnected" &&
-                        (<div>
-                            <button className="btn btn-success" onClick={this.props.reconnectGame}>Reconnect</button>
-                            <button className="btn btn-danger" onClick={this.props.abandonGame}>Abandon</button>
-                        </div>)
-                    } */}
                 </div>
             </div>
         )

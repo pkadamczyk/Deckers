@@ -4,11 +4,11 @@ import {
     createNewDeck, submitDeck, cancelDeckCreation, removeCardFromDeck, editDeck,
     updateDeck, removeDeck
 } from '../../store/actions/decks';
-import CardListDeck from '../components/CardListDeck';
-import CardDeckSlots from '../components/CardDeckSlots';
-import EditSlots from '../components/EditSlots';
+import CardsDeckItem from '../components/CardsDeckItem';
+import CardsDeckSlot from '../components/CardsDeckSlot';
+import CardsDeckSlotInEdit from '../components/CardsDeckSlotInEdit';
 
-class CardsDeck extends Component {
+class CardsNavbar extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,7 +58,7 @@ class CardsDeck extends Component {
         const { createNewDeck, decks, currentState, cards, cancelDeckCreation, removeCardFromDeck,
             editDeck, editDeckName } = this.props;
         let idleDecks = decks.map(deckItem => (
-            <CardListDeck
+            <CardsDeckItem
                 key={deckItem._id}
                 deckContent={deckItem}
                 handleClick={editDeck}
@@ -66,7 +66,7 @@ class CardsDeck extends Component {
             />
         ));
         let creatingDeckSlots = cards.map((card, index) => (
-            <CardDeckSlots
+            <CardsDeckSlot
                 key={card._id + " " + index}
                 deckSlot={card}
                 deckSlotNumber={index}
@@ -74,7 +74,7 @@ class CardsDeck extends Component {
             />
         ));
         let editingDeckSlots = cards.map((card, index) => (
-            <EditSlots
+            <CardsDeckSlotInEdit
                 key={card._id + " " + index}
                 deckSlot={card}
                 deckSlotNumber={index}
@@ -140,4 +140,4 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
     updateDeck, submitDeck, createNewDeck, cancelDeckCreation,
     removeCardFromDeck, editDeck, removeDeck
-})(CardsDeck);
+})(CardsNavbar);

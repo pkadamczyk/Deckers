@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class EditSlots extends Component{
+class CardsDeckSlotInEdit extends Component{
     render(){
         const {deckSlot, deckSlotNumber, removeCardFromDeck} = this.props;
         return(
@@ -13,4 +13,4 @@ class EditSlots extends Component{
         )
     }
 }
-export default EditSlots;
+export default CardsDeckSlotInEdit;

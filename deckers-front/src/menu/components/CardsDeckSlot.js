@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class CardDeckSlots extends Component {
+class CardsDeckSlot extends Component {
     render() {
         const { deckSlot, deckSlotNumber, removeCardFromDeck } = this.props;
         return (
@@ -12,4 +12,4 @@ class CardDeckSlots extends Component {
         )
     }
 }
-export default CardDeckSlots;
+export default CardsDeckSlot;

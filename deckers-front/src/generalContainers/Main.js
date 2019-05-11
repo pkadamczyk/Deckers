@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../menu/containers/Navbar";
+import Navbar from "../menu/components/Navbar";
 import Content from "../menu/containers/Content";
 import AuthForm from "../menu/components/AuthForm";
 import Game from '../gameplay/containers/Game';

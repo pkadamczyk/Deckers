@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import DeckItem from '../components/DeckItem';
+import MatchmakingDeckItem from '../components/MatchmakingDeckItem';
 import {connect} from 'react-redux';
 
-class DeckList extends Component{
+class MatchmakingContent extends Component{
     render(){
         const {decks} = this.props;
         let deckList = decks.map( deckItem => (
-            <DeckItem
+            <MatchmakingDeckItem
                 deck={deckItem}
                 key={deckItem._id}    
             />
@@ -25,4 +25,4 @@ function mapStateToProps(state){
     }
 }
 
-export default connect(mapStateToProps, null) (DeckList);
+export default connect(mapStateToProps, null) (MatchmakingContent);
