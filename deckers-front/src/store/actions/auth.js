@@ -1,5 +1,5 @@
 import { apiCall, setTokenHeader } from "../../services/api";
-import { SET_CURRENT_USER, UPDATE_USER_AFTER_CHEST_PURCHASE, UPDATE_USER_AFTER_DECK_CREATION } from "../actionTypes";
+import { SET_CURRENT_USER, UPDATE_USER_AFTER_CHEST_PURCHASE, UPDATE_USER_AFTER_DECKS_UPDATE } from "../actionTypes";
 import {setAvailableChests} from './shop';
 
 export function setCurrentUser(user) {
@@ -13,9 +13,9 @@ export function setAuthorizationToken(token) {
   setTokenHeader(token);
 }
 
-export function updateUserAfterDeckCreation(res) {
+export function updateUserAfterDecksUpdate(res) {
   return({
-    type: UPDATE_USER_AFTER_DECK_CREATION,
+    type: UPDATE_USER_AFTER_DECKS_UPDATE,
     currentDecks: res.decks,
   })
 }

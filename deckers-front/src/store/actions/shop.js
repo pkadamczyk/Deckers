@@ -9,7 +9,7 @@ export const setAvailableChests = (chests) => ({
 
 export const buyChest = (usr_id, chest_name) => {
   return dispatch => {
-    return apiCall("POST", `/${usr_id}/shop/buy/${chest_name}`)
+    return apiCall("POST", `http://localhost:8080/${usr_id}/shop/buy/${chest_name}`)
       .then(res => {
         dispatch(updateUserAfterChestPurchase(res))
       })

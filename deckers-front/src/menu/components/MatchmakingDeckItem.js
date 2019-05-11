@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import MatchmakingDeckSlot from './MatchmakingDeckSlot'
+import MatchmakingDeckSlot from './MatchmakingDeckSlot';
+import {connect} from 'react-redux';
+import {chooseDeck} from '../../store/actions/matchmaking';
 
 class MatchmakingDeckItem extends Component{
     render(){
-        const {deck} = this.props;
+        const {deck, chooseDeck} = this.props;
         let DeckSlots = deck.cards.map( (card, index) => (
             <MatchmakingDeckSlot 
                 key={card._id + " " +index}
@@ -12,13 +14,18 @@ class MatchmakingDeckItem extends Component{
             />
         ));
         return(
-            <div className="mm-deck-item">
+            <div className="mm-deck-item" onClick={()=>chooseDeck(deck._id)}>
                 <h1>{deck.name}</h1>
                 <hr/>
                 {DeckSlots}
             </div>
-            
         )
     }
 }
-export default MatchmakingDeckItem;
+function mapStateToProps(state){
+    return{
+        decks : state.currentUser.user.decks,
+    }
+}
+
+export default connect(mapStateToProps, {chooseDeck}) (MatchmakingDeckItem);

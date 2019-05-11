@@ -4,11 +4,11 @@ import {connect} from 'react-redux';
 
 class MatchmakingContent extends Component{
     render(){
-        const {decks} = this.props;
+        const {decks, chooseDeck} = this.props;
         let deckList = decks.map( deckItem => (
             <MatchmakingDeckItem
                 deck={deckItem}
-                key={deckItem._id}    
+                key={deckItem._id}
             />
         ))
         return(

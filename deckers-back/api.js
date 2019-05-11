@@ -82,6 +82,8 @@ router.post("/:id/shop/buy/:chest", async function (req, res) {
 
         cards.forEach(card => console.log(card.name))
 
+        await foundUser.deepPopulate('cards.card');
+
         res.status(200).json({
             newCards: cards,
             currentCards: foundUser.cards,

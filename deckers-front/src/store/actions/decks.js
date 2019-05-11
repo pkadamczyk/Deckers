@@ -1,7 +1,7 @@
 import {CREATE_NEW_DECK, ADD_CARD_TO_DECK, CANCEL_DECK_CREATION, REMOVE_CARD_FROM_DECK,
   EDIT_DECK, DELETE_DECK} from "../actionTypes";
 import {apiCall} from "../../services/api";
-import {updateUserAfterDeckCreation} from './auth';
+import {updateUserAfterDecksUpdate} from './auth';
 
 export const createNewDeck = () => ({
   type: CREATE_NEW_DECK
@@ -38,7 +38,7 @@ export const submitDeck = (usr_id, deckToSend) => {
     console.log(usr_id);
     return apiCall("POST", `http://localhost:8080/${usr_id}/decks/create`, deckToSend)
       .then(res => {
-        dispatch(updateUserAfterDeckCreation(res));
+        dispatch(updateUserAfterDecksUpdate(res));
         dispatch(cancelDeckCreation());
         console.log(JSON.stringify(res));
       })
@@ -52,7 +52,7 @@ export const updateDeck = (usr_id, deck_id, deckToSend) => {
     console.log(usr_id);
     return apiCall("POST", `http://localhost:8080/${usr_id}/decks/${deck_id}?_method=put`, deckToSend)
       .then(res => {
-        dispatch(updateUserAfterDeckCreation(res));
+        dispatch(updateUserAfterDecksUpdate(res));
         dispatch(cancelDeckCreation());
       })
       .catch(res => {
@@ -65,7 +65,7 @@ export const removeDeck = (usr_id, deck_id) => {
     console.log(usr_id);
     return apiCall("POST", `http://localhost:8080/${usr_id}/decks/${deck_id}?_method=delete`, )
       .then(res => {
-        dispatch(updateUserAfterDeckCreation(res));
+        dispatch(updateUserAfterDecksUpdate(res));
       })
       .catch(res => {
         console.log("Something went wrong with getting shop content");
