@@ -7,9 +7,10 @@ body {
   padding: 0;
   width: 100%;
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  font-family: 'Yeon Sung';
+  /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+    sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -309,22 +310,95 @@ hr{
 }
 .AuthFormWrapper{
   height:100%;
-  background-color: rgb(4, 7, 20);
+  background-image: url('./graphic/background_02.PNG');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .AuthFormItself{
-  background-color: white;
-  height:58%;
-  position: absolute;
-  top: 120px;
-  color: rgb(4, 7, 20);
+  background-image: url('./graphic/background_01.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  height:65%;
+  position: relative;
+  top: 7rem;
+  color: white;
+  text-shadow: 2px 1px #303433;
   border-radius: 20px;
-  padding-top:5px;
+  padding-top:20px;
+  padding-left: 0px;
+  padding-right:0px;
+  text-align: center;
+}
+
+.AuthFormItself input{
+  background-image: url('./graphic/form_input_03.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 80%;
+  height: auto;
+  border: none;
+  color: white;
+  font-size: 1.7em;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 10px;
+  text-shadow: 2px 1px #303433;
+}
+
+.AuthFormItself label{
+  font-size: 1.4rem;
+}
+
+.form-control-auth{
+  display: block;
+  margin: auto;
+}
+.auth-form-middle{
+  margin:0 0.6rem;
 }
 
 .AuthFormItself button{
-  background-color: rgb(4, 7, 20);
+  background-image: url('./graphic/button_long_01.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  font-size: 2rem;
+  width:80%;
+  height: auto;
+  border: none;
   color:white;
+  margin-top:0.3rem;
+  text-shadow: 2px 1px #303433;
+}
+.auth-additional-margin{
+  margin-top:2.2rem !important;
+}
+
+.authform-link-login{
+  background-image: url('./graphic/button_long_01.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 4rem;
+  border-radius: 5px;
+  font-size: 1.3rem;
+  margin:1.9rem auto;
+
+}
+.authform-link-login p{
+  margin-bottom: 0px;
+}
+
+.authform-link-register{
+  background-image: url('./graphic/button_long_02.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 4rem;
+  border-radius: 5px;
+  font-size: 1.3rem;
+  margin:0.2rem auto;
 }
 
 .cancel-card{

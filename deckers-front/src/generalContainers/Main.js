@@ -22,7 +22,7 @@ const Main = props => {
                 onAuth={authUser}
                 buttonText="Log in"
                 login
-                heading="Nice to see you! Please log in."
+                heading='Welcome! Please log in.'
                 {...props}
               />
             );

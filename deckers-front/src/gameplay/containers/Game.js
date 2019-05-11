@@ -6,6 +6,7 @@ class Game extends Component{
     render(){
         return(
             <div>
+                <button className="btn btn-danger">EXIT</button>
                 <Board/>
                 <Hand/>
             </div>

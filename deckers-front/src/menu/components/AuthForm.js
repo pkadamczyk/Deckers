@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import {Link} from 'react-router-dom';
+import {tC } from 'react-classlist-helper';
 
 class AuthForm extends Component {
   constructor(props) {
@@ -38,17 +39,18 @@ class AuthForm extends Component {
       heading,
       buttonText,
     } = this.props;
+    const additionalMargin = 'auth-additional-margin';
 
     return (
       <div className="AuthFormWrapper">
         <div className="row justify-content-md-center text-center">
           <div className="AuthFormItself col-md-3">
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleSubmit} className="auth-form-middle">
               <h2>{heading}</h2>
               <label htmlFor="email">E-mail</label>
                 <input
                   autoComplete="off"
-                  className="form-control"
+                  className="form-control-auth "
                   id="email"
                   name="email"
                   onChange={this.handleChange}
@@ -58,7 +60,7 @@ class AuthForm extends Component {
               <label htmlFor="password">Password</label>
               <input
                 autoComplete="off"
-                className="form-control"
+                className="form-control-auth"
                 id="password"
                 name="password"
                 onChange={this.handleChange}
@@ -70,7 +72,7 @@ class AuthForm extends Component {
                   <label htmlFor="username">Username</label>
                   <input
                     autoComplete="off"
-                    className="form-control"
+                    className="form-control-auth"
                     id="username"
                     name="username"
                     onChange={this.handleChange}
@@ -81,13 +83,14 @@ class AuthForm extends Component {
               )}
               <button
                 type="submit"
-                className="btn btn-block btn-lg mt-3"
-              >
+                className={tC('auth-additional-margin', !!login)}>
                 {buttonText}
               </button>
-              {login && (<p className="mt-4">New here? Please signup <Link to="/register">here</Link></p>)}
-              {signUp && (<p className="mt-2">Already signed up? Login <Link to="/login">here</Link></p>)}
+                {login && (<div className="authform-link-login"><p>New here? <br/> You can signup <Link to="/register">here</Link></p></div>)}
+                {signUp && (<div className="authform-link-register"><p>Already signed up? <br/>Login <Link to="/login">here</Link></p></div>)}
+
             </form>
+            
           </div>
         </div>
       </div>
