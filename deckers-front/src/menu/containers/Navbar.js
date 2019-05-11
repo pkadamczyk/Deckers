@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import {logout} from "../store/actions/auth";
+import {logout} from "../../store/actions/auth";
 
 class Navbar extends Component {
   render() {
@@ -57,7 +57,6 @@ class Navbar extends Component {
 
 function mapStateToProps(state) {
   return {
-    mm_state: state.matchMaking.mm_state,
     user: state.currentUser.user,
     currency: state.currentUser.user.currency
   };

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {
     createNewDeck, submitDeck, cancelDeckCreation, removeCardFromDeck, editDeck,
     updateDeck, removeDeck
-} from '../store/actions/decks';
+} from '../../store/actions/decks';
 import CardListDeck from '../components/CardListDeck';
 import CardDeckSlots from '../components/CardDeckSlots';
 import EditSlots from '../components/EditSlots';

@@ -262,7 +262,7 @@ function shuffle(array) {
 }
 
 async function fetchUser(id) {
-    let foundUser = await User.findById(id).deepPopulate('cards.card');
+    let foundUser = await User.findById(id).deepPopulate('cards.card decks.cards.card');
     return foundUser;
 }
 

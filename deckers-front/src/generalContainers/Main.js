@@ -4,7 +4,7 @@ import Content from "../menu/containers/Content";
 import AuthForm from "../menu/components/AuthForm";
 import Game from '../gameplay/containers/Game';
 import { Switch, Route, withRouter, Redirect} from "react-router-dom";
-import { authUser } from "../menu/store/actions/auth";
+import { authUser } from "../store/actions/auth";
 import { connect } from "react-redux";
 
 const Main = props => {

@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import openSocket from 'socket.io-client';
 import { Link } from 'react-router-dom';
-import {connectToGame} from '../store/actions/matchMaking';
-import axios from 'axios';
+import {connectToGame} from '../../store/actions/game';
 const socket = openSocket('http://localhost:8080/matchmaking');
-
-
 
 class MatchmakingNavbar extends Component {
     constructor(props) {
@@ -21,17 +18,17 @@ class MatchmakingNavbar extends Component {
 
         socket.on("game-ready", function (data) {
             // data.game_id
-            console.log(data.game_id);
-            console.log(deck_id);
-            fetch(`http://localhost:8080/${usr_id}/game/${data.game_id}`, {
-                method: 'POST', // or 'PUT'
-                body: JSON.stringify(deck_id), // data can be string or {object}!
-                headers:{
-                  'Content-Type': 'application/json'
-                }
-              })
+            // console.log(data.game_id);
+            // console.log(deck_id);
+            // fetch(`http://localhost:8080/${usr_id}/game/${data.game_id}`, {
+            //     method: 'POST', // or 'PUT'
+            //     body: JSON.stringify(deck_id), // data can be string or {object}!
+            //     headers:{
+            //       'Content-Type': 'application/json'
+            //     }
+            //   })
             
-            // connectToGame(data.game_id, usr_id, deck_id );
+            connectToGame(data.game_id, usr_id, deck_id );
         
         })
 
@@ -72,7 +69,6 @@ class MatchmakingNavbar extends Component {
 
 function mapStateToProps(state) {
     return {
-        mm_state: state.matchMaking.mm_state,
         usr_id: state.currentUser.user._id,
         deck_id: {deck_id:state.currentUser.user.decks[0]._id}
     };

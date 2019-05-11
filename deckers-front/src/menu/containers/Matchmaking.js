@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import DeckList from './DeckList';
 import MatchmakingNavbar from '../components/MatchmakingNavbar';
-import { setGameMode } from '../store/actions/matchMaking';
+
 import { connect } from 'react-redux';
 // import openSocket from 'socket.io-client';
 // const socket = openSocket('http://localhost:8080');
@@ -16,7 +16,7 @@ class Matchmaking extends Component {
     handleModeChange(e) {
         // this.setState({currentMode:e.target.value})
         // let mode = this.state.currentMode;
-        this.props.setGameMode(e.target.value);
+        // this.props.setGameMode(e.target.value);
     }
     render() {
         // let handleModeChange = this.handleModeChange.bind(this);
@@ -89,8 +89,8 @@ class Matchmaking extends Component {
 
 function mapStateToProps(state) {
     return {
-        mode: state.matchMaking.mode
+        
     };
 }
 
-export default connect(mapStateToProps, { setGameMode })(Matchmaking);
+export default connect(mapStateToProps, null)(Matchmaking);

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import ChestItem from '../components/ChestItem';
-import { buyChest } from '../store/actions/shop';
+import { buyChest } from '../../store/actions/shop';
 
 class Shop extends Component{
 
