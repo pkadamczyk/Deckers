@@ -83,18 +83,21 @@ class CardsNavbar extends Component {
         ));
         return (
             // WHILE IDLE
-            <div className="CardDeck">
-                {currentState === "idle" && (<div>
-                    <div className="DeckList">
-                        <h2>Yours decks:</h2><hr />
-                        {decks.length === 0 && <p>You don't have any decks yet, go on and create one!</p>}
-                        {decks.length !== 0 && currentState === "idle" && (idleDecks)}
+            <div className="CardNavbar">
+                {currentState === "idle" && (<div className="cards-navbar-wrapper">
+                    <div className="cards-navbar-header-wrapper">
+                        <div className="DeckList">
+                            <div className="CardsDecksHeader">
+                                <p>Yours decks:</p>
+                            </div>
+                            {decks.length === 0 && <p>You don't have any decks yet, go on and create one!</p>}
+                            {decks.length !== 0 && currentState === "idle" && (idleDecks)}
+                        </div>
                     </div>
                     <div className="DeckCreationPanel">
                         <button onClick={createNewDeck}
-                            className="btn btn-deck-create">Create new deck</button>
-                    </div>
-                </div>)}
+                                className="btn btn-deck-create">Create new deck</button>
+                    </div></div>)}
 
                 {/* WHILE CREATING NEW DECK */}
                 {currentState === "creating" && (<div>

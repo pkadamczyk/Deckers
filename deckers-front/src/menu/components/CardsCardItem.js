@@ -7,16 +7,32 @@ class CardsCardItem extends Component {
         const { card, currentState, addCardToDeck, deckIsFull } = this.props;
         const races = ['Dwarf', 'Forsaken', 'The Order', 'Skaven']
         return (
-            <div className=" card-item m-2">
-                <div className="card-item-cost">
+            <div className="card-wrapper">
+            <div className="card-item-bg m-2">
+            <div className=" card-item">
+                
+                {/* <div className="card-item-portrait"> */}
+                <div className="card-title">
+                    <div className="card-item-cost">
+                    <p>{card.card.stats[0].cost}</p>
+                    </div>
+                    <p>{races[card.card.race]} Assasin</p>
+                </div>
+                
+                {/* <div className="card-item-class-icon">
                     <p>{card.card.stats[0].cost}</p>
                 </div>
+                <div className="card-item-race-icon">
+                    <p>{card.card.stats[0].cost}</p>
+                </div> */}
+                {/* </div> */}
+                
                 <div className="card-item-name">
-                    <p>{card.card.name}</p>
+                    <p><strong>{card.card.name}</strong></p>
                 </div>
-                <div className="card-item-race">
+                {/* <div className="card-item-race">
                     <p>{races[card.card.race]}</p>
-                </div>
+                </div> */}
                 {/* <p>Amount: {card.amount}</p> */}
                 <div className="card-item-stats">
                     <span className="card-stats-damage"><p>{card.card.stats[0].damage}</p></span>
@@ -30,6 +46,10 @@ class CardsCardItem extends Component {
                 {(currentState === "creating" || currentState === "editing") && (deckIsFull === false) && (
                     <button onClick={(e) => { addCardToDeck(card.card) }} className="btn addCardToDeck">Add to deck</button>
                 )}
+            </div>
+            
+            
+            </div>
             </div>
         )
     }

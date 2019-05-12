@@ -6,10 +6,10 @@ class Cards extends Component{
     render(){
         return(
             <div className="row">
-                <div className="col-9">
+                <div className="col-10">
                     <CardsContent />
                 </div>
-                <div className="col-3">
+                <div className="col-2">
                     <CardsNavbar />
                 </div>
             </div>

@@ -6,9 +6,9 @@ class CardsDeckItem extends Component{
         return(
             <div className="CardListDeck" >
 
-                <h3 onClick={e => handleClick(deckContent.cards,deckContent.name,deckContent._id)}>
-                    {deckContent && deckContent.name}</h3><button onClick={e => handleDeckDeletion(deckContent._id)}
-                    className="delete-deck-btn btn btn-danger">X</button>
+                <p onClick={e => handleClick(deckContent.cards,deckContent.name,deckContent._id)}>
+                    {deckContent && deckContent.name}</p><button onClick={e => handleDeckDeletion(deckContent._id)}
+                    className="delete-deck-btn">X</button>
             </div>
         )
     }

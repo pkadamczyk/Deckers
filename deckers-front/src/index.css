@@ -276,7 +276,7 @@ hr{
   padding-right: 0px;
   padding-left:0px;
 }
-.col-3{
+.col-2{
   padding-right: 0px;
   padding-left:0px;
   height: 100%;
@@ -324,8 +324,10 @@ hr{
   flex-direction: row;
   text-align: center;
 }
-.CardDeck{
-  background-color: rgb(4, 7, 20);
+.CardNavbar{
+  background-image: url('./graphic/nav_background_03.png');
+  background-repeat: repeat-y;
+  background-size:contain;
   width:100%;
   height: 100%;
   color: white;
@@ -333,26 +335,99 @@ hr{
   width: 20.84%;
   height: 100%;
   position: fixed;
-
 }
 .card-item{
   height:255px;
   width:173px;
-  margin: 1px;
-  background-image: url("../src/menu/img/card.png");
+  background-image: url("./graphic/card_front_01.png") !important;
   background-repeat: no-repeat;
+  background-size: contain;
   color:white;
   padding: 0;
+  position: relative;
+  z-index: 2;
+
+}
+.card-item-bg{
+  height:255px;
+  width:173px;
+  background-image: url("./graphic/card_background_01.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  color:white;
+  padding: 0;
+  position: relative;
+  z-index: 0;
+}
+.card-item-portrait{
+  background-image: url("./graphic/card_portrait_01.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: inline-block;
+  position: relative;
+  top:0;
+  margin: 0 0.4rem;
+  width: 93%;
+  height:11rem;
+  color:transparent;
+  padding-left: 0.5rem;
+  z-index: 1;
 }
 .card-item-cost{
+  background-image: url("./graphic/card_field_02.png");
+  background-repeat: no-repeat;
+  background-size: contain;
   display: inline-block;
-  height: 24px;
-  width:10px;
   position: relative;
-  top:7px;
-  left:20px;
-  color:rgb(44, 47, 60);
+  width: 15%;
+  /* top:0.4rem; */
+  left:0.4rem;
+  color: white;
+  padding-left: 0.5rem;
 }
+.card-title p{
+  width: 70%;
+  display: inline;
+  margin-left: 1rem; 
+}
+.card-title{
+  background-image: url("./graphic/title_03.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  position: relative;
+  top:0.3rem;
+  width: 94%;
+  margin-right: 0.2rem;
+  margin-left:0.3rem;
+  color: rgb(44, 47, 60);
+}
+.card-item-race-icon{
+  background-image: url("./graphic/icon_race_skaven.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  position: relative;
+  width: 40%;
+  top:0.4rem;
+  left:1.2rem;
+  color:transparent;
+  padding-left: 0.5rem;
+}
+.card-item-class-icon{
+  background-image: url("./graphic/icon_class_assassin.PNG");
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  position: relative;
+  width: 20%;
+  top:0.5rem;
+  left:1.2rem;
+  color:transparent;
+  padding-left: 0.5rem;
+}
+
+
 .card-item-cost p{
   margin:0px;
 }
@@ -361,7 +436,7 @@ hr{
   height: 24px;
   width:106px;
   position: relative;
-  top:7px;
+  top:7.9rem;
   left:38px;
   color:rgb(44, 47, 60);
   text-align: center;
@@ -385,7 +460,7 @@ hr{
   position: relative;
   top: 105px;
   left:15px;
-  color:white;
+  color:transparent;
 }
 .card-stats-damage{
   display: inline-block;
@@ -400,9 +475,9 @@ hr{
   height: 64px;
   width:142px;
   position: relative;
-  top:115px;
+  top:6.6rem;
   left:15px;
-  color:rgb(44, 47, 60);
+  color:white;
   text-align: center;
   line-height: 18px;
 }
@@ -416,13 +491,28 @@ hr{
 }
 
 .btn-deck-create{
-  background-color: white;
-  color:rgb(44, 47, 60);
+  background-image: url('./graphic/button_04.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  border: none;
+  color:white;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  height: 3.6rem;
 }
+.cards-navbar-wrapper{
+  height: 100%;
+}
+.cards-navbar-header-wrapper{
+  height: 90%;
+}
+
 .DeckCreationPanel{
-  position: absolute;
-  left: 75px;
-  top: 550px;
+  position: relative;
+  left: 0.2rem;
+  bottom: 1rem;
+  text-align: center;
+  width: 65%;
 }
 .DeckCreationPanel-creating{
   position: absolute;
@@ -430,8 +520,23 @@ hr{
   top: 570px;
 }
 .DeckList{
-  padding-left: 5px;
-  padding-right:5px;
+  padding-right: 0.2rem;
+  width: 80%;
+}
+.CardsDecksHeader{
+  width: 100%;
+  background-image: url('./graphic/button_03.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 4.70rem;
+  font-size:1.5rem;
+  padding-top: 1rem;
+  padding-right: 2rem;
+}
+
+.CardsDecksHeader p{
+  margin-block-end:0;
+  text-align: center;
 }
 .DeckItself{
   padding-top:15px;
@@ -567,15 +672,23 @@ hr{
   flex-direction: row-reverse;
 }
 .CardListDeck{
-  background-color: white;
+  background-image: url('./graphic/button_long_03.png');
+  background-size: cover;
+  background-repeat: no-repeat;
   margin:0px 10px;
   margin-top: 5px;
   widows: 100%;
-  height:45px;
+  height:3rem;
+  width: 80%;
   border-radius: 5px;
-  padding-top:5px;
-  color: rgb(4, 7, 20);
+  color: white
 }
+.CardListDeck p{
+  display: inline-block;
+  font-size: 2rem;
+  margin-block-end: 0;
+}
+
 .mm-deckList{
   height: 100%;
 }
@@ -596,12 +709,18 @@ hr{
 }
 .delete-deck-btn{
   display: none;
-  position: absolute;
-  right: 25px;
+  position: relative;
+  left:1rem;
+  background-image: url('./graphic/button_X.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  color:transparent;
+  cursor: pointer;
+  border: none;
+
 }
-.CardListDeck h3{
-  display: inline-block;
-}
+
 .CardListDeck:hover .delete-deck-btn {display: inline-block;}
 
 
