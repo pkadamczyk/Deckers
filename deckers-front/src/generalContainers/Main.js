@@ -60,7 +60,7 @@ const Main = props => {
         <Route render={props => {
           if (currentUser.isAuthenticated) {
             return (
-            <div className="row">
+            <div className="row main-menu">
                 <div className="col-2">
                 <Navbar />
                 </div>

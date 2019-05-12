@@ -14,10 +14,11 @@ class Shop extends Component{
               handleClick = {buyChest}
               usr_id={usr_id}
               cardAmount={chest.cardAmount}
+              price={chest.price}
             />
           ));
         return(
-            <div>
+            <div className="row">
                 {chestList}
             </div>
             

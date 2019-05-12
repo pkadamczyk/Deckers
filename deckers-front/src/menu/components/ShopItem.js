@@ -2,11 +2,14 @@ import React, {Component} from 'react';
 
 class ShopItem extends Component{
     render(){
-        const {name, usr_id, handleClick, cardAmount} = this.props;
+        const {name, usr_id, handleClick, cardAmount,price} = this.props;
         return(
             <div className="chest-item">
-                <h3>{name}</h3><hr/>
-                <p>This chest contains:</p>
+                <h3 className="chest-item-name">{name}</h3>
+                <div className="chest-item-img">
+                    <p><img/></p>
+                </div>
+                    <p>This chest contains:</p>
                     <ul>
                         <li>{cardAmount.common} guaranteed common cards.</li>
                         <li>{cardAmount.rare} guaranteed rare cards.</li>
@@ -14,10 +17,10 @@ class ShopItem extends Component{
                         <li>{cardAmount.legendary} guaranteed legendary cards.</li>
                         <li>{cardAmount.random} random cards of any rarity.</li>
                     </ul>
-                
-                <hr/>
-                <button className="btn btn-success" onClick={e =>{
-                    handleClick(usr_id, name)}}>20 gold</button>
+                <button className=" btn-buychest" onClick={e =>{
+                    handleClick(usr_id, name)}}>
+                        <span className="shop-price-gold">{price.amount}</span>
+                    </button>
             </div>
         );
     }

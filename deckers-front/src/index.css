@@ -43,13 +43,46 @@ code {
   top: 0;
   left: 0;
   height: 100%;
-  z-index: 999;
-  background: rgb(4, 7, 20);
+  z-index: 996;
+  background-image: url('./graphic/nav_background_03.png');
+  background-size: contain;
+  background-repeat: repeat-y;
+  text-shadow: 2px 1px #303433;
   color: #fff;
   transition: all 0.3s;
 }
-.nav-item Link{
+#player-info-nav{
+  z-index: 999;
+  margin: auto;
+  background-image: url('./graphic/nav_background_02.png') !important;
+  background-size: contain;
+  background-repeat: no-repeat;
+  text-shadow: 2px 1px #303433;
+}
+#player-info-nav p:nth-child(0){
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+#player-info-nav p:nth-child(1){
+  margin-block-start: 0;
+  margin-block-end: 1rem;
+}
+.main-menu{
+  background-image: url('./graphic/background_03.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.nav-item button{
   color:#fff;
+  background-image: url('./graphic/button_02.png');
+  background-size: cover;
+  width: 70%;
+  height: auto;
+  background-repeat: no-repeat;
+  border:none;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  line-height: 3rem;
 }
 
 .mm-nav{
@@ -60,10 +93,82 @@ code {
   height: 100%;
   background-color: rgb(4, 7, 20);
 }
+#avatar-holder{
+  background-image: url('./graphic/border_img_01.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  width:5rem;
+  height: 7.6rem;
+  z-index: 905;
+  margin: auto;
+}
+
+#avatar-holder-bg{
+  background-image: url('./graphic/border_img_01_bg.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  width:5rem;
+  height: 7.6rem;
+  z-index: 900;
+  margin: auto;
+}
 
 #avatar{
-  height:100px;
+  height:80%;
   width:auto;
+  z-index: 999;
+  position: relative;
+  top:1.9rem;
+  left:0.3rem;
+  background-image: url('./graphic/avatar_01.png');
+  background-size:contain;
+  background-repeat: no-repeat;
+}
+
+#usr_name{
+  background-image: url('./graphic/title_01.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-size: 1.5rem;
+  height: 3rem;
+  padding-top:0px;
+  margin-block-end: 0;
+  margin: 0px;
+
+}
+
+.btn-logout{
+  background-image: url('./graphic/button_03.png');
+  background-size: cover;
+  width: 50%;
+  height: auto;
+  background-repeat: no-repeat;
+  border:none;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  line-height: 2rem;
+  color:white;
+}
+.currency-p{
+  font-size: 1.1rem;
+}
+
+.nav-currency-gold{
+  background-image: url('./graphic/icon_currency_gold.PNG');
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding-left: 1.4rem;
+  width:0.5rem;
+  height: auto;
+  margin-right: 1rem;
+}
+.nav-currency-gem{
+  background-image: url('./graphic/icon_currency_gem.PNG');
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding-left: 1.4rem;
+  width:0.5rem;
+  height: auto;
 }
 
 MatchmakingNavbar{
@@ -96,17 +201,69 @@ body div{
 }
 
 .chest-item{
-  background-color: rgb(44, 47, 60);
+  background-image: url("./graphic/background_04.png");
+  background-repeat: no-repeat;
+  background-size: cover;
   text-align: center;
-  height: 320px;
-  width: 300px;
-  margin: 20px;
+  height: 30rem;
+  width: 30%;
+  margin: 4.5rem 1rem;
   color:white;
   border-radius: 20px;
+  padding-top:1.5rem;
+  z-index: 996;
+  transition: all 0.3s;
 }
+.btn-buychest{
+  background-image: url("./graphic/nav_background_02.png") !important;
+  background-repeat: no-repeat;
+  background-size: contain;
+  border:none;
+  color:white;
+  font-size: 1rem;
+  width:30%;
+  height:7rem;
+  padding-bottom: 2.2rem;
+  margin-top:0.8rem;
+  z-index: 999;
+  background-color: transparent;
+  cursor: pointer;
+}
+.chest-item p{
+  margin-block-end:0;
+}
+.chest-item-img{
+  background-image: url("./graphic/shop_chest_01.PNG");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width:50%;
+  height: 9.6rem;
+  margin: 1rem auto;
+}
+
 .chest-item ul{
   text-align: left;
+  padding-left: 5rem;
 }
+
+.chest-item-name{
+  background-image: url("./graphic/title_02.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: middle;
+}
+
+.shop-price-gold{
+  background-image: url('./graphic/icon_currency_gold.PNG');
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding-left: 2rem;
+  /* width:0.5rem;
+  height: auto; */
+  margin-right: 1rem;
+  font-size: 1.6rem;
+}
+
 hr{
   color:white;
 }
