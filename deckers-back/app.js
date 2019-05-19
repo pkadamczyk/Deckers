@@ -1,24 +1,24 @@
 require("dotenv").config(); //new auth shit
-var express = require("express");
-var app = express();
+
+const express = require("express");
+const app = express();
 const cors = require("cors"); //new auth shit
 
-var server = require("http").Server(app);
-var io = require("socket.io")(server, {});
-
+const server = require("http").Server(app);
+let io = require("socket.io")(server, {});
 io = require('./routes/sockets/matchmaking').connect(io);
 
-var bodyParser = require('body-parser');
-var mongoose = require("mongoose");
-var methodOverride = require("method-override");
+const bodyParser = require('body-parser');
+const mongoose = require("mongoose");
+const methodOverride = require("method-override");
 
 //  ROUTES SETUP
-var cardRoutes = require("./routes/cards");
-var authRoutes = require("./routes/auth");
-var optionRoutes = require("./routes/options");
-var chestRoutes = require("./routes/chests");
+const cardRoutes = require("./routes/cards");
+const authRoutes = require("./routes/auth");
+const optionRoutes = require("./routes/options");
+const chestRoutes = require("./routes/chests");
 
-let api = require("./api");
+const api = require("./api");
 
 //PART OF NEW AUTH - Pszemek
 app.use(cors());
@@ -44,6 +44,20 @@ app.use(optionRoutes);
 app.use(chestRoutes);
 
 app.use(api);
+
+app.use(function (req, res, next) {
+    let err = new Error("Not Found");
+    err.status = 404;
+    next(err);
+});
+
+app.use(function errorHandler(error, request, response, next) {
+    return response.status(error.status || 500).json({
+        error: {
+            message: error.message || "Oops! Something went wrong."
+        }
+    });
+});
 
 // SERVER CONFIG
 server.listen(8080, process.env.IP, function () {
