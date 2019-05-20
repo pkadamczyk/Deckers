@@ -10,7 +10,7 @@ const Card = require("./models/card");
 const Game = require("./models/game");
 
 // Route for card upgrade
-router.post("/:usr_id/:card_id/upgrade", loginRequired, ensureCorrectUser, async function (req, res) {
+router.post("/:usr_id/:card_id/upgrade", loginRequired, ensureCorrectUser, async function (req, res, next) {
 
     try {
         let foundUser = await fetchUser(req.params.usr_id);
@@ -50,7 +50,7 @@ router.post("/:usr_id/:card_id/upgrade", loginRequired, ensureCorrectUser, async
 });
 
 // Route for buying chests
-router.post("/:id/shop/buy/:chest", loginRequired, ensureCorrectUser, async function (req, res) {
+router.post("/:id/shop/buy/:chest", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
         let [foundChest, foundUser] = await Promise.all([await Chest.findOne({ name: req.params.chest }), await User.findById(req.params.id).deepPopulate('cards.card')])
         let cardAmounts = calculateCardAmounts(foundChest);
@@ -98,7 +98,7 @@ router.post("/:id/shop/buy/:chest", loginRequired, ensureCorrectUser, async func
 });
 
 // Create new deck
-router.post("/:usr_id/decks/create", loginRequired, ensureCorrectUser, async function (req, res) {
+router.post("/:usr_id/decks/create", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
 
         if (req.body.cards.length != 10) throw new Error("Deck should contain 10 cards");
@@ -128,7 +128,7 @@ router.post("/:usr_id/decks/create", loginRequired, ensureCorrectUser, async fun
 })
 
 // delete deck ---> fix z router.post na router.delete -Pszemek (taki ze mnie fullstack hehs)
-router.delete("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async function (req, res) {
+router.delete("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
         let foundUser = await fetchUser(req.params.usr_id);
 
@@ -150,7 +150,7 @@ router.delete("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async
 })
 
 // update deck
-router.put("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async function (req, res) {
+router.put("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
         let newDeck = {
             cards: [],
@@ -179,7 +179,7 @@ router.put("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async fu
 })
 
 // Abandon game endpoint
-router.post("/:usr_id/abandon", loginRequired, ensureCorrectUser, async function (req, res) {
+router.post("/:usr_id/abandon", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
         let user = await User.findById(req.user.usr_id)
 
@@ -197,7 +197,7 @@ router.post("/:usr_id/abandon", loginRequired, ensureCorrectUser, async function
 })
 
 // Join game endpoint
-router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async function (req, res) {
+router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async function (req, res, next) {
 
     // need deck
     try {
