@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CardsCardItem from '../components/CardsCardItem';
 import { cL, tC } from 'react-classlist-helper';
+// import { icon_race_skavens } from '../../graphic/icon_race_skavens.png'
 
 class CardsContent extends Component {
     constructor(props) {
@@ -57,13 +58,52 @@ class CardsContent extends Component {
         //         key={card._id}
         //     />);
         return (
-            <div className="BookOfCards">
-                <div className="cards-place">
+            <div className="BookOfCards row">
+                <div className=" col-11 cards-place">
                     <div className="row">
                         {displayCards}
                     </div>
                 </div>
-
+                <div className="race-filters col-1">
+                    <div className="race-filter-skavens">
+                        <img src='/images/icon_race_skaven.png' className="race-filter-icon" />
+                    </div>
+                    <div className="race-filter-order">
+                        <img src='/images/icon_race_order.png' className="race-filter-icon" />
+                    </div>
+                    <div className="race-filter-dwarfs">
+                        <img src='/images/icon_race_dwarfs.png' className="race-filter-icon" />
+                    </div>
+                    <div className="race-filter-forsaken">
+                        <img src='/images/icon_race_forsaken.png' className="race-filter-icon" />
+                    </div>
+                </div>
+                <div className="col-12 class-filters">
+                    <div className="class-filter">
+                        <img src='/images/icon_class_warrior.png' className="race-filter-icon" />
+                    </div>
+                    <div className="class-filter">
+                        <img src='/images/icon_class_mage.png' className="race-filter-icon" />
+                    </div>
+                    <div className="class-filter">
+                        <img src='/images/icon_class_assassin.png' className="race-filter-icon" />
+                    </div>
+                    <div className="class-filter">
+                        <img src='/images/icon_class_hunter.png' className="race-filter-icon" />
+                    </div>
+                    <div className="class-filter">
+                        <img src='/images/icon_class_priest.png' className="race-filter-icon" />
+                    </div>
+                    <div className="class-filter">
+                        <img src='/images/icon_class_paladin.png' className="race-filter-icon" />
+                    </div>
+                    <div className="class-filter">
+                        <img src='/images/icon_class_merchant.png' className="race-filter-icon" />
+                    </div>
+                    <div className="class-filter">
+                        <img src='/images/icon_class_warlock.png' className="race-filter-icon" />
+                    </div>
+                </div>
                 {/* displaying tabs
                 <div className="list-group list-group-horizontal row" id="list-tab" role="tablist">
                     <div onClick={(e) => this.handleRaceChange("Dwarves")} className={ cL(staticClasses, tC(active, isDwarvesSelected)) } id="list-dwarves" data-toggle="list" role="tab" aria-controls="home" value="Dwarves">Dwarves</div>
