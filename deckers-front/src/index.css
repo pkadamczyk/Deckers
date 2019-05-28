@@ -89,9 +89,28 @@ code {
   padding: 0;
   /* width: 237px;
   height: 608px; */
-  width: 100%;
+  background-image: url('./graphic/nav_background_03.png');
+  background-repeat: repeat-y;
+  background-size:contain;
+  width:100%;
   height: 100%;
-  background-color: rgb(4, 7, 20);
+}
+.mm-options{
+  padding: 0;
+  width:100%;
+  text-align: center;
+  position: relative; 
+  top:26rem;
+}
+.mm-options button{
+  margin: 1rem 0;
+  background-image: url('./graphic/button_03.png');
+  background-size: cover;
+  width: 70%;
+  height: 3.3rem;
+  background-repeat: no-repeat;
+  border:none;
+  font-size: 1.4rem;
 }
 #avatar-holder{
   background-image: url('./graphic/border_img_01.png');
@@ -192,13 +211,7 @@ body div{
   background-color: cadetblue;
 }
 
-.mm_options{
-  padding: 0;
-  width:100%;
-  text-align: center;
-  position: absolute; 
-  bottom: 100px;
-}
+
 
 .chest-item{
   background-image: url("./graphic/background_04.png");

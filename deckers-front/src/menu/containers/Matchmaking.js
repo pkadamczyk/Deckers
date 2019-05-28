@@ -6,11 +6,11 @@ class Matchmaking extends Component {
     render() {
         return (
             <div className="row">
-                <div className="col-9">
-                    <MatchmakingContent/>
+                <div className="col-10">
+                    <MatchmakingContent />
                 </div>
-                <div className="col-3">
-                    <MatchmakingNavbar/>
+                <div className="col-2">
+                    <MatchmakingNavbar />
                 </div>
             </div>
         )

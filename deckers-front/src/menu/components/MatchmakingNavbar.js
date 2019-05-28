@@ -2,28 +2,28 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import openSocket from 'socket.io-client';
 import { Link } from 'react-router-dom';
-import {connectToGame} from '../../store/actions/matchmaking';
+import { connectToGame } from '../../store/actions/matchmaking';
 const socket = openSocket('http://localhost:8080/matchmaking');
 
 class MatchmakingNavbar extends Component {
-    
+
     render() {
-        const {usr_id, deck_id, connectToGame} = this.props;
+        const { usr_id, deck_id, connectToGame } = this.props;
 
 
         socket.on("game-ready", function (data) {
-            connectToGame(data.game_id, usr_id, deck_id );
+            connectToGame(data.game_id, usr_id, deck_id);
         })
 
         return (
             <div className="mm-nav">
-                <div className="mm_options">
+                <div className="mm-options">
                     <button className="btn btn-success" onClick={() => {
                         socket.emit('join', { usr_id: usr_id, gameMode: 0 });
                         console.log("LF game");
                     }}>Find game</button>}
                     <Link to="/gameplay">
-                        <button className="btn btn-danger">Test Gameplay</button>
+                        <button className="btn btn-danger">TEST</button>
                     </Link>
                 </div>
             </div>
