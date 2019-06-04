@@ -41,7 +41,10 @@ class CardsCardItem extends Component {
                             </div>
                             <div className="card-item-description">
                                 {/* //<p>{card.card.role}</p> */}
-                                <p>{card.card.description}</p>
+                                {/* 
+                                //////////COMMENTED DUE TO TOO LONG DESCRIPTION///////////
+                                <p>{card.card.description}</p> 
+                                */}
                             </div>
 
                             {(currentState === "creating" || currentState === "editing") && (deckIsFull === false) && (

@@ -361,6 +361,7 @@ hr{
 }
 .race-filter-icon{
   width: 3.5rem;
+  cursor:pointer;
 }
 .race-filter-skavens{
   background-image: url('./graphic/race_filter_01.png');

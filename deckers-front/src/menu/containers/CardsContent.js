@@ -1,129 +1,217 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CardsCardItem from '../components/CardsCardItem';
-import { cL, tC } from 'react-classlist-helper';
-// import { icon_race_skavens } from '../../graphic/icon_race_skavens.png'
 
 class CardsContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            race: "Dwarves"
-        }
+            //selected race filter
+            pickedRace:"",
+            //selected class filter
+            pickedClass:"",
+            //all user cards sorted ascending by cost
+            allCards:this.props.cards,
+            //cards to be displayed on the page
+            cardsToDisplay:this.props.cards.filter((card,index) => index <=7).map(card =>
+                <CardsCardItem
+                    card={card}
+                    key={card._id}/>)};
+      }
+
+    
+    filterCardsByRace(cards,race){
+       let filteredCards;
+       //no race filter picked --> do nothing
+       if(this.state.pickedRace==="") return cards;
+       // cards is empty --> return empty array
+       else if(cards.length===0) filteredCards = [];
+       // everything good --> filter and return
+       else {filteredCards = cards.filter((card) =>card.card.race === race)
+       return filteredCards;
+       }
     }
-    // onClick event handler
-    handleRaceChange = (race) => {
-        this.setState({ race: race });
+
+
+    filterCardsByClass(cards,role){
+       let filteredCards;
+       //no class filter picked --> do nothing
+       if(this.state.pickedClass==="") return cards;
+       // cards is empty --> return empty array
+       else if(cards.length===0) filteredCards = [];
+       // everything good --> filter and return
+       else {filteredCards = cards.filter((card) =>card.card.role === role)
+       return filteredCards;
+       }
+
+    }
+    updateDisplayedCards(cardsToBeDisplayed){
+        let finalCardsToDisplay, pages=[];
+        //no cards match filters applied --> display nothing
+        if(cardsToBeDisplayed.length===0){
+            finalCardsToDisplay=[];
+        }else{
+            //TEMPORARY SOLUTION (Splitting to pages [one page hardcoded]) <------------------
+            pages[0] = this.splitCardsToPages(cardsToBeDisplayed)
+            //convert filtered cards to React components
+            finalCardsToDisplay = pages[0].map(card =>
+                <CardsCardItem
+                    card={card}
+                    key={card._id}
+             />)
+        }
+        //display cards
+        this.setState({cardsToDisplay:finalCardsToDisplay})
+    }
+
+    //TEMPORARY <---------------------------------------------------------------------
+    splitCardsToPages(cardsAfterFilters){
+        //check how many cards left
+        let max = cardsAfterFilters.length;
+        if(max>7) max=7;
+        //return first page
+        return cardsAfterFilters.slice(0,max);
+    }
+
+    //triggered on filter click
+    handleFilterSelection(){
+        //lastly update displayed cards
+        this.updateDisplayedCards(
+            //secondly filter by class
+            this.filterCardsByClass(
+                //firstly filter by race
+                this.filterCardsByRace(
+                    //get cards, picked class and race from the state
+                    this.state.allCards, this.state.pickedRace),this.state.pickedClass)
+                )
+    }
+
+    //triggered on class filter click
+    pickClass(triggeredClass){
+        console.log("Triggered class:"+triggeredClass)
+        //none picked yet --> pick this
+        if(this.state.pickedClass.length===0){
+            this.setState({pickedClass:triggeredClass})
+        //triggered the same again --> clear selection
+        }else if(this.state.pickedClass===triggeredClass){
+            this.setState({pickClass:""})
+        //triggered other filter --> swap to latest pick
+        }else this.setState({pickedClass:triggeredClass})
+    }
+
+    //triggered on race filter click
+    pickRace(triggeredRace){
+        console.log("Triggered race:"+triggeredRace)
+        //none picked yet --> pick this
+        if(this.state.pickedRace.length===0){
+            this.setState({pickedRace:triggeredRace})
+        //triggered the same again --> clear selection
+        }else if(this.state.pickedRace===triggeredRace){
+            this.setState({pickedRace:""})
+        //triggered other filter --> swap to latest pick
+        }else this.setState({pickedRace:triggeredRace})
     }
 
     render() {
-        //deconstructing things
-        const { cards } = this.props;
-        const { race } = this.state;
-
-        let displayCards = cards.map(card =>
-            <CardsCardItem
-                card={card}
-                key={card._id}
-            />);
-
-        //conditional classes to make tabs changing
-        // let isDwarvesSelected = false, isDragonSelected = false, isElvesSelected = false, isHumansSelected = false;
-        // eslint-disable-next-line
-        // switch(race){
-        //     case "Dwarves":{ isDwarvesSelected = true; isDragonSelected = false; isElvesSelected = false; isHumansSelected = false;break;}
-        //     case "Dragons":{ isDragonSelected = true; isDwarvesSelected = false; isElvesSelected = false; isHumansSelected = false;break;}
-        //     case "Elves":{ isElvesSelected = true; isDwarvesSelected = false; isDragonSelected = false; isHumansSelected = false;break;}
-        //     case "Humans":{ isHumansSelected = true; isDwarvesSelected = false; isDragonSelected = false; isElvesSelected = false;break;}
-        // }
-
-        //definitions of those classes
-        // const active = 'active';
-        // const staticClasses = ['list-group-item',  'col-3', 'list-group-item-action'];
-
-        //filtering cards based on their race
-        // let dwarvesCards = cards.filter( card => card.card.race === 0).map(card => 
-        //     <CardsCardItem
-        //         card={card}
-        //         key={card._id}
-        //     />);
-        // let elvesCards = cards.filter( card => card.card.race === 1).map(card => 
-        //     <CardsCardItem
-        //         card={card}
-        //         key={card._id}
-        //     />);
-        // let dragonsCards = cards.filter( card => card.card.race === 2).map(card => 
-        //     <CardsCardItem
-        //         card={card}
-        //         key={card._id}
-        //     />);
         return (
             <div className="BookOfCards row">
                 <div className=" col-11 cards-place">
                     <div className="row">
-                        {displayCards}
+                        {/* displayed cards */}
+                        {this.state.cardsToDisplay}
                     </div>
                 </div>
+
+                {/* displaying race filters */}
                 <div className="race-filters col-1">
-                    <div className="race-filter-skavens">
+                    <div className="race-filter-skavens"
+                        onClick={()=>{
+                            this.pickRace(0)
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_race_skaven.png' className="race-filter-icon" />
                     </div>
-                    <div className="race-filter-order">
+                    <div className="race-filter-order"
+                        onClick={()=>{
+                            this.pickRace(1)
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_race_order.png' className="race-filter-icon" />
                     </div>
-                    <div className="race-filter-dwarfs">
+                    <div className="race-filter-dwarfs"
+                        onClick={()=>{
+                            this.pickRace(2)
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_race_dwarfs.png' className="race-filter-icon" />
                     </div>
-                    <div className="race-filter-forsaken">
+                    <div className="race-filter-forsaken"
+                        onClick={()=>{
+                            this.pickRace(3)
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_race_forsaken.png' className="race-filter-icon" />
                     </div>
                 </div>
+
+                {/* displaying class filters */}
                 <div className="col-12 class-filters">
-                    <div className="class-filter">
+                    <div className="class-filter"
+                        onClick={()=>{
+                            this.pickClass(0)
+                            this.handleFilterSelection()}}>>
                         <img src='/images/icon_class_warrior.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter">
+                    <div className="class-filter"
+                        onClick={()=>{
+                            this.pickClass(1)
+                            this.handleFilterSelection()}}>>
                         <img src='/images/icon_class_mage.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter">
+                    <div className="class-filter"
+                        onClick={()=>{
+                            this.pickClass(2)
+                            this.handleFilterSelection()}}>>
                         <img src='/images/icon_class_assassin.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter">
+                    <div className="class-filter"
+                        onClick={()=>{
+                            this.pickClass(3)
+                            this.handleFilterSelection()}}>>
                         <img src='/images/icon_class_hunter.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter">
+                    <div className="class-filter"
+                        onClick={()=>{
+                            this.pickClass(4)
+                            this.handleFilterSelection()}}>>
                         <img src='/images/icon_class_priest.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter">
+                    <div className="class-filter"
+                        onClick={()=>{
+                            this.pickClass(5)
+                            this.handleFilterSelection()}}>>
                         <img src='/images/icon_class_paladin.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter">
+                    <div className="class-filter"
+                        onClick={()=>{
+                            this.pickClass(6)
+                            this.handleFilterSelection()}}>>
                         <img src='/images/icon_class_merchant.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter">
+                    <div className="class-filter"
+                        onClick={()=>{
+                            this.pickClass(7)
+                            this.handleFilterSelection()}}>>
                         <img src='/images/icon_class_warlock.png' className="race-filter-icon" />
                     </div>
                 </div>
-                {/* displaying tabs
-                <div className="list-group list-group-horizontal row" id="list-tab" role="tablist">
-                    <div onClick={(e) => this.handleRaceChange("Dwarves")} className={ cL(staticClasses, tC(active, isDwarvesSelected)) } id="list-dwarves" data-toggle="list" role="tab" aria-controls="home" value="Dwarves">Dwarves</div>
-                    <div onClick={(e) => this.handleRaceChange("Dragons")} className={ cL(staticClasses, tC(active, isDragonSelected)) } id="list-dragons" data-toggle="list" role="tab" aria-controls="profile" value="Dragons">Dragons</div>
-                    <div onClick={(e) => this.handleRaceChange("Elves")} className={ cL(staticClasses, tC(active, isElvesSelected)) } id="list-elves" data-toggle="list" role="tab" aria-controls="messages" value="Elvess">Forsakens</div>
-                    <div onClick={(e) => this.handleRaceChange("Humans")} className={ cL(staticClasses, tC(active, isHumansSelected)) } id="list-humans" data-toggle="list" role="tab" aria-controls="settings" value="Humans">Humans</div>
-                </div>*/}
-                {/* displaying cards 
-                <div className="row cards-place">
-                    {race==="Dwarves" && dwarvesCards}
-                    {race==="Elves" && elvesCards}
-                    {race==="Dragons" && dragonsCards}
-                </div>*/}
             </div>
         )
     }
 }
 function mapStateToProps(state) {
     return {
-        cards: state.currentUser.user.cards,
+        //get cards from redux state and sort them ascending by cost
+        cards: state.currentUser.user.cards.sort(
+            (first, second)=> (
+                first.card.stats[first.level-1].cost - second.card.stats[second.level-1].cost
+            )),
     }
 }
 
