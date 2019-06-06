@@ -1,3 +1,6 @@
+.active-filter{
+  border: 2px solid red;
+}
 html{
   width: 100%;
   height: 100%;
@@ -601,13 +604,25 @@ hr{
 
 .btn-deck-create{
   background-image: url('./graphic/button_04.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  border: none;
+  color:white;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  width:5.3em;
+  height: 2.5rem;
+}
+.btn-deck-create2{
+  background-image: url('./graphic/button_04.png');
   background-size: cover;
   background-repeat: no-repeat;
   border: none;
   color:white;
   border-radius: 10px;
   font-size: 1.2rem;
-  height: 3.6rem;
+  height:3.6rem;
+
 }
 .cards-navbar-wrapper{
   height: 100%;
@@ -624,9 +639,9 @@ hr{
   margin: auto;
 }
 .DeckCreationPanel-creating{
+  width: 100%;
   position: absolute;
-  left: 55px;
-  top: 570px;
+  top: 560px;
 }
 .DeckList{
   padding-right: 0.2rem;
@@ -672,18 +687,26 @@ hr{
   
 }
 .mm-deckSlot{
-  background-color: white;
+  background-image: url('./graphic/title_03.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   margin:0px 10px;
   margin-top: 5px;
   widows: 100%;
   height:45px;
   border-radius: 5px;
-  color: rgb(44, 47, 60);
+  color: white;
+}
+.mm-deck-name{
+  background-image: url('./graphic/title_03.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position-y: center;
 }
 
 .mm-card-name{
-  padding-top:10px;
-  
+  padding-top:10px;  
 }
 .AuthFormWrapper{
   height:100%;
@@ -795,6 +818,7 @@ hr{
   widows: 100%;
   height:3rem;
   width: 80%;
+  
   border-radius: 5px;
   color: white
 }
@@ -802,6 +826,8 @@ hr{
   display: inline-block;
   font-size: 2rem;
   margin-block-end: 0;
+  padding: 0;
+  width: 80%;
 }
 
 .mm-deckList{
@@ -811,21 +837,25 @@ hr{
   display: inline-block;
   height: 95%;
   width:30%;
-  background-color: rgb(44, 47, 60);
+  background-image: url('./graphic/nav_background_01.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: transparent;
   color: white;
   text-align: center;
   border-radius: 10px;
   margin: 1.25% 1.66%; 
+  padding-top:10px;
 }
 .addCardToDeck{
   position: relative;
-  top:-70px;
-  left:30px;
+  top:2.8rem;
+  left:2.35rem;
 }
 .delete-deck-btn{
   display: none;
   position: relative;
-  left:1rem;
+  left:0.1rem;
   background-image: url('./graphic/button_X.png');
   background-size: contain;
   background-repeat: no-repeat;

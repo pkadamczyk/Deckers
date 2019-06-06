@@ -1,4 +1,4 @@
-import {CREATE_NEW_DECK, ADD_CARD_TO_DECK, CANCEL_DECK_CREATION, REMOVE_CARD_FROM_DECK, EDIT_DECK} from "../actionTypes";
+import {CREATE_NEW_DECK, ADD_CARD_TO_DECK, CANCEL_DECK_CREATION, REMOVE_CARD_FROM_DECK, EDIT_DECK, FORCE_CARDS_UPDATE} from "../actionTypes";
 
 const DEFAULT_STATE = {
   currentState:"idle",
@@ -13,7 +13,6 @@ const DEFAULT_STATE = {
         case CANCEL_DECK_CREATION:
           return {currentState:"idle", cards:[], full:false}
         case ADD_CARD_TO_DECK:
-          //STUPID, but! it makes CardList component rerender and updates cards.
           //Temporary (hope so)
           let updatedCards = state.cards.filter(card => card!==0);
           updatedCards.push(action.card);

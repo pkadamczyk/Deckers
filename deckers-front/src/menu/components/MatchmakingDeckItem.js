@@ -15,7 +15,7 @@ class MatchmakingDeckItem extends Component{
         ));
         return(
             <div className="mm-deck-item" onClick={()=>chooseDeck(deck._id)}>
-                <h1>{deck.name}</h1>
+                <h1 className="mm-deck-name">{deck.name}</h1>
                 <hr/>
                 {DeckSlots}
             </div>

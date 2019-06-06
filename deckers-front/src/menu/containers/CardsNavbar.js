@@ -96,7 +96,7 @@ class CardsNavbar extends Component {
                     </div>
                     <div className="DeckCreationPanel">
                         <button onClick={createNewDeck}
-                                className="btn btn-deck-create">Create new deck</button>
+                                className="btn btn-deck-create2">Create new deck</button>
                     </div></div>)}
 
                 {/* WHILE CREATING NEW DECK */}
@@ -106,8 +106,8 @@ class CardsNavbar extends Component {
                         {creatingDeckSlots}
                     </div>
                     <div className="DeckCreationPanel-creating">
-                        <button onClick={this.handleSubmit} className="btn btn-success btn-deck-create mr-2">Confirm</button>
-                        <button onClick={cancelDeckCreation} className="btn btn-danger btn-deck-create ml-2">Cancel</button>
+                        <button onClick={this.handleSubmit} className="btn btn-deck-create mr-2">Confirm</button>
+                        <button onClick={cancelDeckCreation} className="btn btn-deck-create ml-2">Cancel</button>
                     </div>
                 </div>)}
 

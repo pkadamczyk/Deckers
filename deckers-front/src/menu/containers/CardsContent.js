@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import CardsCardItem from '../components/CardsCardItem';
+import {cL, tC} from 'react-classlist-helper';
 
 class CardsContent extends Component {
     constructor(props) {
@@ -20,7 +21,7 @@ class CardsContent extends Component {
       }
 
     
-    filterCardsByRace(cards,race){
+    filterCardsByRace=(cards,race)=>{
        let filteredCards;
        //no race filter picked --> do nothing
        if(this.state.pickedRace==="") return cards;
@@ -33,7 +34,7 @@ class CardsContent extends Component {
     }
 
 
-    filterCardsByClass(cards,role){
+    filterCardsByClass=(cards,role)=>{
        let filteredCards;
        //no class filter picked --> do nothing
        if(this.state.pickedClass==="") return cards;
@@ -48,7 +49,7 @@ class CardsContent extends Component {
     updateDisplayedCards(cardsToBeDisplayed){
         let finalCardsToDisplay, pages=[];
         //no cards match filters applied --> display nothing
-        if(cardsToBeDisplayed.length===0){
+        if(cardsToBeDisplayed===undefined || cardsToBeDisplayed.length===0){
             finalCardsToDisplay=[];
         }else{
             //TEMPORARY SOLUTION (Splitting to pages [one page hardcoded]) <------------------
@@ -65,16 +66,20 @@ class CardsContent extends Component {
     }
 
     //TEMPORARY <---------------------------------------------------------------------
-    splitCardsToPages(cardsAfterFilters){
-        //check how many cards left
-        let max = cardsAfterFilters.length;
-        if(max>7) max=7;
-        //return first page
-        return cardsAfterFilters.slice(0,max);
+    splitCardsToPages=(cardsAfterFilters)=>{
+        if(cardsAfterFilters.length===0){
+            return [];
+        }else{
+            //check how many cards left
+            let max = cardsAfterFilters.length;
+            if(max>8) max=8;
+            //return first page
+            return cardsAfterFilters.slice(0,max);
+        }
     }
 
     //triggered on filter click
-    handleFilterSelection(){
+    handleFilterSelection=()=>{
         //lastly update displayed cards
         this.updateDisplayedCards(
             //secondly filter by class
@@ -87,20 +92,20 @@ class CardsContent extends Component {
     }
 
     //triggered on class filter click
-    pickClass(triggeredClass){
+    pickClass=(triggeredClass)=>{
         console.log("Triggered class:"+triggeredClass)
         //none picked yet --> pick this
         if(this.state.pickedClass.length===0){
             this.setState({pickedClass:triggeredClass})
         //triggered the same again --> clear selection
         }else if(this.state.pickedClass===triggeredClass){
-            this.setState({pickClass:""})
+            this.setState({pickedClass:""})
         //triggered other filter --> swap to latest pick
         }else this.setState({pickedClass:triggeredClass})
     }
 
     //triggered on race filter click
-    pickRace(triggeredRace){
+    pickRace=(triggeredRace)=>{
         console.log("Triggered race:"+triggeredRace)
         //none picked yet --> pick this
         if(this.state.pickedRace.length===0){
@@ -113,6 +118,7 @@ class CardsContent extends Component {
     }
 
     render() {
+        let activeClass = "active-filter";
         return (
             <div className="BookOfCards row">
                 <div className=" col-11 cards-place">
@@ -124,25 +130,25 @@ class CardsContent extends Component {
 
                 {/* displaying race filters */}
                 <div className="race-filters col-1">
-                    <div className="race-filter-skavens"
+                    <div className={cL("race-filter-skavens", tC(activeClass, this.state.pickedRace=="0"))}
                         onClick={()=>{
                             this.pickRace(0)
                             this.handleFilterSelection()}}>
                         <img src='/images/icon_race_skaven.png' className="race-filter-icon" />
                     </div>
-                    <div className="race-filter-order"
+                    <div className={cL("race-filter-order", tC(activeClass, this.state.pickedRace=="1"))}
                         onClick={()=>{
                             this.pickRace(1)
                             this.handleFilterSelection()}}>
                         <img src='/images/icon_race_order.png' className="race-filter-icon" />
                     </div>
-                    <div className="race-filter-dwarfs"
+                    <div className={cL("race-filter-dwarfs", tC(activeClass, this.state.pickedRace=="2"))}
                         onClick={()=>{
                             this.pickRace(2)
                             this.handleFilterSelection()}}>
                         <img src='/images/icon_race_dwarfs.png' className="race-filter-icon" />
                     </div>
-                    <div className="race-filter-forsaken"
+                    <div className={cL("race-filter-forsaken", tC(activeClass, this.state.pickedRace=="3"))}
                         onClick={()=>{
                             this.pickRace(3)
                             this.handleFilterSelection()}}>
@@ -152,52 +158,52 @@ class CardsContent extends Component {
 
                 {/* displaying class filters */}
                 <div className="col-12 class-filters">
-                    <div className="class-filter"
+                    <div className={cL("class-filter", tC(activeClass, this.state.pickedClass=="0"))}
                         onClick={()=>{
                             this.pickClass(0)
-                            this.handleFilterSelection()}}>>
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_class_warrior.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter"
+                    <div className={cL("class-filter", tC(activeClass, this.state.pickedClass=="1"))}
                         onClick={()=>{
                             this.pickClass(1)
-                            this.handleFilterSelection()}}>>
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_class_mage.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter"
+                    <div className={cL("class-filter", tC(activeClass, this.state.pickedClass=="2"))}
                         onClick={()=>{
                             this.pickClass(2)
-                            this.handleFilterSelection()}}>>
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_class_assassin.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter"
+                    <div className={cL("class-filter", tC(activeClass, this.state.pickedClass=="3"))}
                         onClick={()=>{
                             this.pickClass(3)
-                            this.handleFilterSelection()}}>>
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_class_hunter.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter"
+                    <div className={cL("class-filter", tC(activeClass, this.state.pickedClass=="4"))}
                         onClick={()=>{
                             this.pickClass(4)
-                            this.handleFilterSelection()}}>>
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_class_priest.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter"
+                    <div className={cL("class-filter", tC(activeClass, this.state.pickedClass=="5"))}
                         onClick={()=>{
                             this.pickClass(5)
-                            this.handleFilterSelection()}}>>
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_class_paladin.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter"
+                    <div className={cL("class-filter", tC(activeClass, this.state.pickedClass=="6"))}
                         onClick={()=>{
                             this.pickClass(6)
-                            this.handleFilterSelection()}}>>
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_class_merchant.png' className="race-filter-icon" />
                     </div>
-                    <div className="class-filter"
+                    <div className={cL("class-filter", tC(activeClass, this.state.pickedClass=="7"))}
                         onClick={()=>{
                             this.pickClass(7)
-                            this.handleFilterSelection()}}>>
+                            this.handleFilterSelection()}}>
                         <img src='/images/icon_class_warlock.png' className="race-filter-icon" />
                     </div>
                 </div>
