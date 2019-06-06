@@ -98,7 +98,7 @@ router.post("/:id/shop/buy/:chest", loginRequired, ensureCorrectUser, async func
 });
 
 // Create new deck
-router.post("/:usr_id/decks/create", loginRequired, ensureCorrectUser, async function (req, res, next) {
+router.post("/:usr_id/decks/create",  async function (req, res, next) {
     try {
 
         if (req.body.cards.length != 10) throw new Error("Deck should contain 10 cards");
