@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import {Link} from 'react-router-dom';
-import {tC } from 'react-classlist-helper';
+import {tC, cL} from 'react-classlist-helper';
 
 class AuthForm extends Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class AuthForm extends Component {
     this.props
       .onAuth(authType, this.state)
       .then(() => {
-        this.props.history.push("/");
+        this.props.history.push("/matchmaking");
       })
       .catch(() => {
         return;
@@ -83,11 +83,11 @@ class AuthForm extends Component {
               )}
               <button
                 type="submit"
-                className={tC('auth-additional-margin', !!login)}>
+                className={cL("cursorTransform", tC('auth-additional-margin', !!login))}>
                 {buttonText}
               </button>
-                {login && (<div className="authform-link-login"><p>New here? <br/> You can signup <Link to="/register">here</Link></p></div>)}
-                {signUp && (<div className="authform-link-register"><p>Already signed up? <br/>Login <Link to="/login">here</Link></p></div>)}
+                {login && (<div className="authform-link-login cursorTransform"><p>New here? <br/> You can signup <Link to="/register">here</Link></p></div>)}
+                {signUp && (<div className="authform-link-register cursorTransform"><p>Already signed up? <br/>Login <Link to="/login">here</Link></p></div>)}
 
             </form>
             

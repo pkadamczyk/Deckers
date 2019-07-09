@@ -4,7 +4,10 @@ import EnemyBoardCard from '../components/EnemyBoardCard';
 class EnemyBoard extends Component{
     render(){
         return(
-            <div>
+            <div className="EnemyBoard">
+                <EnemyBoardCard/>
+                <EnemyBoardCard/>
+                <EnemyBoardCard/>
                 <EnemyBoardCard/>
             </div>
         )

@@ -4,7 +4,10 @@ import PlayerBoardCard from '../components/PlayerBoardCard';
 class PlayerBoard extends Component{
     render(){
         return(
-            <div>
+            <div className="PlayerBoard">
+                <PlayerBoardCard/>
+                <PlayerBoardCard/>
+                <PlayerBoardCard/>
                 <PlayerBoardCard/>
             </div>
         )

@@ -118,7 +118,8 @@ class CardsContent extends Component {
     }
 
     render() {
-        let activeClass = "active-filter";
+        let activeClass = "";
+        //active-filter
         return (
             <div className="BookOfCards row">
                 <div className=" col-11 cards-place">
@@ -130,30 +131,32 @@ class CardsContent extends Component {
 
                 {/* displaying race filters */}
                 <div className="race-filters col-1">
-                    <div className={cL("race-filter-skavens", tC(activeClass, this.state.pickedRace=="0"))}
-                        onClick={()=>{
-                            this.pickRace(0)
-                            this.handleFilterSelection()}}>
-                        <img src='/images/icon_race_skaven.png' className="race-filter-icon" />
-                    </div>
-                    <div className={cL("race-filter-order", tC(activeClass, this.state.pickedRace=="1"))}
-                        onClick={()=>{
-                            this.pickRace(1)
-                            this.handleFilterSelection()}}>
-                        <img src='/images/icon_race_order.png' className="race-filter-icon" />
-                    </div>
-                    <div className={cL("race-filter-dwarfs", tC(activeClass, this.state.pickedRace=="2"))}
-                        onClick={()=>{
-                            this.pickRace(2)
-                            this.handleFilterSelection()}}>
-                        <img src='/images/icon_race_dwarfs.png' className="race-filter-icon" />
-                    </div>
-                    <div className={cL("race-filter-forsaken", tC(activeClass, this.state.pickedRace=="3"))}
-                        onClick={()=>{
-                            this.pickRace(3)
-                            this.handleFilterSelection()}}>
-                        <img src='/images/icon_race_forsaken.png' className="race-filter-icon" />
-                    </div>
+                <div className={cL("race-filter-dwarfs", tC(activeClass, this.state.pickedRace=="0"))}
+                    onClick={()=>{
+                        this.pickRace(0)
+                        this.handleFilterSelection()}}>
+                    <img src='/images/icon_race_dwarfs.png' className="race-filter-icon" />
+                </div>
+                <div className={cL("race-filter-forsaken", tC(activeClass, this.state.pickedRace=="1"))}
+                    onClick={()=>{
+                        this.pickRace(1)
+                        this.handleFilterSelection()}}>
+                    <img src='/images/icon_race_forsaken.png' className="race-filter-icon" />
+                </div>
+                <div className={cL("race-filter-order", tC(activeClass, this.state.pickedRace=="2"))}
+                    onClick={()=>{
+                        this.pickRace(2)
+                        this.handleFilterSelection()}}>
+                    <img src='/images/icon_race_order.png' className="race-filter-icon" />
+                </div>
+                <div className={cL("race-filter-skavens", tC(activeClass, this.state.pickedRace=="3"))}
+                    onClick={()=>{
+                        this.pickRace(3)
+                        this.handleFilterSelection()}}>
+                    <img src='/images/icon_race_skaven.png' className="race-filter-icon" />
+                </div>
+                    
+                   
                 </div>
 
                 {/* displaying class filters */}

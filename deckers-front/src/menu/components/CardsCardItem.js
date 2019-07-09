@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addCardToDeck } from '../../store/actions/decks';
+import {cL, tC} from 'react-classlist-helper';
 
 class CardsCardItem extends Component {
     render() {
         const { card, currentState, addCardToDeck, deckIsFull } = this.props;
-        const races = ['Dwarf', 'Forsaken', 'The Order', 'Skaven']
+        const races = ['Dwarf', 'Forsaken', 'TheOrder', 'Skaven']
+        const classes = ['Warrior','Hunter','Assasin','Mage','Knight','Priest','Warlock','Merchant', 'Spell'];
+        const coloredSquare = `card-item-cost-${races[card.card.race].toLowerCase()}`;
         return (
             <div className="col-3 col-3-card-fixed">
                 <div className="card-wrapper">
@@ -14,10 +17,10 @@ class CardsCardItem extends Component {
 
                             {/* <div className="card-item-portrait"> */}
                             <div className="card-title">
-                                <div className="card-item-cost">
+                                <div className={cL("card-item-cost", coloredSquare)}>
                                     <p>{card.card.stats[0].cost}</p>
                                 </div>
-                                <p>{races[card.card.race]} Assasin</p>
+                                <p>{races[card.card.race]} {classes[card.card.role]}</p>
                             </div>
 
                             {/* <div className="card-item-class-icon">

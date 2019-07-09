@@ -5,7 +5,7 @@ import Player2Info from '../components/Player2Info';
 class PlayerInfoContainer extends Component{
     render(){
         return(
-            <div>
+            <div className="PlayerInfoContainer">
                 <Player1Info/>
                 <Player2Info/>
             </div>

@@ -5,7 +5,7 @@ import PlayerDeck from '../components/PlayerDeck';
 class DeckContainer extends Component{
     render(){
         return(
-            <div>
+            <div className="DeckContainer">
                 <EnemyDeck/>
                 <PlayerDeck/>
             </div>

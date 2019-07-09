@@ -14,7 +14,7 @@ const Main = props => {
       <Route exact path="/login" render={props => {
         if (currentUser.isAuthenticated) {
           return (
-            <Redirect to="/" />
+            <Redirect to="/matchmaking" />
           )
         } else {
           return (
@@ -32,7 +32,7 @@ const Main = props => {
       <Route exact path="/register" render={props => {
         if (currentUser.isAuthenticated) {
           return (
-            <Redirect to="/" />
+            <Redirect to="/matchmaking" />
           )
         } else {
           return (

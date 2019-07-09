@@ -54,6 +54,11 @@ code {
   color: #fff;
   transition: all 0.3s;
 }
+
+.cursorTransform{
+  cursor: pointer ;
+}
+
 #player-info-nav{
   z-index: 999;
   margin: auto;
@@ -487,7 +492,6 @@ hr{
   z-index: 1;
 }
 .card-item-cost{
-  background-image: url("./graphic/race_filter_01.png");
   background-repeat: no-repeat;
   background-size: contain;
   display: inline-block;
@@ -497,6 +501,18 @@ hr{
   left:0.4rem;
   color: white;
   padding-left: 0.5rem;
+}
+.card-item-cost-skaven{
+  background-image: url("./graphic/race_filter_01.png");
+}
+.card-item-cost-dwarf{
+  background-image: url("./graphic/race_filter_02.png");
+}
+.card-item-cost-forsaken{
+  background-image: url("./graphic/race_filter_04.png");
+}
+.card-item-cost-theorder{
+  background-image: url("./graphic/race_filter_03.png");
 }
 .card-title p{
   display: inline;
@@ -868,6 +884,17 @@ hr{
 
 .CardListDeck:hover .delete-deck-btn {display: inline-block;}
 
+.gameObj{
+  width: 100%;
+  height: 100%;
+  background-image: url('./graphic/background_02.PNG');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+
+
 
 /* UKRADZIONE W CHUJ */
 .cards {
@@ -886,6 +913,18 @@ hr{
   margin: 0 -25px;
   position: relative;
   width: 100px;
+  border-radius: 0;
+}
+.card-back-bg{
+  width: 100%;
+  height: 100%;
+  background-image: url("./graphic/card_background_01.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  color:white;
+  padding: 0;
+  position: relative;
+  z-index: 0;
 }
 .card:after {
   bottom: 0;
@@ -897,7 +936,7 @@ hr{
   z-index: 10;
 }
 
-.card-face {
+.card-face{
   bottom: 0;
   content: '';
   left: 0;
@@ -908,6 +947,15 @@ hr{
   transition: 800ms cubic-bezier(0.19, 1, 0.22, 1) -webkit-transform;
   transition: 800ms cubic-bezier(0.19, 1, 0.22, 1) transform;
   transition: 800ms cubic-bezier(0.19, 1, 0.22, 1) transform, 800ms cubic-bezier(0.19, 1, 0.22, 1) -webkit-transform;
+}
+.card-face-img{
+  width: 100%;
+  height: 100%;
+  background-image: url("./graphic/card_front_01.png") !important;
+  background-repeat: no-repeat;
+  background-size: contain ;
+  color:white;
+  padding: 0;
 }
 .card-face:after {
   -webkit-animation: none;
@@ -931,15 +979,12 @@ hr{
 }
 
 .card:nth-child(1) .card-face {
-  background: linear-gradient(-135deg, #ff9999, #da0b0b);
+  /* background: linear-gradient(-135deg, #ff9999, #da0b0b); */
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(255, 153, 153, 0.75);
   -webkit-transform: translateY(45px) rotate(-28.125deg);
           transform: translateY(45px) rotate(-28.125deg);
 }
-.card:nth-child(1) .card-face .card-label {
-  color: #db0000;
-  text-shadow: -0.025em 0.025em 0 #ff8080;
-}
+
 .card:nth-child(1):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(255, 153, 153, 0.75);
   -webkit-transform: translateY(-100px) rotate(0deg) scale(2);
@@ -956,15 +1001,12 @@ hr{
 }
 
 .card:nth-child(2) .card-face {
-  background: linear-gradient(-135deg, #ff99d6, #da0b87);
+  /* background: linear-gradient(-135deg, #ff99d6, #da0b87); */
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(255, 153, 214, 0.75);
   -webkit-transform: translateY(35px) rotate(-21.875deg);
           transform: translateY(35px) rotate(-21.875deg);
 }
-.card:nth-child(2) .card-face .card-label {
-  color: #db0084;
-  text-shadow: -0.025em 0.025em 0 #ff80cc;
-}
+
 .card:nth-child(2):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(255, 153, 214, 0.75);
   -webkit-transform: translateY(-100px) rotate(0deg) scale(2);
@@ -981,14 +1023,10 @@ hr{
 }
 
 .card:nth-child(3) .card-face {
-  background: linear-gradient(-135deg, #eb99ff, #b10bda);
+  /* background: linear-gradient(-135deg, #eb99ff, #b10bda); */
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(235, 153, 255, 0.75);
   -webkit-transform: translateY(25px) rotate(-15.625deg);
           transform: translateY(25px) rotate(-15.625deg);
-}
-.card:nth-child(3) .card-face .card-label {
-  color: #af00db;
-  text-shadow: -0.025em 0.025em 0 #e680ff;
 }
 .card:nth-child(3):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(235, 153, 255, 0.75);
@@ -1006,14 +1044,10 @@ hr{
 }
 
 .card:nth-child(4) .card-face {
-  background: linear-gradient(-135deg, #ad99ff, #350bda);
+  /* background: linear-gradient(-135deg, #ad99ff, #350bda); */
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(173, 153, 255, 0.75);
   -webkit-transform: translateY(15px) rotate(-9.375deg);
           transform: translateY(15px) rotate(-9.375deg);
-}
-.card:nth-child(4) .card-face .card-label {
-  color: #2c00db;
-  text-shadow: -0.025em 0.025em 0 #9980ff;
 }
 .card:nth-child(4):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(173, 153, 255, 0.75);
@@ -1031,15 +1065,12 @@ hr{
 }
 
 .card:nth-child(5) .card-face {
-  background: linear-gradient(-135deg, #99c2ff, #0b5eda);
+  /* background: linear-gradient(-135deg, #99c2ff, #0b5eda); */
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(153, 194, 255, 0.75);
   -webkit-transform: translateY(5px) rotate(-3.125deg);
           transform: translateY(5px) rotate(-3.125deg);
 }
-.card:nth-child(5) .card-face .card-label {
-  color: #0058db;
-  text-shadow: -0.025em 0.025em 0 #80b3ff;
-}
+
 .card:nth-child(5):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(153, 194, 255, 0.75);
   -webkit-transform: translateY(-100px) rotate(0deg) scale(2);
@@ -1056,15 +1087,12 @@ hr{
 }
 
 .card:nth-child(6) .card-face {
-  background: linear-gradient(-135deg, #99ffff, #0bdada);
+  /* background: linear-gradient(-135deg, #99ffff, #0bdada); */
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(153, 255, 255, 0.75);
   -webkit-transform: translateY(5px) rotate(3.125deg);
           transform: translateY(5px) rotate(3.125deg);
 }
-.card:nth-child(6) .card-face .card-label {
-  color: #00dbdb;
-  text-shadow: -0.025em 0.025em 0 #80ffff;
-}
+
 .card:nth-child(6):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(153, 255, 255, 0.75);
   -webkit-transform: translateY(-100px) rotate(0deg) scale(2);
@@ -1081,15 +1109,12 @@ hr{
 }
 
 .card:nth-child(7) .card-face {
-  background: linear-gradient(-135deg, #99ffc2, #0bda5e);
+  /* background: linear-gradient(-135deg, #99ffc2, #0bda5e); */
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(153, 255, 194, 0.75);
   -webkit-transform: translateY(15px) rotate(9.375deg);
           transform: translateY(15px) rotate(9.375deg);
 }
-.card:nth-child(7) .card-face .card-label {
-  color: #00db58;
-  text-shadow: -0.025em 0.025em 0 #80ffb3;
-}
+
 .card:nth-child(7):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(153, 255, 194, 0.75);
   -webkit-transform: translateY(-100px) rotate(0deg) scale(2);
@@ -1106,15 +1131,12 @@ hr{
 }
 
 .card:nth-child(8) .card-face {
-  background: linear-gradient(-135deg, #adff99, #35da0b);
+  /* background: linear-gradient(-135deg, #adff99, #35da0b); */
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(173, 255, 153, 0.75);
   -webkit-transform: translateY(25px) rotate(15.625deg);
           transform: translateY(25px) rotate(15.625deg);
 }
-.card:nth-child(8) .card-face .card-label {
-  color: #2cdb00;
-  text-shadow: -0.025em 0.025em 0 #99ff80;
-}
+
 .card:nth-child(8):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(173, 255, 153, 0.75);
   -webkit-transform: translateY(-100px) rotate(0deg) scale(2);
@@ -1131,14 +1153,10 @@ hr{
 }
 
 .card:nth-child(9) .card-face {
-  background: linear-gradient(-135deg, #ebff99, #b1da0b);
+  /* background: linear-gradient(-135deg, #ebff99, #b1da0b); */
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(235, 255, 153, 0.75);
   -webkit-transform: translateY(35px) rotate(21.875deg);
           transform: translateY(35px) rotate(21.875deg);
-}
-.card:nth-child(9) .card-face .card-label {
-  color: #afdb00;
-  text-shadow: -0.025em 0.025em 0 #e6ff80;
 }
 .card:nth-child(9):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(235, 255, 153, 0.75);
@@ -1156,15 +1174,12 @@ hr{
 }
 
 .card:nth-child(10) .card-face {
-  background: linear-gradient(-135deg, #ffd699, #da870b);
+
   box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.15), inset 0 0 0 2px rgba(255, 214, 153, 0.75);
   -webkit-transform: translateY(45px) rotate(28.125deg);
           transform: translateY(45px) rotate(28.125deg);
 }
-.card:nth-child(10) .card-face .card-label {
-  color: #db8400;
-  text-shadow: -0.025em 0.025em 0 #ffcc80;
-}
+
 .card:nth-child(10):hover .card-face {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 0 0 2px rgba(255, 214, 153, 0.75);
   -webkit-transform: translateY(-100px) rotate(0deg) scale(2);
@@ -1192,6 +1207,10 @@ hr{
             transform: scale(1.15);
   }
 }
+.card{
+  background: transparent;
+  border: none;
+}
 
 @keyframes fade {
   0% {
@@ -1206,3 +1225,55 @@ hr{
   }
 }
 /* KONIEC UKRADZIONEGO W CHUJ */
+
+.Hand{
+  position: absolute;
+  top:475px;
+  height: 150px;
+  width: 100%;
+}
+
+.Board{
+  display: inline-block;
+  position: relative;
+  
+  top:150px;
+  height: 325px;
+  width: 60%;
+  border: 1px solid red
+}
+
+.PlayerBoard{
+  height: 50%;
+  text-align: center;
+}
+.EnemyBoard{
+  height: 50%;
+  text-align: center;
+}
+.PlayerBoardCard{
+  display: inline-block;
+  height: 161.6px;
+  width: 109.5px;
+  border: 1.5px solid blue;
+  margin: 0 5%;
+}
+.EnemyBoardCard{
+  display: inline-block;
+  height: 161.6px;
+  width: 109.5px;
+  border: 1.5px solid purple;
+  margin: 0 5%;
+}
+.PlayerInfoContainer{
+  border: 1.5px solid green;
+  width: 20%;
+  display: inline-block;
+  height: 325px;
+}
+.DeckContainer{
+  width:20%;
+  display: inline-block;
+  border: 1.5px solid yellow;
+  height: 325px;
+}
