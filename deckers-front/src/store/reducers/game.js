@@ -1,5 +1,5 @@
 // import { CONNECTED_TO_GAME } from "../actionTypes";
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN } from "../actionTypes"
 
 
 const getItems = (count, offset = 0) =>
@@ -10,7 +10,9 @@ const getItems = (count, offset = 0) =>
 
 const DEFAULT_STATE = {
     cardsOnBoard: getItems(0),
-    cardsOnHand: getItems(5, 10)
+    cardsOnHand: getItems(5, 10),
+
+    isMyTurn: true
 };
 
 
@@ -51,6 +53,9 @@ export default (state = DEFAULT_STATE, action) => {
             }
 
             return { ...state, cardsOnHand: [...state.cardsOnHand, newCard] }
+
+        case END_TURN:
+            return { ...state, isMyTurn: !state.isMyTurn };
         default:
             return state;
     }

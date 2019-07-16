@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-
+import { connect } from "react-redux"
 import styled from "styled-components"
 
+import { endTurn } from "../../store/actions/game"
+
 const Button = styled.button`
+    transition: 0.2s ease;
     height:50px;
     width:120px;
 
@@ -10,19 +13,19 @@ const Button = styled.button`
     left:1%;
     top: 50%;
 
-    background-color: #749a02;
-    border-color: #749a02;
+    background-color: ${props => props.isMyTurn ? "#749a02" : "#bbbbbb"};
+    border-color: ${props => props.isMyTurn ? "#749a02" : "#bbbbbb"};
 
     border-radius: 6px;
     color: white;
-  
-    -webkit-box-shadow: 0px 0px 18px 0px rgba(145,189,9,1);
-    -moz-box-shadow: 0px 0px 18px 0px rgba(145,189,9,1);
-    box-shadow: 0px 0px 18px 0px rgba(145,189,9,1);
+    -webkit-box-shadow: ${props => props.isMyTurn ? "0px 0px 18px 0px rgba(145,189,9,1)" : "none"};
+    -moz-box-shadow: ${props => props.isMyTurn ? "0px 0px 18px 0px rgba(145,189,9,1)" : "none"};
+    box-shadow: ${props => props.isMyTurn ? "0px 0px 18px 0px rgba(145,189,9,1)" : "none"};
 
     &:hover {
-        background-color: #85ab13;
-    border-color: #85ab13;
+        
+        background-color: ${props => props.isMyTurn ? "#85ab13" : "#bbbbbb"};
+        border-color: ${props => props.isMyTurn ? "#85ab13" : "#bbbbbb"};
     }
 }
 `;
@@ -30,9 +33,20 @@ const Button = styled.button`
 class EndTurnButton extends Component {
     render() {
         return (
-            <Button>End Turn</Button>
+            <Button
+                onClick={() => this.props.dispatch(endTurn())}
+                isMyTurn={this.props.isMyTurn}
+            >
+                End Turn
+            </Button>
         )
     }
 }
 
-export default EndTurnButton; 
+function mapStateToProps(state) {
+    return {
+        isMyTurn: state.game.isMyTurn
+    }
+}
+
+export default connect(mapStateToProps)(EndTurnButton); 
