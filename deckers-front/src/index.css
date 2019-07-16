@@ -1244,12 +1244,14 @@ hr{
 }
 
 .PlayerBoard{
-  height: 50%;
+  /* height: 50%;
   text-align: center;
+  background-color: cadetblue */
 }
 .EnemyBoard{
   height: 50%;
   text-align: center;
+  background-color: lightcoral
 }
 .PlayerBoardCard{
   display: inline-block;
@@ -1257,6 +1259,7 @@ hr{
   width: 109.5px;
   border: 1.5px solid blue;
   margin: 0 5%;
+  
 }
 .EnemyBoardCard{
   display: inline-block;
@@ -1264,6 +1267,7 @@ hr{
   width: 109.5px;
   border: 1.5px solid purple;
   margin: 0 5%;
+  
 }
 .PlayerInfoContainer{
   border: 1.5px solid green;

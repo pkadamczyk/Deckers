@@ -1,24 +1,28 @@
 import React, { Component } from 'react';
 
-import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd';
-import styled from "styled-components"
+import styled from "styled-components";
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 import Item from "./Item"
 
 const DroppableDiv = styled.div`
-    height: 50%;
-    overflow: 'auto';
+    height: 145px;
+    width: 650px;
 
     background: ${props => props.isDraggingOver ? 'lightblue' : 'lightgrey'};
     display: flex;
     padding: 8px;
     overflow: auto;
+
+    position: absolute;
+    bottom: 0;
+    right: 0;
 `;
 
-class PlayerBoard extends Component {
+class PlayerHand extends Component {
     render() {
         return (
-            <Droppable droppableId="droppable" direction="horizontal" >
+            <Droppable droppableId="droppable2" direction="horizontal">
                 {(provided, snapshot) => (
                     <DroppableDiv
                         ref={provided.innerRef}
@@ -26,7 +30,7 @@ class PlayerBoard extends Component {
                         isDraggingOver={snapshot.isDraggingOver}
                     >
                         {this.props.items.map((item, index) => (
-                            <Item key={item.id} item={item} index={index} isDragDisabled={true}></Item>
+                            <Item key={item.id} item={item} index={index} ></Item>
                         ))}
                         {provided.placeholder}
                     </DroppableDiv>
@@ -36,4 +40,4 @@ class PlayerBoard extends Component {
     }
 }
 
-export default PlayerBoard; 
+export default PlayerHand;

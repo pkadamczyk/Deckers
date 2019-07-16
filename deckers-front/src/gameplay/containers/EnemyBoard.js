@@ -1,14 +1,9 @@
-import React, {Component} from 'react';
-import EnemyBoardCard from '../components/EnemyBoardCard';
+import React, { Component } from 'react';
 
-class EnemyBoard extends Component{
-    render(){
-        return(
+class EnemyBoard extends Component {
+    render() {
+        return (
             <div className="EnemyBoard">
-                <EnemyBoardCard/>
-                <EnemyBoardCard/>
-                <EnemyBoardCard/>
-                <EnemyBoardCard/>
             </div>
         )
     }
