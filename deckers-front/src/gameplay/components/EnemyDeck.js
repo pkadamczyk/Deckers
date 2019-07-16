@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-class EnemyDeck extends Component{
-    render(){
-        return(
-            <div>
-                
-            </div>
+import Deck from "./Deck"
+class EnemyDeck extends Component {
+    render() {
+        return (
+            <Deck></Deck>
         )
     }
 }

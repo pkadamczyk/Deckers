@@ -13,7 +13,11 @@ import PlayerHand from "./PlayerHand"
 import styled from "styled-components"
 import { connect } from "react-redux"
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { reorderCardsInHand } from '../../store/actions/game'
+import { reorderCardsInHand, summonCard } from '../../store/actions/game'
+import PlayerHero from '../components/PlayerHero';
+import EnemyHero from '../components/EnemyHero';
+import EnemyDeck from '../components/EnemyDeck';
+import PlayerDeck from '../components/PlayerDeck';
 
 const Wrapper = styled.div`
     top:100px;
@@ -22,11 +26,6 @@ const Wrapper = styled.div`
     border: 1px solid red;
     margin:auto;
 `;
-
-// a little function to help us with reordering the result
-const reorder = (list, startIndex, endIndex) => {
-    reorderCardsInHand(list, startIndex, endIndex)
-};
 
 const move = (source, destination, droppableSource, droppableDestination) => {
     const sourceClone = Array.from(source);
@@ -64,33 +63,20 @@ class Game extends Component {
             return;
         }
 
+        // cards reordered in hand
         if (source.droppableId === destination.droppableId) {
-            const items = this.props.dispatch(reorderCardsInHand(this.getList(source.droppableId),
+            this.props.dispatch(reorderCardsInHand(
                 source.index,
                 destination.index)
-
             );
 
-            let state = { items };
-
-            if (source.droppableId === 'droppable2') {
-                state = { items2: items };
-            }
-
-            this.setState(state);
         } else {
 
-            const result = move(
-                this.getList(source.droppableId),
-                this.getList(destination.droppableId),
+            this.props.dispatch(summonCard(
                 source,
                 destination
-            );
-
-            this.setState({
-                items: result.droppable,
-                items2: result.droppable2
-            });
+            ));
+            debugger
         }
     }
 
@@ -98,6 +84,8 @@ class Game extends Component {
         const { cardsOnBoard, cardsOnHand } = this.props;
         return (
             <DragDropContext onDragEnd={this.onDragEnd}>
+                <EnemyHero></EnemyHero>
+                <EnemyDeck></EnemyDeck>
                 <div className="gameObj">
                     <div className="EnemyHand">
                         <Link to="/matchmaking">
@@ -118,7 +106,11 @@ class Game extends Component {
                     </PlayerHand>
 
                 </div>
+                <PlayerDeck></PlayerDeck>
+                <PlayerHero></PlayerHero>
             </DragDropContext>
+
+
         )
     }
 }

@@ -15,10 +15,18 @@ const DroppableDiv = styled.div`
     overflow: auto;
 `;
 
+const MAX_CARDS_ON_BOARD = 3
+
 class PlayerBoard extends Component {
     render() {
+        let isDropDisabled = this.props.items.length > MAX_CARDS_ON_BOARD ? true : false;
+
         return (
-            <Droppable droppableId="droppable" direction="horizontal" >
+            <Droppable
+                droppableId="droppable"
+                direction="horizontal"
+                isDropDisabled={isDropDisabled}
+            >
                 {(provided, snapshot) => (
                     <DroppableDiv
                         ref={provided.innerRef}

@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-class PlayerDeck extends Component{
-    render(){
-        return(
-            <div>
-                
-            </div>
+import Deck from "./Deck"
+class PlayerDeck extends Component {
+    render() {
+        return (
+            <Deck player></Deck>
         )
     }
 }

@@ -18,3 +18,4 @@ export const CONNECTED_TO_GAME = "CONNECTED_TO_GAME";
 // Game
 
 export const REORDER_CARDS_ON_HAND = "REORDER_CARDS_ON_HAND";
+export const SUMMON_CARD = "SUMMON_CARD";

@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import Portrait from "./Portrait"
+class EnemyHero extends Component {
+    render() {
+        return (
+            <Portrait>
 
-class EnemyHero extends Component{
-    render(){
-        return(
-            <div>
-                
-            </div>
+            </Portrait>
         )
     }
 }
