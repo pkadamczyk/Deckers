@@ -1,5 +1,5 @@
 // import { CONNECTED_TO_GAME } from "../actionTypes";
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD } from "../actionTypes"
 
 
 const getItems = (count, offset = 0) =>
@@ -12,6 +12,9 @@ const DEFAULT_STATE = {
     cardsOnBoard: getItems(0),
     cardsOnHand: getItems(5, 10)
 };
+
+
+let OFFSET = 15; // Only for test
 
 export default (state = DEFAULT_STATE, action) => {
     let result;
@@ -38,6 +41,16 @@ export default (state = DEFAULT_STATE, action) => {
             newState["cardsOnBoard"] = destClone;
 
             return newState;
+
+
+        case DRAW_CARD:
+            OFFSET++;
+            let newCard = {
+                id: `item-${OFFSET}`,
+                content: `item ${OFFSET}`
+            }
+
+            return { ...state, cardsOnHand: [...state.cardsOnHand, newCard] }
         default:
             return state;
     }

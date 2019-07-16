@@ -19,3 +19,5 @@ export const CONNECTED_TO_GAME = "CONNECTED_TO_GAME";
 
 export const REORDER_CARDS_ON_HAND = "REORDER_CARDS_ON_HAND";
 export const SUMMON_CARD = "SUMMON_CARD";
+
+export const DRAW_CARD = "DRAW_CARD";
