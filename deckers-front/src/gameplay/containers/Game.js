@@ -18,6 +18,7 @@ import PlayerHero from '../components/PlayerHero';
 import EnemyHero from '../components/EnemyHero';
 import EnemyDeck from '../components/EnemyDeck';
 import PlayerDeck from '../components/PlayerDeck';
+import EndTurnButton from '../components/EndTurnButton';
 
 const Wrapper = styled.div`
     top:100px;
@@ -86,6 +87,8 @@ class Game extends Component {
             <DragDropContext onDragEnd={this.onDragEnd}>
                 <EnemyHero></EnemyHero>
                 <EnemyDeck></EnemyDeck>
+
+                <EndTurnButton></EndTurnButton>
                 <div className="gameObj">
                     <div className="EnemyHand">
                         <Link to="/matchmaking">
