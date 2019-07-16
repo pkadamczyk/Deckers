@@ -12,8 +12,13 @@ const StyledItem = styled.div`
     background: ${props => props.isDragging ? 'lightgreen' : 'grey'};
 `;
 
-const Item = ({ item, index, isDragDisabled }) => (
-    <Draggable draggableId={item.id} index={index} isDragDisabled={isDragDisabled}>
+
+const Item = ({ item, index, isDragDisabled, isMyTurn }) => (
+    <Draggable
+        draggableId={item.id}
+        index={index}
+        isDragDisabled={isDragDisabled || !isMyTurn}
+    >
         {(provided, snapshot) => (
             <StyledItem
                 ref={provided.innerRef}

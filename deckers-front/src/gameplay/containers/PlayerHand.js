@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 
 import styled from "styled-components";
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Droppable } from 'react-beautiful-dnd';
+import { connect } from "react-redux"
 
 import Item from "./Item"
 
@@ -30,7 +31,7 @@ class PlayerHand extends Component {
                         isDraggingOver={snapshot.isDraggingOver}
                     >
                         {this.props.items.map((item, index) => (
-                            <Item key={item.id} item={item} index={index} ></Item>
+                            <Item key={item.id} item={item} index={index} isMyTurn={this.props.isMyTurn}></Item>
                         ))}
                         {provided.placeholder}
                     </DroppableDiv>
@@ -40,4 +41,10 @@ class PlayerHand extends Component {
     }
 }
 
-export default PlayerHand;
+function mapStateToProps(state) {
+    return {
+        isMyTurn: state.game.isMyTurn
+    }
+}
+
+export default connect(mapStateToProps)(PlayerHand);

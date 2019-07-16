@@ -27,10 +27,16 @@ class Deck extends Component {
 
         return (
             <StyledDiv style={style}>
-                {this.props.player && <StyledButton onClick={() => this.props.dispatch(drawCard())}>Buy card</StyledButton>}
+                {this.props.player && <StyledButton onClick={() => this.props.dispatch(drawCard())} disabled={!this.props.isMyTurn}>Buy card</StyledButton>}
             </StyledDiv>
         )
     }
 }
 
-export default connect()(Deck); 
+function mapStateToProps(state) {
+    return {
+        isMyTurn: state.game.isMyTurn
+    }
+}
+
+export default connect(mapStateToProps)(Deck); 
