@@ -20,11 +20,12 @@ const StyledItem = styled.div`
 `;
 // #b3ff51 // border color
 
-const Item = ({ item, index, isDragDisabled, isMyTurn }) => (
+const Minion = ({ item, index, isMyTurn }) => (
     <Draggable
         draggableId={item.id}
         index={index}
-        isDragDisabled={isDragDisabled || !isMyTurn}
+        isDragDisabled={!isMyTurn}
+
     >
         {(provided, snapshot) => (
             <StyledItem
@@ -32,7 +33,7 @@ const Item = ({ item, index, isDragDisabled, isMyTurn }) => (
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 isDragging={snapshot.isDragging}
-                isDragDisabled={isDragDisabled || !isMyTurn}
+                isDragDisabled={!isMyTurn}
             >
                 {item.content}
             </StyledItem>
@@ -40,4 +41,4 @@ const Item = ({ item, index, isDragDisabled, isMyTurn }) => (
     </Draggable>
 )
 
-export default Item;
+export default Minion;

@@ -23,7 +23,7 @@ const DroppableDiv = styled.div`
 class PlayerHand extends Component {
     render() {
         return (
-            <Droppable droppableId="droppable2" direction="horizontal">
+            <Droppable droppableId="player-hand" direction="horizontal">
                 {(provided, snapshot) => (
                     <DroppableDiv
                         ref={provided.innerRef}

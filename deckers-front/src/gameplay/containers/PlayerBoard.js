@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 
-import { Droppable, Draggable, DragDropContext } from 'react-beautiful-dnd';
+import { Droppable } from 'react-beautiful-dnd';
 import styled from "styled-components"
 
-import Item from "./Item"
+import Minion from '../components/Minion';
+import { connect } from 'react-redux';
 
 const DroppableDiv = styled.div`
     height: 50%;
@@ -15,15 +16,15 @@ const DroppableDiv = styled.div`
     overflow: auto;
 `;
 
-const MAX_CARDS_ON_BOARD = 3
+const MAX_CARDS_ON_BOARD = 4
 
 class PlayerBoard extends Component {
     render() {
-        let isDropDisabled = this.props.items.length > MAX_CARDS_ON_BOARD ? true : false;
+        let isDropDisabled = this.props.items.length > (MAX_CARDS_ON_BOARD - 1) ? true : false;
 
         return (
             <Droppable
-                droppableId="droppable"
+                droppableId="player-board"
                 direction="horizontal"
                 isDropDisabled={isDropDisabled}
             >
@@ -34,7 +35,7 @@ class PlayerBoard extends Component {
                         isDraggingOver={snapshot.isDraggingOver}
                     >
                         {this.props.items.map((item, index) => (
-                            <Item key={item.id} item={item} index={index} isDragDisabled={true}></Item>
+                            <Minion key={item.id} item={item} index={index} isMyTurn={this.props.isMyTurn}></Minion>
                         ))}
                         {provided.placeholder}
                     </DroppableDiv>
@@ -44,4 +45,10 @@ class PlayerBoard extends Component {
     }
 }
 
-export default PlayerBoard; 
+function mapStateToProps(state) {
+    return {
+        isMyTurn: state.game.isMyTurn,
+    }
+}
+
+export default connect(mapStateToProps)(PlayerBoard); 

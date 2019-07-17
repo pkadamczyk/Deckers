@@ -1,6 +1,10 @@
 // import { CONNECTED_TO_GAME } from "../actionTypes";
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN } from "../actionTypes"
-
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, SET_CURRENT_USER, SET_GAME_STATE } from "../actionTypes"
+export const GAME_STATE = {
+    BUSY: 1,
+    TARGETING: 2,
+    IDLE: 3
+}
 
 const getItems = (count, offset = 0) =>
     Array.from({ length: count }, (v, k) => k).map(k => ({
@@ -12,7 +16,11 @@ const DEFAULT_STATE = {
     cardsOnBoard: getItems(0),
     cardsOnHand: getItems(5, 10),
 
-    isMyTurn: true
+    enemyCardsOnBoard: getItems(2, 20),
+
+    isMyTurn: true,
+
+    gameState: GAME_STATE.IDLE
 };
 
 
@@ -44,7 +52,6 @@ export default (state = DEFAULT_STATE, action) => {
 
             return newState;
 
-
         case DRAW_CARD:
             OFFSET++;
             let newCard = {
@@ -56,6 +63,10 @@ export default (state = DEFAULT_STATE, action) => {
 
         case END_TURN:
             return { ...state, isMyTurn: !state.isMyTurn };
+
+        case SET_GAME_STATE:
+            return { ...state, gameState: action.newGameState };
+
         default:
             return state;
     }

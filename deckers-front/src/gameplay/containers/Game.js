@@ -13,12 +13,13 @@ import PlayerHand from "./PlayerHand"
 import styled from "styled-components"
 import { connect } from "react-redux"
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { reorderCardsInHand, summonCard } from '../../store/actions/game'
+import { reorderCardsInHand, summonCard, setGameState } from '../../store/actions/game'
 import PlayerHero from '../components/PlayerHero';
 import EnemyHero from '../components/EnemyHero';
 import EnemyDeck from '../components/EnemyDeck';
 import PlayerDeck from '../components/PlayerDeck';
 import EndTurnButton from '../components/EndTurnButton';
+import { GAME_STATE } from '../../store/reducers/game';
 
 const Wrapper = styled.div`
     top:100px;
@@ -47,16 +48,23 @@ class Game extends Component {
         super(props);
 
         this.onDragEnd = this.onDragEnd.bind(this);
+        this.onDragStart = this.onDragStart.bind(this);
     }
 
-    id2List = {
-        droppable: 'cardsOnBoard',
-        droppable2: 'cardsOnHand'
-    };
+    onDragStart(start) {
+        // START_TARGETING
+        if (start.source.droppableId === "player-board") this.props.dispatch(setGameState(GAME_STATE.TARGETING))
 
-    getList = id => this.props[this.id2List[id]];
+    }
 
     onDragEnd(result) {
+        // END_TARGETING
+        if (result.source.droppableId === "player-board") {
+            this.props.dispatch(setGameState(GAME_STATE.IDLE))
+            return
+        }
+
+
         const { source, destination } = result;
 
         // dropped outside the list
@@ -77,14 +85,14 @@ class Game extends Component {
                 source,
                 destination
             ));
-            debugger
         }
     }
 
     render() {
-        const { cardsOnBoard, cardsOnHand } = this.props;
+        const { cardsOnBoard, cardsOnHand, enemyCardsOnBoard } = this.props;
+
         return (
-            <DragDropContext onDragEnd={this.onDragEnd}>
+            <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart}>
                 <EnemyHero></EnemyHero>
                 <EnemyDeck></EnemyDeck>
 
@@ -99,7 +107,7 @@ class Game extends Component {
                     {/* <PlayerInfoContainer/> */}
 
                     <Wrapper>
-                        <EnemyBoard />
+                        <EnemyBoard items={enemyCardsOnBoard} />
                         <PlayerBoard items={cardsOnBoard} />
                     </Wrapper>
 
@@ -121,7 +129,8 @@ class Game extends Component {
 function mapStateToProps(state) {
     return {
         cardsOnBoard: state.game.cardsOnBoard,
-        cardsOnHand: state.game.cardsOnHand
+        cardsOnHand: state.game.cardsOnHand,
+        enemyCardsOnBoard: state.game.enemyCardsOnBoard
     }
 }
 
