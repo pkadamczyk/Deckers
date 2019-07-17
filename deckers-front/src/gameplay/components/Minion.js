@@ -18,7 +18,6 @@ const StyledItem = styled.div`
     -moz-box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
     box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
 `;
-// #b3ff51 // border color
 
 const Minion = ({ item, index, isMyTurn }) => (
     <Draggable
@@ -35,7 +34,8 @@ const Minion = ({ item, index, isMyTurn }) => (
                 isDragging={snapshot.isDragging}
                 isDragDisabled={!isMyTurn}
             >
-                {item.content}
+                <span>Hp: {item.health}</span>
+                <span>Dmg: {item.damage}</span>
             </StyledItem>
         )}
     </Draggable>

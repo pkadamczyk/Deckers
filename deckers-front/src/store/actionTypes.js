@@ -25,3 +25,4 @@ export const DRAW_CARD = "DRAW_CARD";
 export const END_TURN = "END_TURN";
 
 export const SET_GAME_STATE = "SET_GAME_STATE";
+export const ATTACK = "ATTACK";

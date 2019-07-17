@@ -1,5 +1,5 @@
 import { CONNECTED_TO_GAME, REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN } from "../actionTypes";
-import { SET_GAME_STATE } from "../actionTypes";
+import { SET_GAME_STATE, ATTACK } from "../actionTypes";
 import { GAME_STATE } from "../reducers/game";
 
 export const connectedToGame = (gameInfo) => ({
@@ -32,5 +32,16 @@ export const setGameState = (newGameState) => {
       type: SET_GAME_STATE,
       newGameState: newGameState
     }
+  }
+  throw (new Error("Incorrect game state value"))
+}
+
+export const attack = (source, target) => {
+  let playerMinionId = source.index
+  let enemyMinionId = target.droppableId.slice(-1)
+
+  return {
+    type: ATTACK,
+    playerMinionId, enemyMinionId
   }
 }

@@ -34,7 +34,7 @@ class EnemyBoard extends Component {
             <DroppableDiv>
                 {this.props.items.map((item, index) => (
                     <Droppable
-                        droppableId={`droppable${index + 5}`}
+                        droppableId={`eniemy-minion-${index}`}
                         direction="horizontal"
                         key={index + 20}
                     >
@@ -44,7 +44,8 @@ class EnemyBoard extends Component {
                                 isDraggingOver={snapshot.isDraggingOver}
                                 gameState={this.props.gameState}
                             >
-
+                                <span>Hp: {item.health}</span>
+                                <span>Dmg: {item.damage}</span>
                             </StyledItem>
                         )}
                     </Droppable>

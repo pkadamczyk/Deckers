@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
 import Portrait from "./Portrait"
+
+import { connect } from "react-redux"
 class PlayerHero extends Component {
     render() {
         return (
-            <Portrait player>
-
+            <Portrait player health={this.props.health}>
             </Portrait>
         )
     }
 }
 
-export default PlayerHero; 
+function mapStateToProps(state) {
+    return {
+        gameState: state.game.gameState,
+        health: state.game.enemyHeroHealth,
+    }
+}
+
+export default connect(mapStateToProps)(PlayerHero);

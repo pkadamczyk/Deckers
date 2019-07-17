@@ -13,7 +13,7 @@ import PlayerHand from "./PlayerHand"
 import styled from "styled-components"
 import { connect } from "react-redux"
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { reorderCardsInHand, summonCard, setGameState } from '../../store/actions/game'
+import { reorderCardsInHand, summonCard, setGameState, attack } from '../../store/actions/game'
 import PlayerHero from '../components/PlayerHero';
 import EnemyHero from '../components/EnemyHero';
 import EnemyDeck from '../components/EnemyDeck';
@@ -29,19 +29,19 @@ const Wrapper = styled.div`
     margin:auto;
 `;
 
-const move = (source, destination, droppableSource, droppableDestination) => {
-    const sourceClone = Array.from(source);
-    const destClone = Array.from(destination);
-    const [removed] = sourceClone.splice(droppableSource.index, 1);
+// const move = (source, destination, droppableSource, droppableDestination) => {
+//     const sourceClone = Array.from(source);
+//     const destClone = Array.from(destination);
+//     const [removed] = sourceClone.splice(droppableSource.index, 1);
 
-    destClone.splice(droppableDestination.index, 0, removed);
+//     destClone.splice(droppableDestination.index, 0, removed);
 
-    const result = {};
-    result[droppableSource.droppableId] = sourceClone;
-    result[droppableDestination.droppableId] = destClone;
+//     const result = {};
+//     result[droppableSource.droppableId] = sourceClone;
+//     result[droppableDestination.droppableId] = destClone;
 
-    return result;
-};
+//     return result;
+// };
 
 class Game extends Component {
     constructor(props) {
@@ -60,6 +60,8 @@ class Game extends Component {
     onDragEnd(result) {
         // END_TARGETING
         if (result.source.droppableId === "player-board") {
+            this.props.dispatch(attack(result.source, result.destination));
+
             this.props.dispatch(setGameState(GAME_STATE.IDLE))
             return
         }

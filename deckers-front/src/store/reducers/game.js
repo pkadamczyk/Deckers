@@ -1,15 +1,23 @@
 // import { CONNECTED_TO_GAME } from "../actionTypes";
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, SET_CURRENT_USER, SET_GAME_STATE } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, SET_GAME_STATE, ATTACK } from "../actionTypes"
+
 export const GAME_STATE = {
     BUSY: 1,
     TARGETING: 2,
     IDLE: 3
 }
+const MAX_HERO_HEALTH = 10;
+
+let OFFSET = 15; // Only for test
+
 
 const getItems = (count, offset = 0) =>
     Array.from({ length: count }, (v, k) => k).map(k => ({
         id: `item-${k + offset}`,
-        content: `item ${k + offset}`
+        content: `item ${k + offset}`,
+
+        health: 2,
+        damage: 1
     }));
 
 const DEFAULT_STATE = {
@@ -20,11 +28,11 @@ const DEFAULT_STATE = {
 
     isMyTurn: true,
 
-    gameState: GAME_STATE.IDLE
+    gameState: GAME_STATE.IDLE,
+
+    enemyHeroHealth: MAX_HERO_HEALTH,
+    playerHeroHealth: MAX_HERO_HEALTH
 };
-
-
-let OFFSET = 15; // Only for test
 
 export default (state = DEFAULT_STATE, action) => {
     let result;
@@ -66,6 +74,18 @@ export default (state = DEFAULT_STATE, action) => {
 
         case SET_GAME_STATE:
             return { ...state, gameState: action.newGameState };
+
+        case ATTACK:
+            let attackingMinion = state.cardsOnBoard[action.playerMinionId];
+            let attackedMinion = { ...state.enemyCardsOnBoard[action.enemyMinionId] };
+
+            let enemyMinionArray = [...state.enemyCardsOnBoard];
+
+            attackedMinion.health -= attackingMinion.damage;
+            if (attackedMinion.health <= 0) enemyMinionArray.splice(action.enemyMinionId, 1);
+            else enemyMinionArray[action.enemyMinionId] = attackedMinion;
+
+            return { ...state, enemyCardsOnBoard: enemyMinionArray };
 
         default:
             return state;
