@@ -3,6 +3,7 @@ import styled from "styled-components"
 
 import { connect } from "react-redux"
 import { drawCard } from "../../store/actions/game"
+import { CARD_DRAW_COST } from '../../store/reducers/game';
 
 const StyledDiv = styled.div`
     height: 150px;
@@ -24,10 +25,12 @@ class Deck extends Component {
         if (this.props.player) style = { bottom: '35%' }
         else style = { top: '18%' }
 
+        const isAffortable = this.props.gold >= CARD_DRAW_COST;
+        const isDisabled = !isAffortable || !this.props.isMyTurn;
 
         return (
             <StyledDiv style={style}>
-                {this.props.player && <StyledButton onClick={() => this.props.dispatch(drawCard())} disabled={!this.props.isMyTurn}>Buy card</StyledButton>}
+                {this.props.player && <StyledButton onClick={() => this.props.dispatch(drawCard())} disabled={isDisabled}>Buy card</StyledButton>}
             </StyledDiv>
         )
     }

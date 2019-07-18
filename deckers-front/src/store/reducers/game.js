@@ -8,7 +8,7 @@ export const GAME_STATE = {
 }
 const MAX_HERO_HEALTH = 10;
 const GOLD_ON_START = 1;
-
+export const CARD_DRAW_COST = 1;
 
 let OFFSET = 15; // Only for test
 
@@ -68,13 +68,21 @@ export default (state = DEFAULT_STATE, action) => {
             newState["cardsOnHand"] = sourceClone;
             newState["cardsOnBoard"] = destClone;
 
-            return newState;
+            return { ...newState, playerHeroGold: newGoldAmount };
 
         case DRAW_CARD:
-            OFFSET++;
+            OFFSET++; // For test
+
+            if (state.playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
+            newGoldAmount = state.playerHeroGold -= CARD_DRAW_COST;
+
             let newCard = {
                 id: `item-${OFFSET}`,
-                content: `item ${OFFSET}`
+                content: `item ${OFFSET}`,
+                health: 2,
+                damage: 1,
+                cost: 1,
+                isReady: false
             }
 
             return { ...state, cardsOnHand: [...state.cardsOnHand, newCard], playerHeroGold: newGoldAmount }
