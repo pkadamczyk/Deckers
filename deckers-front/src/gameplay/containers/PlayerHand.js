@@ -31,7 +31,7 @@ class PlayerHand extends Component {
                         isDraggingOver={snapshot.isDraggingOver}
                     >
                         {this.props.items.map((item, index) => (
-                            <Item key={item.id} item={item} index={index} isMyTurn={this.props.isMyTurn}></Item>
+                            <Item key={item.id} item={item} index={index} isMyTurn={this.props.isMyTurn} gold={this.props.gold}></Item>
                         ))}
                         {provided.placeholder}
                     </DroppableDiv>
@@ -43,7 +43,8 @@ class PlayerHand extends Component {
 
 function mapStateToProps(state) {
     return {
-        isMyTurn: state.game.isMyTurn
+        isMyTurn: state.game.isMyTurn,
+        gold: state.game.playerHeroGold,
     }
 }
 

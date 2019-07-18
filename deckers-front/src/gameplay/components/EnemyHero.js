@@ -16,7 +16,12 @@ class EnemyHero extends Component {
                         {...provided.droppableProps}
                         isDraggingOver={snapshot.isDraggingOver}
                     >
-                        <Portrait gameState={this.props.gameState} health={this.props.health}></Portrait>
+                        <Portrait
+                            gameState={this.props.gameState}
+                            health={this.props.health}
+                            gold={this.props.gold}
+                        >
+                        </Portrait>
                     </Div>
                 )}
             </Droppable>
@@ -25,9 +30,11 @@ class EnemyHero extends Component {
 }
 
 function mapStateToProps(state) {
+
     return {
         gameState: state.game.gameState,
         health: state.game.enemyHeroHealth,
+        gold: state.game.enemyHeroGold,
     }
 }
 

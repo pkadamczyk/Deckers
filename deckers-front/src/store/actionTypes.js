@@ -28,3 +28,5 @@ export const SET_GAME_STATE = "SET_GAME_STATE";
 
 export const ATTACK_MINION = "ATTACK_MINION";
 export const ATTACK_HERO = "ATTACK_HERO";
+
+// export const BUY_CARD = "BUT_CARD";

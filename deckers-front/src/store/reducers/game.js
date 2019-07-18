@@ -7,6 +7,8 @@ export const GAME_STATE = {
     IDLE: 3
 }
 const MAX_HERO_HEALTH = 10;
+const GOLD_ON_START = 1;
+
 
 let OFFSET = 15; // Only for test
 
@@ -18,6 +20,7 @@ const getItems = (count, offset = 0) =>
 
         health: 2,
         damage: 1,
+        cost: 1,
         isReady: false
     }));
 
@@ -32,7 +35,10 @@ const DEFAULT_STATE = {
     gameState: GAME_STATE.IDLE,
 
     enemyHeroHealth: MAX_HERO_HEALTH,
-    playerHeroHealth: MAX_HERO_HEALTH
+    playerHeroHealth: MAX_HERO_HEALTH,
+
+    enemyHeroGold: GOLD_ON_START,
+    playerHeroGold: GOLD_ON_START
 };
 
 export default (state = DEFAULT_STATE, action) => {
@@ -53,6 +59,9 @@ export default (state = DEFAULT_STATE, action) => {
             const destClone = Array.from(state.cardsOnBoard);
             [removed] = sourceClone.splice(action.droppableSource.index, 1);
 
+            if (state.playerHeroGold < removed.cost) throw (new Error("Not enough gold"));
+            let newGoldAmount = state.playerHeroGold -= removed.cost;
+
             destClone.splice(action.droppableDestination.index, 0, removed);
 
             let newState = { ...state };
@@ -68,7 +77,7 @@ export default (state = DEFAULT_STATE, action) => {
                 content: `item ${OFFSET}`
             }
 
-            return { ...state, cardsOnHand: [...state.cardsOnHand, newCard] }
+            return { ...state, cardsOnHand: [...state.cardsOnHand, newCard], playerHeroGold: newGoldAmount }
 
         case END_TURN:
             let playerMinionArray = [...state.cardsOnBoard];

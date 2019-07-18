@@ -27,6 +27,7 @@ class Portrait extends Component {
         return (
             <StyledPortrait player={this.props.player} gameState={this.props.gameState} >
                 {this.props.health}
+                <div>Gold: {this.props.gold}</div>
             </StyledPortrait>
         )
     }

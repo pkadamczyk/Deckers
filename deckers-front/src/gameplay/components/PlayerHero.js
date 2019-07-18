@@ -5,16 +5,19 @@ import { connect } from "react-redux"
 class PlayerHero extends Component {
     render() {
         return (
-            <Portrait player health={this.props.health}>
+
+            <Portrait player health={this.props.health} gold={this.props.gold}>
             </Portrait>
         )
     }
 }
 
 function mapStateToProps(state) {
+
     return {
         gameState: state.game.gameState,
-        health: state.game.enemyHeroHealth,
+        health: state.game.playerHeroHealth,
+        gold: state.game.playerHeroGold
     }
 }
 

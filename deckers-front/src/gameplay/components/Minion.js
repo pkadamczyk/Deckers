@@ -23,6 +23,7 @@ class Minion extends Component {
     render() {
         const { item, index, isMyTurn } = this.props;
         const isDragDisabled = !isMyTurn || !item.isReady;
+
         return (
             <Draggable
                 draggableId={item.id}

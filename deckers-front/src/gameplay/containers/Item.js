@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from "styled-components"
 
 import { Draggable } from 'react-beautiful-dnd';
@@ -19,25 +19,35 @@ const StyledItem = styled.div`
     box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
 `;
 
-const Item = ({ item, index, isDragDisabled, isMyTurn }) => (
-    <Draggable
-        draggableId={item.id}
-        index={index}
-        isDragDisabled={isDragDisabled || !isMyTurn}
-    >
-        {(provided, snapshot) => (
-            <StyledItem
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                isDragging={snapshot.isDragging}
-                isDragDisabled={isDragDisabled || !isMyTurn}
+class Item extends Component {
+    render() {
+        const { item, index, isMyTurn } = this.props;
+
+        const isAffordable = this.props.gold < item.cost ? true : false;
+        const isDragDisabled = isAffordable || !isMyTurn;
+
+        return (
+            <Draggable
+                draggableId={item.id}
+                index={index}
+                isDragDisabled={isDragDisabled}
             >
-                <span>Hp: {item.health}</span>
-                <span>Dmg: {item.damage}</span>
-            </StyledItem>
-        )}
-    </Draggable>
-)
+                {(provided, snapshot) => (
+                    <StyledItem
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        isDragging={snapshot.isDragging}
+                        isDragDisabled={isDragDisabled || !isMyTurn}
+                    >
+                        <span>Hp: {item.health}</span>
+                        <span>Dmg: {item.damage}</span>
+                        <span>Cost: {item.cost}</span>
+                    </StyledItem>
+                )}
+            </Draggable>
+        )
+    }
+}
 
 export default Item;
