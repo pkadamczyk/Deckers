@@ -1,5 +1,5 @@
 // import { CONNECTED_TO_GAME } from "../actionTypes";
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, SET_GAME_STATE, ATTACK } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO } from "../actionTypes"
 
 export const GAME_STATE = {
     BUSY: 1,
@@ -17,7 +17,8 @@ const getItems = (count, offset = 0) =>
         content: `item ${k + offset}`,
 
         health: 2,
-        damage: 1
+        damage: 1,
+        isReady: false
     }));
 
 const DEFAULT_STATE = {
@@ -70,22 +71,46 @@ export default (state = DEFAULT_STATE, action) => {
             return { ...state, cardsOnHand: [...state.cardsOnHand, newCard] }
 
         case END_TURN:
+            let playerMinionArray = [...state.cardsOnBoard];
+            for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].isReady = true;
+
             return { ...state, isMyTurn: !state.isMyTurn };
 
         case SET_GAME_STATE:
             return { ...state, gameState: action.newGameState };
 
-        case ATTACK:
-            let attackingMinion = state.cardsOnBoard[action.playerMinionId];
+        case ATTACK_MINION:
+            let attackingMinion = { ...state.cardsOnBoard[action.playerMinionId] };
             let attackedMinion = { ...state.enemyCardsOnBoard[action.enemyMinionId] };
 
+            if (!attackingMinion.isReady) throw (new Error("This minion is not ready"));
+            attackingMinion.isReady = false;
+
             let enemyMinionArray = [...state.enemyCardsOnBoard];
+            playerMinionArray = [...state.cardsOnBoard];
 
             attackedMinion.health -= attackingMinion.damage;
+            attackingMinion.health -= attackedMinion.damage;
+
             if (attackedMinion.health <= 0) enemyMinionArray.splice(action.enemyMinionId, 1);
             else enemyMinionArray[action.enemyMinionId] = attackedMinion;
 
-            return { ...state, enemyCardsOnBoard: enemyMinionArray };
+            if (attackingMinion.health <= 0) playerMinionArray.splice(action.playerMinionId, 1);
+            else playerMinionArray[action.playerMinionId] = attackingMinion;
+
+            return { ...state, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray };
+
+        case ATTACK_HERO:
+            let playerMinion = { ...state.cardsOnBoard[action.playerMinionId] }
+
+            if (!playerMinion.isReady) throw (new Error("This minion is not ready"));
+            playerMinion.isReady = false;
+
+            let enemyHeroCurrentHp = state.enemyHeroHealth - playerMinion.damage;
+            playerMinionArray = [...state.cardsOnBoard];
+            playerMinionArray[action.playerMinionId] = playerMinion;
+
+            return { ...state, enemyHeroHealth: enemyHeroCurrentHp, cardsOnBoard: playerMinionArray };
 
         default:
             return state;

@@ -43,9 +43,16 @@ const Wrapper = styled.div`
 //     return result;
 // };
 
+export const PLAYER_BOARD_ID = "player-board"
+export const MAX_CARDS_ON_BOARD = 4
+
 class Game extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            currentlyDragged: null,
+        }
 
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
@@ -53,26 +60,28 @@ class Game extends Component {
 
     onDragStart(start) {
         // START_TARGETING
-        if (start.source.droppableId === "player-board") this.props.dispatch(setGameState(GAME_STATE.TARGETING))
-
+        if (start.source.droppableId === PLAYER_BOARD_ID) this.props.dispatch(setGameState(GAME_STATE.TARGETING))
+        this.setState({ currentlyDragged: start.source.droppableId })
     }
 
     onDragEnd(result) {
-        // END_TARGETING
-        if (result.source.droppableId === "player-board") {
-            this.props.dispatch(attack(result.source, result.destination));
-
-            this.props.dispatch(setGameState(GAME_STATE.IDLE))
-            return
-        }
-
-
+        this.setState({ currentlyDragged: null })
         const { source, destination } = result;
 
         // dropped outside the list
         if (!destination) {
             return;
         }
+
+        // END_TARGETING
+        if (source.droppableId === PLAYER_BOARD_ID) {
+            if (destination.droppableId === source.droppableId) return
+            this.props.dispatch(attack(source, destination));
+
+            this.props.dispatch(setGameState(GAME_STATE.IDLE))
+            return
+        }
+        this.props.dispatch(setGameState(GAME_STATE.IDLE))
 
         // cards reordered in hand
         if (source.droppableId === destination.droppableId) {
@@ -110,7 +119,7 @@ class Game extends Component {
 
                     <Wrapper>
                         <EnemyBoard items={enemyCardsOnBoard} />
-                        <PlayerBoard items={cardsOnBoard} />
+                        <PlayerBoard items={cardsOnBoard} currentlyDragged={this.state.currentlyDragged} />
                     </Wrapper>
 
                     {/* <Hand /> */}

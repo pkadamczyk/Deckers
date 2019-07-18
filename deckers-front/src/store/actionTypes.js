@@ -25,4 +25,6 @@ export const DRAW_CARD = "DRAW_CARD";
 export const END_TURN = "END_TURN";
 
 export const SET_GAME_STATE = "SET_GAME_STATE";
-export const ATTACK = "ATTACK";
+
+export const ATTACK_MINION = "ATTACK_MINION";
+export const ATTACK_HERO = "ATTACK_HERO";

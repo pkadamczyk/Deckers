@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import styled from "styled-components"
 
 import { Draggable } from 'react-beautiful-dnd';
@@ -18,27 +18,33 @@ const StyledItem = styled.div`
     -moz-box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
     box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
 `;
+class Minion extends Component {
 
-const Minion = ({ item, index, isMyTurn }) => (
-    <Draggable
-        draggableId={item.id}
-        index={index}
-        isDragDisabled={!isMyTurn}
-
-    >
-        {(provided, snapshot) => (
-            <StyledItem
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                isDragging={snapshot.isDragging}
-                isDragDisabled={!isMyTurn}
+    render() {
+        const { item, index, isMyTurn } = this.props;
+        const isDragDisabled = !isMyTurn || !item.isReady;
+        return (
+            <Draggable
+                draggableId={item.id}
+                index={index}
+                isDragDisabled={isDragDisabled}
             >
-                <span>Hp: {item.health}</span>
-                <span>Dmg: {item.damage}</span>
-            </StyledItem>
-        )}
-    </Draggable>
-)
+                {(provided, snapshot) => (
+                    <StyledItem
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        isDragging={snapshot.isDragging}
+                        isDragDisabled={isDragDisabled}
+                    >
+                        <span>Hp: {item.health}</span>
+                        <span>Dmg: {item.damage}</span>
+                    </StyledItem>
+                )}
+            </Draggable>
+        )
+
+    }
+}
 
 export default Minion;

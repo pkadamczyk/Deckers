@@ -1,5 +1,5 @@
-import { CONNECTED_TO_GAME, REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN } from "../actionTypes";
-import { SET_GAME_STATE, ATTACK } from "../actionTypes";
+import { CONNECTED_TO_GAME, REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, ATTACK_HERO } from "../actionTypes";
+import { SET_GAME_STATE, ATTACK_MINION } from "../actionTypes";
 import { GAME_STATE } from "../reducers/game";
 
 export const connectedToGame = (gameInfo) => ({
@@ -37,11 +37,25 @@ export const setGameState = (newGameState) => {
 }
 
 export const attack = (source, target) => {
+  if (!target) return attackHero(source);
+  else return attackMinion(source, target);
+}
+
+export const attackMinion = (source, target) => {
   let playerMinionId = source.index
   let enemyMinionId = target.droppableId.slice(-1)
 
   return {
-    type: ATTACK,
+    type: ATTACK_MINION,
     playerMinionId, enemyMinionId
+  }
+}
+
+export const attackHero = (source) => {
+  let playerMinionId = source.index
+
+  return {
+    type: ATTACK_HERO,
+    playerMinionId
   }
 }

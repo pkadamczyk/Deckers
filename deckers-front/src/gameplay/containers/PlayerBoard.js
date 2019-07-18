@@ -5,6 +5,7 @@ import styled from "styled-components"
 
 import Minion from '../components/Minion';
 import { connect } from 'react-redux';
+import { PLAYER_BOARD_ID, MAX_CARDS_ON_BOARD } from './Game';
 
 const DroppableDiv = styled.div`
     height: 50%;
@@ -16,15 +17,17 @@ const DroppableDiv = styled.div`
     overflow: auto;
 `;
 
-const MAX_CARDS_ON_BOARD = 4
 
 class PlayerBoard extends Component {
     render() {
-        let isDropDisabled = this.props.items.length > (MAX_CARDS_ON_BOARD - 1) ? true : false;
+        const isBoardFull = this.props.items.length > (MAX_CARDS_ON_BOARD - 1);
+        const isMinionDragged = this.props.currentlyDragged === PLAYER_BOARD_ID;
+
+        let isDropDisabled = (isBoardFull || isMinionDragged) ? true : false;
 
         return (
             <Droppable
-                droppableId="player-board"
+                droppableId={PLAYER_BOARD_ID}
                 direction="horizontal"
                 isDropDisabled={isDropDisabled}
             >
