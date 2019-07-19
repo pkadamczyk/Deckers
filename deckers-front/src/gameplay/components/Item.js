@@ -19,17 +19,16 @@ const StyledItem = styled.div`
     box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
 `;
 
-function getStyle(style, snapshot, index) {
+function getStyle(style, snapshot, cardsOnBoardLength, isDestinationNull) {
 
     if (!snapshot.isDropAnimating) {
         return style;
-    }
+    } debugger
 
     const { moveTo, curve, duration } = snapshot.dropAnimation;
     // move to the right spot
 
-    const translate = index == 0 ? `translate(${moveTo.x}px, ${moveTo.y}px)` : `translate(${moveTo.x - 50}px, ${moveTo.y}px)`;
-    debugger
+    const translate = cardsOnBoardLength == 0 || isDestinationNull ? `translate(${moveTo.x}px, ${moveTo.y}px)` : `translate(${moveTo.x - 50}px, ${moveTo.y}px)`;
     // patching the existing style
     return {
         ...style,
@@ -41,7 +40,7 @@ function getStyle(style, snapshot, index) {
 
 class Item extends Component {
     render() {
-        const { item, index, isMyTurn } = this.props;
+        const { item, index, isMyTurn, cardsOnBoard, isDestinationNull } = this.props;
 
         const isAffordable = this.props.gold < item.cost ? true : false;
         const isDragDisabled = isAffordable || !isMyTurn;
@@ -58,8 +57,8 @@ class Item extends Component {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                         isDragging={snapshot.isDragging}
-                        isDragDisabled={isDragDisabled || !isMyTurn}
-                        style={getStyle(provided.draggableProps.style, snapshot, this.props.cardsOnBoard.length)}
+                        isDragDisabled={isDragDisabled}
+                        style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, isDestinationNull)}
                     >
                         <span>Hp: {item.health}</span>
                         <span>Dmg: {item.damage}</span>

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from "styled-components"
 
-
 const StyledPortrait = styled.div`
     height: 100px;
     width:100px;

@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 
 import { Droppable } from 'react-beautiful-dnd';
 import styled from "styled-components"
+
 import { connect } from "react-redux"
 import { GAME_STATE } from '../../store/reducers/game';
 
 const StyledItem = styled.div`
-    width:25%;
+    width: 100px;
+    height: 130px;
     background: tomato;
     margin: 0 8px 0 0;
 
@@ -20,7 +22,6 @@ const StyledItem = styled.div`
 
 const DroppableDiv = styled.div`
     height: 50%;
-    overflow: 'auto';
 
     background: lightblue;
     display: flex;
@@ -30,8 +31,6 @@ const DroppableDiv = styled.div`
 
 class EnemyBoard extends Component {
     render() {
-
-
         return (
             <DroppableDiv>
                 {this.props.items.map((item, index) => (

@@ -5,7 +5,6 @@ import { connect } from "react-redux"
 class PlayerHero extends Component {
     render() {
         return (
-
             <Portrait player health={this.props.health} gold={this.props.gold}>
             </Portrait>
         )

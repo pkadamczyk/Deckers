@@ -8,7 +8,7 @@ import { GAME_STATE } from '../../store/reducers/game';
 
 const Div = styled.div`
     height: 100px;
-    width:100px;
+    width: 100px;
 
     position: absolute;
     top: 5px;
@@ -23,11 +23,13 @@ const Div = styled.div`
 `
 class EnemyHero extends Component {
     render() {
+        const isDropDisabled = !this.props.isMinionDragged;
+
         return (
             <Droppable
                 droppableId="enemy-portrait"
                 direction="horizontal"
-                isDropDisabled={!this.props.isMinionDragged}
+                isDropDisabled={isDropDisabled}
             >
                 {(provided, snapshot) => (
                     <Div

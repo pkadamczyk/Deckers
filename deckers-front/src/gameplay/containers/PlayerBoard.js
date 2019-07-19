@@ -4,17 +4,17 @@ import { Droppable } from 'react-beautiful-dnd';
 import styled from "styled-components"
 
 import Minion from '../components/Minion';
+
 import { connect } from 'react-redux';
 import { PLAYER_BOARD_ID, MAX_CARDS_ON_BOARD } from './Game';
 
+const CARD_WIDTH = 110
+
 const DroppableDiv = styled.div`
     height: 100%;
-    width: ${props => ((props.items.length + 1) * 110) + "px"};
-    
-
-display:flex;
-justify-content: center;
-    overflow: auto;
+    width: ${props => ((props.items.length + 1) * CARD_WIDTH) + "px"};
+    display: flex;
+    justify-content: center;
     margin: auto;
     background: ${props => props.isDraggingOver ? 'lightblue' : 'lightgrey'};
     padding: 8px;
@@ -22,9 +22,9 @@ justify-content: center;
 
 class PlayerBoard extends Component {
     render() {
-        const isBoardFull = this.props.items.length > (MAX_CARDS_ON_BOARD - 1);
+        const isBoardFull = this.props.items.length >= MAX_CARDS_ON_BOARD;
 
-        let isDropDisabled = (isBoardFull || this.props.isMinionDragged);
+        const isDropDisabled = (isBoardFull || this.props.isMinionDragged);
 
         return (
             <Droppable

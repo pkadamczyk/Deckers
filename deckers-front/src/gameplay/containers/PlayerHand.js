@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Droppable } from 'react-beautiful-dnd';
 import { connect } from "react-redux"
 
-import Item from "./Item"
+import Item from "../components/Item"
 
 const DroppableDiv = styled.div`
     height: 145px;
@@ -38,6 +38,7 @@ class PlayerHand extends Component {
                                 isMyTurn={this.props.isMyTurn}
                                 gold={this.props.gold}
                                 cardsOnBoard={this.props.cardsOnBoard}
+                                isDestinationNull={this.props.isDestinationNull}
                             ></Item>
                         ))}
                         {provided.placeholder}
