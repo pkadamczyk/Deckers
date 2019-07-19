@@ -21,12 +21,22 @@ import PlayerDeck from '../components/PlayerDeck';
 import EndTurnButton from '../components/EndTurnButton';
 import { GAME_STATE } from '../../store/reducers/game';
 
+import img from '../../graphic/background_02.PNG';
+
 const Wrapper = styled.div`
     top:100px;
     height: 325px;
-    width: 60%;
+    width: 100%;
     border: 1px solid red;
     margin:auto;
+`;
+
+const GameWrapper = styled.div`
+    width: 100%;
+    height: 100%;
+    background-image: url(${img});
+    background-size: cover;
+    background-repeat: no-repeat;
 `;
 
 // const move = (source, destination, droppableSource, droppableDestination) => {
@@ -43,8 +53,9 @@ const Wrapper = styled.div`
 //     return result;
 // };
 
-export const PLAYER_BOARD_ID = "player-board"
-export const MAX_CARDS_ON_BOARD = 4
+export const PLAYER_BOARD_ID = "player-board";
+export const ENEMY_HERO_ID = "enemy-portrait"
+export const MAX_CARDS_ON_BOARD = 4;
 
 class Game extends Component {
     constructor(props) {
@@ -67,7 +78,6 @@ class Game extends Component {
     onDragEnd(result) {
         this.setState({ currentlyDragged: null })
         const { source, destination } = result;
-
         // dropped outside the list
         if (!destination) {
             return;
@@ -102,34 +112,29 @@ class Game extends Component {
     render() {
         const { cardsOnBoard, cardsOnHand, enemyCardsOnBoard } = this.props;
 
+        const isMinionDragged = this.state.currentlyDragged === PLAYER_BOARD_ID;
+
         return (
             <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart}>
-                <EnemyHero></EnemyHero>
-                <EnemyDeck></EnemyDeck>
+                <GameWrapper>
+                    <EnemyHero isMinionDragged={isMinionDragged}></EnemyHero>
+                    <EnemyDeck></EnemyDeck>
 
-                <EndTurnButton></EndTurnButton>
-                <div className="gameObj">
-                    <div className="EnemyHand">
-                        <Link to="/matchmaking">
-                            <button className="btn btn-danger">EXIT</button>
-                        </Link>
-                    </div>
-
-                    {/* <PlayerInfoContainer/> */}
+                    <EndTurnButton></EndTurnButton>
 
                     <Wrapper>
-                        <EnemyBoard items={enemyCardsOnBoard} />
-                        <PlayerBoard items={cardsOnBoard} currentlyDragged={this.state.currentlyDragged} />
+                        <EnemyBoard items={enemyCardsOnBoard} isMinionDragged={isMinionDragged} />
+                        <PlayerBoard items={cardsOnBoard} isMinionDragged={isMinionDragged} />
                     </Wrapper>
 
-                    {/* <Hand /> */}
 
                     <PlayerHand items={cardsOnHand}>
                     </PlayerHand>
 
-                </div>
-                <PlayerDeck></PlayerDeck>
-                <PlayerHero></PlayerHero>
+                    <PlayerDeck></PlayerDeck>
+                    <PlayerHero></PlayerHero>
+                </GameWrapper>
+
             </DragDropContext>
 
 

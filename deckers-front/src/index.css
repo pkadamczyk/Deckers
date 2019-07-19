@@ -884,14 +884,6 @@ hr{
 
 .CardListDeck:hover .delete-deck-btn {display: inline-block;}
 
-.gameObj{
-  width: 100%;
-  height: 100%;
-  background-image: url('./graphic/background_02.PNG');
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
 
 
 

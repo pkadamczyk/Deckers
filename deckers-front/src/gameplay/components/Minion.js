@@ -4,10 +4,11 @@ import styled from "styled-components"
 import { Draggable } from 'react-beautiful-dnd';
 
 const StyledItem = styled.div` 
-    userSelect: 'none';
-    padding: 8 * 2;
+    userSelect: none;
     margin: 0 8px 0 0;
-    width: 25%;
+    width: 100px;
+    height: 130px;
+
 
     background: ${props => props.isDragging ? 'lightgreen' : 'grey'};
 

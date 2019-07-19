@@ -1,6 +1,7 @@
 import { CONNECTED_TO_GAME, REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, ATTACK_HERO } from "../actionTypes";
 import { SET_GAME_STATE, ATTACK_MINION } from "../actionTypes";
 import { GAME_STATE } from "../reducers/game";
+import { ENEMY_HERO_ID } from "../../gameplay/containers/Game";
 
 export const connectedToGame = (gameInfo) => ({
   type: CONNECTED_TO_GAME,
@@ -37,7 +38,7 @@ export const setGameState = (newGameState) => {
 }
 
 export const attack = (source, target) => {
-  if (!target) return attackHero(source);
+  if (target.droppableId === ENEMY_HERO_ID) return attackHero(source);
   else return attackMinion(source, target);
 }
 

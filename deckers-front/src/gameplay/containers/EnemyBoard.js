@@ -30,6 +30,8 @@ const DroppableDiv = styled.div`
 
 class EnemyBoard extends Component {
     render() {
+
+
         return (
             <DroppableDiv>
                 {this.props.items.map((item, index) => (
@@ -37,6 +39,7 @@ class EnemyBoard extends Component {
                         droppableId={`eniemy-minion-${index}`}
                         direction="horizontal"
                         key={index + 20}
+                        isDropDisabled={!this.props.isMinionDragged}
                     >
                         {(provided, snapshot) => (
                             <StyledItem ref={provided.innerRef}

@@ -9,6 +9,8 @@ export const GAME_STATE = {
 const MAX_HERO_HEALTH = 10;
 const GOLD_ON_START = 1;
 export const CARD_DRAW_COST = 1;
+const GOLD_TURN_INCOME = 1;
+
 
 let OFFSET = 15; // Only for test
 
@@ -89,9 +91,13 @@ export default (state = DEFAULT_STATE, action) => {
 
         case END_TURN:
             let playerMinionArray = [...state.cardsOnBoard];
-            for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].isReady = true;
+            if (!state.isMyTurn) {
+                for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].isReady = true;
 
-            return { ...state, isMyTurn: !state.isMyTurn };
+                newGoldAmount = state.playerHeroGold += GOLD_TURN_INCOME; // Na testy
+            }
+            else newGoldAmount = state.playerHeroGold
+            return { ...state, isMyTurn: !state.isMyTurn, playerHeroGold: newGoldAmount };
 
         case SET_GAME_STATE:
             return { ...state, gameState: action.newGameState };
@@ -125,7 +131,7 @@ export default (state = DEFAULT_STATE, action) => {
 
             let enemyHeroCurrentHp = state.enemyHeroHealth - playerMinion.damage;
             playerMinionArray = [...state.cardsOnBoard];
-            playerMinionArray[action.playerMinionId] = playerMinion;
+            playerMinionArray.splice(action.playerMinionId, 1, playerMinion);
 
             return { ...state, enemyHeroHealth: enemyHeroCurrentHp, cardsOnBoard: playerMinionArray };
 
