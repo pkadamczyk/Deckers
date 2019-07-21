@@ -8,11 +8,11 @@ import Minion from '../components/Minion';
 import { connect } from 'react-redux';
 import { PLAYER_BOARD_ID, MAX_CARDS_ON_BOARD } from './Game';
 
-const CARD_WIDTH = 110
+export const CARD_WIDTH = 100
 
 const DroppableDiv = styled.div`
-    height: 100%;
-    width: ${props => ((props.items.length + 1) * CARD_WIDTH) + "px"};
+    height: 50%;
+    width: ${props => ((props.items.length + 1) * (CARD_WIDTH + 25)) + "px"};
     display: flex;
     justify-content: center;
     margin: auto;
@@ -41,7 +41,13 @@ class PlayerBoard extends Component {
                             items={this.props.items}
                         >
                             {this.props.items.map((item, index) => (
-                                <Minion key={item.id} item={item} index={index} isMyTurn={this.props.isMyTurn}></Minion>
+                                <Minion
+                                    key={item.id}
+                                    item={item}
+                                    index={index}
+                                    isMyTurn={this.props.isMyTurn}
+                                    cardsOnBoard={this.props.cardsOnBoard}
+                                ></Minion>
                             ))}
                             {provided.placeholder}
 
@@ -57,6 +63,7 @@ class PlayerBoard extends Component {
 function mapStateToProps(state) {
     return {
         isMyTurn: state.game.isMyTurn,
+        cardsOnBoard: state.game.cardsOnBoard,
     }
 }
 

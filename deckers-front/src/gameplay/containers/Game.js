@@ -15,6 +15,7 @@ import PlayerHand from "./PlayerHand";
 import EnemyHero from '../components/EnemyHero';
 import EnemyDeck from '../components/EnemyDeck';
 import EnemyBoard from './EnemyBoard';
+import EnemyHand from '../components/EnemyHand';
 
 import EndTurnButton from '../components/EndTurnButton';
 
@@ -25,8 +26,7 @@ export const ENEMY_HERO_ID = "enemy-portrait"
 export const MAX_CARDS_ON_BOARD = 4;
 
 const Wrapper = styled.div`
-    top:100px;
-    height: 325px;
+    height: 60%;
     width: 100%;
     border: 1px solid red;
     margin:auto;
@@ -66,27 +66,26 @@ class Game extends Component {
     };
 
     onDragEnd(result) {
+
         this.setState({ currentlyDragged: null })
-        const { source, destination } = result;
+        let { source, destination } = result;
 
         // dropped outside the list
         if (!destination) {
             this.setState({ isDestinationNull: true })
             return;
         }
-
         // END_TARGETING
         if (source.droppableId === PLAYER_BOARD_ID) {
             if (destination.droppableId === source.droppableId) return
             this.props.dispatch(attack(source, destination));
+            destination = null;
 
             this.props.dispatch(setGameState(GAME_STATE.IDLE))
             return
         }
-        this.props.dispatch(setGameState(GAME_STATE.IDLE))
-
         // cards reordered in hand
-        if (source.droppableId === destination.droppableId) {
+        else if (source.droppableId === destination.droppableId) {
             this.props.dispatch(reorderCardsInHand(
                 source.index,
                 destination.index)
@@ -97,6 +96,7 @@ class Game extends Component {
                 destination
             ));
         }
+        this.props.dispatch(setGameState(GAME_STATE.IDLE))
     }
 
     render() {
@@ -107,6 +107,7 @@ class Game extends Component {
         return (
             <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate}>
                 <GameWrapper>
+                    <EnemyHand></EnemyHand>
                     <EnemyHero isMinionDragged={isMinionDragged}></EnemyHero>
                     <EnemyDeck></EnemyDeck>
 

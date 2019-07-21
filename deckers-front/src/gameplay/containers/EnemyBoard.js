@@ -11,6 +11,7 @@ const StyledItem = styled.div`
     height: 130px;
     background: tomato;
     margin: 0 8px 0 0;
+    margin-top: auto;
 
     border: ${props => props.gameState === GAME_STATE.TARGETING ? '2px solid rgba(255, 0, 0, 0.7)' : 'none'};
     border-style: ${props => props.gameState === GAME_STATE.TARGETING ? 'solid solid none solid' : 'none'};
@@ -25,6 +26,8 @@ const DroppableDiv = styled.div`
 
     background: lightblue;
     display: flex;
+    justify-content: center;
+    margin: auto;
     padding: 8px;
     overflow: auto;
 `;

@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import styled from "styled-components"
 
 import { Draggable } from 'react-beautiful-dnd';
+import { CARD_WIDTH } from '../containers/PlayerBoard';
+
 
 const StyledItem = styled.div` 
     userSelect: none;
     margin: 0 8px 0 0;
-    width: 100px;
+    width: ${props => CARD_WIDTH + 'px'};
     height: 130px;
 
     background: ${props => props.isDragging ? 'lightgreen' : 'grey'};
@@ -20,10 +22,9 @@ const StyledItem = styled.div`
 `;
 
 function getStyle(style, snapshot, cardsOnBoardLength, isDestinationNull) {
-
     if (!snapshot.isDropAnimating) {
         return style;
-    } debugger
+    }
 
     const { moveTo, curve, duration } = snapshot.dropAnimation;
     // move to the right spot
@@ -51,20 +52,23 @@ class Item extends Component {
                 index={index}
                 isDragDisabled={isDragDisabled}
             >
-                {(provided, snapshot) => (
-                    <StyledItem
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        isDragging={snapshot.isDragging}
-                        isDragDisabled={isDragDisabled}
-                        style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, isDestinationNull)}
-                    >
-                        <span>Hp: {item.health}</span>
-                        <span>Dmg: {item.damage}</span>
-                        <span>Cost: {item.cost}</span>
-                    </StyledItem>
-                )}
+                {(provided, snapshot) => {
+                    {/* if (snapshot.draggingOver) debugger */ }
+                    return (
+                        <StyledItem
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            isDragging={snapshot.isDragging}
+                            isDragDisabled={isDragDisabled}
+                            style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, isDestinationNull)}
+                        >
+                            <span>Hp: {item.health}</span>
+                            <span>Dmg: {item.damage}</span>
+                            <span>Cost: {item.cost}</span>
+                        </StyledItem>
+                    )
+                }}
             </Draggable>
         )
     }

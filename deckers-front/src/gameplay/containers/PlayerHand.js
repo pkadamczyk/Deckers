@@ -7,7 +7,7 @@ import { connect } from "react-redux"
 import Item from "../components/Item"
 
 const DroppableDiv = styled.div`
-    height: 145px;
+    height: 23%;
     width: 650px;
 
     background: ${props => props.isDraggingOver ? 'lightblue' : 'lightgrey'};
