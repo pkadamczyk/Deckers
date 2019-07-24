@@ -45,7 +45,8 @@ class Game extends Component {
 
         this.state = {
             currentlyDragged: null,
-            isDestinationNull: false
+            isDestinationNull: false,
+            currentTarget: null // ENEMY THAT PALYER IS CURRENTLY DRAGING OVER
         }
 
         this.onDragEnd = this.onDragEnd.bind(this);
@@ -61,15 +62,20 @@ class Game extends Component {
     }
 
     onDragUpdate = (update) => {
+        let currentTarget;
+        // After change need to be blocked somehow
+        // Current target must be set to null if player change target or is draging over nothing
         if (!update.destination) this.setState({ isDestinationNull: true })
-        else this.setState({ isDestinationNull: false })
+        else if (update.destination.droppableId !== this.state.currentTarget) {
+            currentTarget = update.destination.droppableId
+            this.setState({ isDestinationNull: false, currentTarget })
+        }
+        // console.log(currentTarget)
     };
 
     onDragEnd(result) {
-
-        this.setState({ currentlyDragged: null })
+        this.setState({ currentlyDragged: null, currentTarget: null })
         let { source, destination } = result;
-
         // dropped outside the list
         if (!destination) {
             this.setState({ isDestinationNull: true })
@@ -78,10 +84,10 @@ class Game extends Component {
         // END_TARGETING
         if (source.droppableId === PLAYER_BOARD_ID) {
             if (destination.droppableId === source.droppableId) return
-            this.props.dispatch(attack(source, destination));
-            destination = null;
 
-            this.props.dispatch(setGameState(GAME_STATE.IDLE))
+            // this.props.dispatch(attack(source, destination));
+
+            // this.props.dispatch(setGameState(GAME_STATE.IDLE))
             return
         }
         // cards reordered in hand
@@ -114,7 +120,11 @@ class Game extends Component {
                     <EndTurnButton></EndTurnButton>
 
                     <Wrapper>
-                        <EnemyBoard items={enemyCardsOnBoard} isMinionDragged={isMinionDragged} />
+                        <EnemyBoard
+                            items={enemyCardsOnBoard}
+                            isMinionDragged={isMinionDragged}
+                            currentTarget={this.state.currentTarget}
+                        />
                         <PlayerBoard
                             items={cardsOnBoard}
                             isMinionDragged={isMinionDragged}

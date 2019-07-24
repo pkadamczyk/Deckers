@@ -21,39 +21,35 @@ const StyledItem = styled.div`
     box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
 `;
 
-// function getStyle(style, snapshot, cardsOnBoardLength) {
-//     if (!snapshot.isDropAnimating) {
-//         return style;
-//     }
-//     debugger
-
-//     const { moveTo, curve, duration } = snapshot.dropAnimation;
-//     // move to the right spot
-
-//     const translate = `translate(${moveTo.x}px, ${moveTo.y}px)`;
-//     // patching the existing style
-//     return {
-//         ...style,
-//         transform: `${translate}`,
-//         // slowing down the drop because we can
-//         transition: `all ${curve} ${duration}s`,
-//     };
-// }
-
-function getStyle(style, snapshot) {
+function getStyle(style, snapshot, cardsOnBoardLength) {
     if (!snapshot.isDropAnimating) {
         return style;
     }
+
+    const { moveTo, curve, duration } = snapshot.dropAnimation;
+    // move to the right spot
+
+    const translate = `translate(${moveTo.x}px, ${moveTo.y}px)`;
+    // patching the existing style
     return {
         ...style,
-        // cannot be 0, but make it super tiny
-        transitionDuration: `0.001s`,
+        transform: `${translate}`,
+        // slowing down the drop because we can
+        transition: `all ${curve} ${duration}s`,
     };
 }
+
+// function getStyle(style, snapshot) {
+//     if (!snapshot.isDropAnimating) {
+//         return style;
+//     }
+//     return {
+//         ...style,
+//         // cannot be 0, but make it super tiny
+//         transitionDuration: `0.001s`,
+//     };
+// }
 class Minion extends Component {
-    componentDidMount() {
-        debugger
-    }
     render() {
         const { item, index, isMyTurn, cardsOnBoard } = this.props;
         const isDragDisabled = !isMyTurn || !item.isReady;

@@ -38,13 +38,13 @@ export const setGameState = (newGameState) => {
 }
 
 export const attack = (source, target) => {
-  if (target.droppableId === ENEMY_HERO_ID) return attackHero(source);
+  if (target === ENEMY_HERO_ID) return attackHero(source);
   else return attackMinion(source, target);
 }
 
 export const attackMinion = (source, target) => {
   let playerMinionId = source.index
-  let enemyMinionId = target.droppableId.slice(-1)
+  let enemyMinionId = target.slice(-1)
 
   return {
     type: ATTACK_MINION,

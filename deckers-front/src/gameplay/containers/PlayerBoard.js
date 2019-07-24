@@ -11,13 +11,14 @@ import { PLAYER_BOARD_ID, MAX_CARDS_ON_BOARD } from './Game';
 export const CARD_WIDTH = 100
 
 const DroppableDiv = styled.div`
-    height: 50%;
+    height: 100%;
     width: ${props => ((props.items.length + 1) * (CARD_WIDTH + 25)) + "px"};
     display: flex;
     justify-content: center;
     margin: auto;
     background: ${props => props.isDraggingOver ? 'lightblue' : 'lightgrey'};
     padding: 8px;
+    margin-top: -19%;
 `;
 
 class PlayerBoard extends Component {

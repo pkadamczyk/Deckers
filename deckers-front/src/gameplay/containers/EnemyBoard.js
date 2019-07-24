@@ -34,27 +34,36 @@ const DroppableDiv = styled.div`
 
 class EnemyBoard extends Component {
     render() {
+        let isBeingTargeted;
+        let isDropDisabled;
+
         return (
             <DroppableDiv>
-                {this.props.items.map((item, index) => (
-                    <Droppable
-                        droppableId={`eniemy-minion-${index}`}
-                        direction="horizontal"
-                        key={index + 20}
-                        isDropDisabled={!this.props.isMinionDragged}
-                    >
-                        {(provided, snapshot) => (
-                            <StyledItem ref={provided.innerRef}
-                                {...provided.droppableProps}
-                                isDraggingOver={snapshot.isDraggingOver}
-                                gameState={this.props.gameState}
-                            >
-                                <span>Hp: {item.health}</span>
-                                <span>Dmg: {item.damage}</span>
-                            </StyledItem>
-                        )}
-                    </Droppable>
-                ))}
+                {this.props.items.map((item, index) => {
+                    isBeingTargeted = this.props.currentTarget == `enemy-minion-${index}`
+                    isDropDisabled = !this.props.isMinionDragged || isBeingTargeted
+
+                    return (
+                        <Droppable
+                            droppableId={`enemy-minion-${index}`}
+                            direction="horizontal"
+                            key={index + 20}
+                            isDropDisabled={isDropDisabled}
+                        >
+                            {(provided, snapshot) => (
+                                <StyledItem ref={provided.innerRef}
+                                    {...provided.droppableProps}
+                                    isDraggingOver={snapshot.isDraggingOver}
+                                    gameState={this.props.gameState}
+                                >
+                                    <span>Hp: {item.health}</span>
+                                    <span>Dmg: {item.damage}</span>
+                                </StyledItem>
+                            )
+                            }
+                        </Droppable>
+                    )
+                })}
             </DroppableDiv>
         )
     }
