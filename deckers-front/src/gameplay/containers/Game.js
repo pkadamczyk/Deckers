@@ -8,29 +8,23 @@ import { reorderCardsInHand, summonCard, setGameState, attack } from '../../stor
 import { GAME_STATE } from '../../store/reducers/game';
 
 import PlayerHero from '../components/PlayerHero';
-import PlayerBoard from './PlayerBoard';
 import PlayerDeck from '../components/PlayerDeck';
 import PlayerHand from "./PlayerHand";
 
 import EnemyHero from '../components/EnemyHero';
 import EnemyDeck from '../components/EnemyDeck';
-import EnemyBoard from './EnemyBoard';
 import EnemyHand from '../components/EnemyHand';
 
 import EndTurnButton from '../components/EndTurnButton';
 
 import img from '../../graphic/background_02.PNG';
+import Board from './Board';
 
-export const PLAYER_BOARD_ID = "player-board";
+import { PLAYER_BOARD_ID } from "./Board"
 export const ENEMY_HERO_ID = "enemy-portrait"
-export const MAX_CARDS_ON_BOARD = 4;
 
-const Wrapper = styled.div`
-    height: 60%;
-    width: 100%;
-    border: 1px solid red;
-    margin:auto;
-`;
+
+
 
 const GameWrapper = styled.div`
     width: 100%;
@@ -106,7 +100,9 @@ class Game extends Component {
     }
 
     render() {
-        const { cardsOnBoard, cardsOnHand, enemyCardsOnBoard } = this.props;
+        const { cardsOnHand } = this.props;
+        const { currentTarget } = this.state;
+
         const isMinionDragged = this.state.currentlyDragged === PLAYER_BOARD_ID;
         const isDestinationNull = this.state.isDestinationNull;
 
@@ -119,17 +115,10 @@ class Game extends Component {
 
                     <EndTurnButton></EndTurnButton>
 
-                    <Wrapper>
-                        <EnemyBoard
-                            items={enemyCardsOnBoard}
-                            isMinionDragged={isMinionDragged}
-                            currentTarget={this.state.currentTarget}
-                        />
-                        <PlayerBoard
-                            items={cardsOnBoard}
-                            isMinionDragged={isMinionDragged}
-                        />
-                    </Wrapper>
+                    <Board
+                        isMinionDragged={isMinionDragged}
+                        currentTarget={currentTarget}
+                    ></Board>
 
 
                     <PlayerHand items={cardsOnHand} isDestinationNull={isDestinationNull}>
@@ -146,9 +135,7 @@ class Game extends Component {
 
 function mapStateToProps(state) {
     return {
-        cardsOnBoard: state.game.cardsOnBoard,
         cardsOnHand: state.game.cardsOnHand,
-        enemyCardsOnBoard: state.game.enemyCardsOnBoard
     }
 }
 

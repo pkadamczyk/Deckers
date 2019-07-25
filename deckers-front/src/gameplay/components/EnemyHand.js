@@ -6,6 +6,10 @@ const StyledDiv = styled.div`
     height: 18%;
     width: 650px;
 
+    position: absolute;
+    left: 0;
+    top: 0;
+
     background: DodgerBlue;
     display: flex;
     padding: 8px;

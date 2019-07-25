@@ -7,6 +7,7 @@ import { connect } from "react-redux"
 import { GAME_STATE } from '../../store/reducers/game';
 
 const StyledItem = styled.div`
+
     width: 100px;
     height: 130px;
     background: tomato;
@@ -23,8 +24,13 @@ const StyledItem = styled.div`
 
 const DroppableDiv = styled.div`
     height: 50%;
+    position: relative;
 
-    background: lightblue;
+    width: 100vw;
+    left: calc( -50vw + 50%);
+
+
+    ${'' /* background: lightblue; */}
     display: flex;
     justify-content: center;
     margin: auto;

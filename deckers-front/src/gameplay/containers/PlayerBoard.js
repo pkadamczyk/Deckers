@@ -1,71 +1,45 @@
 import React, { Component } from 'react';
 
-import { Droppable } from 'react-beautiful-dnd';
 import styled from "styled-components"
 
 import Minion from '../components/Minion';
 
-import { connect } from 'react-redux';
-import { PLAYER_BOARD_ID, MAX_CARDS_ON_BOARD } from './Game';
-
 export const CARD_WIDTH = 100
 
-const DroppableDiv = styled.div`
-    height: 100%;
-    width: ${props => ((props.items.length + 1) * (CARD_WIDTH + 25)) + "px"};
+const Wrapper = styled.div`
+    height: 50%;
+    width: 100%;
     display: flex;
     justify-content: center;
     margin: auto;
-    background: ${props => props.isDraggingOver ? 'lightblue' : 'lightgrey'};
+    
     padding: 8px;
-    margin-top: -19%;
 `;
+
+// background: ${props => props.isDraggingOver ? 'lightblue' : 'tomato'};
 
 class PlayerBoard extends Component {
     render() {
-        const isBoardFull = this.props.items.length >= MAX_CARDS_ON_BOARD;
+        const { isMyTurn, cardsOnBoard, items, placeholder } = this.props
 
-        const isDropDisabled = (isBoardFull || this.props.isMinionDragged);
+        const minions = items.map((item, index) => (
+            <Minion
+                key={item.id}
+                item={item}
+                index={index}
+                isMyTurn={isMyTurn}
+                cardsOnBoard={cardsOnBoard}
+            ></Minion>
+        ))
+
 
         return (
-            <Droppable
-                droppableId={PLAYER_BOARD_ID}
-                direction="horizontal"
-                isDropDisabled={isDropDisabled}
-            >
-                {(provided, snapshot) => {
-                    return (
-                        <DroppableDiv
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            isDraggingOver={snapshot.isDraggingOver}
-                            items={this.props.items}
-                        >
-                            {this.props.items.map((item, index) => (
-                                <Minion
-                                    key={item.id}
-                                    item={item}
-                                    index={index}
-                                    isMyTurn={this.props.isMyTurn}
-                                    cardsOnBoard={this.props.cardsOnBoard}
-                                ></Minion>
-                            ))}
-                            {provided.placeholder}
-
-                        </DroppableDiv>
-
-                    )
-                }}
-            </Droppable>
+            <Wrapper items={items}>
+                {minions}
+                {placeholder}
+            </Wrapper>
         )
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        isMyTurn: state.game.isMyTurn,
-        cardsOnBoard: state.game.cardsOnBoard,
-    }
-}
-
-export default connect(mapStateToProps)(PlayerBoard); 
+export default PlayerBoard; 

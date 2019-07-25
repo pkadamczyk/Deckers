@@ -29,7 +29,11 @@ function getStyle(style, snapshot, cardsOnBoardLength, isDestinationNull) {
     const { moveTo, curve, duration } = snapshot.dropAnimation;
     // move to the right spot
 
-    const translate = cardsOnBoardLength == 0 || isDestinationNull ? `translate(${moveTo.x}px, ${moveTo.y}px)` : `translate(${moveTo.x - 50}px, ${moveTo.y}px)`;
+
+    // If card is summoned,x and y of animation should be changed
+    // If card is not summoned only x should be changed
+    const translate = cardsOnBoardLength == 0 || isDestinationNull ? `translate(${moveTo.x}px, ${moveTo.y + 330}px)` : `translate(${moveTo.x - 50}px, ${moveTo.y}px)`;
+    debugger
     // patching the existing style
     return {
         ...style,
