@@ -8,7 +8,6 @@ export const connectedToGame = (gameInfo) => ({
   gameInfo: gameInfo
 });
 
-
 export const reorderCardsInHand = (startIndex, endIndex) => ({
   type: REORDER_CARDS_ON_HAND,
   startIndex, endIndex
@@ -43,8 +42,9 @@ export const attack = (source, target) => {
 }
 
 export const attackMinion = (source, target) => {
-  let playerMinionId = source.index
-  let enemyMinionId = +target.slice(-1)
+  let playerMinionId = source.index;
+  let enemyMinionId = +target.slice(-1);
+
   return {
     type: ATTACK_MINION,
     playerMinionId, enemyMinionId
@@ -52,7 +52,7 @@ export const attackMinion = (source, target) => {
 }
 
 export const attackHero = (source) => {
-  let playerMinionId = source.index
+  let playerMinionId = source.index;
 
   return {
     type: ATTACK_HERO,

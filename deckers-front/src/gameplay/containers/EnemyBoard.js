@@ -54,7 +54,7 @@ class EnemyBoard extends Component {
                 {this.props.items.map((item, index) => {
                     let myId = `enemy-minion-${index}`
 
-                    isBeingTargeted = currentTarget == myId
+                    isBeingTargeted = currentTarget === myId
                     isDropDisabled = !isMinionDragged || isBeingTargeted
 
                     return (

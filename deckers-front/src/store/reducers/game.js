@@ -6,16 +6,15 @@ export const GAME_STATE = {
     TARGETING: 2,
     IDLE: 3
 }
+export const CARD_DRAW_COST = 1;
+
 const MAX_HERO_HEALTH = 10;
 const GOLD_ON_START = 1;
-export const CARD_DRAW_COST = 1;
 const GOLD_TURN_INCOME = 1;
-
 
 let OFFSET = 15; // Only for test
 
-
-const getItems = (count, offset = 0) =>
+const getItems = (count, offset = 0) => (
     Array.from({ length: count }, (v, k) => k).map(k => ({
         id: `item-${k + offset}`,
         content: `item ${k + offset}`,
@@ -24,7 +23,8 @@ const getItems = (count, offset = 0) =>
         damage: 1,
         cost: 1,
         isReady: false
-    }));
+    }))
+)
 
 const DEFAULT_STATE = {
     cardsOnBoard: getItems(0),
@@ -48,12 +48,11 @@ export default (state = DEFAULT_STATE, action) => {
     let removed;
 
     switch (action.type) {
-        // case CONNECTED_TO_GAME:
-        //     return action.gameInfo;
         case REORDER_CARDS_ON_HAND:
             result = Array.from(state.cardsOnHand);
             [removed] = result.splice(action.startIndex, 1);
             result.splice(action.endIndex, 0, removed);
+
             return { ...state, cardsOnHand: result }
 
         case SUMMON_CARD:
@@ -96,7 +95,8 @@ export default (state = DEFAULT_STATE, action) => {
 
                 newGoldAmount = state.playerHeroGold += GOLD_TURN_INCOME; // Na testy
             }
-            else newGoldAmount = state.playerHeroGold
+            else newGoldAmount = state.playerHeroGold;
+
             return { ...state, isMyTurn: !state.isMyTurn, playerHeroGold: newGoldAmount };
 
         case SET_GAME_STATE:
