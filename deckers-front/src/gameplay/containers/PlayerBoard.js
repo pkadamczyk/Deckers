@@ -4,8 +4,6 @@ import styled from "styled-components"
 
 import Minion from '../components/Minion';
 
-export const CARD_WIDTH = 100
-
 const Wrapper = styled.div`
     height: 50%;
     width: 100%;
@@ -16,11 +14,9 @@ const Wrapper = styled.div`
     padding: 8px;
 `;
 
-// background: ${props => props.isDraggingOver ? 'lightblue' : 'tomato'};
-
 class PlayerBoard extends Component {
     render() {
-        const { isMyTurn, cardsOnBoard, items, placeholder } = this.props
+        const { isMyTurn, items, placeholder, handleLockTarget } = this.props
 
         const minions = items.map((item, index) => (
             <Minion
@@ -28,13 +24,12 @@ class PlayerBoard extends Component {
                 item={item}
                 index={index}
                 isMyTurn={isMyTurn}
-                cardsOnBoard={cardsOnBoard}
+                handleLockTarget={handleLockTarget}
             ></Minion>
         ))
 
-
         return (
-            <Wrapper items={items}>
+            <Wrapper>
                 {minions}
                 {placeholder}
             </Wrapper>

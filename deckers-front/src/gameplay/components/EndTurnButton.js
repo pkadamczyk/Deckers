@@ -30,10 +30,11 @@ const Button = styled.button`
 
 class EndTurnButton extends Component {
     render() {
+        const { isMyTurn } = this.props;
         return (
             <Button
                 onClick={() => this.props.dispatch(endTurn())}
-                isMyTurn={this.props.isMyTurn}
+                isMyTurn={isMyTurn}
             >
                 End Turn
             </Button>

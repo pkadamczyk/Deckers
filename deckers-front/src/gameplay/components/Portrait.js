@@ -2,22 +2,20 @@ import React, { Component } from 'react';
 import styled from "styled-components"
 
 const StyledPortrait = styled.div`
-    height: 100px;
-    width:100px;
-
-    position: absolute;
-    bottom: ${props => props.player ? '5px' : 'none'};
-    left: ${props => props.player ? '5px' : 'none'};
+    height: 100%;
+    width:100%;
 
     background: white;
+    z-index: -1;
 `;
 
 class Portrait extends Component {
     render() {
+        const { isPlayer, gameState, health, gold } = this.props;
         return (
-            <StyledPortrait player={this.props.player} gameState={this.props.gameState} >
-                {this.props.health}
-                <div>Gold: {this.props.gold}</div>
+            <StyledPortrait isPlayer={isPlayer} gameState={gameState} >
+                <div>Health: {health}</div>
+                <div>Gold: {gold}</div>
             </StyledPortrait>
         )
     }

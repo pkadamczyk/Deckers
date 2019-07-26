@@ -5,6 +5,7 @@ import { Droppable } from 'react-beautiful-dnd';
 import { connect } from "react-redux"
 
 import Item from "../components/Item"
+export const PLAYER_HAND_ID = "player-hand"
 
 const DroppableDiv = styled.div`
     height: 23%;
@@ -18,27 +19,36 @@ const DroppableDiv = styled.div`
     position: absolute;
     bottom: 0;
     right: 0;
+    z-index: 1;
 `;
 
 class PlayerHand extends Component {
     render() {
+        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand, currentTarget } = this.props;
+        const isDropDisabled = isMinionDragged;
+        const items = cardsOnHand;
+
         return (
-            <Droppable droppableId="player-hand" direction="horizontal">
+            <Droppable
+                droppableId={PLAYER_HAND_ID}
+                direction="horizontal"
+                isDropDisabled={isDropDisabled}
+            >
                 {(provided, snapshot) => (
                     <DroppableDiv
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                         isDraggingOver={snapshot.isDraggingOver}
                     >
-                        {this.props.items.map((item, index) => (
+                        {items.map((item, index) => (
                             <Item
                                 key={item.id}
                                 item={item}
                                 index={index}
-                                isMyTurn={this.props.isMyTurn}
-                                gold={this.props.gold}
-                                cardsOnBoard={this.props.cardsOnBoard}
-                                isDestinationNull={this.props.isDestinationNull}
+                                isMyTurn={isMyTurn}
+                                gold={gold}
+                                cardsOnBoard={cardsOnBoard}
+                                currentTarget={currentTarget}
                             ></Item>
                         ))}
                         {provided.placeholder}
@@ -53,6 +63,7 @@ function mapStateToProps(state) {
     return {
         isMyTurn: state.game.isMyTurn,
         cardsOnBoard: state.game.cardsOnBoard,
+        cardsOnHand: state.game.cardsOnHand,
         gold: state.game.playerHeroGold,
     }
 }

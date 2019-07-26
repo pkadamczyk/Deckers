@@ -13,8 +13,6 @@ const StyledDiv = styled.div`
     background: DodgerBlue;
     display: flex;
     padding: 8px;
-    overflow: auto;
-
 `;
 
 class EnemyHand extends Component {

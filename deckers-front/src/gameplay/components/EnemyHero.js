@@ -6,11 +6,14 @@ import { Droppable } from 'react-beautiful-dnd';
 import styled from "styled-components"
 import { GAME_STATE } from '../../store/reducers/game';
 
+export const ENEMY_PORTRAIT_ID = "enemy-portrait";
+
 const Div = styled.div`
     height: 100px;
     width: 100px;
 
     position: absolute;
+    z-index:1;
     top: 5px;
     right: 5px;
 
@@ -23,11 +26,16 @@ const Div = styled.div`
 `
 class EnemyHero extends Component {
     render() {
-        const isDropDisabled = !this.props.isMinionDragged;
+        const { health, gold, gameState, currentTarget, isMinionDragged } = this.props;
+        const cleanTarget = this.props.handleCleanTarget;
+        const setTarget = this.props.handleSetTarget;
+
+        const isBeingTargeted = currentTarget === ENEMY_PORTRAIT_ID;
+        const isDropDisabled = !isMinionDragged || isBeingTargeted;
 
         return (
             <Droppable
-                droppableId="enemy-portrait"
+                droppableId={ENEMY_PORTRAIT_ID}
                 direction="horizontal"
                 isDropDisabled={isDropDisabled}
             >
@@ -35,14 +43,14 @@ class EnemyHero extends Component {
                     <Div
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        isDraggingOver={snapshot.isDraggingOver}
-                        gameState={this.props.gameState}
+                        gameState={gameState}
+                        onMouseLeave={() => cleanTarget()}
+                        onMouseEnter={() => setTarget(ENEMY_PORTRAIT_ID)}
                     >
                         <Portrait
-                            health={this.props.health}
-                            gold={this.props.gold}
-                        >
-                        </Portrait>
+                            health={health}
+                            gold={gold}
+                        />
                     </Div>
                 )}
             </Droppable>

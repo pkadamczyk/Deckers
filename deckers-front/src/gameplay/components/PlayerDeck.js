@@ -4,10 +4,10 @@ import Deck from "./Deck"
 import { connect } from 'react-redux';
 
 class PlayerDeck extends Component {
-
     render() {
+        const { gold } = this.props;
         return (
-            <Deck player gold={this.props.gold}></Deck>
+            <Deck isPlayer gold={gold}></Deck>
         )
     }
 }

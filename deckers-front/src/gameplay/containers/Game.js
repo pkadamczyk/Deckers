@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
+import { connect } from "react-redux"
 import styled from "styled-components";
-import { connect } from "react-redux";
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import { reorderCardsInHand, summonCard, setGameState, attack } from '../../store/actions/game';
@@ -9,7 +9,7 @@ import { GAME_STATE } from '../../store/reducers/game';
 
 import PlayerHero from '../components/PlayerHero';
 import PlayerDeck from '../components/PlayerDeck';
-import PlayerHand from "./PlayerHand";
+import PlayerHand, { PLAYER_HAND_ID } from "./PlayerHand";
 
 import EnemyHero from '../components/EnemyHero';
 import EnemyDeck from '../components/EnemyDeck';
@@ -23,9 +23,6 @@ import Board from './Board';
 import { PLAYER_BOARD_ID } from "./Board"
 export const ENEMY_HERO_ID = "enemy-portrait"
 
-
-
-
 const GameWrapper = styled.div`
     width: 100%;
     height: 100%;
@@ -38,51 +35,62 @@ class Game extends Component {
         super(props);
 
         this.state = {
-            currentlyDragged: null,
-            isDestinationNull: false,
-            currentTarget: null // ENEMY THAT PALYER IS CURRENTLY DRAGING OVER
+            currentlyDraggedSource: null,
+            currentTarget: null, // OBJECT THAT PLAYER IS CURRENTLY DRAGING OVER
+            lastTarget: null,
+            isTargetLocked: false,
         }
 
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragUpdate = this.onDragUpdate.bind(this);
+        this.handleCleanTarget = this.handleCleanTarget.bind(this);
+        this.handleSetTarget = this.handleSetTarget.bind(this);
+        this.handleLockTarget = this.handleLockTarget.bind(this);
+    }
+
+    handleLockTarget() {
+        this.setState({ isTargetLocked: true })
+    }
+
+    handleCleanTarget() {
+        let { currentlyDraggedSource, isTargetLocked } = this.state;
+        let shouldCleanTarget = currentlyDraggedSource !== null && currentlyDraggedSource !== PLAYER_HAND_ID && !isTargetLocked;
+
+        if (shouldCleanTarget) this.setState({ currentTarget: PLAYER_BOARD_ID });
+    }
+
+    handleSetTarget(id) {
+        let { currentlyDraggedSource, isTargetLocked } = this.state;
+        let shouldSetTarget = currentlyDraggedSource !== null && currentlyDraggedSource !== PLAYER_HAND_ID && !isTargetLocked;
+
+        if (shouldSetTarget) this.setState({ currentTarget: id });
     }
 
     onDragStart(start) {
         // START_TARGETING
         if (start.source.droppableId === PLAYER_BOARD_ID) this.props.dispatch(setGameState(GAME_STATE.TARGETING));
 
-        this.setState({ currentlyDragged: start.source.droppableId, isDestinationNull: false })
+        this.setState({ currentlyDraggedSource: start.source.droppableId, currentTarget: start.source.droppableId })
     }
 
     onDragUpdate = (update) => {
-        let currentTarget;
-        // After change need to be blocked somehow
-        // Current target must be set to null if player change target or is draging over nothing
-        if (!update.destination) this.setState({ isDestinationNull: true })
-        else if (update.destination.droppableId !== this.state.currentTarget) {
-            currentTarget = update.destination.droppableId
-            this.setState({ isDestinationNull: false, currentTarget })
+        if (this.state.currentTarget === PLAYER_HAND_ID) {
+            this.setState({ currentTarget: update.destination.droppableId });
         }
-        // console.log(currentTarget)
     };
 
     onDragEnd(result) {
-        this.setState({ currentlyDragged: null, currentTarget: null })
         let { source, destination } = result;
-        // dropped outside the list
-        if (!destination) {
-            this.setState({ isDestinationNull: true })
-            return;
-        }
+        let { currentTarget } = this.state;
+
         // END_TARGETING
         if (source.droppableId === PLAYER_BOARD_ID) {
-            if (destination.droppableId === source.droppableId) return
+            if (currentTarget.includes("enemy")) {
+                this.props.dispatch(attack(source, currentTarget));
 
-            // this.props.dispatch(attack(source, destination));
-
-            // this.props.dispatch(setGameState(GAME_STATE.IDLE))
-            return
+                this.props.dispatch(setGameState(GAME_STATE.IDLE))
+            }
         }
         // cards reordered in hand
         else if (source.droppableId === destination.droppableId) {
@@ -97,61 +105,47 @@ class Game extends Component {
             ));
         }
         this.props.dispatch(setGameState(GAME_STATE.IDLE))
+        this.setState({ currentlyDraggedSource: null, currentTarget: null, isTargetLocked: false })
     }
 
     render() {
-        const { cardsOnHand } = this.props;
-        const { currentTarget } = this.state;
+        const { currentTarget, currentlyDraggedSource } = this.state;
 
-        const isMinionDragged = this.state.currentlyDragged === PLAYER_BOARD_ID;
-        const isDestinationNull = this.state.isDestinationNull;
+        const isMinionDragged = currentlyDraggedSource === PLAYER_BOARD_ID;
 
         return (
+
             <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate}>
                 <GameWrapper>
-                    <EnemyHand></EnemyHand>
-                    <EnemyHero isMinionDragged={isMinionDragged}></EnemyHero>
-                    <EnemyDeck></EnemyDeck>
+                    <EnemyHand />
+                    <EnemyHero
+                        isMinionDragged={isMinionDragged}
+                        handleCleanTarget={this.handleCleanTarget}
+                        handleSetTarget={this.handleSetTarget}
+                        currentTarget={currentTarget}
+                    />
+                    <EnemyDeck />
+                    <EndTurnButton />
 
-                    <EndTurnButton></EndTurnButton>
+                    <PlayerHand
+                        currentTarget={currentTarget}
+                        isMinionDragged={isMinionDragged}
+                    />
 
                     <Board
                         isMinionDragged={isMinionDragged}
                         currentTarget={currentTarget}
+                        handleCleanTarget={this.handleCleanTarget}
+                        handleSetTarget={this.handleSetTarget}
+                        handleLockTarget={this.handleLockTarget}
                     ></Board>
 
-
-                    <PlayerHand items={cardsOnHand} isDestinationNull={isDestinationNull}>
-                    </PlayerHand>
-
-                    <PlayerDeck></PlayerDeck>
-                    <PlayerHero></PlayerHero>
+                    <PlayerDeck />
+                    <PlayerHero />
                 </GameWrapper>
-
             </DragDropContext>
         )
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        cardsOnHand: state.game.cardsOnHand,
-    }
-}
-
-export default connect(mapStateToProps)(Game);
-
-// CAN BE USEFUL ONE DAY
-// const move = (source, destination, droppableSource, droppableDestination) => {
-//     const sourceClone = Array.from(source);
-//     const destClone = Array.from(destination);
-//     const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-//     destClone.splice(droppableDestination.index, 0, removed);
-
-//     const result = {};
-//     result[droppableSource.droppableId] = sourceClone;
-//     result[droppableDestination.droppableId] = destClone;
-
-//     return result;
-// };
+export default connect()(Game);

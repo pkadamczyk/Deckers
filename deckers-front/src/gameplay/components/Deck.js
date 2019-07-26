@@ -11,8 +11,8 @@ const StyledDiv = styled.div`
 
     position: absolute;
     right: 0;
-    bottom: ${props => props.player ? '35%' : 'none'};
-    top: ${props => props.player ? 'none' : '18%'};
+    bottom: ${props => props.isPlayer ? '35%' : 'none'};
+    top: ${props => props.isPlayer ? 'none' : '18%'};
 
     background: black;
 `;
@@ -23,12 +23,13 @@ const StyledButton = styled.button`
 
 class Deck extends Component {
     render() {
-        const isAffortable = this.props.gold >= CARD_DRAW_COST;
-        const isDisabled = !isAffortable || !this.props.isMyTurn;
+        const { gold, isMyTurn, isPlayer } = this.props;
+        const isAffortable = gold >= CARD_DRAW_COST;
+        const isDisabled = !isAffortable || !isMyTurn;
 
         return (
-            <StyledDiv player={this.props.player}>
-                {this.props.player &&
+            <StyledDiv isPlayer>
+                {isPlayer &&
                     <StyledButton
                         onClick={() => this.props.dispatch(drawCard())}
                         disabled={isDisabled}
