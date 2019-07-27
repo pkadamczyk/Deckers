@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { Draggable } from 'react-beautiful-dnd';
 import { CARD_WIDTH } from '../containers/Board';
 import { PLAYER_HAND_ID } from '../containers/PlayerHand';
+import { GAME_STATE } from '../../store/reducers/game';
 
 const StyledItem = styled.div` 
     margin: 0 8px 0 0;
@@ -35,13 +36,48 @@ function getStyle(style, snapshot, cardsOnBoardLength, currentTarget) {
         transition: `all ${curve} ${duration}s`,
     };
 }
+class Content extends Component {
+    componentDidUpdate(prevProps) {
+        const { snapshot, setIsDragging } = this.props;
+        if (prevProps.snapshot.isDragging !== snapshot.isDragging) setIsDragging(snapshot.isDragging)
+    }
 
-class Item extends Component {
     render() {
-        const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold } = this.props;
+        const { provided, snapshot, item, isDragDisabled, cardsOnBoard, currentTarget } = this.props;
+        return (
+            <StyledItem
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                isDragging={snapshot.isDragging}
+                isDragDisabled={isDragDisabled}
+                style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget)}
+            >
+                <span>Hp: {item.health}</span>
+                <span>Dmg: {item.damage}</span>
+                <span>Cost: {item.cost}</span>
+            </StyledItem>
+        )
+
+    }
+}
+class Item extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { isDragging: false }
+        this.setIsDragging = this.setIsDragging.bind(this);
+    }
+
+    setIsDragging(isDragging) {
+        this.setState({ isDragging })
+    }
+
+    render() {
+        const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold, gameState } = this.props;
+        const { isDragging } = this.state;
 
         const isAffordable = gold >= item.cost;
-        const isDragDisabled = !isAffordable || !isMyTurn;
+        const isDragDisabled = !isAffordable || !isMyTurn || (gameState !== GAME_STATE.IDLE && !isDragging);
 
         return (
             <Draggable
@@ -50,18 +86,16 @@ class Item extends Component {
                 isDragDisabled={isDragDisabled}
             >
                 {(provided, snapshot) => (
-                    <StyledItem
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        isDragging={snapshot.isDragging}
+                    <Content
+                        item={item}
+                        provided={provided}
+                        snapshot={snapshot}
                         isDragDisabled={isDragDisabled}
-                        style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget)}
+                        setIsDragging={this.setIsDragging}
+                        cardsOnBoard={cardsOnBoard}
+                        currentTarget={currentTarget}
                     >
-                        <span>Hp: {item.health}</span>
-                        <span>Dmg: {item.damage}</span>
-                        <span>Cost: {item.cost}</span>
-                    </StyledItem>
+                    </Content>
                 )}
             </Draggable>
         )

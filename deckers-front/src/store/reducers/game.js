@@ -86,7 +86,7 @@ export default (state = DEFAULT_STATE, action) => {
                 isReady: false
             }
 
-            return { ...state, cardsOnHand: [...state.cardsOnHand, newCard], playerHeroGold: newGoldAmount }
+            return { ...state, cardsOnHand: [...state.cardsOnHand, newCard], playerHeroGold: newGoldAmount, gameState: GAME_STATE.IDLE }
 
         case END_TURN:
             let playerMinionArray = [...state.cardsOnBoard];

@@ -69,6 +69,7 @@ class Game extends Component {
     onDragStart(start) {
         // START_TARGETING
         if (start.source.droppableId === PLAYER_BOARD_ID) this.props.dispatch(setGameState(GAME_STATE.TARGETING));
+        else this.props.dispatch(setGameState(GAME_STATE.BUSY))
 
         this.setState({ currentlyDraggedSource: start.source.droppableId, currentTarget: start.source.droppableId })
     }
