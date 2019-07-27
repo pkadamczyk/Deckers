@@ -23,14 +23,12 @@ class PlayerHero extends Component {
                     gold={gold}
                 />
             </Div>
-
         )
     }
 }
 
 function mapStateToProps(state) {
     return {
-        gameState: state.game.gameState,
         health: state.game.playerHeroHealth,
         gold: state.game.playerHeroGold
     }
