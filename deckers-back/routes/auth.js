@@ -74,6 +74,7 @@ router.post("/login", async function (req, res, next) {
                 },
                 process.env.SECRET_KEY
             );
+            console.log(`${username} has loged in`)
             return res.status(200).json({
                 user,
                 options: {
@@ -108,8 +109,8 @@ router.post("/:email/reloadUser", async function (req, res, next) {
         let [user, availableChests] = await Promise.all([fetchUser(req.params.email), fetchChests()])
 
         let { id, username, profileImageUrl, email } = user;
-        // let isMatch = await user.comparePassword(req.body.password);
-        // if (isMatch) {
+        let isMatch = await user.comparePassword(req.body.password);
+        if (isMatch) {
 
             let [a, b, c, d, e, f] = await fetchOptionList("maxCardLevel", "upgradeCardCost", "commonUpgradeGoldCost", "rareUpgradeGoldCost", "epicUpgradeGoldCost", "legendaryUpgradeGoldCost")
 
@@ -122,6 +123,7 @@ router.post("/:email/reloadUser", async function (req, res, next) {
                 },
                 process.env.SECRET_KEY
             );
+            console.log(`${username} has been reloaded`)
             return res.status(200).json({
                 user,
                 options: {
@@ -138,12 +140,12 @@ router.post("/:email/reloadUser", async function (req, res, next) {
                 token
             }
             );
-        // } else {
+        } else {
             return next({
                 status: 400,
                 message: "Invalid Email/Password."
             });
-        // }
+        }
     } catch (e) {
         console.log(e)
         return next({ status: 400, message: "Invalid Email/Password." });

@@ -80,7 +80,7 @@ router.post("/:id/shop/buy/:chest", loginRequired, ensureCorrectUser, async func
         })
         cardIndexes.forEach(cardIndex => foundUser.cards[cardIndex].amount++);
 
-        cards.forEach(card => console.log(card.name))
+        // cards.forEach(card => console.log(card.name))
 
         await foundUser.deepPopulate('cards.card');
 
@@ -98,9 +98,8 @@ router.post("/:id/shop/buy/:chest", loginRequired, ensureCorrectUser, async func
 });
 
 // Create new deck
-router.post("/:usr_id/decks/create",  async function (req, res, next) {
+router.post("/:usr_id/decks/create", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
-
         if (req.body.cards.length != 10) throw new Error("Deck should contain 10 cards");
 
         let newDeck = {
@@ -198,12 +197,12 @@ router.post("/:usr_id/abandon", loginRequired, ensureCorrectUser, async function
 
 // Join game endpoint
 router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async function (req, res, next) {
-
+    console.log("Joining the game")
     // need deck
     try {
         let [foundGame, user] = await Promise.all([Game.findById(req.params.game_id).deepPopulate('players'), User.findById(req.params.usr_id).deepPopulate('decks.cards.card')]);
         if (foundGame.isFinished) throw new Error("Game finished");
-        if (!user.inGame) throw new Error("User not in game");
+        // if (!user.inGame) throw new Error("User not in game");
 
         // Handle wrong user sytuation
         if (foundGame.players.findIndex(player => player._id.equals(user._id)) == -1) throw new Error("No such user in game data");

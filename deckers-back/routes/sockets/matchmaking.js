@@ -79,7 +79,7 @@ async function pairPlayers(gameMode, i) {
 
         // Modify players inGame variable
         [user1, user2].forEach(function (user) {
-            user.inGame = true;
+            // user.inGame = true;  Na testy
             user.currentGame = newGame._id;
             user.save();
         })
@@ -89,9 +89,10 @@ async function pairPlayers(gameMode, i) {
         [p1, p2].forEach(player => player.socket.join(roomName));
 
         console.log("Game ready!");
+
         gameSearch.in(roomName).emit('game-ready', { game_id: newGame._id });
 
-        // [p1, p2].forEach(player => player.socket.leave(roomName));
+        [p1, p2].forEach(player => player.socket.leave(roomName));
 
         // Saves edited players array to global object
         gameMode.playersInQueue = playerArray;
