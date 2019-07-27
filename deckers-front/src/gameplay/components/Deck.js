@@ -28,7 +28,7 @@ class Deck extends Component {
         const isDisabled = !isAffortable || !isMyTurn;
 
         return (
-            <StyledDiv isPlayer>
+            <StyledDiv isPlayer={isPlayer}>
                 {isPlayer &&
                     <StyledButton
                         onClick={() => this.props.dispatch(drawCard())}
