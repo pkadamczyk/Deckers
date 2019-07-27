@@ -3,8 +3,11 @@ var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 var gameSchema = new mongoose.Schema({
     players: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        deckId: String
     }],
 
     isFinished: Boolean

@@ -1,5 +1,5 @@
 // import { CONNECTED_TO_GAME } from "../actionTypes";
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME } from "../actionTypes"
 
 export const GAME_STATE = {
     BUSY: 1,
@@ -40,7 +40,9 @@ const DEFAULT_STATE = {
     playerHeroHealth: MAX_HERO_HEALTH,
 
     enemyHeroGold: GOLD_ON_START,
-    playerHeroGold: GOLD_ON_START
+    playerHeroGold: GOLD_ON_START,
+
+    gameInfo: null,
 };
 
 export default (state = DEFAULT_STATE, action) => {
@@ -48,6 +50,9 @@ export default (state = DEFAULT_STATE, action) => {
     let removed;
 
     switch (action.type) {
+        case CONNECTED_TO_GAME:
+            console.log(action.gameInfo)
+            return { ...state, gameInfo: action.gameInfo };
         case REORDER_CARDS_ON_HAND:
             result = Array.from(state.cardsOnHand);
             [removed] = result.splice(action.startIndex, 1);

@@ -197,33 +197,35 @@ router.post("/:usr_id/abandon", loginRequired, ensureCorrectUser, async function
 
 // Join game endpoint
 router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async function (req, res, next) {
-    console.log("Joining the game")
-    // need deck
     try {
-        let [foundGame, user] = await Promise.all([Game.findById(req.params.game_id).deepPopulate('players'), User.findById(req.params.usr_id).deepPopulate('decks.cards.card')]);
+        const gamePromise = Game.findById(req.params.game_id).deepPopulate('players');
+        const userPromise = User.findById(req.params.usr_id).deepPopulate('decks.cards.card');
+        const [foundGame, user] = await Promise.all([gamePromise, userPromise]);
+
         if (foundGame.isFinished) throw new Error("Game finished");
         // if (!user.inGame) throw new Error("User not in game");
 
         // Handle wrong user sytuation
-        if (foundGame.players.findIndex(player => player._id.equals(user._id)) == -1) throw new Error("No such user in game data");
+        const playerIndex = foundGame.players.findIndex(player => player.user._id.equals(user._id))
+        if (playerIndex == -1) throw new Error("No such user in game data");
 
-        let gameDeck = [];
-        let role;
+        const enemyObject = foundGame.players.filter((p, i) => playerIndex !== i)[0];
+        const enemyPromise = User.findById(enemyObject.user._id).deepPopulate('decks.cards.card');
+        const enemy = await enemyPromise;
+
+        const enemyDeckCardsAmount = enemy.decks.find(deck => deck._id.toString() === enemyObject.deckId).cards.length;
 
         // Shuffle deck
-        console.log(req.body.deck_id);
-        let deckId = user.decks.findIndex(deck => deck._id.equals(req.body.deck_id));
-        console.log(deckId);
-        gameDeck = shuffle(user.decks[deckId].cards);
+        const deckId = user.decks.findIndex(deck => deck._id.equals(req.body.deck_id));
+        const gameDeck = shuffle(user.decks[deckId].cards);
 
-        role = foundGame.players.findIndex(player => player._id.equals(user._id))
-        console.log("Role: " + role);
-
-        // TODO Response not declared in docs
         res.status(200).json({
-            player: user,
-            role: role,
+            player: user.username,
+            enemy: enemy.username,
+
+            role: playerIndex,
             deck: gameDeck,
+            enemyDeckCardsAmount: enemyDeckCardsAmount
         });
     } catch (err) {
         console.log(err)

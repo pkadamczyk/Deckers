@@ -26,12 +26,12 @@ class MatchmakingNavbar extends Component {
     }
 
     render() {
-        const { usr_id } = this.props;
+        const { usr_id, deck_id } = this.props;
         return (
             <div className="mm-nav">
                 <div className="mm-options">
                     <button className="btn btn-success" onClick={() => {
-                        socket.emit('join', { usr_id: usr_id, gameMode: 0 });
+                        socket.emit('join', { usr_id: usr_id, gameMode: 0, deck_id: deck_id });
                         console.log("LF game");
                     }}>Find game</button>}
                     <Link to="/gameplay">
