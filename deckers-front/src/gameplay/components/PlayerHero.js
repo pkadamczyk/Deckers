@@ -19,7 +19,6 @@ class PlayerHero extends Component {
         return (
             <Div>
                 <Portrait
-                    isPlayer
                     health={health}
                     gold={gold}
                 />

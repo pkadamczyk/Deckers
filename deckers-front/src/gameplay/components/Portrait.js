@@ -11,9 +11,9 @@ const StyledPortrait = styled.div`
 
 class Portrait extends Component {
     render() {
-        const { isPlayer, gameState, health, gold } = this.props;
+        const { health, gold } = this.props;
         return (
-            <StyledPortrait isPlayer={isPlayer} gameState={gameState} >
+            <StyledPortrait >
                 <div>Health: {health}</div>
                 <div>Gold: {gold}</div>
             </StyledPortrait>
