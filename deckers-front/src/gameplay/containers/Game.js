@@ -37,7 +37,6 @@ class Game extends Component {
         this.state = {
             currentlyDraggedSource: null,
             currentTarget: null, // OBJECT THAT PLAYER IS CURRENTLY DRAGING OVER
-            lastTarget: null,
             isTargetLocked: false,
         }
 
@@ -75,6 +74,7 @@ class Game extends Component {
     }
 
     onDragUpdate = (update) => {
+        if (!update.destination) return
         if (this.state.currentTarget === PLAYER_HAND_ID) {
             this.setState({ currentTarget: update.destination.droppableId });
         }
@@ -84,6 +84,7 @@ class Game extends Component {
         let { source, destination } = result;
         let { currentTarget } = this.state;
 
+        if (!destination && currentTarget === PLAYER_HAND_ID) return
         // END_TARGETING
         if (source.droppableId === PLAYER_BOARD_ID) {
             if (currentTarget.includes("enemy")) {
