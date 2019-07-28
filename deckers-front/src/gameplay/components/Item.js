@@ -54,9 +54,9 @@ class Content extends Component {
                 style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget)}
             >
                 <div>{item.name}</div>
-                <div>Hp: {item.stats[0].health}</div>
-                <div>Dmg: {item.stats[0].damage}</div>
-                <div>Cost: {item.stats[0].cost}</div>
+                <div>Hp: {item.stats[item.level - 1].health}</div>
+                <div>Dmg: {item.stats[item.level - 1].damage}</div>
+                <div>Cost: {item.stats[item.level - 1].cost}</div>
             </StyledItem>
         )
 
@@ -77,7 +77,7 @@ class Item extends Component {
         const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold, gameState } = this.props;
         const { isDragging } = this.state;
 
-        const isAffordable = gold >= item.cost;
+        const isAffordable = gold >= item.stats[item.level - 1].cost;
         const isDragDisabled = !isAffordable || !isMyTurn || (gameState !== GAME_STATE.IDLE && !isDragging);
 
         return (

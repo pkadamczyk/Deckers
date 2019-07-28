@@ -202,6 +202,7 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
         const userPromise = User.findById(req.params.usr_id).deepPopulate('decks.cards.card');
         const [foundGame, user] = await Promise.all([gamePromise, userPromise]);
 
+        console.log(`Game id: ${req.params.game_id}`)
         if (foundGame.isFinished) throw new Error("Game finished");
         // if (!user.inGame) throw new Error("User not in game");
 
@@ -215,9 +216,10 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
 
         const enemyDeckCardsAmount = enemy.decks.find(deck => deck._id.toString() === enemyObject.deckId).cards.length;
 
-        // Shuffle deck
         const deckId = user.decks.findIndex(deck => deck._id.equals(req.body.deck_id));
-        const gameDeck = shuffle(user.decks[deckId].cards);
+        let gameDeck = user.decks[deckId].cards;
+
+        gameDeck = prepareDeck(gameDeck, user)
 
         res.status(200).json({
             player: user.username,
@@ -250,6 +252,16 @@ function shuffle(array) {
     }
 
     return array;
+}
+
+function prepareDeck(deck, user) {
+    deck = deck.map((card) => {
+        foundCardObject = user.cards.find(cardObject => cardObject.card._id.equals(card._id))
+
+        return { ...card.toObject(), level: foundCardObject.level }
+    })
+    // Shuffle deck
+    return shuffle(deck);
 }
 
 async function fetchUser(id) {

@@ -20,7 +20,7 @@ class PlayerBoard extends Component {
 
         const minions = items.map((item, index) => (
             <Minion
-                key={item.id}
+                key={item._id}
                 item={item}
                 index={index}
                 isMyTurn={isMyTurn}

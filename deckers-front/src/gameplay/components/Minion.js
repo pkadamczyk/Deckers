@@ -48,8 +48,9 @@ class Item extends Component {
                 isDragDisabled={isDragDisabled}
                 style={getStyle(provided.draggableProps.style, snapshot)}
             >
-                <span>Hp: {item.health}</span>
-                <span>Dmg: {item.damage}</span>
+                <div>{item.name}</div>
+                <div>Hp: {item.stats[item.level - 1].health}</div>
+                <div>Dmg: {item.stats[item.level - 1].damage}</div>
             </StyledItem>
         )
     }
@@ -63,7 +64,7 @@ class Minion extends Component {
 
         return (
             <Draggable
-                draggableId={item.id}
+                draggableId={item._id}
                 index={index}
                 isDragDisabled={isDragDisabled}
             >
