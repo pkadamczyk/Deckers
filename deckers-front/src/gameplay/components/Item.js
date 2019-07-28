@@ -53,9 +53,10 @@ class Content extends Component {
                 isDragDisabled={isDragDisabled}
                 style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget)}
             >
-                <span>Hp: {item.health}</span>
-                <span>Dmg: {item.damage}</span>
-                <span>Cost: {item.cost}</span>
+                <div>{item.name}</div>
+                <div>Hp: {item.stats[0].health}</div>
+                <div>Dmg: {item.stats[0].damage}</div>
+                <div>Cost: {item.stats[0].cost}</div>
             </StyledItem>
         )
 
@@ -81,7 +82,7 @@ class Item extends Component {
 
         return (
             <Draggable
-                draggableId={item.id}
+                draggableId={item._id}
                 index={index}
                 isDragDisabled={isDragDisabled}
             >

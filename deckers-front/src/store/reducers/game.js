@@ -12,8 +12,6 @@ const MAX_HERO_HEALTH = 10;
 const GOLD_ON_START = 1;
 const GOLD_TURN_INCOME = 1;
 
-let OFFSET = 15; // Only for test
-
 const getItems = (count, offset = 0) => (
     Array.from({ length: count }, (v, k) => k).map(k => ({
         id: `item-${k + offset}`,
@@ -27,10 +25,10 @@ const getItems = (count, offset = 0) => (
 )
 
 const DEFAULT_STATE = {
-    cardsOnBoard: getItems(0),
-    cardsOnHand: getItems(5, 10),
+    cardsOnBoard: [],
+    cardsOnHand: [],
 
-    enemyCardsOnBoard: getItems(2, 20),
+    enemyCardsOnBoard: [],
 
     isMyTurn: true,
 
@@ -46,11 +44,15 @@ const DEFAULT_STATE = {
 };
 
 export default (state = DEFAULT_STATE, action) => {
+    let offset = 0
     let result;
     let removed;
 
     switch (action.type) {
         case CONNECTED_TO_GAME:
+
+
+
             return { ...state, gameInfo: action.gameInfo };
         case REORDER_CARDS_ON_HAND:
             result = Array.from(state.cardsOnHand);
@@ -76,19 +78,10 @@ export default (state = DEFAULT_STATE, action) => {
             return { ...newState, playerHeroGold: newGoldAmount };
 
         case DRAW_CARD:
-            OFFSET++; // For test
-
             if (state.playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
             newGoldAmount = state.playerHeroGold -= CARD_DRAW_COST;
 
-            let newCard = {
-                id: `item-${OFFSET}`,
-                content: `item ${OFFSET}`,
-                health: 2,
-                damage: 1,
-                cost: 1,
-                isReady: false
-            }
+            let newCard = { ...state.gameInfo.deck[offset], isReady: false }
 
             return { ...state, cardsOnHand: [...state.cardsOnHand, newCard], playerHeroGold: newGoldAmount, gameState: GAME_STATE.IDLE }
 

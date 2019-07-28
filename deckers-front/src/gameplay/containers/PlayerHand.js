@@ -42,7 +42,7 @@ class PlayerHand extends Component {
                     >
                         {items.map((item, index) => (
                             <Item
-                                key={item.id}
+                                key={item._id}
                                 item={item}
                                 index={index}
                                 isMyTurn={isMyTurn}

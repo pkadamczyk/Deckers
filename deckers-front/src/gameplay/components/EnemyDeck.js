@@ -7,6 +7,8 @@ const Div = styled.div`
     position: absolute;
     right: 0;
     top: 18%;
+
+    color: white;
 `
 class EnemyDeck extends Component {
     render() {

@@ -35,7 +35,7 @@ class PlayerDeck extends Component {
             <Div>
                 <Deck>
                     <StyledButton
-                        onClick={() => this.handleOnClick}
+                        onClick={() => this.handleOnClick()}
                         disabled={isButtonDisabled}
                     >
                         Buy card
