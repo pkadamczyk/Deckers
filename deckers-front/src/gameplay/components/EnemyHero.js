@@ -26,7 +26,7 @@ const Div = styled.div`
 `
 class EnemyHero extends Component {
     render() {
-        const { health, gold, gameState, currentTarget, isMinionDragged } = this.props;
+        const { health, gold, gameState, currentTarget, isMinionDragged, username } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
 
@@ -48,6 +48,7 @@ class EnemyHero extends Component {
                         onMouseEnter={() => setTarget(ENEMY_PORTRAIT_ID)}
                     >
                         <Portrait
+                            username={username}
                             health={health}
                             gold={gold}
                         />
@@ -64,6 +65,7 @@ function mapStateToProps(state) {
         gameState: state.game.gameState,
         health: state.game.enemyHeroHealth,
         gold: state.game.enemyHeroGold,
+        username: state.game.gameInfo.enemy,
     }
 }
 

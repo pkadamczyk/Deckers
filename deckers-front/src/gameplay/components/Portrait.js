@@ -11,9 +11,10 @@ const StyledPortrait = styled.div`
 
 class Portrait extends Component {
     render() {
-        const { health, gold } = this.props;
+        const { health, gold, username } = this.props;
         return (
             <StyledPortrait >
+                <div>{username}</div>
                 <div>Health: {health}</div>
                 <div>Gold: {gold}</div>
             </StyledPortrait>

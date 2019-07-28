@@ -15,12 +15,13 @@ const Div = styled.div`
 `
 class PlayerHero extends Component {
     render() {
-        const { health, gold } = this.props;
+        const { health, gold, username } = this.props;
         return (
             <Div>
                 <Portrait
                     health={health}
                     gold={gold}
+                    username={username}
                 />
             </Div>
         )
@@ -30,7 +31,8 @@ class PlayerHero extends Component {
 function mapStateToProps(state) {
     return {
         health: state.game.playerHeroHealth,
-        gold: state.game.playerHeroGold
+        gold: state.game.playerHeroGold,
+        username: state.game.gameInfo.player,
     }
 }
 
