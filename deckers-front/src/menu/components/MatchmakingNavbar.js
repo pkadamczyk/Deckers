@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import openSocket from 'socket.io-client';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connectToGame } from '../../store/actions/matchmaking';
 const socket = openSocket('http://localhost:8080/matchmaking');
 
@@ -21,8 +21,9 @@ class MatchmakingNavbar extends Component {
     }
 
     handleConnectToGame(data) {
-        const { usr_id, deck_id, connectToGame } = this.props;
+        const { usr_id, deck_id, connectToGame, history } = this.props;
         connectToGame(data.game_id, usr_id, deck_id);
+        history.push("/gameplay")
     }
 
     render() {
@@ -51,4 +52,4 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, { connectToGame })(MatchmakingNavbar);
+export default withRouter(connect(mapStateToProps, { connectToGame })(MatchmakingNavbar))
