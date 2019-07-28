@@ -3,10 +3,12 @@ import { SET_GAME_STATE, ATTACK_MINION } from "../actionTypes";
 import { GAME_STATE } from "../reducers/game";
 import { ENEMY_HERO_ID } from "../../gameplay/containers/Game";
 
-export const connectedToGame = (gameInfo) => ({
-  type: CONNECTED_TO_GAME,
-  gameInfo: gameInfo
-});
+export const connectedToGame = (gameInfo) => {
+  return {
+    type: CONNECTED_TO_GAME,
+    gameInfo,
+  }
+};
 
 export const reorderCardsInHand = (startIndex, endIndex) => ({
   type: REORDER_CARDS_ON_HAND,

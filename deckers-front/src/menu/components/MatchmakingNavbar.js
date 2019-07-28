@@ -22,8 +22,8 @@ class MatchmakingNavbar extends Component {
 
     handleConnectToGame(data) {
         const { usr_id, deck_id, connectToGame, history } = this.props;
-        connectToGame(data.game_id, usr_id, deck_id);
-        history.push("/gameplay")
+        connectToGame(data.game_id, usr_id, deck_id, history);
+        // history.push("/gameplay")
     }
 
     render() {

@@ -51,7 +51,6 @@ export default (state = DEFAULT_STATE, action) => {
 
     switch (action.type) {
         case CONNECTED_TO_GAME:
-            console.log(action.gameInfo)
             return { ...state, gameInfo: action.gameInfo };
         case REORDER_CARDS_ON_HAND:
             result = Array.from(state.cardsOnHand);

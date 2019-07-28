@@ -60,7 +60,7 @@ class EnemyHero extends Component {
 }
 
 function mapStateToProps(state) {
-
+    debugger
     return {
         gameState: state.game.gameState,
         health: state.game.enemyHeroHealth,

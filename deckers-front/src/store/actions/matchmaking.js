@@ -7,7 +7,7 @@ export const chooseDeck = (deck_id) => ({
     deck_id: deck_id
 });
 
-export function connectToGame(game_id, user_id, deck_id) {
+export function connectToGame(game_id, user_id, deck_id, history) {
     return dispatch => {
         // wrap our thunk in a promise so we can wait for the API call
         console.log(`Yo ${deck_id}`)
@@ -16,6 +16,7 @@ export function connectToGame(game_id, user_id, deck_id) {
                 .then(res => {
                     console.log(res);
                     dispatch(connectedToGame(res));
+                    history.push("/gameplay")
                 })
                 .catch(err => {
                     reject(); // indicate the API call failed
