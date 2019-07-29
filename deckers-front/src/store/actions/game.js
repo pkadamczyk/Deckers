@@ -8,7 +8,8 @@ const socket = openSocket('http://localhost:8080/game');
 
 export const connectedToGame = (gameInfo) => {
   socket.emit('join', {
-    gameId: gameInfo.gameId
+    gameId: gameInfo.gameId,
+    role: gameInfo.role
   });
 
   return {
@@ -22,18 +23,32 @@ export const reorderCardsInHand = (startIndex, endIndex) => ({
   startIndex, endIndex
 })
 
-export const summonCard = (droppableSource, droppableDestination) => ({
-  type: SUMMON_CARD,
-  droppableSource, droppableDestination
-})
+export const summonCard = (droppableSource, droppableDestination) => {
+  socket.emit('card-summoned', {
+  });
 
-export const drawCard = () => ({
-  type: DRAW_CARD,
-})
+  return {
+    type: SUMMON_CARD,
+    droppableSource, droppableDestination
+  }
+}
 
-export const endTurn = () => ({
-  type: END_TURN,
-})
+export const drawCard = () => {
+  socket.emit('card-drew', {
+  });
+
+  return {
+    type: DRAW_CARD,
+  }
+}
+
+export const endTurn = () => {
+  socket.emit('turn-ended', {
+  });
+  return {
+    type: END_TURN,
+  }
+}
 
 export const setGameState = (newGameState) => {
   if (Object.values(GAME_STATE).includes(newGameState)) {

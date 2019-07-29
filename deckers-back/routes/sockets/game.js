@@ -1,40 +1,40 @@
 var roomdata = require('roomdata');
 
 // var User = require("../../models/user");
-// var Game = require("../../models/game");
+const DatabaseGame = require("../../models/game");
 
-// // game object
+class Player {
+    constructor(deck) {
+        this.gold = Player.GOLD_ON_START;
+        this.health = Player.MAX_HERO_HEALTH;
 
-// // romeo - player1 object
-// // PLAYER_STATS = {
-// //     maxMana: 8,
-// //     maxHealth: 10,
+        this.deck = deck
+        this.cardsOnBoard = []
+        this.cardsOnHand = []
+    }
+}
 
-// //     mana: 8,
-// //     health:10,
-// //     armor: 0
-// // }
-// // juliet - player2 object
+Player.GOLD_ON_START = 1;
+Player.MAX_HERO_HEALTH = 10;
 
-// // romeoHand - player1 hand
-// // hand = {
-// //     cardIndexes[],
-// //     currentCard
-// // }
-// // julietHand - player2 hand
+class Game {
+    constructor(databaseGame) {
+        this.players = [];
+        this.currentPlayer = 0;
+        this.currentRound = 0;
+        this.gameId = databaseGame._id;
 
-// // currentTurn - keep track of turn number
-// // currentPlayer - holds current player username
-
-
+        this.players = databaseGame.players.map(player => new Player(player.deck));
+    }
+}
 
 module.exports.connect = function (io) {
-    var game = io.of('/game');
+    const game = io.of('/game');
 
     //     // https://github.com/socketio/socket.io/blob/318d62/examples/chat/index.js#L36
     //     // https://www.npmjs.com/package/roomdata
-    game.on('connection', function (socket) {
-        socket.on('join', function (data) {
+    game.on('connection', async function (socket) {
+        socket.on('join', async function (data) {
             console.log(`Joined game-${data.gameId}`)
 
             // let reconnected = false;
@@ -42,6 +42,16 @@ module.exports.connect = function (io) {
 
             // // Set room data, sends back info about reconnect
             // reconnected = setRoomData(data);
+
+            // Setup objects needed for multi
+            if (data.role === 0) {
+                const gamePromise = DatabaseGame.findById(data.gameId);
+                foundGame = await gamePromise;
+                // roomdata.set(socket, "Game", foundGame);
+
+                const game = new Game(foundGame.toObject());
+            }
+
 
             // // Checks if both players are ready to play
             // if (roomdata.get(socket, "romeo") && roomdata.get(socket, "juliet") && !reconnected) {
@@ -55,53 +65,65 @@ module.exports.connect = function (io) {
             // }
         })
 
-        socket.on("card-played", function (data) {
-
-            let player = determinePlayer();
-
-            // Set reference
-            let playerObject = roomdata.get(socket, player);
-            let playerDeck = playerObject.deck;
-
-            // Update player hand on server
-            playerObject.hand = data.playerHand;
-            roomdata.set(socket, player, playerObject);
-
-            // Get card details
-            let card = playerDeck[data.cardIndex].card;
-
-            // Send to players
-            game.in("game-" + roomdata.get(socket, "gameID")).emit('card-played', {
-                card: card,
-                currentPlayer: roomdata.get(socket, "currentPlayer")
-            });
-
-            // Calculate stats
-            calculateStats(card);
+        socket.on('card-drew', function (data) {
+            console.log(`Card drew!`)
         })
 
-        socket.on("end-turn", function (data) {
-            let currentPlayer = (data.currentPlayer + 1) % 2;
-            // Set room variable to hold current player
-            roomdata.set(socket, "currentPlayer", currentPlayer);
-
-            // Update player mana on server
-            let player = determinePlayer();
-            let playerObject = roomdata.get(socket, player);
-            playerObject.mana = playerObject.maxMana;
-            roomdata.set(socket, player, playerObject);
-
-            game.in("game-" + roomdata.get(socket, "gameID")).emit('new-round', { currentPlayer: currentPlayer });
-
-            // Calls clients for report
-            // game.in("game-" + roomdata.get(socket, "gameID")).emit('send-report');
-
-
-            // TODO turn and round report (server, later database)
-            // console.log("##### Round Report ##### ");
-
-            // console.log(currentPlayer + " : [" + roomdata.get(socket, currentPlayer).hand.cards + "] : " + roomdata.get(socket, currentPlayer).hand.currentCard);
+        socket.on('turn-ended', function (data) {
+            console.log(`Round ended!`)
         })
+
+        socket.on('card-summoned', function (data) {
+            console.log(`Card summoned!`)
+        })
+
+        // socket.on("card-played", function (data) {
+
+        //     let player = determinePlayer();
+
+        //     // Set reference
+        //     let playerObject = roomdata.get(socket, player);
+        //     let playerDeck = playerObject.deck;
+
+        //     // Update player hand on server
+        //     playerObject.hand = data.playerHand;
+        //     roomdata.set(socket, player, playerObject);
+
+        //     // Get card details
+        //     let card = playerDeck[data.cardIndex].card;
+
+        //     // Send to players
+        //     game.in("game-" + roomdata.get(socket, "gameID")).emit('card-played', {
+        //         card: card,
+        //         currentPlayer: roomdata.get(socket, "currentPlayer")
+        //     });
+
+        //     // Calculate stats
+        //     calculateStats(card);
+        // })
+
+        // socket.on("end-turn", function (data) {
+        //     let currentPlayer = (data.currentPlayer + 1) % 2;
+        //     // Set room variable to hold current player
+        //     roomdata.set(socket, "currentPlayer", currentPlayer);
+
+        //     // Update player mana on server
+        //     let player = determinePlayer();
+        //     let playerObject = roomdata.get(socket, player);
+        //     playerObject.mana = playerObject.maxMana;
+        //     roomdata.set(socket, player, playerObject);
+
+        //     game.in("game-" + roomdata.get(socket, "gameID")).emit('new-round', { currentPlayer: currentPlayer });
+
+        //     // Calls clients for report
+        //     // game.in("game-" + roomdata.get(socket, "gameID")).emit('send-report');
+
+
+        //     // TODO turn and round report (server, later database)
+        //     // console.log("##### Round Report ##### ");
+
+        //     // console.log(currentPlayer + " : [" + roomdata.get(socket, currentPlayer).hand.cards + "] : " + roomdata.get(socket, currentPlayer).hand.currentCard);
+        // })
 
         // socket.on("turn-report", function(data) {
         //     let player = determinePlayer();

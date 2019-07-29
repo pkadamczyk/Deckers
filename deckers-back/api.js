@@ -228,18 +228,29 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
             foundGame.players[playerIndex].deck = gameDeck;
             foundGame.players[enemyIndex].deck = enemyGameDeck;
 
-            foundGame.save();
+            await foundGame.save();
+            res.status(200).json({
+                gameId: foundGame._id,
+                player: user.username,
+                enemy: enemy.username,
+
+                role: playerIndex,
+                deck: gameDeck,
+                enemyDeckCardsAmount: enemyDeckCardsAmount
+            });
+        }
+        else {
+            res.status(200).json({
+                gameId: foundGame._id,
+                player: user.username,
+                enemy: enemy.username,
+
+                role: playerIndex,
+                deck: gameDeck,
+                enemyDeckCardsAmount: enemyDeckCardsAmount
+            });
         }
 
-        res.status(200).json({
-            gameId: foundGame._id,
-            player: user.username,
-            enemy: enemy.username,
-
-            role: playerIndex,
-            deck: gameDeck,
-            enemyDeckCardsAmount: enemyDeckCardsAmount
-        });
     } catch (err) {
         console.log(err)
         return next(err);
