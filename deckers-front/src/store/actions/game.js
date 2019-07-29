@@ -3,7 +3,14 @@ import { SET_GAME_STATE, ATTACK_MINION } from "../actionTypes";
 import { GAME_STATE } from "../reducers/game";
 import { ENEMY_HERO_ID } from "../../gameplay/containers/Game";
 
+import openSocket from 'socket.io-client';
+const socket = openSocket('http://localhost:8080/game');
+
 export const connectedToGame = (gameInfo) => {
+  socket.emit('join', {
+    gameId: gameInfo.gameId
+  });
+
   return {
     type: CONNECTED_TO_GAME,
     gameInfo,

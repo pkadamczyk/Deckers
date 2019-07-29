@@ -7,6 +7,7 @@ const cors = require("cors"); //new auth shit
 const server = require("http").Server(app);
 let io = require("socket.io")(server, {});
 io = require('./routes/sockets/matchmaking').connect(io);
+io = require('./routes/sockets/game').connect(io);
 
 const bodyParser = require('body-parser');
 const mongoose = require("mongoose");

@@ -210,18 +210,29 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
         const playerIndex = foundGame.players.findIndex(player => player.user._id.equals(user._id))
         if (playerIndex == -1) throw new Error("No such user in game data");
 
-        const enemyObject = foundGame.players.filter((p, i) => playerIndex !== i)[0];
+        const enemyIndex = foundGame.players.findIndex((p, i) => playerIndex !== i);
+        const enemyObject = foundGame.players[enemyIndex];
         const enemyPromise = User.findById(enemyObject.user._id).deepPopulate('decks.cards.card');
         const enemy = await enemyPromise;
 
-        const enemyDeckCardsAmount = enemy.decks.find(deck => deck._id.toString() === enemyObject.deckId).cards.length;
+        const enemyDeck = enemy.decks.find(deck => deck._id.toString() === enemyObject.deckId).cards
+        const enemyDeckCardsAmount = enemyDeck.length;
 
         const deckId = user.decks.findIndex(deck => deck._id.equals(req.body.deck_id));
         let gameDeck = user.decks[deckId].cards;
 
-        gameDeck = prepareDeck(gameDeck, user)
+        gameDeck = prepareDeck(gameDeck, user);
+
+        if (playerIndex === 0) {
+            enemyGameDeck = prepareDeck(enemyDeck, enemy)
+            foundGame.players[playerIndex].deck = gameDeck;
+            foundGame.players[enemyIndex].deck = enemyGameDeck;
+
+            foundGame.save();
+        }
 
         res.status(200).json({
+            gameId: foundGame._id,
             player: user.username,
             enemy: enemy.username,
 
