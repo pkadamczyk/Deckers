@@ -57,14 +57,22 @@ class Item extends Component {
 }
 
 class Minion extends Component {
+    constructor(props) {
+        super(props);
+        const uniqueId = '_' + Math.random().toString(36).substr(2, 9);
+        this.state = {
+            uniqueId
+        }
+    }
     render() {
         const lockTarget = this.props.handleLockTarget;
         const { item, index, isMyTurn } = this.props;
         const isDragDisabled = !isMyTurn || !item.isReady;
 
+        const { uniqueId } = this.state;
         return (
             <Draggable
-                draggableId={item._id}
+                draggableId={uniqueId}
                 index={index}
                 isDragDisabled={isDragDisabled}
             >

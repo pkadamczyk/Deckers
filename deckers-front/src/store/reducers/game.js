@@ -12,18 +12,6 @@ const MAX_HERO_HEALTH = 10;
 const GOLD_ON_START = 1;
 const GOLD_TURN_INCOME = 1;
 
-const getItems = (count, offset = 0) => (
-    Array.from({ length: count }, (v, k) => k).map(k => ({
-        id: `item-${k + offset}`,
-        content: `item ${k + offset}`,
-
-        health: 2,
-        damage: 1,
-        cost: 1,
-        isReady: false
-    }))
-)
-
 const DEFAULT_STATE = {
     cardsOnBoard: [],
     cardsOnHand: [],
@@ -50,10 +38,9 @@ export default (state = DEFAULT_STATE, action) => {
 
     switch (action.type) {
         case CONNECTED_TO_GAME:
+            let isMyTurn = !!action.gameInfo.role
 
-
-
-            return { ...state, gameInfo: action.gameInfo };
+            return { ...state, isMyTurn, gameInfo: action.gameInfo };
         case REORDER_CARDS_ON_HAND:
             result = Array.from(state.cardsOnHand);
             [removed] = result.splice(action.startIndex, 1);
@@ -66,8 +53,9 @@ export default (state = DEFAULT_STATE, action) => {
             const destClone = Array.from(state.cardsOnBoard);
             [removed] = sourceClone.splice(action.droppableSource.index, 1);
 
-            if (state.playerHeroGold < removed.cost) throw (new Error("Not enough gold"));
-            let newGoldAmount = state.playerHeroGold -= removed.cost;
+            let cost = removed.stats[removed.level].cost
+            if (state.playerHeroGold < cost) throw (new Error("Not enough gold"));
+            let newGoldAmount = state.playerHeroGold -= cost;
 
             destClone.splice(action.droppableDestination.index, 0, removed);
 
@@ -109,13 +97,13 @@ export default (state = DEFAULT_STATE, action) => {
             let enemyMinionArray = [...state.enemyCardsOnBoard];
             playerMinionArray = [...state.cardsOnBoard];
 
-            attackedMinion.health -= attackingMinion.damage;
-            attackingMinion.health -= attackedMinion.damage;
+            attackedMinion[attackedMinion.level].health -= attackingMinion.stats[attackingMinion.level].damage;
+            attackingMinion[attackingMinion.level].health -= attackedMinion[attackedMinion.level].damage;
 
-            if (attackedMinion.health <= 0) enemyMinionArray.splice(action.enemyMinionId, 1);
+            if (attackedMinion[attackedMinion.level].health <= 0) enemyMinionArray.splice(action.enemyMinionId, 1);
             else enemyMinionArray[action.enemyMinionId] = attackedMinion;
 
-            if (attackingMinion.health <= 0) playerMinionArray.splice(action.playerMinionId, 1);
+            if (attackingMinion[attackingMinion.level].health <= 0) playerMinionArray.splice(action.playerMinionId, 1);
             else playerMinionArray[action.playerMinionId] = attackingMinion;
 
             return { ...state, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray };
@@ -126,7 +114,7 @@ export default (state = DEFAULT_STATE, action) => {
             if (!playerMinion.isReady) throw (new Error("This minion is not ready"));
             playerMinion.isReady = false;
 
-            let enemyHeroCurrentHp = state.enemyHeroHealth - playerMinion.damage;
+            let enemyHeroCurrentHp = state.enemyHeroHealth - playerMinion.stats[playerMinion.level].damage;
             playerMinionArray = [...state.cardsOnBoard];
             playerMinionArray.splice(action.playerMinionId, 1, playerMinion);
 

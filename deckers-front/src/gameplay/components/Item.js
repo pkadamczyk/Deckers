@@ -65,7 +65,8 @@ class Content extends Component {
 class Item extends Component {
     constructor(props) {
         super(props);
-        this.state = { isDragging: false }
+        const uniqueId = '_' + Math.random().toString(36).substr(2, 9);
+        this.state = { isDragging: false, uniqueId }
         this.setIsDragging = this.setIsDragging.bind(this);
     }
 
@@ -75,14 +76,14 @@ class Item extends Component {
 
     render() {
         const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold, gameState } = this.props;
-        const { isDragging } = this.state;
+        const { isDragging, uniqueId } = this.state;
 
         const isAffordable = gold >= item.stats[item.level - 1].cost;
         const isDragDisabled = !isAffordable || !isMyTurn || (gameState !== GAME_STATE.IDLE && !isDragging);
 
         return (
             <Draggable
-                draggableId={item._id}
+                draggableId={uniqueId}
                 index={index}
                 isDragDisabled={isDragDisabled}
             >
