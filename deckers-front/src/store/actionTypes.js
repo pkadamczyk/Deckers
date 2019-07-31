@@ -20,7 +20,9 @@ export const CONNECTED_TO_GAME = "CONNECTED_TO_GAME";
 export const REORDER_CARDS_ON_HAND = "REORDER_CARDS_ON_HAND";
 export const SUMMON_CARD = "SUMMON_CARD";
 
-export const DRAW_CARD = "DRAW_CARD";
+export const PLAYER_DRAW_CARD = "PLAYER_DRAW_CARD";
+export const ENEMY_DRAW_CARD = "ENEMY_DRAW_CARD";
+
 
 export const END_TURN = "END_TURN";
 

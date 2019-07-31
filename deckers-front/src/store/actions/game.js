@@ -1,13 +1,12 @@
-import { CONNECTED_TO_GAME, REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, ATTACK_HERO } from "../actionTypes";
+import { CONNECTED_TO_GAME, REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, ATTACK_HERO } from "../actionTypes";
 import { SET_GAME_STATE, ATTACK_MINION } from "../actionTypes";
 import { GAME_STATE } from "../reducers/game";
 import { ENEMY_HERO_ID } from "../../gameplay/containers/Game";
+import { SOCKET } from "../../gameplay/containers/Socket";
 
-import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:8080/game');
 
 export const connectedToGame = (gameInfo) => {
-  socket.emit('join', {
+  SOCKET.emit('join', {
     gameId: gameInfo.gameId,
     role: gameInfo.role
   });
@@ -24,8 +23,7 @@ export const reorderCardsInHand = (startIndex, endIndex) => ({
 })
 
 export const summonCard = (droppableSource, droppableDestination) => {
-  socket.emit('card-summoned', {
-  });
+  SOCKET.emit('card-summoned');
 
   return {
     type: SUMMON_CARD,
@@ -34,17 +32,15 @@ export const summonCard = (droppableSource, droppableDestination) => {
 }
 
 export const drawCard = () => {
-  socket.emit('card-drew', {
-  });
+  SOCKET.emit('card-drew');
 
   return {
-    type: DRAW_CARD,
+    type: "NONE",
   }
 }
 
 export const endTurn = () => {
-  socket.emit('turn-ended', {
-  });
+  SOCKET.emit('turn-ended');
   return {
     type: END_TURN,
   }

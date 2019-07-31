@@ -3,14 +3,26 @@ var roomdata = require('roomdata');
 // var User = require("../../models/user");
 const DatabaseGame = require("../../models/game");
 
+const ROOMDATA_KEYS = {
+    GAME: "GAME",
+}
 class Player {
     constructor(deck) {
         this.gold = Player.GOLD_ON_START;
         this.health = Player.MAX_HERO_HEALTH;
 
-        this.deck = deck
+        this.deck = deck;
+        this.currentCard = 0;
+
         this.cardsOnBoard = []
         this.cardsOnHand = []
+    }
+
+    getCard() {
+        let card = this.deck[this.currentCard];
+        this.currentCard++;
+
+        return card;
     }
 }
 
@@ -28,28 +40,30 @@ class Game {
     }
 }
 
+Game.PLAYER_AMOUNT = 2
+
 module.exports.connect = function (io) {
-    const game = io.of('/game');
+    const GAME_IO = io.of('/game');
 
     //     // https://github.com/socketio/socket.io/blob/318d62/examples/chat/index.js#L36
     //     // https://www.npmjs.com/package/roomdata
-    game.on('connection', async function (socket) {
-        socket.on('join', async function (data) {
-            console.log(`Joined game-${data.gameId}`)
+    GAME_IO.on('connection', async function (socket) {
+        socket.on('join', async function ({ gameId, role }) {
+            console.log(`Joined game ${gameId}`)
 
             // let reconnected = false;
-            roomdata.joinRoom(socket, "game-" + data.gameId);
+            roomdata.joinRoom(socket, "game-" + gameId);
 
             // // Set room data, sends back info about reconnect
             // reconnected = setRoomData(data);
 
             // Setup objects needed for multi
-            if (data.role === 0) {
-                const gamePromise = DatabaseGame.findById(data.gameId);
+            if (role === 0) {
+                const gamePromise = DatabaseGame.findById(gameId);
                 foundGame = await gamePromise;
-                // roomdata.set(socket, "Game", foundGame);
 
                 const game = new Game(foundGame.toObject());
+                roomdata.set(socket, ROOMDATA_KEYS.GAME, game);
             }
 
 
@@ -65,13 +79,35 @@ module.exports.connect = function (io) {
             // }
         })
 
-        socket.on('card-drew', function (data) {
+        socket.on('turn-ended', function () {
+            const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
+            let { currentPlayer, gameId } = game;
+
+            currentPlayer = (currentPlayer + 1) % Game.PLAYER_AMOUNT;
+            roomdata.set(socket, ROOMDATA_KEYS.GAME, { ...game, currentPlayer });
+
+            // sending to all clients in 'game' room except sender
+            socket.to("game-" + gameId).emit('turn-ended', { currentPlayer });
+            console.log(`Round ended! ${gameId}`);
+        })
+
+        socket.on('card-drew', function () {
+            const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
+            let { currentPlayer, players, gameId } = game;
+
+            let card = players[currentPlayer].getCard()
+            roomdata.set(socket, ROOMDATA_KEYS.GAME, { ...game, players });
+
+            // sending to all clients in 'game' room except sender
+            socket.to("game-" + gameId).emit('enemy-card-drew', {});
+
+            // sending to individual socketid (private message)
+            GAME_IO.to(`${socket.id}`).emit('player-card-drew', { card });
+
             console.log(`Card drew!`)
         })
 
-        socket.on('turn-ended', function (data) {
-            console.log(`Round ended!`)
-        })
+
 
         socket.on('card-summoned', function (data) {
             console.log(`Card summoned!`)

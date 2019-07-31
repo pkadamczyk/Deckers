@@ -1,5 +1,4 @@
-// import { CONNECTED_TO_GAME } from "../actionTypes";
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, DRAW_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD } from "../actionTypes"
 
 export const GAME_STATE = {
     BUSY: 1,
@@ -17,6 +16,7 @@ const DEFAULT_STATE = {
     cardsOnHand: [],
 
     enemyCardsOnBoard: [],
+    enemyCardsOnHand: [],
 
     isMyTurn: true,
 
@@ -32,7 +32,6 @@ const DEFAULT_STATE = {
 };
 
 export default (state = DEFAULT_STATE, action) => {
-    let offset = 0
     let result;
     let removed;
 
@@ -65,13 +64,15 @@ export default (state = DEFAULT_STATE, action) => {
 
             return { ...newState, playerHeroGold: newGoldAmount };
 
-        case DRAW_CARD:
+        case PLAYER_DRAW_CARD:
+            const { card } = action;
             if (state.playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
             newGoldAmount = state.playerHeroGold -= CARD_DRAW_COST;
 
-            let newCard = { ...state.gameInfo.deck[offset], isReady: false }
-
-            return { ...state, cardsOnHand: [...state.cardsOnHand, newCard], playerHeroGold: newGoldAmount, gameState: GAME_STATE.IDLE }
+            return { ...state, cardsOnHand: [...state.cardsOnHand, card], playerHeroGold: newGoldAmount, gameState: GAME_STATE.IDLE }
+        case ENEMY_DRAW_CARD:
+            const { enemyCardsOnHand } = state;
+            return { ...state, enemyCardsOnHand: [...enemyCardsOnHand, {}] }
 
         case END_TURN:
             let playerMinionArray = [...state.cardsOnBoard];

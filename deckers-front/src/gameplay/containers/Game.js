@@ -19,6 +19,7 @@ import EndTurnButton from '../components/EndTurnButton';
 
 import img from '../../graphic/background_02.PNG';
 import Board from './Board';
+import Socket from './Socket';
 
 import { PLAYER_BOARD_ID } from "./Board"
 export const ENEMY_HERO_ID = "enemy-portrait"
@@ -145,6 +146,7 @@ class Game extends Component {
                     <PlayerDeck />
                     <PlayerHero />
                 </GameWrapper>
+                <Socket />
             </DragDropContext>
         )
     }

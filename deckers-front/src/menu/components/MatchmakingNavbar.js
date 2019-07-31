@@ -14,7 +14,6 @@ class MatchmakingNavbar extends Component {
     }
     componentDidMount() {
         socket.on("game-ready", (data) => {
-            // To sie wywoluje 2 razy wtf
             console.log("Socket")
             this.handleConnectToGame(data)
         })
