@@ -1,4 +1,4 @@
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD } from "../actionTypes"
 
 export const GAME_STATE = {
     BUSY: 1,
@@ -35,6 +35,13 @@ export default (state = DEFAULT_STATE, action) => {
     let result;
     let removed;
 
+    let sourceClone
+    let destClone
+
+    let cost
+    let newGoldAmount
+    let newState
+
     switch (action.type) {
         case CONNECTED_TO_GAME:
             let isMyTurn = !!action.gameInfo.role
@@ -48,31 +55,50 @@ export default (state = DEFAULT_STATE, action) => {
             return { ...state, cardsOnHand: result }
 
         case SUMMON_CARD:
-            const sourceClone = Array.from(state.cardsOnHand);
-            const destClone = Array.from(state.cardsOnBoard);
+            sourceClone = Array.from(state.cardsOnHand);
+            destClone = Array.from(state.cardsOnBoard);
             [removed] = sourceClone.splice(action.droppableSource.index, 1);
 
-            let cost = removed.stats[removed.level].cost
+            cost = removed.stats[removed.level].cost
             if (state.playerHeroGold < cost) throw (new Error("Not enough gold"));
-            let newGoldAmount = state.playerHeroGold -= cost;
+            newGoldAmount = state.playerHeroGold -= cost;
 
             destClone.splice(action.droppableDestination.index, 0, removed);
 
-            let newState = { ...state };
+            newState = { ...state };
             newState["cardsOnHand"] = sourceClone;
             newState["cardsOnBoard"] = destClone;
 
             return { ...newState, playerHeroGold: newGoldAmount };
 
+        case ENEMY_SUMMON_CARD:
+            var { handPosition, boardPosition, card } = action;
+
+            sourceClone = Array.from(state.enemyCardsOnHand);
+            destClone = Array.from(state.enemyCardsOnBoard);
+            sourceClone.splice(handPosition, 1);
+
+            cost = card.stats[card.level].cost
+            newGoldAmount = state.enemyHeroGold -= cost;
+
+            destClone.splice(boardPosition, 0, card);
+
+            newState = { ...state };
+            newState["enemyCardsOnHand"] = sourceClone;
+            newState["enemyCardsOnBoard"] = destClone;
+
+            return { ...newState, enemyHeroGold: newGoldAmount };
+
         case PLAYER_DRAW_CARD:
-            const { card } = action;
+            var { card } = action;
             if (state.playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
             newGoldAmount = state.playerHeroGold -= CARD_DRAW_COST;
 
             return { ...state, cardsOnHand: [...state.cardsOnHand, card], playerHeroGold: newGoldAmount, gameState: GAME_STATE.IDLE }
         case ENEMY_DRAW_CARD:
-            const { enemyCardsOnHand } = state;
-            return { ...state, enemyCardsOnHand: [...enemyCardsOnHand, {}] }
+            var { enemyCardsOnHand, enemyHeroGold } = state;
+            enemyHeroGold = state.enemyHeroGold -= CARD_DRAW_COST;
+            return { ...state, enemyCardsOnHand: [...enemyCardsOnHand, {}], enemyHeroGold }
 
         case END_TURN:
             let playerMinionArray = [...state.cardsOnBoard];
@@ -80,10 +106,11 @@ export default (state = DEFAULT_STATE, action) => {
                 for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].isReady = true;
 
                 newGoldAmount = state.playerHeroGold += GOLD_TURN_INCOME; // Na testy
+                return { ...state, isMyTurn: !state.isMyTurn, playerHeroGold: newGoldAmount }
             }
-            else newGoldAmount = state.playerHeroGold;
 
-            return { ...state, isMyTurn: !state.isMyTurn, playerHeroGold: newGoldAmount };
+            var enemyHeroGold = state.enemyHeroGold += GOLD_TURN_INCOME;
+            return { ...state, isMyTurn: !state.isMyTurn, enemyHeroGold };
 
         case SET_GAME_STATE:
             return { ...state, gameState: action.newGameState };

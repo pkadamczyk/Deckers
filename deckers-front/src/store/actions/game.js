@@ -23,7 +23,10 @@ export const reorderCardsInHand = (startIndex, endIndex) => ({
 })
 
 export const summonCard = (droppableSource, droppableDestination) => {
-  SOCKET.emit('card-summoned');
+  SOCKET.emit('card-summoned', {
+    boardPosition: droppableDestination.index,
+    handPosition: droppableSource.index
+  });
 
   return {
     type: SUMMON_CARD,

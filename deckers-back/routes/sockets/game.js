@@ -18,11 +18,23 @@ class Player {
         this.cardsOnHand = []
     }
 
-    getCard() {
+    drawCard() {
         let card = this.deck[this.currentCard];
         this.currentCard++;
 
+        this.cardsOnHand.push(card);
         return card;
+    }
+
+    summonCard(boardPosition, handPosition) {
+        let [summonedCard] = this.cardsOnHand.splice(handPosition, 1);
+        this.cardsOnBoard.splice(boardPosition, 0, summonedCard);
+
+        console.log(summonedCard)
+        const cost = summonedCard.stats[summonedCard.level].cost;
+        this.gold = this.gold - cost;
+
+        return summonedCard;
     }
 }
 
@@ -95,7 +107,7 @@ module.exports.connect = function (io) {
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
             let { currentPlayer, players, gameId } = game;
 
-            let card = players[currentPlayer].getCard()
+            let card = players[currentPlayer].drawCard()
             roomdata.set(socket, ROOMDATA_KEYS.GAME, { ...game, players });
 
             // sending to all clients in 'game' room except sender
@@ -109,7 +121,20 @@ module.exports.connect = function (io) {
 
 
 
-        socket.on('card-summoned', function (data) {
+        socket.on('card-summoned', function ({ boardPosition, handPosition }) {
+            const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
+            let { currentPlayer, players, gameId } = game;
+
+            let summonedCard = players[currentPlayer].summonCard(boardPosition, handPosition)
+            roomdata.set(socket, ROOMDATA_KEYS.GAME, { ...game, players });
+
+            // sending to all clients in 'game' room except sender
+            socket.to("game-" + gameId).emit('enemy-card-summoned', {
+                card: summonedCard,
+                boardPosition,
+                handPosition
+            });
+
             console.log(`Card summoned!`)
         })
 

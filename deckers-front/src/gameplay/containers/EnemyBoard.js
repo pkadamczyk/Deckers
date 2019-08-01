@@ -72,8 +72,9 @@ class EnemyBoard extends Component {
                                     onMouseLeave={() => cleanTarget()}
                                     onMouseEnter={() => setTarget(myId)}
                                 >
-                                    <span>Hp: {item.health}</span>
-                                    <span>Dmg: {item.damage}</span>
+                                    <div>{item.name}</div>
+                                    <div>Hp: {item.stats[item.level].health}</div>
+                                    <div>Dmg: {item.stats[item.level].damage}</div>
                                 </StyledItem>
                             )
                             }
