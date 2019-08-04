@@ -235,7 +235,7 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
                 enemy: enemy.username,
 
                 role: playerIndex,
-                deck: gameDeck,
+                playerDeckCardsAmount: gameDeck.length,
                 enemyDeckCardsAmount: enemyDeckCardsAmount
             });
         }
@@ -246,7 +246,7 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
                 enemy: enemy.username,
 
                 role: playerIndex,
-                deck: gameDeck,
+                playerDeckCardsAmount: gameDeck.length,
                 enemyDeckCardsAmount: enemyDeckCardsAmount
             });
         }

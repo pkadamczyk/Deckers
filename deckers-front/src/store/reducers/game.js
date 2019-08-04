@@ -28,6 +28,8 @@ const DEFAULT_STATE = {
     enemyHeroGold: GOLD_ON_START,
     playerHeroGold: GOLD_ON_START,
 
+    deckCardsAmount: 0,
+
     gameInfo: null,
 };
 
@@ -46,7 +48,7 @@ export default (state = DEFAULT_STATE, action) => {
         case CONNECTED_TO_GAME:
             let isMyTurn = !!action.gameInfo.role
 
-            return { ...state, isMyTurn, gameInfo: action.gameInfo };
+            return { ...state, isMyTurn, gameInfo: action.gameInfo, deckCardsAmount: action.playerDeckCardsAmount };
         case REORDER_CARDS_ON_HAND:
             result = Array.from(state.cardsOnHand);
             [removed] = result.splice(action.startIndex, 1);
@@ -90,11 +92,13 @@ export default (state = DEFAULT_STATE, action) => {
             return { ...newState, enemyHeroGold: newGoldAmount };
 
         case PLAYER_DRAW_CARD:
+            let { deckCardsAmount } = state
             var { card } = action;
             if (state.playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
             newGoldAmount = state.playerHeroGold -= CARD_DRAW_COST;
+            deckCardsAmount--;
 
-            return { ...state, cardsOnHand: [...state.cardsOnHand, card], playerHeroGold: newGoldAmount, gameState: GAME_STATE.IDLE }
+            return { ...state, cardsOnHand: [...state.cardsOnHand, card], playerHeroGold: newGoldAmount, gameState: GAME_STATE.IDLE, deckCardsAmount }
 
         case ENEMY_DRAW_CARD:
             var { enemyCardsOnHand, enemyHeroGold } = state;

@@ -19,15 +19,25 @@ class Player {
     }
 
     drawCard() {
+        if (this.gold < Game.CARD_DRAW_COST) throw new Error("Not enough gold");
+        if (this.currentCard >= this.deck.length) throw new Error("End of cards");
+
+        this.gold -= Game.CARD_DRAW_COST;
         let card = this.deck[this.currentCard];
         this.currentCard++;
 
         this.cardsOnHand.push(card);
+
         return card;
     }
 
     summonCard(boardPosition, handPosition) {
-        let [summonedCard] = this.cardsOnHand.splice(handPosition, 1);
+        const card = this.cardsOnHand[handPosition];
+
+        if (this.gold < card.stats[card.level].cost) throw new Error("Not enough gold");
+        if (this.cardsOnBoard.length >= Game.MAX_CARDS_ON_BOARD) throw new Error("Board is full");
+
+        const [summonedCard] = this.cardsOnHand.splice(handPosition, 1);
         this.cardsOnBoard.splice(boardPosition, 0, summonedCard);
 
         const cost = summonedCard.stats[summonedCard.level].cost;
@@ -68,13 +78,9 @@ class Game {
 
         const income = Math.ceil(this.currentRound / 2) > 5 ? 5 : Math.ceil(this.currentRound / 2);
         this.players[this.currentPlayer].gold += income;
-        console.log(income)
-
-        console.log(this);
     }
 
     handleCardDrawEvent() {
-        this.players[this.currentPlayer].gold -= Game.CARD_DRAW_COST;
         return this.players[this.currentPlayer].drawCard()
     }
 
@@ -90,11 +96,13 @@ class Game {
         if (!attackingMinion.isReady) throw (new Error("This minion is not ready"));
         attackingMinion.isReady = false;
 
+        // Move this to Player function?
         let enemyHealth = players[+!currentPlayer].health;
         enemyHealth = enemyHealth - attackingMinion.stats[attackingMinion.level].damage;
         players[+!currentPlayer].health = enemyHealth;
 
-        playerCardsOnBoard.splice(playerMinionId, 1, attackingMinion);
+        // Probably not needed
+        // playerCardsOnBoard.splice(playerMinionId, 1, attackingMinion);
     }
 
     handleAttackOnMinion(playerMinionId, enemyMinionId) {
@@ -122,6 +130,7 @@ class Game {
 
 Game.PLAYER_AMOUNT = 2;
 Game.CARD_DRAW_COST = 1; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
+Game.MAX_CARDS_ON_BOARD = 4; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
 
 
 module.exports.connect = function (io) {
