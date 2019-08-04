@@ -11,7 +11,7 @@ class Player {
         this.gold = Player.GOLD_ON_START;
         this.health = Player.MAX_HERO_HEALTH;
 
-        this.deck = deck;
+        this.deck = deck.map(card => ({ ...card, isReady: false }));
         this.currentCard = 0;
 
         this.cardsOnBoard = []
@@ -30,7 +30,6 @@ class Player {
         let [summonedCard] = this.cardsOnHand.splice(handPosition, 1);
         this.cardsOnBoard.splice(boardPosition, 0, summonedCard);
 
-        console.log(summonedCard)
         const cost = summonedCard.stats[summonedCard.level].cost;
         this.gold = this.gold - cost;
 
@@ -44,15 +43,86 @@ Player.MAX_HERO_HEALTH = 10;
 class Game {
     constructor(databaseGame) {
         this.players = [];
-        this.currentPlayer = 0;
+        this.currentPlayer = 1;
         this.currentRound = 0;
         this.gameId = databaseGame._id;
 
         this.players = databaseGame.players.map(player => new Player(player.deck));
     }
+
+    handleAttackEvent(playerMinionId, enemyMinionId) {
+        if (enemyMinionId === null) this.handleAttackOnHero(playerMinionId)
+        else this.handleAttackOnMinion(playerMinionId, enemyMinionId);
+
+        const result = this.players.map(player => ({ cardsOnBoard: player.cardsOnBoard, health: player.health }))
+        return result
+    }
+
+    handleEndTurnEvent() {
+        this.currentPlayer = (this.currentPlayer + 1) % Game.PLAYER_AMOUNT;
+        this.currentRound++;
+
+        let cardsOnBoard = this.players[this.currentPlayer].cardsOnBoard;
+
+        for (let i = 0; i < cardsOnBoard.length; i++) cardsOnBoard[i].isReady = true;
+
+        const income = Math.ceil(this.currentRound / 2) > 5 ? 5 : Math.ceil(this.currentRound / 2);
+        this.players[this.currentPlayer].gold += income;
+        console.log(income)
+
+        console.log(this);
+    }
+
+    handleCardDrawEvent() {
+        this.players[this.currentPlayer].gold -= Game.CARD_DRAW_COST;
+        return this.players[this.currentPlayer].drawCard()
+    }
+
+    handleCardSummonEvent(boardPosition, handPosition) {
+        return this.players[this.currentPlayer].summonCard(boardPosition, handPosition)
+    }
+
+    handleAttackOnHero(playerMinionId) {
+        let { players, currentPlayer } = this;
+        let playerCardsOnBoard = players[currentPlayer].cardsOnBoard;
+        let attackingMinion = playerCardsOnBoard[playerMinionId];
+
+        if (!attackingMinion.isReady) throw (new Error("This minion is not ready"));
+        attackingMinion.isReady = false;
+
+        let enemyHealth = players[+!currentPlayer].health;
+        enemyHealth = enemyHealth - attackingMinion.stats[attackingMinion.level].damage;
+        players[+!currentPlayer].health = enemyHealth;
+
+        playerCardsOnBoard.splice(playerMinionId, 1, attackingMinion);
+    }
+
+    handleAttackOnMinion(playerMinionId, enemyMinionId) {
+        let { currentPlayer, players } = this;
+
+        let playerCardsOnBoard = players[currentPlayer].cardsOnBoard;
+        let enemyCardsOnBoard = players[+!currentPlayer].cardsOnBoard; // WORKS ONLY ON 2 PLAYERS
+
+        let attackingMinion = { ...playerCardsOnBoard[playerMinionId] };
+        let attackedMinion = { ...enemyCardsOnBoard[enemyMinionId] };
+
+        if (!attackingMinion.isReady) throw (new Error("This minion is not ready"));
+        attackingMinion.isReady = false;
+
+        attackedMinion.stats[attackedMinion.level].health -= attackingMinion.stats[attackingMinion.level].damage;
+        attackingMinion.stats[attackingMinion.level].health -= attackedMinion.stats[attackedMinion.level].damage;
+
+        if (attackedMinion.stats[attackedMinion.level].health <= 0) enemyCardsOnBoard.splice(enemyMinionId, 1);
+        else enemyCardsOnBoard[enemyMinionId] = attackedMinion;
+
+        if (attackingMinion.stats[attackingMinion.level].health <= 0) playerCardsOnBoard.splice(playerMinionId, 1);
+        else playerCardsOnBoard[playerMinionId] = attackingMinion;
+    }
 }
 
-Game.PLAYER_AMOUNT = 2
+Game.PLAYER_AMOUNT = 2;
+Game.CARD_DRAW_COST = 1; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
+
 
 module.exports.connect = function (io) {
     const GAME_IO = io.of('/game');
@@ -63,11 +133,7 @@ module.exports.connect = function (io) {
         socket.on('join', async function ({ gameId, role }) {
             console.log(`Joined game ${gameId}`)
 
-            // let reconnected = false;
             roomdata.joinRoom(socket, "game-" + gameId);
-
-            // // Set room data, sends back info about reconnect
-            // reconnected = setRoomData(data);
 
             // Setup objects needed for multi
             if (role === 0) {
@@ -77,41 +143,22 @@ module.exports.connect = function (io) {
                 const game = new Game(foundGame.toObject());
                 roomdata.set(socket, ROOMDATA_KEYS.GAME, game);
             }
-
-
-            // // Checks if both players are ready to play
-            // if (roomdata.get(socket, "romeo") && roomdata.get(socket, "juliet") && !reconnected) {
-
-            //     //  Send signal to start the game, send enemy username
-            //     game.in("game-" + roomdata.get(socket, "gameID")).emit('game-ready', {
-            //         romeo: roomdata.get(socket, "romeo").username,
-            //         juliet: roomdata.get(socket, "juliet").username,
-            //         currentPlayer: roomdata.get(socket, "currentPlayer")
-            //     });
-            // }
         })
 
         socket.on('turn-ended', function () {
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
-            let { currentPlayer, gameId } = game;
-
-            currentPlayer = (currentPlayer + 1) % Game.PLAYER_AMOUNT;
-            roomdata.set(socket, ROOMDATA_KEYS.GAME, { ...game, currentPlayer });
+            game.handleEndTurnEvent()
 
             // sending to all clients in 'game' room except sender
-            socket.to("game-" + gameId).emit('turn-ended', { currentPlayer });
-            console.log(`Round ended! ${gameId}`);
+            socket.to("game-" + game.gameId).emit('turn-ended', { currentPlayer: game.currentPlayer });
         })
 
         socket.on('card-drew', function () {
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
-            let { currentPlayer, players, gameId } = game;
-
-            let card = players[currentPlayer].drawCard()
-            roomdata.set(socket, ROOMDATA_KEYS.GAME, { ...game, players });
+            const card = game.handleCardDrawEvent()
 
             // sending to all clients in 'game' room except sender
-            socket.to("game-" + gameId).emit('enemy-card-drew', {});
+            socket.to("game-" + game.gameId).emit('enemy-card-drew', {});
 
             // sending to individual socketid (private message)
             GAME_IO.to(`${socket.id}`).emit('player-card-drew', { card });
@@ -119,18 +166,13 @@ module.exports.connect = function (io) {
             console.log(`Card drew!`)
         })
 
-
-
         socket.on('card-summoned', function ({ boardPosition, handPosition }) {
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
-            let { currentPlayer, players, gameId } = game;
-
-            let summonedCard = players[currentPlayer].summonCard(boardPosition, handPosition)
-            roomdata.set(socket, ROOMDATA_KEYS.GAME, { ...game, players });
+            const card = game.handleCardSummonEvent(boardPosition, handPosition)
 
             // sending to all clients in 'game' room except sender
-            socket.to("game-" + gameId).emit('enemy-card-summoned', {
-                card: summonedCard,
+            socket.to("game-" + game.gameId).emit('enemy-card-summoned', {
+                card,
                 boardPosition,
                 handPosition
             });
@@ -138,6 +180,19 @@ module.exports.connect = function (io) {
             console.log(`Card summoned!`)
         })
 
+        socket.on('minion-attacked', function ({ playerMinionId, enemyMinionId }) {
+            const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
+            const result = game.handleAttackEvent(playerMinionId, enemyMinionId);
+
+            // sending to all clients in 'game' room except sender
+            socket.to("game-" + game.gameId).emit('enemy-minion-attacked', {
+                playerMinionId,
+                enemyMinionId,
+
+                result,
+            });
+            console.log(`Card attacked`)
+        })
         // socket.on("card-played", function (data) {
 
         //     let player = determinePlayer();

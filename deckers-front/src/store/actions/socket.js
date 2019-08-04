@@ -1,4 +1,4 @@
-import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD } from "../actionTypes";
+import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK } from "../actionTypes";
 
 export const endTurnEvent = () => {
     return {
@@ -25,5 +25,14 @@ export const enemySummonedCardEvent = ({ card, boardPosition, handPosition }) =>
         boardPosition,
         handPosition,
         type: ENEMY_SUMMON_CARD,
+    }
+}
+
+export const enemyCardAttackedEvent = ({ playerMinionId, enemyMinionId, result }) => {
+    return {
+        playerMinionId,
+        enemyMinionId,
+        result,
+        type: ENEMY_CARD_ATTACK,
     }
 }

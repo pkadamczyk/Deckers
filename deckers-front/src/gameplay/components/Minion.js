@@ -49,8 +49,8 @@ class Item extends Component {
                 style={getStyle(provided.draggableProps.style, snapshot)}
             >
                 <div>{item.name}</div>
-                <div>Hp: {item.stats[item.level - 1].health}</div>
-                <div>Dmg: {item.stats[item.level - 1].damage}</div>
+                <div>Hp: {item.stats[item.level].health}</div>
+                <div>Dmg: {item.stats[item.level].damage}</div>
             </StyledItem>
         )
     }

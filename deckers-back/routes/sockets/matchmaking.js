@@ -70,7 +70,6 @@ async function pairPlayers(gameMode, i) {
         // Crate game and add those players to it
         newGame = new Game({
             players: [],
-            isFinished: false
         });
 
         const playerObjectArray = [player1, player2].map(p => ({ user: p.usr_id, deckId: p.deckId }))

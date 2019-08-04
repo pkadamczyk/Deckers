@@ -60,6 +60,10 @@ export const setGameState = (newGameState) => {
 }
 
 export const attack = (source, target) => {
+  SOCKET.emit('minion-attacked', {
+    playerMinionId: source.index,
+    enemyMinionId: target === ENEMY_HERO_ID ? null : +target.slice(-1)
+  });
   if (target === ENEMY_HERO_ID) return attackHero(source);
   else return attackMinion(source, target);
 }

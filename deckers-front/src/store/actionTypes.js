@@ -24,6 +24,8 @@ export const PLAYER_DRAW_CARD = "PLAYER_DRAW_CARD";
 export const ENEMY_DRAW_CARD = "ENEMY_DRAW_CARD";
 
 export const ENEMY_SUMMON_CARD = "ENEMY_SUMMON_CARD"
+export const ENEMY_CARD_ATTACK = "ENEMY_CARD_ATTACK"
+
 
 export const END_TURN = "END_TURN";
 

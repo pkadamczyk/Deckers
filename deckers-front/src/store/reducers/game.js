@@ -1,4 +1,4 @@
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK } from "../actionTypes"
 
 export const GAME_STATE = {
     BUSY: 1,
@@ -9,7 +9,6 @@ export const CARD_DRAW_COST = 1;
 
 const MAX_HERO_HEALTH = 10;
 const GOLD_ON_START = 1;
-const GOLD_TURN_INCOME = 1;
 
 const DEFAULT_STATE = {
     cardsOnBoard: [],
@@ -19,6 +18,7 @@ const DEFAULT_STATE = {
     enemyCardsOnHand: [],
 
     isMyTurn: true,
+    currentRound: 0,
 
     gameState: GAME_STATE.IDLE,
 
@@ -95,6 +95,7 @@ export default (state = DEFAULT_STATE, action) => {
             newGoldAmount = state.playerHeroGold -= CARD_DRAW_COST;
 
             return { ...state, cardsOnHand: [...state.cardsOnHand, card], playerHeroGold: newGoldAmount, gameState: GAME_STATE.IDLE }
+
         case ENEMY_DRAW_CARD:
             var { enemyCardsOnHand, enemyHeroGold } = state;
             enemyHeroGold = state.enemyHeroGold -= CARD_DRAW_COST;
@@ -102,18 +103,40 @@ export default (state = DEFAULT_STATE, action) => {
 
         case END_TURN:
             let playerMinionArray = [...state.cardsOnBoard];
+
+            let { currentRound } = state;
+            currentRound++
+            const income = Math.ceil(currentRound / 2) > 5 ? 5 : Math.ceil(currentRound / 2);
+
             if (!state.isMyTurn) {
                 for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].isReady = true;
 
-                newGoldAmount = state.playerHeroGold += GOLD_TURN_INCOME; // Na testy
-                return { ...state, isMyTurn: !state.isMyTurn, playerHeroGold: newGoldAmount }
+                newGoldAmount = state.playerHeroGold += income;
+                return { ...state, isMyTurn: !state.isMyTurn, playerHeroGold: newGoldAmount, currentRound }
             }
 
-            var enemyHeroGold = state.enemyHeroGold += GOLD_TURN_INCOME;
-            return { ...state, isMyTurn: !state.isMyTurn, enemyHeroGold };
+            var enemyHeroGold = state.enemyHeroGold += income;
+            return { ...state, isMyTurn: !state.isMyTurn, enemyHeroGold, currentRound };
 
         case SET_GAME_STATE:
             return { ...state, gameState: action.newGameState };
+
+        case ENEMY_CARD_ATTACK:
+            const { gameInfo } = state;
+            const { role } = gameInfo;
+
+            result = action.result;
+            var { playerMinionId, enemyMinionId } = action;
+
+            let playerData = result[role];
+            let enemyData = result[+!role]; // WORKS ONLY FOR 2 PLAYERS
+
+            let { cardsOnBoard, health } = playerData;
+
+            let enemyCardsOnBoard = enemyData.cardsOnBoard;
+            let enemyHeroHealth = enemyData.health
+
+            return { ...state, enemyCardsOnBoard, enemyHeroHealth, cardsOnBoard, playerHeroHealth: health };
 
         case ATTACK_MINION:
             let attackingMinion = { ...state.cardsOnBoard[action.playerMinionId] };
@@ -125,15 +148,16 @@ export default (state = DEFAULT_STATE, action) => {
             let enemyMinionArray = [...state.enemyCardsOnBoard];
             playerMinionArray = [...state.cardsOnBoard];
 
-            attackedMinion[attackedMinion.level].health -= attackingMinion.stats[attackingMinion.level].damage;
-            attackingMinion[attackingMinion.level].health -= attackedMinion[attackedMinion.level].damage;
+            attackedMinion.stats[attackedMinion.level].health -= attackingMinion.stats[attackingMinion.level].damage;
+            attackingMinion.stats[attackingMinion.level].health -= attackedMinion.stats[attackedMinion.level].damage;
 
-            if (attackedMinion[attackedMinion.level].health <= 0) enemyMinionArray.splice(action.enemyMinionId, 1);
+            if (attackedMinion.stats[attackedMinion.level].health <= 0) enemyMinionArray.splice(action.enemyMinionId, 1);
             else enemyMinionArray[action.enemyMinionId] = attackedMinion;
 
-            if (attackingMinion[attackingMinion.level].health <= 0) playerMinionArray.splice(action.playerMinionId, 1);
+            if (attackingMinion.stats[attackingMinion.level].health <= 0) playerMinionArray.splice(action.playerMinionId, 1);
             else playerMinionArray[action.playerMinionId] = attackingMinion;
 
+            debugger
             return { ...state, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray };
 
         case ATTACK_HERO:

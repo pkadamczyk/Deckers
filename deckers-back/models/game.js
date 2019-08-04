@@ -11,7 +11,7 @@ var gameSchema = new mongoose.Schema({
         deckId: String
     }],
 
-    isFinished: Boolean
+    isFinished: { type: Boolean, default: false }
 });
 
 gameSchema.plugin(deepPopulate);
