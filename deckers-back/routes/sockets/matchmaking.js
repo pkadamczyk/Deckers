@@ -75,7 +75,7 @@ async function pairPlayers(gameMode, i) {
         const playerObjectArray = [player1, player2].map(p => ({ user: p.usr_id, deckId: p.deckId }))
 
         newGame.players.push(...playerObjectArray);
-        newGame.save(() => console.log("Game has been saved"));
+        await newGame.save();
 
         // Modify players inGame variable
         [user1, user2].forEach(function (user) {

@@ -27,9 +27,9 @@ class PlayerDeck extends Component {
     }
 
     render() {
-        const { gold, isMyTurn, gameState } = this.props;
+        const { gold, isMyTurn, gameState, cardsLeft } = this.props;
         const isAffortable = gold >= CARD_DRAW_COST;
-        const isButtonDisabled = !isAffortable || !isMyTurn || gameState !== GAME_STATE.IDLE;
+        const isButtonDisabled = !isAffortable || !isMyTurn || gameState !== GAME_STATE.IDLE || cardsLeft <= 0;
 
         return (
             <Div>
@@ -48,6 +48,7 @@ class PlayerDeck extends Component {
 
 function mapStateToProps(state) {
     return {
+        cardsLeft: state.game.deckCardsAmount,
         gold: state.game.playerHeroGold,
         isMyTurn: state.game.isMyTurn,
         gameState: state.game.gameState,

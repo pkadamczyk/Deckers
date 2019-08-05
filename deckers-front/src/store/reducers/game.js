@@ -33,187 +33,219 @@ const DEFAULT_STATE = {
     gameInfo: null,
 };
 
-function handleCombatResultsComparison(state, result) {
-    let playerData = result[state.gameInfo.role];
-    let enemyData = result[+!state.gameInfo.role]; // WORKS ONLY FOR 2 PLAYERS
-
-    let { cardsOnBoard, health } = playerData;
-
-    let enemyCardsOnBoard = enemyData.cardsOnBoard;
-    let enemyHeroHealth = enemyData.health
-
-    return { ...state, enemyCardsOnBoard, enemyHeroHealth, cardsOnBoard, playerHeroHealth: health };
-}
-
 export default (state = DEFAULT_STATE, action) => {
-    let result;
-    let removed;
-
-    let sourceClone
-    let destClone
-
-    let cost
-    let newGoldAmount
-    let newState
-
 
     switch (action.type) {
         case CONNECTED_TO_GAME:
-            let isMyTurn = !!action.gameInfo.role
-
-            return { ...state, isMyTurn, gameInfo: action.gameInfo, deckCardsAmount: action.playerDeckCardsAmount };
+            return { ...state, isMyTurn: !!action.gameInfo.role, gameInfo: action.gameInfo, deckCardsAmount: action.gameInfo.playerDeckCardsAmount };
 
         case COMBAT_RESULTS_COMPARISON:
-            return handleCombatResultsComparison(state, action.result)
+            return handleCombatResultsComparison(state, action);
 
         case REORDER_CARDS_ON_HAND:
-            result = Array.from(state.cardsOnHand);
-            [removed] = result.splice(action.startIndex, 1);
-            result.splice(action.endIndex, 0, removed);
-
-            return { ...state, cardsOnHand: result }
+            return handleReorderCardsOnHand(state, action);
 
         case SUMMON_CARD:
-            sourceClone = Array.from(state.cardsOnHand);
-            destClone = Array.from(state.cardsOnBoard);
-            [removed] = sourceClone.splice(action.droppableSource.index, 1);
-
-            cost = removed.stats[removed.level].cost
-            if (state.playerHeroGold < cost) throw (new Error("Not enough gold"));
-            newGoldAmount = state.playerHeroGold -= cost;
-
-            destClone.splice(action.droppableDestination.index, 0, removed);
-
-            newState = { ...state };
-            newState["cardsOnHand"] = sourceClone;
-            newState["cardsOnBoard"] = destClone;
-
-            return { ...newState, playerHeroGold: newGoldAmount };
+            return handleSummonCard(state, action);
 
         case ENEMY_SUMMON_CARD:
-            var { handPosition, boardPosition, card } = action;
-
-            sourceClone = Array.from(state.enemyCardsOnHand);
-            destClone = Array.from(state.enemyCardsOnBoard);
-            sourceClone.splice(handPosition, 1);
-
-            cost = card.stats[card.level].cost
-            newGoldAmount = state.enemyHeroGold -= cost;
-
-            destClone.splice(boardPosition, 0, card);
-
-            newState = { ...state };
-            newState["enemyCardsOnHand"] = sourceClone;
-            newState["enemyCardsOnBoard"] = destClone;
-
-            return { ...newState, enemyHeroGold: newGoldAmount };
+            return handleEnemySummonCard(state, action);
 
         case PLAYER_DRAW_CARD:
-            let { deckCardsAmount } = state
-            var { card } = action;
-            if (state.playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
-            newGoldAmount = state.playerHeroGold -= CARD_DRAW_COST;
-            deckCardsAmount--;
-
-            return { ...state, cardsOnHand: [...state.cardsOnHand, card], playerHeroGold: newGoldAmount, gameState: GAME_STATE.IDLE, deckCardsAmount }
+            return handlePlayerDrawCard(state, action);
 
         case ENEMY_DRAW_CARD:
-            var { enemyCardsOnHand, enemyHeroGold } = state;
-            enemyHeroGold = state.enemyHeroGold -= CARD_DRAW_COST;
-            return { ...state, enemyCardsOnHand: [...enemyCardsOnHand, {}], enemyHeroGold }
+            return handleEnemyDrawCard(state, action);
 
         case END_TURN:
-            let playerMinionArray = [...state.cardsOnBoard];
-
-            let { currentRound } = state;
-            currentRound++
-            const income = Math.ceil(currentRound / 2) > 5 ? 5 : Math.ceil(currentRound / 2);
-
-            if (!state.isMyTurn) {
-                for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].isReady = true;
-
-                newGoldAmount = state.playerHeroGold += income;
-
-                SOCKET.emit('data-comparison', {
-                    currentRound: currentRound,
-                    currentPlayer: state.gameInfo.role,
-
-                    cardsOnBoard: state.cardsOnBoard,
-                    cardsOnHand: state.cardsOnHand,
-
-                    enemyCardsOnBoard: state.enemyCardsOnBoard,
-                    enemyCardsOnHand: state.enemyCardsOnHand,
-
-                    enemyHeroHealth: state.enemyHeroHealth,
-                    playerHeroHealth: state.playerHeroHealth,
-
-                    enemyHeroGold: state.enemyHeroGold,
-                    playerHeroGold: newGoldAmount,
-                });
-
-                return { ...state, isMyTurn: !state.isMyTurn, playerHeroGold: newGoldAmount, currentRound }
-            }
-
-            var enemyHeroGold = state.enemyHeroGold += income;
-            return { ...state, isMyTurn: !state.isMyTurn, enemyHeroGold, currentRound };
+            return handleEndTurn(state, action);
 
         case SET_GAME_STATE:
             return { ...state, gameState: action.newGameState };
 
         case ENEMY_CARD_ATTACK:
-            const { gameInfo } = state;
-            const { role } = gameInfo;
-
-            result = action.result;
-            var { playerMinionId, enemyMinionId } = action;
-
-            let playerData = result[role];
-            let enemyData = result[+!role]; // WORKS ONLY FOR 2 PLAYERS
-
-            let { cardsOnBoard, health } = playerData;
-
-            let enemyCardsOnBoard = enemyData.cardsOnBoard;
-            let enemyHeroHealth = enemyData.health
-
-            return { ...state, enemyCardsOnBoard, enemyHeroHealth, cardsOnBoard, playerHeroHealth: health };
+            return handleEnemyCardAttack(state, action);
 
         case ATTACK_MINION:
-            let attackingMinion = { ...state.cardsOnBoard[action.playerMinionId] };
-            let attackedMinion = { ...state.enemyCardsOnBoard[action.enemyMinionId] };
-
-            if (!attackingMinion.isReady) throw (new Error("This minion is not ready"));
-            attackingMinion.isReady = false;
-
-            let enemyMinionArray = [...state.enemyCardsOnBoard];
-            playerMinionArray = [...state.cardsOnBoard];
-
-            attackedMinion.stats[attackedMinion.level].health -= attackingMinion.stats[attackingMinion.level].damage;
-            attackingMinion.stats[attackingMinion.level].health -= attackedMinion.stats[attackedMinion.level].damage;
-
-            if (attackedMinion.stats[attackedMinion.level].health <= 0) enemyMinionArray.splice(action.enemyMinionId, 1);
-            else enemyMinionArray[action.enemyMinionId] = attackedMinion;
-
-            if (attackingMinion.stats[attackingMinion.level].health <= 0) playerMinionArray.splice(action.playerMinionId, 1);
-            else playerMinionArray[action.playerMinionId] = attackingMinion;
-
-            debugger
-            return { ...state, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray };
+            return handleAttackMinion(state, action);
 
         case ATTACK_HERO:
-            let playerMinion = { ...state.cardsOnBoard[action.playerMinionId] }
-
-            if (!playerMinion.isReady) throw (new Error("This minion is not ready"));
-            playerMinion.isReady = false;
-
-            let enemyHeroCurrentHp = state.enemyHeroHealth - playerMinion.stats[playerMinion.level].damage;
-            playerMinionArray = [...state.cardsOnBoard];
-            playerMinionArray.splice(action.playerMinionId, 1, playerMinion);
-
-            return { ...state, enemyHeroHealth: enemyHeroCurrentHp, cardsOnBoard: playerMinionArray };
+            return handleAttackHero(state, action);
 
         default:
             return state;
     }
 };
 
+function handleCombatResultsComparison(state, { result }) {
+    const { gameInfo } = state
 
+    let playerData = result[gameInfo.role];
+    let enemyData = result[+!gameInfo.role]; // WORKS ONLY FOR 2 PLAYERS
+
+    let cardsOnBoard = playerData.cardsOnBoard;
+    let playerHeroHealth = playerData.health
+
+    let enemyCardsOnBoard = enemyData.cardsOnBoard;
+    let enemyHeroHealth = enemyData.health
+
+    return { ...state, enemyCardsOnBoard, enemyHeroHealth, cardsOnBoard, playerHeroHealth };
+}
+
+function handleReorderCardsOnHand(state, action) {
+    const { cardsOnHand } = state;
+    const { startIndex, endIndex } = action;
+
+    let result = Array.from(cardsOnHand);
+    let [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return { ...state, cardsOnHand: result }
+}
+
+function handleSummonCard(state, action) {
+    const { playerHeroGold } = state;
+    const { droppableDestination } = action;
+
+    let sourceClone = Array.from(state.cardsOnHand);
+    let destClone = Array.from(state.cardsOnBoard);
+    let [removed] = sourceClone.splice(action.droppableSource.index, 1);
+
+    const cost = removed.stats[removed.level].cost
+    if (playerHeroGold < cost) throw (new Error("Not enough gold"));
+    let playerGoldAmount = playerHeroGold - cost;
+
+    destClone.splice(droppableDestination.index, 0, removed);
+
+    return { ...state, playerHeroGold: playerGoldAmount, cardsOnHand: sourceClone, cardsOnBoard: destClone };
+}
+
+function handleEnemySummonCard(state, action) {
+    const { enemyCardsOnHand, enemyCardsOnBoard, enemyHeroGold } = state;
+    const { handPosition, boardPosition, card } = action;
+
+    let sourceClone = Array.from(enemyCardsOnHand);
+    let destClone = Array.from(enemyCardsOnBoard);
+    sourceClone.splice(handPosition, 1);
+
+    const cost = card.stats[card.level].cost;
+    let enemyGoldAmount = enemyHeroGold - cost;
+
+    destClone.splice(boardPosition, 0, card);
+
+    return { ...state, enemyHeroGold: enemyGoldAmount, enemyCardsOnHand: sourceClone, enemyCardsOnBoard: destClone };
+}
+
+function handlePlayerDrawCard(state, action) {
+    let { deckCardsAmount, playerHeroGold } = state
+    const { card } = action;
+
+    if (playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
+    let playerGoldAmount = playerHeroGold - CARD_DRAW_COST;
+    deckCardsAmount--;
+
+    return { ...state, cardsOnHand: [...state.cardsOnHand, card], playerHeroGold: playerGoldAmount, gameState: GAME_STATE.IDLE, deckCardsAmount }
+}
+
+function handleEnemyDrawCard(state, action) {
+    const { enemyCardsOnHand, enemyHeroGold } = state;
+    let enemyGoldAmount = enemyHeroGold - CARD_DRAW_COST;
+    return { ...state, enemyCardsOnHand: [...enemyCardsOnHand, {}], enemyHeroGold: enemyGoldAmount }
+}
+
+function handleEndTurn(state, action) {
+    let { cardsOnBoard, currentRound, isMyTurn, playerHeroGold, enemyHeroGold } = state;
+
+    let playerMinionArray = [...cardsOnBoard];
+    currentRound++;
+    isMyTurn = !isMyTurn
+
+    const income = Math.ceil(currentRound / 2) > 5 ? 5 : Math.ceil(currentRound / 2);
+
+    if (isMyTurn) {
+        for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].isReady = true;
+
+        playerHeroGold = playerHeroGold += income;
+
+        const { gameInfo, cardsOnBoard, cardsOnHand, enemyCardsOnBoard, enemyCardsOnHand, enemyHeroHealth, playerHeroHealth, enemyHeroGold } = state;
+        SOCKET.emit('data-comparison', {
+            currentRound,
+            currentPlayer: gameInfo.role,
+
+            cardsOnBoard,
+            cardsOnHand,
+
+            enemyCardsOnBoard,
+            enemyCardsOnHand,
+
+            enemyHeroHealth,
+            playerHeroHealth,
+
+            enemyHeroGold,
+            playerHeroGold,
+        });
+
+        return { ...state, isMyTurn, playerHeroGold, currentRound }
+    }
+
+    enemyHeroGold = enemyHeroGold += income;
+    return { ...state, isMyTurn, enemyHeroGold, currentRound };
+}
+
+function handleEnemyCardAttack(state, action) {
+    const { gameInfo } = state;
+    const { result, playerMinionId, enemyMinionId } = action
+    const { role } = gameInfo;
+
+    let playerData = result[role];
+    let enemyData = result[+!role]; // WORKS ONLY FOR 2 PLAYERS
+
+    let cardsOnBoard = playerData.cardsOnBoard;
+    let playerHeroHealth = playerData.health
+
+    let enemyCardsOnBoard = enemyData.cardsOnBoard;
+    let enemyHeroHealth = enemyData.health
+
+    return { ...state, enemyCardsOnBoard, enemyHeroHealth, cardsOnBoard, playerHeroHealth };
+}
+
+function handleAttackMinion(state, action) {
+    const { cardsOnBoard, enemyCardsOnBoard } = state;
+    const { playerMinionId, enemyMinionId } = action;
+
+    let attackingMinion = { ...cardsOnBoard[playerMinionId] };
+    let attackedMinion = { ...enemyCardsOnBoard[enemyMinionId] };
+
+    if (!attackingMinion.isReady) throw (new Error("This minion is not ready"));
+    attackingMinion.isReady = false;
+
+    let enemyMinionArray = [...enemyCardsOnBoard];
+    let playerMinionArray = [...cardsOnBoard];
+
+    attackedMinion.stats[attackedMinion.level].health -= attackingMinion.stats[attackingMinion.level].damage;
+    attackingMinion.stats[attackingMinion.level].health -= attackedMinion.stats[attackedMinion.level].damage;
+
+    if (attackedMinion.stats[attackedMinion.level].health <= 0) enemyMinionArray.splice(action.enemyMinionId, 1);
+    else enemyMinionArray[action.enemyMinionId] = attackedMinion;
+
+    if (attackingMinion.stats[attackingMinion.level].health <= 0) playerMinionArray.splice(action.playerMinionId, 1);
+    else playerMinionArray[action.playerMinionId] = attackingMinion;
+
+    return { ...state, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray };
+}
+
+function handleAttackHero(state, action) {
+    const { cardsOnBoard, enemyHeroHealth } = state;
+    const { playerMinionId } = action;
+
+    let playerMinion = { ...cardsOnBoard[playerMinionId] }
+
+    if (!playerMinion.isReady) throw (new Error("This minion is not ready"));
+    playerMinion.isReady = false;
+
+    let enemyHeroCurrentHp = enemyHeroHealth - playerMinion.stats[playerMinion.level].damage;
+    let playerMinionArray = [...cardsOnBoard];
+    playerMinionArray.splice(playerMinionId, 1, playerMinion);
+
+    return { ...state, enemyHeroHealth: enemyHeroCurrentHp, cardsOnBoard: playerMinionArray };
+}
