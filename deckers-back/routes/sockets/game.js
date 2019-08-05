@@ -264,6 +264,9 @@ module.exports.connect = function (io) {
 
                 result,
             });
+            // sending to individual socketid (private message)
+            GAME_IO.to(`${socket.id}`).emit('combat-results-comparison', { result });
+
             console.log(`Card attacked`)
         })
         // socket.on("card-played", function (data) {

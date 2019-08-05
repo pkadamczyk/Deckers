@@ -1,4 +1,4 @@
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON } from "../actionTypes"
 import { SOCKET } from "../../gameplay/containers/Socket";
 export const GAME_STATE = {
     BUSY: 1,
@@ -33,6 +33,18 @@ const DEFAULT_STATE = {
     gameInfo: null,
 };
 
+function handleCombatResultsComparison(state, result) {
+    let playerData = result[state.gameInfo.role];
+    let enemyData = result[+!state.gameInfo.role]; // WORKS ONLY FOR 2 PLAYERS
+
+    let { cardsOnBoard, health } = playerData;
+
+    let enemyCardsOnBoard = enemyData.cardsOnBoard;
+    let enemyHeroHealth = enemyData.health
+
+    return { ...state, enemyCardsOnBoard, enemyHeroHealth, cardsOnBoard, playerHeroHealth: health };
+}
+
 export default (state = DEFAULT_STATE, action) => {
     let result;
     let removed;
@@ -44,11 +56,16 @@ export default (state = DEFAULT_STATE, action) => {
     let newGoldAmount
     let newState
 
+
     switch (action.type) {
         case CONNECTED_TO_GAME:
             let isMyTurn = !!action.gameInfo.role
 
             return { ...state, isMyTurn, gameInfo: action.gameInfo, deckCardsAmount: action.playerDeckCardsAmount };
+
+        case COMBAT_RESULTS_COMPARISON:
+            return handleCombatResultsComparison(state, action.result)
+
         case REORDER_CARDS_ON_HAND:
             result = Array.from(state.cardsOnHand);
             [removed] = result.splice(action.startIndex, 1);

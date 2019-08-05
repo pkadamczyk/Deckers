@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux"
 
 import openSocket from 'socket.io-client';
-import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent } from '../../store/actions/socket';
+import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent, combatResultsComparison } from '../../store/actions/socket';
 export const SOCKET = openSocket('http://localhost:8080/game');
 
 class Socket extends Component {
@@ -27,6 +27,10 @@ class Socket extends Component {
             console.log("Enemy minion attacked")
             this.props.dispatch(enemyCardAttackedEvent(data))
         })
+        SOCKET.on("combat-results-comparison", (data) => {
+            this.props.dispatch(combatResultsComparison(data))
+        })
+
     }
 
     render() {

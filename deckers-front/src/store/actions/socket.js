@@ -1,4 +1,4 @@
-import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK } from "../actionTypes";
+import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON } from "../actionTypes";
 
 export const endTurnEvent = () => {
     return {
@@ -34,5 +34,12 @@ export const enemyCardAttackedEvent = ({ playerMinionId, enemyMinionId, result }
         enemyMinionId,
         result,
         type: ENEMY_CARD_ATTACK,
+    }
+}
+
+export const combatResultsComparison = ({ result }) => {
+    return {
+        result,
+        type: COMBAT_RESULTS_COMPARISON,
     }
 }
