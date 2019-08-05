@@ -1,5 +1,5 @@
 import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK } from "../actionTypes"
-
+import { SOCKET } from "../../gameplay/containers/Socket";
 export const GAME_STATE = {
     BUSY: 1,
     TARGETING: 2,
@@ -116,6 +116,24 @@ export default (state = DEFAULT_STATE, action) => {
                 for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].isReady = true;
 
                 newGoldAmount = state.playerHeroGold += income;
+
+                SOCKET.emit('data-comparison', {
+                    currentRound: currentRound,
+                    currentPlayer: state.gameInfo.role,
+
+                    cardsOnBoard: state.cardsOnBoard,
+                    cardsOnHand: state.cardsOnHand,
+
+                    enemyCardsOnBoard: state.enemyCardsOnBoard,
+                    enemyCardsOnHand: state.enemyCardsOnHand,
+
+                    enemyHeroHealth: state.enemyHeroHealth,
+                    playerHeroHealth: state.playerHeroHealth,
+
+                    enemyHeroGold: state.enemyHeroGold,
+                    playerHeroGold: newGoldAmount,
+                });
+
                 return { ...state, isMyTurn: !state.isMyTurn, playerHeroGold: newGoldAmount, currentRound }
             }
 

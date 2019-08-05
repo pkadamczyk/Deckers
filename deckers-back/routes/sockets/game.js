@@ -6,6 +6,36 @@ const DatabaseGame = require("../../models/game");
 const ROOMDATA_KEYS = {
     GAME: "GAME",
 }
+
+class Card {
+    static compareCards(a, b) {
+        if (a.level !== b.level) return false;
+
+        // Create arrays of property names
+        var aProps = Object.getOwnPropertyNames(a.stats[a.level]);
+        var bProps = Object.getOwnPropertyNames(b.stats[b.level]);
+
+        // If number of properties is different,
+        // objects are not equivalent
+        if (aProps.length != bProps.length) {
+            return false;
+        }
+
+        for (var i = 0; i < aProps.length; i++) {
+            var propName = aProps[i];
+
+            // If values of same property are not equal,
+            // objects are not equivalent
+            if (a[propName] !== b[propName] && propName !== "_id") {
+                return false;
+            }
+        }
+
+        // If we made it this far, objects
+        // are considered equivalent
+        return true;
+    }
+}
 class Player {
     constructor(deck) {
         this.gold = Player.GOLD_ON_START;
@@ -126,12 +156,38 @@ class Game {
         if (attackingMinion.stats[attackingMinion.level].health <= 0) playerCardsOnBoard.splice(playerMinionId, 1);
         else playerCardsOnBoard[playerMinionId] = attackingMinion;
     }
+
+    // Checks if frontend data equals backend data
+    compareData(data) {
+        const { currentRound, currentPlayer, cardsOnBoard, cardsOnHand, enemyCardsOnBoard, enemyCardsOnHand, enemyHeroHealth, playerHeroHealth, enemyHeroGold, playerHeroGold } = data
+
+        if (currentRound !== this.currentRound) return false;
+        if (currentPlayer !== this.currentPlayer) return false;
+
+        if (playerHeroHealth !== this.players[this.currentPlayer].health) return false;
+        if (enemyHeroHealth !== this.players[+!this.currentPlayer].health) return false;
+
+        if (playerHeroGold !== this.players[this.currentPlayer].gold) return false;
+        if (enemyHeroGold !== this.players[+!this.currentPlayer].gold) return false;
+
+        const boardArr = this.players[this.currentPlayer].cardsOnBoard.map((card, i) => Card.compareCards(card, cardsOnBoard[i]))
+        if (boardArr.includes(false)) return false;
+
+        const handArr = this.players[this.currentPlayer].cardsOnHand.map((card, i) => Card.compareCards(card, cardsOnHand[i]))
+        if (handArr.includes(false)) return false;
+
+        const enemyBoardArr = this.players[+!this.currentPlayer].cardsOnBoard.map((card, i) => Card.compareCards(card, enemyCardsOnBoard[i]))
+        if (enemyBoardArr.includes(false)) return false;
+
+        if (enemyCardsOnHand.length !== this.players[+!this.currentPlayer].cardsOnHand.length) return false;
+
+        return true;
+    }
 }
 
 Game.PLAYER_AMOUNT = 2;
 Game.CARD_DRAW_COST = 1; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
 Game.MAX_CARDS_ON_BOARD = 4; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
-
 
 module.exports.connect = function (io) {
     const GAME_IO = io.of('/game');
@@ -152,6 +208,14 @@ module.exports.connect = function (io) {
                 const game = new Game(foundGame.toObject());
                 roomdata.set(socket, ROOMDATA_KEYS.GAME, game);
             }
+        })
+
+        socket.on('data-comparison', function (data) {
+            const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
+            const isDataIdentical = game.compareData(data)
+            console.log(isDataIdentical);
+
+            // TODO: If compareData returns false, update local data update
         })
 
         socket.on('turn-ended', function () {
