@@ -27,23 +27,19 @@ const Card = styled.div`
 `;
 
 class EnemyHand extends Component {
-    constructor(props) {
-        super(props);
-        const uniqueId = '_' + Math.random().toString(36).substr(2, 9);
-        this.state = { uniqueId }
-    }
-
     render() {
         const { cards } = this.props;
-        const { uniqueId } = this.state;
 
         return (
             <StyledDiv>
-                {cards.map((card) => (
-                    <Card
-                        key={uniqueId}
-                    ></Card>
-                ))}
+                {cards.map((card) => {
+                    const uniqueId = '_' + Math.random().toString(36).substr(2, 9);
+                    return (
+                        <Card
+                            key={uniqueId}
+                        ></Card>
+                    )
+                })}
             </StyledDiv>
         )
     }

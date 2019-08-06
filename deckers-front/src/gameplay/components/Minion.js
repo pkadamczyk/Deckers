@@ -67,7 +67,9 @@ class Minion extends Component {
     render() {
         const lockTarget = this.props.handleLockTarget;
         const { item, index, isMyTurn } = this.props;
-        const isDragDisabled = !isMyTurn || !item.isReady;
+
+        const hasDamage = item.stats[item.level].damage > 0;
+        const isDragDisabled = !isMyTurn || !item.isReady || !hasDamage;
 
         const { uniqueId } = this.state;
         return (

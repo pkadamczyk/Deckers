@@ -79,7 +79,7 @@ class Item extends Component {
         const { isDragging, uniqueId } = this.state;
 
         const isAffordable = gold >= item.stats[item.level - 1].cost;
-        const isDragDisabled = !isAffordable || !isMyTurn || (gameState !== GAME_STATE.IDLE && !isDragging);
+        const isDragDisabled = !isAffordable || !isMyTurn;
 
         return (
             <Draggable

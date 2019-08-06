@@ -42,7 +42,7 @@ class PlayerHand extends Component {
                     >
                         {items.map((item, index) => (
                             <Item
-                                key={item._id}
+                                key={item._id + index}
                                 item={item}
                                 index={index}
                                 isMyTurn={isMyTurn}
@@ -51,7 +51,8 @@ class PlayerHand extends Component {
                                 currentTarget={currentTarget}
                                 gameState={gameState}
                             ></Item>
-                        ))}
+                        )
+                        )}
                         {provided.placeholder}
                     </DroppableDiv>
                 )}
