@@ -9,6 +9,7 @@ export const CARD_DRAW_COST = 1;
 
 const MAX_HERO_HEALTH = 10;
 const GOLD_ON_START = 1;
+export const MAX_CARDS_ON_HAND = 6;
 
 const DEFAULT_STATE = {
     cardsOnBoard: [],

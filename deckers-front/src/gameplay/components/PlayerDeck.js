@@ -4,7 +4,7 @@ import Deck from "./Deck"
 import { connect } from 'react-redux';
 import styled from "styled-components"
 import { drawCard, setGameState } from "../../store/actions/game"
-import { CARD_DRAW_COST, GAME_STATE } from '../../store/reducers/game';
+import { CARD_DRAW_COST, GAME_STATE, MAX_CARDS_ON_HAND } from '../../store/reducers/game';
 
 const StyledButton = styled.button`
     width: 100%
@@ -29,9 +29,12 @@ class PlayerDeck extends Component {
     }
 
     render() {
-        const { gold, isMyTurn, gameState, cardsLeft } = this.props;
+        const { gold, isMyTurn, gameState, cardsLeft, cardsOnHand } = this.props;
         const isAffortable = gold >= CARD_DRAW_COST;
-        const isButtonDisabled = !isAffortable || !isMyTurn || gameState !== GAME_STATE.IDLE || cardsLeft <= 0;
+        const hasCards = cardsLeft > 0
+        const isHandFull = cardsOnHand.length >= MAX_CARDS_ON_HAND
+
+        const isButtonDisabled = !isAffortable || !isMyTurn || gameState !== GAME_STATE.IDLE || !hasCards || isHandFull;
 
         return (
             <Div>
@@ -51,6 +54,7 @@ class PlayerDeck extends Component {
 
 function mapStateToProps(state) {
     return {
+        cardsOnHand: state.game.cardsOnHand,
         cardsLeft: state.game.deckCardsAmount,
         gold: state.game.playerHeroGold,
         isMyTurn: state.game.isMyTurn,

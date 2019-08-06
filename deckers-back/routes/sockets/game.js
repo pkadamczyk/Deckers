@@ -51,6 +51,7 @@ class Player {
     drawCard() {
         if (this.gold < Game.CARD_DRAW_COST) throw new Error("Not enough gold");
         if (this.currentCard >= this.deck.length) throw new Error("End of cards");
+        if (this.cardsOnHand.length >= Game.MAX_CARDS_ON_HAND) throw new Error("Hand is full");
 
         this.gold -= Game.CARD_DRAW_COST;
         let card = this.deck[this.currentCard];
@@ -188,6 +189,7 @@ class Game {
 Game.PLAYER_AMOUNT = 2;
 Game.CARD_DRAW_COST = 1; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
 Game.MAX_CARDS_ON_BOARD = 4; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
+Game.MAX_CARDS_ON_HAND = 6; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
 
 module.exports.connect = function (io) {
     const GAME_IO = io.of('/game');
