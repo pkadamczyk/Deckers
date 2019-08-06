@@ -10,6 +10,9 @@ const ROOMDATA_KEYS = {
 class Card {
     static compareCards(a, b) {
         if (a.level !== b.level) return false;
+        if (a.rarity !== b.rarity) return false;
+        if (a.race !== b.race) return false;
+        if (a.role !== b.role) return false;
 
         // Create arrays of property names
         var aProps = Object.getOwnPropertyNames(a.stats[a.level]);
@@ -174,7 +177,9 @@ class Game {
         const boardArr = this.players[this.currentPlayer].cardsOnBoard.map((card, i) => Card.compareCards(card, cardsOnBoard[i]))
         if (boardArr.includes(false)) return false;
 
-        const handArr = this.players[this.currentPlayer].cardsOnHand.map((card, i) => Card.compareCards(card, cardsOnHand[i]))
+
+        const handArr = cardsOnHand.map((card, i) => Card.compareCards(card, this.players[this.currentPlayer].cardsOnHand[card.position]))
+        // const handArr = this.players[this.currentPlayer].cardsOnHand.map((card, i) => Card.compareCards(card, cardsOnHand[i]))
         if (handArr.includes(false)) return false;
 
         const enemyBoardArr = this.players[+!this.currentPlayer].cardsOnBoard.map((card, i) => Card.compareCards(card, enemyCardsOnBoard[i]))

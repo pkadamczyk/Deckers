@@ -116,19 +116,21 @@ function handleReorderCardsOnHand(state, action) {
 }
 
 function handleSummonCard(state, action) {
-    const { playerHeroGold } = state;
-    const { droppableDestination } = action;
+    const { playerHeroGold, cardsOnHand, cardsOnBoard } = state;
+    const { droppableDestination, droppableSource } = action;
 
-    let sourceClone = Array.from(state.cardsOnHand);
-    let destClone = Array.from(state.cardsOnBoard);
-    let [removed] = sourceClone.splice(action.droppableSource.index, 1);
+    let sourceClone = Array.from(cardsOnHand);
+    let destClone = Array.from(cardsOnBoard);
+    let [removed] = sourceClone.splice(droppableSource.index, 1);
+
+    sourceClone = sourceClone.map(card => ({ ...card, position: card.position > removed.position ? card.position - 1 : card.position })
+    )
 
     const cost = removed.stats[removed.level].cost
     if (playerHeroGold < cost) throw (new Error("Not enough gold"));
     let playerGoldAmount = playerHeroGold - cost;
 
     destClone.splice(droppableDestination.index, 0, removed);
-
     return { ...state, playerHeroGold: playerGoldAmount, cardsOnHand: sourceClone, cardsOnBoard: destClone };
 }
 
@@ -149,8 +151,9 @@ function handleEnemySummonCard(state, action) {
 }
 
 function handlePlayerDrawCard(state, action) {
-    let { deckCardsAmount, playerHeroGold } = state
-    const { card } = action;
+    let { deckCardsAmount, playerHeroGold, cardsOnHand } = state
+    let { card } = action;
+    card.position = cardsOnHand.length;
 
     if (playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
     let playerGoldAmount = playerHeroGold - CARD_DRAW_COST;
