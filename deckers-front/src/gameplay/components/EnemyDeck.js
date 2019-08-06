@@ -25,7 +25,7 @@ class EnemyDeck extends Component {
 
 function mapStateToProps(state) {
     return {
-        enemyDeckCardsAmount: state.game.gameInfo.enemyDeckCardsAmount,
+        enemyDeckCardsAmount: state.game.enemyDeckCardsAmount,
     }
 }
 

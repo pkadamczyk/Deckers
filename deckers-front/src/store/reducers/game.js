@@ -29,6 +29,7 @@ const DEFAULT_STATE = {
     playerHeroGold: GOLD_ON_START,
 
     deckCardsAmount: 0,
+    enemyDeckCardsAmount: 0,
 
     gameInfo: null,
 };
@@ -37,7 +38,7 @@ export default (state = DEFAULT_STATE, action) => {
 
     switch (action.type) {
         case CONNECTED_TO_GAME:
-            return { ...state, isMyTurn: !!action.gameInfo.role, gameInfo: action.gameInfo, deckCardsAmount: action.gameInfo.playerDeckCardsAmount };
+            return handleConnectToGame(state, action);
 
         case COMBAT_RESULTS_COMPARISON:
             return handleCombatResultsComparison(state, action);
@@ -76,6 +77,16 @@ export default (state = DEFAULT_STATE, action) => {
             return state;
     }
 };
+
+function handleConnectToGame(state, action) {
+    return {
+        ...state,
+        isMyTurn: !!action.gameInfo.role,
+        gameInfo: action.gameInfo,
+        deckCardsAmount: action.gameInfo.playerDeckCardsAmount,
+        enemyDeckCardsAmount: action.gameInfo.enemyDeckCardsAmount,
+    };
+}
 
 function handleCombatResultsComparison(state, { result }) {
     const { gameInfo } = state
@@ -148,9 +159,11 @@ function handlePlayerDrawCard(state, action) {
 }
 
 function handleEnemyDrawCard(state, action) {
-    const { enemyCardsOnHand, enemyHeroGold } = state;
+    const { enemyCardsOnHand, enemyHeroGold, enemyDeckCardsAmount } = state;
     let enemyGoldAmount = enemyHeroGold - CARD_DRAW_COST;
-    return { ...state, enemyCardsOnHand: [...enemyCardsOnHand, {}], enemyHeroGold: enemyGoldAmount }
+    let cardsLeft = enemyDeckCardsAmount - 1;
+
+    return { ...state, enemyCardsOnHand: [...enemyCardsOnHand, {}], enemyHeroGold: enemyGoldAmount, enemyDeckCardsAmount: cardsLeft }
 }
 
 function handleEndTurn(state, action) {

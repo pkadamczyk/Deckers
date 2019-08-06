@@ -14,6 +14,8 @@ const Div = styled.div`
     position: absolute;
     right: 0;
     bottom: 35%;
+
+    color: white;
 `
 class PlayerDeck extends Component {
     constructor(props) {
@@ -40,6 +42,7 @@ class PlayerDeck extends Component {
                     >
                         Buy card
                     </StyledButton>
+                    <div>Cards: {cardsLeft}</div>
                 </Deck>
             </Div>
         )

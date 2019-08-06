@@ -77,7 +77,7 @@ class Game extends Component {
 
     onDragUpdate = (update) => {
         if (!update.destination) return
-        if (this.state.currentTarget === PLAYER_HAND_ID) {
+        if (this.state.currentTarget === PLAYER_HAND_ID || update.destination.droppableId === PLAYER_HAND_ID) {
             this.setState({ currentTarget: update.destination.droppableId });
         }
     };
@@ -86,9 +86,9 @@ class Game extends Component {
         let { source, destination } = result;
         let { currentTarget } = this.state;
 
-        if (!destination && currentTarget === PLAYER_HAND_ID) return
+        if (!destination && currentTarget === PLAYER_HAND_ID) { }
         // END_TARGETING
-        if (source.droppableId === PLAYER_BOARD_ID) {
+        else if (source.droppableId === PLAYER_BOARD_ID) {
             if (currentTarget.includes("enemy")) {
                 this.props.dispatch(attack(source, currentTarget));
 
