@@ -84,7 +84,7 @@ class Game {
     constructor(databaseGame) {
         this.players = [];
         this.currentPlayer = 1;
-        this.currentRound = 0;
+        this.currentRound = 1;
         this.gameId = databaseGame._id;
 
         this.players = databaseGame.players.map(player => new Player(player.deck));

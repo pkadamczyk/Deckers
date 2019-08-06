@@ -18,7 +18,7 @@ const DEFAULT_STATE = {
     enemyCardsOnHand: [],
 
     isMyTurn: true,
-    currentRound: 0,
+    currentRound: 1,
 
     gameState: GAME_STATE.IDLE,
 
