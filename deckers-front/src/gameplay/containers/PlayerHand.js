@@ -24,7 +24,7 @@ const DroppableDiv = styled.div`
 
 class PlayerHand extends Component {
     render() {
-        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand, currentTarget, gameState } = this.props;
+        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand, currentTarget } = this.props;
         const isDropDisabled = isMinionDragged;
         const items = cardsOnHand;
 
@@ -49,7 +49,6 @@ class PlayerHand extends Component {
                                 gold={gold}
                                 cardsOnBoard={cardsOnBoard}
                                 currentTarget={currentTarget}
-                                gameState={gameState}
                             ></Item>
                         )
                         )}
@@ -67,7 +66,6 @@ function mapStateToProps(state) {
         cardsOnBoard: state.game.cardsOnBoard,
         cardsOnHand: state.game.cardsOnHand,
         gold: state.game.playerHeroGold,
-        gameState: state.game.gameState,
     }
 }
 

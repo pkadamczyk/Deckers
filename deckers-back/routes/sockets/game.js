@@ -15,8 +15,8 @@ class Card {
         if (a.role !== b.role) return false;
 
         // Create arrays of property names
-        var aProps = Object.getOwnPropertyNames(a.stats[a.level]);
-        var bProps = Object.getOwnPropertyNames(b.stats[b.level]);
+        var aProps = Object.getOwnPropertyNames(a.inGame.stats);
+        var bProps = Object.getOwnPropertyNames(b.inGame.stats);
 
         // If number of properties is different,
         // objects are not equivalent
@@ -44,7 +44,7 @@ class Player {
         this.gold = Player.GOLD_ON_START;
         this.health = Player.MAX_HERO_HEALTH;
 
-        this.deck = deck.map(card => ({ ...card, isReady: false }));
+        this.deck = deck.map(card => ({ ...card, inGame: { stats: card.stats[card.level], isReady: false } }));
         this.currentCard = 0;
 
         this.cardsOnBoard = []
@@ -68,13 +68,13 @@ class Player {
     summonCard(boardPosition, handPosition) {
         const card = this.cardsOnHand[handPosition];
 
-        if (this.gold < card.stats[card.level].cost) throw new Error("Not enough gold");
+        if (this.gold < card.inGame.stats.cost) throw new Error("Not enough gold");
         if (this.cardsOnBoard.length >= Game.MAX_CARDS_ON_BOARD) throw new Error("Board is full");
 
         const [summonedCard] = this.cardsOnHand.splice(handPosition, 1);
         this.cardsOnBoard.splice(boardPosition, 0, summonedCard);
 
-        const cost = summonedCard.stats[summonedCard.level].cost;
+        const cost = summonedCard.inGame.stats.cost;
         this.gold = this.gold - cost;
 
         return summonedCard;
@@ -108,7 +108,7 @@ class Game {
 
         let cardsOnBoard = this.players[this.currentPlayer].cardsOnBoard;
 
-        for (let i = 0; i < cardsOnBoard.length; i++) cardsOnBoard[i].isReady = true;
+        for (let i = 0; i < cardsOnBoard.length; i++) cardsOnBoard[i].inGame.isReady = true;
 
         const income = Math.ceil(this.currentRound / 2) > 5 ? 5 : Math.ceil(this.currentRound / 2);
         this.players[this.currentPlayer].gold += income;
@@ -127,16 +127,13 @@ class Game {
         let playerCardsOnBoard = players[currentPlayer].cardsOnBoard;
         let attackingMinion = playerCardsOnBoard[playerMinionId];
 
-        if (!attackingMinion.isReady) throw (new Error("This minion is not ready"));
-        attackingMinion.isReady = false;
+        if (!attackingMinion.inGame.isReady) throw (new Error("This minion is not ready"));
+        attackingMinion.inGame.isReady = false;
 
         // Move this to Player function?
         let enemyHealth = players[+!currentPlayer].health;
-        enemyHealth = enemyHealth - attackingMinion.stats[attackingMinion.level].damage;
+        enemyHealth = enemyHealth - attackingMinion.inGame.stats.damage;
         players[+!currentPlayer].health = enemyHealth;
-
-        // Probably not needed
-        // playerCardsOnBoard.splice(playerMinionId, 1, attackingMinion);
     }
 
     handleAttackOnMinion(playerMinionId, enemyMinionId) {
@@ -148,16 +145,16 @@ class Game {
         let attackingMinion = { ...playerCardsOnBoard[playerMinionId] };
         let attackedMinion = { ...enemyCardsOnBoard[enemyMinionId] };
 
-        if (!attackingMinion.isReady) throw (new Error("This minion is not ready"));
-        attackingMinion.isReady = false;
+        if (!attackingMinion.inGame.isReady) throw (new Error("This minion is not ready"));
+        attackingMinion.inGame.isReady = false;
 
-        attackedMinion.stats[attackedMinion.level].health -= attackingMinion.stats[attackingMinion.level].damage;
-        attackingMinion.stats[attackingMinion.level].health -= attackedMinion.stats[attackedMinion.level].damage;
+        attackedMinion.inGame.stats.health -= attackingMinion.inGame.stats.damage;
+        attackingMinion.inGame.stats.health -= attackedMinion.inGame.stats.damage;
 
-        if (attackedMinion.stats[attackedMinion.level].health <= 0) enemyCardsOnBoard.splice(enemyMinionId, 1);
+        if (attackedMinion.inGame.stats.health <= 0) enemyCardsOnBoard.splice(enemyMinionId, 1);
         else enemyCardsOnBoard[enemyMinionId] = attackedMinion;
 
-        if (attackingMinion.stats[attackingMinion.level].health <= 0) playerCardsOnBoard.splice(playerMinionId, 1);
+        if (attackingMinion.inGame.stats.health <= 0) playerCardsOnBoard.splice(playerMinionId, 1);
         else playerCardsOnBoard[playerMinionId] = attackingMinion;
     }
 
@@ -177,9 +174,7 @@ class Game {
         const boardArr = this.players[this.currentPlayer].cardsOnBoard.map((card, i) => Card.compareCards(card, cardsOnBoard[i]))
         if (boardArr.includes(false)) return false;
 
-
         const handArr = cardsOnHand.map((card, i) => Card.compareCards(card, this.players[this.currentPlayer].cardsOnHand[card.position]))
-        // const handArr = this.players[this.currentPlayer].cardsOnHand.map((card, i) => Card.compareCards(card, cardsOnHand[i]))
         if (handArr.includes(false)) return false;
 
         const enemyBoardArr = this.players[+!this.currentPlayer].cardsOnBoard.map((card, i) => Card.compareCards(card, enemyCardsOnBoard[i]))

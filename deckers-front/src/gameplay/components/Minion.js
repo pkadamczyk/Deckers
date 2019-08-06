@@ -49,8 +49,8 @@ class Item extends Component {
                 style={getStyle(provided.draggableProps.style, snapshot)}
             >
                 <div>{item.name}</div>
-                <div>Hp: {item.stats[item.level].health}</div>
-                <div>Dmg: {item.stats[item.level].damage}</div>
+                <div>Hp: {item.inGame.stats.health}</div>
+                <div>Dmg: {item.inGame.stats.damage}</div>
             </StyledItem>
         )
     }
@@ -68,8 +68,8 @@ class Minion extends Component {
         const lockTarget = this.props.handleLockTarget;
         const { item, index, isMyTurn } = this.props;
 
-        const hasDamage = item.stats[item.level].damage > 0;
-        const isDragDisabled = !isMyTurn || !item.isReady || !hasDamage;
+        const hasDamage = item.inGame.stats.damage > 0;
+        const isDragDisabled = !isMyTurn || !item.inGame.isReady || !hasDamage;
 
         const { uniqueId } = this.state;
         return (

@@ -123,10 +123,9 @@ function handleSummonCard(state, action) {
     let destClone = Array.from(cardsOnBoard);
     let [removed] = sourceClone.splice(droppableSource.index, 1);
 
-    sourceClone = sourceClone.map(card => ({ ...card, position: card.position > removed.position ? card.position - 1 : card.position })
-    )
+    sourceClone = sourceClone.map(card => ({ ...card, position: card.position > removed.position ? card.position - 1 : card.position }))
 
-    const cost = removed.stats[removed.level].cost
+    const cost = removed.inGame.stats.cost
     if (playerHeroGold < cost) throw (new Error("Not enough gold"));
     let playerGoldAmount = playerHeroGold - cost;
 
@@ -142,7 +141,7 @@ function handleEnemySummonCard(state, action) {
     let destClone = Array.from(enemyCardsOnBoard);
     sourceClone.splice(handPosition, 1);
 
-    const cost = card.stats[card.level].cost;
+    const cost = card.inGame.stats.cost;
     let enemyGoldAmount = enemyHeroGold - cost;
 
     destClone.splice(boardPosition, 0, card);
@@ -180,7 +179,7 @@ function handleEndTurn(state, action) {
     const income = Math.ceil(currentRound / 2) > 5 ? 5 : Math.ceil(currentRound / 2);
 
     if (isMyTurn) {
-        for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].isReady = true;
+        for (let i = 0; i < playerMinionArray.length; i++) playerMinionArray[i].inGame.isReady = true;
 
         playerHeroGold = playerHeroGold += income;
 
@@ -233,20 +232,20 @@ function handleAttackMinion(state, action) {
     let attackingMinion = { ...cardsOnBoard[playerMinionId] };
     let attackedMinion = { ...enemyCardsOnBoard[enemyMinionId] };
 
-    if (!attackingMinion.isReady) throw (new Error("This minion is not ready"));
-    attackingMinion.isReady = false;
+    if (!attackingMinion.inGame.isReady) throw (new Error("This minion is not ready"));
+    attackingMinion.inGame.isReady = false;
 
     let enemyMinionArray = [...enemyCardsOnBoard];
     let playerMinionArray = [...cardsOnBoard];
 
-    attackedMinion.stats[attackedMinion.level].health -= attackingMinion.stats[attackingMinion.level].damage;
-    attackingMinion.stats[attackingMinion.level].health -= attackedMinion.stats[attackedMinion.level].damage;
+    attackedMinion.inGame.stats.health -= attackingMinion.inGame.stats.damage;
+    attackingMinion.inGame.stats.health -= attackedMinion.inGame.stats.damage;
 
-    if (attackedMinion.stats[attackedMinion.level].health <= 0) enemyMinionArray.splice(action.enemyMinionId, 1);
-    else enemyMinionArray[action.enemyMinionId] = attackedMinion;
+    if (attackedMinion.inGame.stats.health <= 0) enemyMinionArray.splice(enemyMinionId, 1);
+    else enemyMinionArray[enemyMinionId] = attackedMinion;
 
-    if (attackingMinion.stats[attackingMinion.level].health <= 0) playerMinionArray.splice(action.playerMinionId, 1);
-    else playerMinionArray[action.playerMinionId] = attackingMinion;
+    if (attackingMinion.inGame.stats.health <= 0) playerMinionArray.splice(playerMinionId, 1);
+    else playerMinionArray[playerMinionId] = attackingMinion;
 
     return { ...state, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray };
 }
@@ -257,10 +256,10 @@ function handleAttackHero(state, action) {
 
     let playerMinion = { ...cardsOnBoard[playerMinionId] }
 
-    if (!playerMinion.isReady) throw (new Error("This minion is not ready"));
-    playerMinion.isReady = false;
+    if (!playerMinion.inGame.isReady) throw (new Error("This minion is not ready"));
+    playerMinion.inGame.isReady = false;
 
-    let enemyHeroCurrentHp = enemyHeroHealth - playerMinion.stats[playerMinion.level].damage;
+    let enemyHeroCurrentHp = enemyHeroHealth - playerMinion.inGame.stats.damage;
     let playerMinionArray = [...cardsOnBoard];
     playerMinionArray.splice(playerMinionId, 1, playerMinion);
 

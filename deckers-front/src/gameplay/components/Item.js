@@ -4,7 +4,6 @@ import styled from "styled-components"
 import { Draggable } from 'react-beautiful-dnd';
 import { CARD_WIDTH } from '../containers/Board';
 import { PLAYER_HAND_ID } from '../containers/PlayerHand';
-import { GAME_STATE } from '../../store/reducers/game';
 
 const StyledItem = styled.div` 
     margin: 0 8px 0 0;
@@ -54,9 +53,9 @@ class Content extends Component {
                 style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget)}
             >
                 <div>{item.name}</div>
-                <div>Hp: {item.stats[item.level - 1].health}</div>
-                <div>Dmg: {item.stats[item.level - 1].damage}</div>
-                <div>Cost: {item.stats[item.level - 1].cost}</div>
+                <div>Hp: {item.inGame.stats.health}</div>
+                <div>Dmg: {item.inGame.stats.damage}</div>
+                <div>Cost: {item.inGame.stats.cost}</div>
             </StyledItem>
         )
 
@@ -75,10 +74,10 @@ class Item extends Component {
     }
 
     render() {
-        const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold, gameState } = this.props;
-        const { isDragging, uniqueId } = this.state;
+        const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold } = this.props;
+        const { uniqueId } = this.state;
 
-        const isAffordable = gold >= item.stats[item.level - 1].cost;
+        const isAffordable = gold >= item.inGame.stats.cost;
         const isDragDisabled = !isAffordable || !isMyTurn;
 
         return (
