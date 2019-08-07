@@ -36,7 +36,7 @@ class Game extends Component {
         super(props);
 
         this.state = {
-            currentlyDraggedSource: null,
+            currentlyDragged: null,
             currentTarget: null, // OBJECT THAT PLAYER IS CURRENTLY DRAGING OVER
             isTargetLocked: false,
         }
@@ -54,16 +54,15 @@ class Game extends Component {
     }
 
     handleCleanTarget() {
-        let { currentlyDraggedSource, isTargetLocked } = this.state;
-        let shouldCleanTarget = currentlyDraggedSource !== null && currentlyDraggedSource !== PLAYER_HAND_ID && !isTargetLocked;
+        let { currentlyDragged, isTargetLocked } = this.state;
+        let shouldCleanTarget = currentlyDragged !== null && currentlyDragged.droppableId !== PLAYER_HAND_ID && !isTargetLocked;
 
         if (shouldCleanTarget) this.setState({ currentTarget: PLAYER_BOARD_ID });
     }
 
     handleSetTarget(id) {
-        let { currentlyDraggedSource, isTargetLocked } = this.state;
-        let shouldSetTarget = currentlyDraggedSource !== null && currentlyDraggedSource !== PLAYER_HAND_ID && !isTargetLocked;
-
+        let { currentlyDragged, isTargetLocked } = this.state;
+        let shouldSetTarget = currentlyDragged !== null && currentlyDragged.droppableId !== PLAYER_HAND_ID && !isTargetLocked;
         if (shouldSetTarget) this.setState({ currentTarget: id });
     }
 
@@ -72,7 +71,7 @@ class Game extends Component {
         if (start.source.droppableId === PLAYER_BOARD_ID) this.props.dispatch(setGameState(GAME_STATE.TARGETING));
         else this.props.dispatch(setGameState(GAME_STATE.BUSY))
 
-        this.setState({ currentlyDraggedSource: start.source.droppableId, currentTarget: start.source.droppableId })
+        this.setState({ currentlyDragged: start.source, currentTarget: start.source.droppableId })
     }
 
     onDragUpdate = (update) => {
@@ -108,13 +107,18 @@ class Game extends Component {
             ));
         }
         this.props.dispatch(setGameState(GAME_STATE.IDLE))
-        this.setState({ currentlyDraggedSource: null, currentTarget: null, isTargetLocked: false })
+        this.setState({ currentlyDragged: null, currentTarget: null, isTargetLocked: false })
     }
 
     render() {
-        const { currentTarget, currentlyDraggedSource } = this.state;
+        const { currentTarget, currentlyDragged } = this.state;
 
-        const isMinionDragged = currentlyDraggedSource === PLAYER_BOARD_ID;
+        let isMinionDragged, isCardDragged;
+        if (currentlyDragged) {
+            isMinionDragged = currentlyDragged.droppableId === PLAYER_BOARD_ID;
+            isCardDragged = currentlyDragged.droppableId === PLAYER_HAND_ID;
+        }
+        const currentlyDraggedCardId = isCardDragged ? currentlyDragged.index : null;
 
         return (
 
@@ -141,6 +145,7 @@ class Game extends Component {
                         handleCleanTarget={this.handleCleanTarget}
                         handleSetTarget={this.handleSetTarget}
                         handleLockTarget={this.handleLockTarget}
+                        currentlyDraggedCardId={currentlyDraggedCardId}
                     ></Board>
 
                     <PlayerDeck />

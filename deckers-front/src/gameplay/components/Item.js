@@ -12,12 +12,12 @@ const StyledItem = styled.div`
 
     background: ${props => props.isDragging ? 'lightgreen' : 'grey'};
 
-    border: ${props => props.isDragDisabled ? 'none' : '2px solid rgba(165, 255, 48, 0.7)'};
-    border-style: ${props => props.isDragDisabled ? 'none' : 'solid solid none solid'};
+    border: ${props => !props.canBeSummoned ? 'none' : '2px solid rgba(165, 255, 48, 0.7)'};
+    border-style: ${props => !props.canBeSummoned ? 'none' : 'solid solid none solid'};
 
-    -webkit-box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
-    -moz-box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
-    box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
+    -webkit-box-shadow: ${props => !props.canBeSummoned ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
+    -moz-box-shadow: ${props => !props.canBeSummoned ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
+    box-shadow: ${props => !props.canBeSummoned ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
 `;
 
 function getStyle(style, snapshot, cardsOnBoardLength, currentTarget) {
@@ -36,20 +36,15 @@ function getStyle(style, snapshot, cardsOnBoardLength, currentTarget) {
     };
 }
 class Content extends Component {
-    componentDidUpdate(prevProps) {
-        const { snapshot, setIsDragging } = this.props;
-        if (prevProps.snapshot.isDragging !== snapshot.isDragging) setIsDragging(snapshot.isDragging)
-    }
-
     render() {
-        const { provided, snapshot, item, isDragDisabled, cardsOnBoard, currentTarget } = this.props;
+        const { provided, snapshot, item, cardsOnBoard, currentTarget, canBeSummoned } = this.props;
         return (
             <StyledItem
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
                 isDragging={snapshot.isDragging}
-                isDragDisabled={isDragDisabled}
+                canBeSummoned={canBeSummoned}
                 style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget)}
             >
                 <div>{item.name}</div>
@@ -64,13 +59,10 @@ class Content extends Component {
 class Item extends Component {
     constructor(props) {
         super(props);
-        const uniqueId = '_' + Math.random().toString(36).substr(2, 9);
-        this.state = { isDragging: false, uniqueId }
-        this.setIsDragging = this.setIsDragging.bind(this);
-    }
-
-    setIsDragging(isDragging) {
-        this.setState({ isDragging })
+        const uniqueId = '_' + Math.random().toString(36).substr(2, 9) + this.props.index;
+        this.state = {
+            uniqueId
+        }
     }
 
     render() {
@@ -78,7 +70,9 @@ class Item extends Component {
         const { uniqueId } = this.state;
 
         const isAffordable = gold >= item.inGame.stats.cost;
-        const isDragDisabled = !isAffordable || !isMyTurn;
+        const canBeSummoned = isMyTurn && isAffordable;
+
+        const isDragDisabled = !isMyTurn;
 
         return (
             <Draggable
@@ -91,8 +85,7 @@ class Item extends Component {
                         item={item}
                         provided={provided}
                         snapshot={snapshot}
-                        isDragDisabled={isDragDisabled}
-                        setIsDragging={this.setIsDragging}
+                        canBeSummoned={canBeSummoned}
                         cardsOnBoard={cardsOnBoard}
                         currentTarget={currentTarget}
                     >

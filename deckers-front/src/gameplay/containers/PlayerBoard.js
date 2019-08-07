@@ -15,6 +15,13 @@ const Wrapper = styled.div`
 `;
 
 class PlayerBoard extends Component {
+    // shouldComponentUpdate(nextProps) {
+    //     if (this.props.items === nextProps.items) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
+
     render() {
         const { isMyTurn, items, placeholder, handleLockTarget } = this.props
 

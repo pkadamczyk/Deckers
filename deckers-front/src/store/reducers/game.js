@@ -119,6 +119,11 @@ function handleSummonCard(state, action) {
     const { playerHeroGold, cardsOnHand, cardsOnBoard } = state;
     const { droppableDestination, droppableSource } = action;
 
+    SOCKET.emit('card-summoned', {
+        boardPosition: droppableDestination.index,
+        handPosition: cardsOnHand[droppableSource.index].position,
+    });
+
     let sourceClone = Array.from(cardsOnHand);
     let destClone = Array.from(cardsOnBoard);
     let [removed] = sourceClone.splice(droppableSource.index, 1);

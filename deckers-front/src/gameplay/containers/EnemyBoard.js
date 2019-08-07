@@ -42,6 +42,13 @@ class EnemyBoard extends Component {
         this.state = { flipped: null };
     }
 
+    shouldComponentUpdate(nextProps) {
+        if (this.props.items === nextProps.items) {
+            return false;
+        }
+        return true;
+    }
+
     render() {
         const { currentTarget, isMinionDragged, gameState } = this.props;
         const cleanTarget = this.props.handleCleanTarget;

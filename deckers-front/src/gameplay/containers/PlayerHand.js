@@ -24,9 +24,8 @@ const DroppableDiv = styled.div`
 
 class PlayerHand extends Component {
     render() {
-        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand, currentTarget } = this.props;
+        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand: items, currentTarget } = this.props;
         const isDropDisabled = isMinionDragged;
-        const items = cardsOnHand;
 
         return (
             <Droppable
@@ -50,8 +49,7 @@ class PlayerHand extends Component {
                                 cardsOnBoard={cardsOnBoard}
                                 currentTarget={currentTarget}
                             ></Item>
-                        )
-                        )}
+                        ))}
                         {provided.placeholder}
                     </DroppableDiv>
                 )}
