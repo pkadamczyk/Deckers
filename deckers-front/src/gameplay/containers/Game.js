@@ -85,6 +85,8 @@ class Game extends Component {
         let { source, destination } = result;
         let { currentTarget } = this.state;
 
+        this.setState({ currentlyDragged: null, isTargetLocked: false })
+
         if (!destination && currentTarget === PLAYER_HAND_ID) { }
         // END_TARGETING
         else if (source.droppableId === PLAYER_BOARD_ID) {
@@ -107,7 +109,7 @@ class Game extends Component {
             ));
         }
         this.props.dispatch(setGameState(GAME_STATE.IDLE))
-        this.setState({ currentlyDragged: null, currentTarget: null, isTargetLocked: false })
+        this.setState({ currentTarget: null })
     }
 
     render() {

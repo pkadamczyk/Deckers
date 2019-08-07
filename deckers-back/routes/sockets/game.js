@@ -133,6 +133,7 @@ class Game {
         // Move this to Player function?
         let enemyHealth = players[+!currentPlayer].health;
         enemyHealth = enemyHealth - attackingMinion.inGame.stats.damage;
+
         players[+!currentPlayer].health = enemyHealth;
     }
 
@@ -258,6 +259,13 @@ module.exports.connect = function (io) {
         socket.on('minion-attacked', function ({ playerMinionId, enemyMinionId }) {
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
             const result = game.handleAttackEvent(playerMinionId, enemyMinionId);
+
+            // Handle game over
+            const deadPlayerIndex = result.findIndex(player => player.health <= 0)
+            if (deadPlayerIndex !== -1) {
+                // sending to all clients in 'game' room, including sender
+                return GAME_IO.in("game-" + game.gameId).emit('game-over', { winner: +!deadPlayerIndex });
+            }
 
             // sending to all clients in 'game' room except sender
             socket.to("game-" + game.gameId).emit('enemy-minion-attacked', {

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux"
+import { withRouter } from 'react-router-dom';
 
 import openSocket from 'socket.io-client';
-import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent, combatResultsComparison } from '../../store/actions/socket';
+import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent, combatResultsComparison, gameOverEvent } from '../../store/actions/socket';
 export const SOCKET = openSocket('http://localhost:8080/game');
 
 class Socket extends Component {
@@ -30,7 +31,10 @@ class Socket extends Component {
         SOCKET.on("combat-results-comparison", (data) => {
             this.props.dispatch(combatResultsComparison(data))
         })
-
+        SOCKET.on("game-over", (data) => {
+            this.props.dispatch(gameOverEvent(data))
+            this.props.history.push("/matchmaking")
+        })
     }
 
     render() {
@@ -38,4 +42,4 @@ class Socket extends Component {
     }
 }
 
-export default connect()(Socket); 
+export default withRouter(connect()(Socket)); 
