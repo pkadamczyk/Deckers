@@ -32,8 +32,8 @@ class Socket extends Component {
             this.props.dispatch(combatResultsComparison(data))
         })
         SOCKET.on("game-over", (data) => {
-            this.props.dispatch(gameOverEvent(data))
             this.props.history.push("/matchmaking")
+            this.props.dispatch(gameOverEvent(data))
         })
     }
 

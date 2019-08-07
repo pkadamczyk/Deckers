@@ -25,7 +25,7 @@ const DroppableDiv = styled.div`
 class Board extends Component {
     render() {
         const { isMinionDragged, currentTarget, handleCleanTarget, handleSetTarget, handleLockTarget, currentlyDraggedCardId } = this.props;
-        const { enemyCardsOnBoard, cardsOnBoard, isMyTurn, cardsOnHand, playerGold } = this.props;
+        const { enemyCardsOnBoard, cardsOnBoard, isMyTurn, cardsOnHand, playerGold, gameState } = this.props;
 
         let isAffordable = true;
         if (currentlyDraggedCardId !== null) {
@@ -66,6 +66,7 @@ class Board extends Component {
                             isMyTurn={isMyTurn}
                             placeholder={provided.placeholder}
                             handleLockTarget={handleLockTarget}
+                            gameState={gameState}
                         />
                     </DroppableDiv>
                 )}
@@ -76,6 +77,7 @@ class Board extends Component {
 
 function mapStateToProps(state) {
     return {
+        gameState: state.game.gameState,
         playerGold: state.game.playerHeroGold,
         cardsOnHand: state.game.cardsOnHand,
         isMyTurn: state.game.isMyTurn,

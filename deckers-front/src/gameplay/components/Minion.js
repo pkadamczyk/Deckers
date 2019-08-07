@@ -3,6 +3,7 @@ import styled from "styled-components"
 
 import { Draggable } from 'react-beautiful-dnd';
 import { CARD_WIDTH } from '../containers/Board';
+import { GAME_STATE } from '../../store/reducers/game';
 
 const StyledItem = styled.div` 
     margin: 0 8px 0 0;
@@ -32,7 +33,9 @@ function getStyle(style, snapshot) {
 }
 
 class Item extends Component {
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
+        const { snapshot, setIsDragging } = this.props;
+        if (prevProps.snapshot.isDragging !== snapshot.isDragging) setIsDragging(snapshot.isDragging)
         if (this.props.snapshot.isDropAnimating) this.props.lockTarget();
     }
 
@@ -61,15 +64,25 @@ class Minion extends Component {
         super(props);
         const uniqueId = '_' + Math.random().toString(36).substr(2, 9);
         this.state = {
+            isDragging: false,
             uniqueId
         }
+        this.setIsDragging = this.setIsDragging.bind(this);
     }
+
+    setIsDragging(isDragging) {
+        this.setState({ isDragging })
+    }
+
     render() {
+        const { item, index, isMyTurn, gameState } = this.props;
+        const { isDragging } = this.state;
         const lockTarget = this.props.handleLockTarget;
-        const { item, index, isMyTurn } = this.props;
 
         const hasDamage = item.inGame.stats.damage > 0;
-        const isDragDisabled = !isMyTurn || !item.inGame.isReady || !hasDamage;
+        // const isIdle = gameState === GAME_STATE.IDLE && !isDragging
+        const isDragDisabled = !isMyTurn || !item.inGame.isReady || !hasDamage || (gameState !== GAME_STATE.IDLE && !isDragging);;
+        // (gameState !== GAME_STATE.IDLE && !isDragging)
 
         const { uniqueId } = this.state;
         return (
@@ -85,6 +98,7 @@ class Minion extends Component {
                         snapshot={snapshot}
                         isDragDisabled={isDragDisabled}
                         item={item}
+                        setIsDragging={this.setIsDragging}
                     />
                 )}
             </Draggable>
