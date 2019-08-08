@@ -2,10 +2,13 @@ import { CONNECTED_TO_GAME, REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, ATTACK
 import { SET_GAME_STATE, ATTACK_MINION } from "../actionTypes";
 import { GAME_STATE } from "../reducers/game";
 import { ENEMY_HERO_ID } from "../../gameplay/containers/Game";
-import { SOCKET } from "../../gameplay/containers/Socket";
 
+import openSocket from 'socket.io-client';
+export let SOCKET;
 
 export const connectedToGame = (gameInfo) => {
+  SOCKET = openSocket('http://localhost:8080/game')
+
   SOCKET.emit('join', {
     gameId: gameInfo.gameId,
     role: gameInfo.role

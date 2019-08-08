@@ -1,5 +1,5 @@
 import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA } from "../actionTypes"
-import { SOCKET } from "../../gameplay/containers/Socket";
+import { SOCKET } from "../actions/game";
 export const GAME_STATE = {
     BUSY: 1,
     TARGETING: 2,

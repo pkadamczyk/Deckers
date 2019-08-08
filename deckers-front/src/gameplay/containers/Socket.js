@@ -2,12 +2,8 @@ import React, { Component } from 'react';
 import { connect } from "react-redux"
 import { withRouter } from 'react-router-dom';
 
-import openSocket from 'socket.io-client';
 import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent, combatResultsComparison, clearGameData } from '../../store/actions/socket';
-import { updateUserAfterGame } from '../../store/actions/game';
-
-export const SOCKET = openSocket('http://localhost:8080/game');
-
+import { updateUserAfterGame, SOCKET } from '../../store/actions/game';
 class Socket extends Component {
     componentDidMount() {
         SOCKET.on("turn-ended", () => {
@@ -34,14 +30,17 @@ class Socket extends Component {
             this.props.dispatch(combatResultsComparison(data))
         })
         SOCKET.on("game-over", ({ winner }) => {
-            this.props.history.push("/matchmaking")
-            this.props.dispatch(clearGameData({ winner }));
+
         })
         SOCKET.on('user-data-update', (data) => {
-            // this.props.history.push("/matchmaking")
             this.props.dispatch(updateUserAfterGame(data));
+            this.props.history.push("/matchmaking")
+            this.props.dispatch(clearGameData({}));
         })
-        // 
+    }
+
+    componentWillUnmount() {
+        SOCKET.disconnect();
     }
 
     render() {
