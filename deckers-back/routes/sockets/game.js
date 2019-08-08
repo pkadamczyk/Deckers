@@ -2,6 +2,7 @@ var roomdata = require('roomdata');
 
 // var User = require("../../models/user");
 const DatabaseGame = require("../../models/game");
+const UserModel = require("../../models/user");
 
 const ROOMDATA_KEYS = {
     GAME: "GAME",
@@ -86,10 +87,12 @@ Player.MAX_HERO_HEALTH = 10;
 
 class Game {
     constructor(databaseGame) {
+        this.gameId = databaseGame._id;
+        this.playersIdArray = databaseGame.players.map(player => player.user);
+
         this.players = [];
         this.currentPlayer = 1;
         this.currentRound = 1;
-        this.gameId = databaseGame._id;
 
         this.players = databaseGame.players.map(player => new Player(player.deck));
     }
@@ -185,12 +188,32 @@ class Game {
 
         return true;
     }
+
+    async handleGameOver(winner) {
+        try {
+            const usersPromises = this.playersIdArray.map(id => UserModel.findById(id))
+            const users = await Promise.all(usersPromises);
+
+            // Rewards hard coded xD
+            users[winner].currency.gold += Game.WIN_REWARD;
+            users[+!winner].currency.gold += Game.LOSE_REWARD;
+
+            await users.map(user => user.save())
+            return users.map(usr => ({ gold: usr.currency.gold, id: usr._id })); // Returns only gold amount, no need for more now | id for user identyfication
+        } catch (err) {
+            console.log(err)
+        }
+
+    }
 }
 
 Game.PLAYER_AMOUNT = 2;
 Game.CARD_DRAW_COST = 1; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
 Game.MAX_CARDS_ON_BOARD = 4; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
 Game.MAX_CARDS_ON_HAND = 6; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
+
+Game.WIN_REWARD = 17;
+Game.LOSE_REWARD = 9;
 
 module.exports.connect = function (io) {
     const GAME_IO = io.of('/game');
@@ -256,7 +279,7 @@ module.exports.connect = function (io) {
             console.log(`Card summoned!`)
         })
 
-        socket.on('minion-attacked', function ({ playerMinionId, enemyMinionId }) {
+        socket.on('minion-attacked', async function ({ playerMinionId, enemyMinionId }) {
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
             const result = game.handleAttackEvent(playerMinionId, enemyMinionId);
 
@@ -264,7 +287,13 @@ module.exports.connect = function (io) {
             const deadPlayerIndex = result.findIndex(player => player.health <= 0)
             if (deadPlayerIndex !== -1) {
                 // sending to all clients in 'game' room, including sender
-                return GAME_IO.in("game-" + game.gameId).emit('game-over', { winner: +!deadPlayerIndex });
+                GAME_IO.in("game-" + game.gameId).emit('game-over', { winner: +!deadPlayerIndex });
+
+                const usersData = await game.handleGameOver(+!deadPlayerIndex);
+                // sending to all clients in 'game' room, including sender
+                GAME_IO.in("game-" + game.gameId).emit('user-data-update', { usersData });
+
+                return
             }
 
             // sending to all clients in 'game' room except sender

@@ -1,4 +1,4 @@
-import { CONNECTED_TO_GAME, REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, ATTACK_HERO } from "../actionTypes";
+import { CONNECTED_TO_GAME, REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, ATTACK_HERO, UPDATE_USER_AFTER_GAME } from "../actionTypes";
 import { SET_GAME_STATE, ATTACK_MINION } from "../actionTypes";
 import { GAME_STATE } from "../reducers/game";
 import { ENEMY_HERO_ID } from "../../gameplay/containers/Game";
@@ -79,5 +79,12 @@ export const attackHero = (source) => {
   return {
     type: ATTACK_HERO,
     playerMinionId
+  }
+}
+
+export const updateUserAfterGame = ({ usersData }) => {
+  return {
+    usersData,
+    type: UPDATE_USER_AFTER_GAME
   }
 }

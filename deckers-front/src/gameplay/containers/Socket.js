@@ -3,7 +3,9 @@ import { connect } from "react-redux"
 import { withRouter } from 'react-router-dom';
 
 import openSocket from 'socket.io-client';
-import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent, combatResultsComparison, gameOverEvent } from '../../store/actions/socket';
+import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent, combatResultsComparison, clearGameData } from '../../store/actions/socket';
+import { updateUserAfterGame } from '../../store/actions/game';
+
 export const SOCKET = openSocket('http://localhost:8080/game');
 
 class Socket extends Component {
@@ -31,10 +33,15 @@ class Socket extends Component {
         SOCKET.on("combat-results-comparison", (data) => {
             this.props.dispatch(combatResultsComparison(data))
         })
-        SOCKET.on("game-over", (data) => {
+        SOCKET.on("game-over", ({ winner }) => {
             this.props.history.push("/matchmaking")
-            this.props.dispatch(gameOverEvent(data))
+            this.props.dispatch(clearGameData({ winner }));
         })
+        SOCKET.on('user-data-update', (data) => {
+            // this.props.history.push("/matchmaking")
+            this.props.dispatch(updateUserAfterGame(data));
+        })
+        // 
     }
 
     render() {

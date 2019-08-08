@@ -1,4 +1,4 @@
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, GAME_OVER } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA } from "../actionTypes"
 import { SOCKET } from "../../gameplay/containers/Socket";
 export const GAME_STATE = {
     BUSY: 1,
@@ -74,7 +74,7 @@ export default (state = DEFAULT_STATE, action) => {
         case ATTACK_HERO:
             return handleAttackHero(state, action);
 
-        case GAME_OVER:
+        case RESET_GAME_DATA:
             return DEFAULT_STATE
 
         default:

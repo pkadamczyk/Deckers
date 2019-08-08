@@ -1,4 +1,4 @@
-import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, GAME_OVER } from "../actionTypes";
+import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA } from "../actionTypes";
 
 export const endTurnEvent = () => {
     return {
@@ -44,9 +44,9 @@ export const combatResultsComparison = ({ result }) => {
     }
 }
 
-export const gameOverEvent = ({ winner }) => {
+export const clearGameData = ({ winner }) => {
     return {
         winner,
-        type: GAME_OVER,
+        type: RESET_GAME_DATA,
     }
 }
