@@ -22,6 +22,7 @@ import Board from './Board';
 import Socket from './Socket';
 
 import { PLAYER_BOARD_ID } from "./Board"
+import Starter from './Starter';
 export const ENEMY_HERO_ID = "enemy-portrait"
 
 const GameWrapper = styled.div`
@@ -126,6 +127,7 @@ class Game extends Component {
 
             <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate}>
                 <GameWrapper>
+                    <Starter />
                     <EnemyHand />
                     <EnemyHero
                         isMinionDragged={isMinionDragged}
