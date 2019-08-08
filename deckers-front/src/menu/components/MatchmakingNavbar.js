@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import openSocket from 'socket.io-client';
 import { Link, withRouter } from 'react-router-dom';
 import { connectToGame } from '../../store/actions/matchmaking';
-const socket = openSocket('http://localhost:8080/matchmaking');
-
+let socket = openSocket('http://localhost:8080/matchmaking');
 
 
 class MatchmakingNavbar extends Component {
@@ -13,10 +12,15 @@ class MatchmakingNavbar extends Component {
         this.handleConnectToGame = this.handleConnectToGame.bind(this)
     }
     componentDidMount() {
+        socket = openSocket('http://localhost:8080/matchmaking');
         socket.on("game-ready", (data) => {
             console.log("Socket")
             this.handleConnectToGame(data)
         })
+    }
+
+    componentWillUnmount() {
+        socket.disconnect()
     }
 
     handleConnectToGame(data) {
