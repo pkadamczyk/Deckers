@@ -203,7 +203,19 @@ class Game {
         } catch (err) {
             console.log(err)
         }
+    }
 
+    getStarterCards({ selected, role }) {
+        const cardsToSplice = selected === null ? 3 : 4;
+        let replacedCard;
+
+        const cards = this.players[role].deck.splice(0, cardsToSplice);
+        if (selected !== null) replacedCard = cards.splice(selected, 1);
+
+        if (replacedCard) this.players[role].deck.push(replacedCard);
+
+        this.players[role].cardsOnHand.push(...cards);
+        return cards;
     }
 }
 
@@ -234,6 +246,14 @@ module.exports.connect = function (io) {
                 const game = new Game(foundGame.toObject());
                 roomdata.set(socket, ROOMDATA_KEYS.GAME, game);
             }
+        })
+
+        socket.on('pick-starter-cards', function (data) {
+            const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
+            const starterCards = game.getStarterCards(data);
+
+            // sending to individual socketid (private message)
+            GAME_IO.to(`${socket.id}`).emit('starter-cards-picked', { starterCards });
         })
 
         socket.on('data-comparison', function (data) {
@@ -287,7 +307,7 @@ module.exports.connect = function (io) {
             const deadPlayerIndex = result.findIndex(player => player.health <= 0)
             if (deadPlayerIndex !== -1) {
                 // sending to all clients in 'game' room, including sender
-                GAME_IO.in("game-" + game.gameId).emit('game-over', { winner: +!deadPlayerIndex });
+                // GAME_IO.in("game-" + game.gameId).emit('game-over', { winner: +!deadPlayerIndex });
 
                 const usersData = await game.handleGameOver(+!deadPlayerIndex);
                 // sending to all clients in 'game' room, including sender

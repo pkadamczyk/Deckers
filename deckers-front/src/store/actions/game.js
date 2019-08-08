@@ -91,3 +91,15 @@ export const updateUserAfterGame = ({ usersData }) => {
     type: UPDATE_USER_AFTER_GAME
   }
 }
+
+export const pickStarterCards = (selected, role) => {
+  SOCKET.emit('pick-starter-cards', {
+    selected,
+    role,
+  });
+
+  return {
+    type: "NONE",
+  }
+}
+

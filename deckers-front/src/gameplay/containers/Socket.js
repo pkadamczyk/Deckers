@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux"
 import { withRouter } from 'react-router-dom';
 
-import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent, combatResultsComparison, clearGameData } from '../../store/actions/socket';
+import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent, combatResultsComparison, clearGameData, starterCardsPicked } from '../../store/actions/socket';
 import { updateUserAfterGame, SOCKET } from '../../store/actions/game';
 class Socket extends Component {
     componentDidMount() {
@@ -29,13 +29,15 @@ class Socket extends Component {
         SOCKET.on("combat-results-comparison", (data) => {
             this.props.dispatch(combatResultsComparison(data))
         })
-        SOCKET.on("game-over", ({ winner }) => {
-
-        })
+        // SOCKET.on("game-over", ({ winner }) => {
+        // })
         SOCKET.on('user-data-update', (data) => {
             this.props.dispatch(updateUserAfterGame(data));
             this.props.history.push("/matchmaking")
             this.props.dispatch(clearGameData({}));
+        })
+        SOCKET.on('starter-cards-picked', (data) => {
+            this.props.dispatch(starterCardsPicked(data));
         })
     }
 

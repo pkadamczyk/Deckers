@@ -115,6 +115,7 @@ class Game extends Component {
 
     render() {
         const { currentTarget, currentlyDragged } = this.state;
+        const { gameReady } = this.props;
 
         let isMinionDragged, isCardDragged;
         if (currentlyDragged) {
@@ -127,7 +128,7 @@ class Game extends Component {
 
             <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate}>
                 <GameWrapper>
-                    <Starter />
+                    {!gameReady && <Starter />}
                     <EnemyHand />
                     <EnemyHero
                         isMinionDragged={isMinionDragged}
@@ -161,4 +162,10 @@ class Game extends Component {
     }
 }
 
-export default connect()(Game);
+function mapStateToProps(state) {
+    return {
+        gameReady: !!state.game.currentRound
+    }
+}
+
+export default connect(mapStateToProps)(Game);

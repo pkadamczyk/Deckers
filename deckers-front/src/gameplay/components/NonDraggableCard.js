@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { CARD_WIDTH } from '../containers/Board';
 
 const StyledItem = styled.div` 
-    margin: 0 8px 0 0;
+    margin: 0 11px 0 0;
     width: ${props => CARD_WIDTH + 'px'};
     height: 130px;
 
@@ -27,35 +27,31 @@ class NonDraggableCard extends Component {
     }
 
     handleOnClick() {
-        if (this.props.selected === null) {
-            this.setState((state, props) => {
-                return {
-                    isClicked: !state.isClicked,
-                };
-            })
-            this.props.handleSelection(this.props.id)
-        }
-        else if (this.props.selected === this.props.id) {
-            this.setState((state, props) => {
-                return {
-                    isClicked: !state.isClicked,
-                };
-            })
-            this.props.handleSelection(null)
-        }
+        const { selected, id, handleSelection } = this.props;
 
+        if (selected === null) {
+            this.setState((state) => ({ isClicked: !state.isClicked }))
+            handleSelection(id)
+        }
+        else if (selected === id) {
+            this.setState((state) => ({ isClicked: !state.isClicked }))
+            handleSelection(null)
+        }
     }
 
     render() {
+        const { card } = this.props;
+        const { isClicked } = this.state;
+
         return (
             <StyledItem
                 onClick={this.handleOnClick}
-                isClicked={this.state.isClicked}
+                isClicked={isClicked}
             >
-                <div>aaa</div>
-                <div>Hp: 1</div>
-                <div>Dmg: 2</div>
-                <div>Cost: 3</div>
+                <div>{card.name}</div>
+                <div>Hp: {card.stats[card.level].health}</div>
+                <div>Dmg: {card.stats[card.level].damage}</div>
+                <div>Cost: {card.stats[card.level].cost}</div>
             </StyledItem>
         )
     }

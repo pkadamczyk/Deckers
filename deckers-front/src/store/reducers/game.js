@@ -1,4 +1,4 @@
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED } from "../actionTypes"
 import { SOCKET } from "../actions/game";
 export const GAME_STATE = {
     BUSY: 1,
@@ -19,7 +19,7 @@ const DEFAULT_STATE = {
     enemyCardsOnHand: [],
 
     isMyTurn: true,
-    currentRound: 1,
+    currentRound: 0,
 
     gameState: GAME_STATE.IDLE,
 
@@ -40,6 +40,9 @@ export default (state = DEFAULT_STATE, action) => {
     switch (action.type) {
         case CONNECTED_TO_GAME:
             return handleConnectToGame(state, action);
+
+        case STARTER_CARDS_PICKED:
+            return handlePickStarterCards(state, action)
 
         case COMBAT_RESULTS_COMPARISON:
             return handleCombatResultsComparison(state, action);
@@ -87,9 +90,17 @@ function handleConnectToGame(state, action) {
         ...state,
         isMyTurn: !!action.gameInfo.role,
         gameInfo: action.gameInfo,
-        deckCardsAmount: action.gameInfo.playerDeckCardsAmount,
-        enemyDeckCardsAmount: action.gameInfo.enemyDeckCardsAmount,
+        deckCardsAmount: action.gameInfo.playerDeckCardsAmount - 3,
+        enemyDeckCardsAmount: action.gameInfo.enemyDeckCardsAmount - 3,
     };
+}
+
+function handlePickStarterCards(state, action) {
+    const { starterCards } = action
+    const { cardsOnHand } = state;
+
+    let cardsArr = starterCards.map((c, i) => ({ ...c, position: i }))
+    return { ...state, cardsOnHand: [...cardsOnHand, ...cardsArr], currentRound: 1, enemyCardsOnHand: [{}, {}, {}] }
 }
 
 function handleCombatResultsComparison(state, { result }) {

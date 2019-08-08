@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import styled from "styled-components"
 import { connect } from "react-redux"
 import NonDraggableCard from '../components/NonDraggableCard';
+import { pickStarterCards } from '../../store/actions/game';
 
 const Wrapper = styled.div`
     height: 100%;
@@ -11,6 +12,7 @@ const Wrapper = styled.div`
 
     display: flex;
     align-items: center;
+    flex-direction: column;
     justify-content: center;
 
     background: rgba(0,0,0,0.7);
@@ -18,9 +20,20 @@ const Wrapper = styled.div`
     position:absolute;
 `;
 
+const Row = styled.div`
+    display: flex;
+    margin: 20px;
+`;
+
+const Text = styled.div`
+    color: #f8f8ff;
+    font-size: 24px;
+`;
+
 const Button = styled.button`
     height:50px;
     width:120px;
+    margin-top: 10px;
 
     background-color: #749a02;
     border-color:#749a02;
@@ -45,21 +58,42 @@ class Starter extends Component {
         }
 
         this.handleSelection = this.handleSelection.bind(this);
+        this.handleOnClick = this.handleOnClick.bind(this);
     }
 
     handleSelection(id) {
         this.setState({ selected: id })
     }
 
+    handleOnClick() {
+        const { role } = this.props;
+        const { selected } = this.state;
+
+        this.props.dispatch(pickStarterCards(selected, role))
+    }
+
     render() {
         const { selected } = this.state;
+        const { cards } = this.props;
+
+        const primaryCards = cards.slice(0, 3);
+        // const [replacementCard] = cards.slice(-1)
 
         return (
             <Wrapper>
-                <NonDraggableCard handleSelection={this.handleSelection} id={0} selected={selected} />
-                <NonDraggableCard handleSelection={this.handleSelection} id={1} selected={selected} />
-                <NonDraggableCard handleSelection={this.handleSelection} id={2} selected={selected} />
-                <Button>
+                <Text>You can pick one card to be replaced</Text>
+                <Row>
+                    {primaryCards.map((card, index) => (
+                        <NonDraggableCard
+                            key={card._id + index}
+                            card={card}
+                            handleSelection={this.handleSelection}
+                            id={index}
+                            selected={selected}
+                        ></NonDraggableCard>
+                    ))}
+                </Row>
+                <Button onClick={this.handleOnClick}>
                     Ready
                 </Button>
             </Wrapper>
@@ -69,6 +103,8 @@ class Starter extends Component {
 
 function mapStateToProps(state) {
     return {
+        role: state.game.gameInfo.role,
+        cards: state.game.gameInfo.starterCards,
     }
 }
 
