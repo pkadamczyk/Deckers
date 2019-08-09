@@ -8,6 +8,7 @@ let socket = openSocket('http://localhost:8080/matchmaking');
 class MatchmakingNavbar extends Component {
     constructor(props) {
         super(props)
+        this.state = { isBusy: false }
 
         this.handleConnectToGame = this.handleConnectToGame.bind(this)
         this.handleOnClick = this.handleOnClick.bind(this)
@@ -39,12 +40,17 @@ class MatchmakingNavbar extends Component {
 
     handleAbandon() {
         const { usr_id, abandonGame } = this.props;
+        const { isBusy } = this.state;
 
+        this.setState(state => ({ isBusy: !state.isBusy }))
         abandonGame(usr_id)
+        setTimeout(() => this.setState(state => ({ isBusy: !state.isBusy })), 1000)
     }
 
     render() {
         const { deck_id, inGame } = this.props;
+        const { isBusy } = this.state;
+
         const isDeckSelected = !!deck_id;
 
         return (
@@ -56,8 +62,8 @@ class MatchmakingNavbar extends Component {
                         </button>
                         :
                         <div>
-                            <button className="btn btn-danger">Reconnect</button>
-                            <button className="btn btn-danger" onClick={this.handleAbandon}>Abandon</button>
+                            <button className="btn btn-danger" disabled={isBusy}>Reconnect</button>
+                            <button className="btn btn-danger" onClick={this.handleAbandon} disabled={isBusy}>Abandon</button>
                         </div>
                     }
                 </div>
