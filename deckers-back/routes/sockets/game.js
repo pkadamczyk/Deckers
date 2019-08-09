@@ -49,7 +49,7 @@ class Player {
         this.currentCard = 0;
 
         this.cardsOnBoard = []
-        this.cardsOnHand = []
+        this.cardsOnHand = null
     }
 
     drawCard() {
@@ -214,7 +214,7 @@ class Game {
 
         if (replacedCard) this.players[role].deck.push(replacedCard);
 
-        this.players[role].cardsOnHand.push(...cards);
+        this.players[role].cardsOnHand = cards;
         return cards;
     }
 }
@@ -249,11 +249,20 @@ module.exports.connect = function (io) {
         })
 
         socket.on('pick-starter-cards', function (data) {
+            const { role } = data
+
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
             const starterCards = game.getStarterCards(data);
 
-            // sending to individual socketid (private message)
-            GAME_IO.to(`${socket.id}`).emit('starter-cards-picked', { starterCards });
+            if (!game.players.map(p => p.cardsOnHand === null).includes(true)) {
+                // sending to individual socketid (private message)
+                GAME_IO.to(`${socket.id}`).emit('starter-cards-picked', { starterCards });
+
+                const player2StarterCards = game.players[+!role].cardsOnHand;
+                // sending to all clients in 'game' room except sender
+                socket.to("game-" + game.gameId).emit('starter-cards-picked', { starterCards: player2StarterCards });
+            }
+
         })
 
         socket.on('data-comparison', function (data) {

@@ -27,15 +27,17 @@ class NonDraggableCard extends Component {
     }
 
     handleOnClick() {
-        const { selected, id, handleSelection } = this.props;
+        const { selected, id, handleSelection, hasPicked } = this.props;
 
-        if (selected === null) {
-            this.setState((state) => ({ isClicked: !state.isClicked }))
-            handleSelection(id)
-        }
-        else if (selected === id) {
-            this.setState((state) => ({ isClicked: !state.isClicked }))
-            handleSelection(null)
+        if (!hasPicked) {
+            if (selected === null) {
+                this.setState((state) => ({ isClicked: !state.isClicked }))
+                handleSelection(id)
+            }
+            else if (selected === id) {
+                this.setState((state) => ({ isClicked: !state.isClicked }))
+                handleSelection(null)
+            }
         }
     }
 

@@ -30,6 +30,10 @@ const Text = styled.div`
     font-size: 24px;
 `;
 
+const BottomText = styled(Text)`
+    margin-top:24px;
+`
+
 const Button = styled.button`
     height:50px;
     width:120px;
@@ -55,6 +59,8 @@ class Starter extends Component {
         super(props)
         this.state = {
             selected: null,
+            text: "You can pick one card to be replaced",
+            hasPicked: false,
         }
 
         this.handleSelection = this.handleSelection.bind(this);
@@ -69,11 +75,12 @@ class Starter extends Component {
         const { role } = this.props;
         const { selected } = this.state;
 
+        this.setState({ text: "Please wait", hasPicked: true })
         this.props.dispatch(pickStarterCards(selected, role))
     }
 
     render() {
-        const { selected } = this.state;
+        const { selected, text, hasPicked } = this.state;
         const { cards } = this.props;
 
         const primaryCards = cards.slice(0, 3);
@@ -81,7 +88,7 @@ class Starter extends Component {
 
         return (
             <Wrapper>
-                <Text>You can pick one card to be replaced</Text>
+                <Text>{text}</Text>
                 <Row>
                     {primaryCards.map((card, index) => (
                         <NonDraggableCard
@@ -90,12 +97,16 @@ class Starter extends Component {
                             handleSelection={this.handleSelection}
                             id={index}
                             selected={selected}
+                            hasPicked={hasPicked}
                         ></NonDraggableCard>
                     ))}
                 </Row>
-                <Button onClick={this.handleOnClick}>
-                    Ready
-                </Button>
+                {hasPicked ?
+                    <BottomText>Enemy is still choosing...</BottomText> :
+                    <Button onClick={this.handleOnClick}>
+                        Ready
+                    </Button>
+                }
             </Wrapper>
         )
     }
