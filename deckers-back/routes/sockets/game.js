@@ -210,7 +210,7 @@ class Game {
         let replacedCard;
 
         const cards = this.players[role].deck.splice(0, cardsToSplice);
-        if (selected !== null) replacedCard = cards.splice(selected, 1);
+        if (selected !== null) [replacedCard] = cards.splice(selected, 1);
 
         if (replacedCard) this.players[role].deck.push(replacedCard);
 
