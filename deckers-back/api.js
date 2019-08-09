@@ -178,17 +178,17 @@ router.put("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async fu
 })
 
 // Abandon game endpoint
-router.post("/:usr_id/abandon", loginRequired, ensureCorrectUser, async function (req, res, next) {
+router.post("/:usr_id/game/abandon", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
-        let user = await User.findById(req.user.usr_id)
+        const user = await User.findById(req.params.usr_id);
+        console.log(`${user.username} abandoned game`)
 
         if (!user.inGame) throw new Error("User is not in game");
 
-        foundUser.inGame = false;
-        foundUser.save()
+        user.inGame = false;
+        await user.save()
 
         res.status(200).json({});
-
     } catch (err) {
         console.log(err)
         return next(err);
@@ -204,7 +204,7 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
 
         console.log(`Game id: ${req.params.game_id}`)
         if (foundGame.isFinished) throw new Error("Game finished");
-        // if (!user.inGame) throw new Error("User not in game");
+        if (!user.inGame) throw new Error("User not in game");
 
         // Handle wrong user sytuation
         const playerIndex = foundGame.players.findIndex(player => player.user._id.equals(user._id))

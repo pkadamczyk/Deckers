@@ -2,19 +2,21 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import openSocket from 'socket.io-client';
 import { Link, withRouter } from 'react-router-dom';
-import { connectToGame } from '../../store/actions/matchmaking';
+import { connectToGame, abandonGame } from '../../store/actions/matchmaking';
 let socket = openSocket('http://localhost:8080/matchmaking');
-
 
 class MatchmakingNavbar extends Component {
     constructor(props) {
         super(props)
+
         this.handleConnectToGame = this.handleConnectToGame.bind(this)
+        this.handleOnClick = this.handleOnClick.bind(this)
+        this.handleAbandon = this.handleAbandon.bind(this)
     }
+
     componentDidMount() {
         socket = openSocket('http://localhost:8080/matchmaking');
         socket.on("game-ready", (data) => {
-            console.log("Socket")
             this.handleConnectToGame(data)
         })
     }
@@ -25,21 +27,39 @@ class MatchmakingNavbar extends Component {
 
     handleConnectToGame(data) {
         const { usr_id, deck_id, connectToGame, history } = this.props;
-        connectToGame(data.game_id, usr_id, deck_id, history);
+        const { game_id } = data
+
+        connectToGame(game_id, usr_id, deck_id, history);
+    }
+
+    handleOnClick() {
+        const { usr_id, deck_id } = this.props;
+        socket.emit('join', { usr_id, gameMode: 0, deck_id });
+    }
+
+    handleAbandon() {
+        const { usr_id, abandonGame } = this.props;
+
+        abandonGame(usr_id)
     }
 
     render() {
-        const { usr_id, deck_id } = this.props;
+        const { deck_id, inGame } = this.props;
+        const isDeckSelected = !!deck_id;
+
         return (
             <div className="mm-nav">
                 <div className="mm-options">
-                    <button className="btn btn-success" onClick={() => {
-                        socket.emit('join', { usr_id: usr_id, gameMode: 0, deck_id: deck_id });
-                        console.log("LF game");
-                    }}>Find game</button>}
-                    <Link to="/gameplay">
-                        <button className="btn btn-danger">TEST</button>
-                    </Link>
+                    {!inGame ?
+                        <button className="btn btn-success" onClick={this.handleOnClick} disabled={!isDeckSelected}>
+                            Find game
+                        </button>
+                        :
+                        <div>
+                            <button className="btn btn-danger">Reconnect</button>
+                            <button className="btn btn-danger" onClick={this.handleAbandon}>Abandon</button>
+                        </div>
+                    }
                 </div>
             </div>
         )
@@ -49,9 +69,10 @@ class MatchmakingNavbar extends Component {
 function mapStateToProps(state) {
     return {
         usr_id: state.currentUser.user._id,
+        inGame: state.currentUser.user.inGame,
         deck_id: state.matchmaking.deck
     };
 }
 
 
-export default withRouter(connect(mapStateToProps, { connectToGame })(MatchmakingNavbar))
+export default withRouter(connect(mapStateToProps, { connectToGame, abandonGame })(MatchmakingNavbar))

@@ -217,6 +217,29 @@ class Game {
         this.players[role].cardsOnHand = cards;
         return cards;
     }
+
+    getReconnectData() {
+        const playersDataArray = this.players.map(player => {
+            return {
+                cardsOnBoard: player.cardsOnBoard,
+                cardsOnHand: player.cardsOnHand,
+
+                health: player.health,
+                gold: player.gold,
+
+                cardsLeftInDeck: player.deck.length - player.currentCard,
+            }
+        })
+
+        const data = {
+            currentPlayer: this.currentPlayer,
+            currentRound: this.currentRound,
+
+            playersDataArray,
+        }
+
+        return data
+    }
 }
 
 Game.PLAYER_AMOUNT = 2;
@@ -233,9 +256,24 @@ module.exports.connect = function (io) {
     //     // https://github.com/socketio/socket.io/blob/318d62/examples/chat/index.js#L36
     //     // https://www.npmjs.com/package/roomdata
     GAME_IO.on('connection', async function (socket) {
+        socket.on('disconnect', function () {
+            console.log('Got disconnect!');
+            roomdata.leaveRoom(socket);
+        });
+
+        socket.on('reconnect', function ({ gameId, role }) {
+            console.log('Reconnected');
+            roomdata.joinRoom(socket, "game-" + gameId);
+
+            const data = game.getReconnectData();
+            GAME_IO.to(`${socket.id}`).emit('server-ready', data);
+
+            console.log("Reconnect data:");
+            console.log(data);
+        });
+
         socket.on('join', async function ({ gameId, role }) {
             console.log(`Joined game ${gameId}`)
-
             roomdata.joinRoom(socket, "game-" + gameId);
 
             // Setup objects needed for multi, send ready signal with starting cards
@@ -254,7 +292,6 @@ module.exports.connect = function (io) {
                 const player2StarterCards = game.players[+!role].deck.slice(0, 4);
                 socket.to("game-" + game.gameId).emit('server-ready', { starterCards: player2StarterCards });
             }
-
         })
 
         socket.on('pick-starter-cards', function (data) {
