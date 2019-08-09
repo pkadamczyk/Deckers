@@ -83,8 +83,13 @@ class Starter extends Component {
         const { selected, text, hasPicked } = this.state;
         const { cards } = this.props;
 
-        const primaryCards = cards.slice(0, 3);
+        const isReady = !!cards;
+
+        let primaryCards = null;
+        if (isReady) primaryCards = cards.slice(0, 3);
         // const [replacementCard] = cards.slice(-1)
+
+        if (!isReady) return <Wrapper><Text>Loading...</Text></Wrapper>;
 
         return (
             <Wrapper>

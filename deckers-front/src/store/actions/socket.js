@@ -1,4 +1,4 @@
-import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED } from "../actionTypes";
+import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED, SERVER_READY } from "../actionTypes";
 
 export const endTurnEvent = () => {
     return {
@@ -54,6 +54,13 @@ export const clearGameData = ({ winner }) => {
 export const starterCardsPicked = ({ starterCards }) => {
     return {
         type: STARTER_CARDS_PICKED,
+        starterCards,
+    }
+}
+
+export const serverReadyEvent = ({ starterCards }) => {
+    return {
+        type: SERVER_READY,
         starterCards,
     }
 }

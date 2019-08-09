@@ -219,26 +219,25 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
         const enemyDeckCardsAmount = enemyDeck.length;
 
         const deckId = user.decks.findIndex(deck => deck._id.equals(req.body.deck_id));
-        let gameDeck = user.decks[deckId].cards;
-
-        gameDeck = prepareDeck(gameDeck, user);
+        const userDeck = user.decks[deckId].cards;
 
         if (playerIndex === 0) {
+            const gameDeck = prepareDeck(userDeck, user);
+
             enemyGameDeck = prepareDeck(enemyDeck, enemy)
             foundGame.players[playerIndex].deck = gameDeck;
             foundGame.players[enemyIndex].deck = enemyGameDeck;
-            // animals.slice(3)
 
             await foundGame.save();
         }
+
         res.status(200).json({
             gameId: foundGame._id,
             player: user.username,
             enemy: enemy.username,
 
-            starterCards: gameDeck.slice(0, 4),
             role: playerIndex,
-            playerDeckCardsAmount: gameDeck.length,
+            playerDeckCardsAmount: userDeck.length,
             enemyDeckCardsAmount: enemyDeckCardsAmount
         });
     } catch (err) {

@@ -238,25 +238,34 @@ module.exports.connect = function (io) {
 
             roomdata.joinRoom(socket, "game-" + gameId);
 
-            // Setup objects needed for multi
+            // Setup objects needed for multi, send ready signal with starting cards
             if (role === 0) {
                 const gamePromise = DatabaseGame.findById(gameId);
                 foundGame = await gamePromise;
 
                 const game = new Game(foundGame.toObject());
                 roomdata.set(socket, ROOMDATA_KEYS.GAME, game);
+
+                // sending to individual socketid (private message)
+                const player1StarterCards = game.players[role].deck.slice(0, 4);
+                GAME_IO.to(`${socket.id}`).emit('server-ready', { starterCards: player1StarterCards });
+
+                // sending to all clients in 'game' room except sender
+                const player2StarterCards = game.players[+!role].deck.slice(0, 4);
+                socket.to("game-" + game.gameId).emit('server-ready', { starterCards: player2StarterCards });
             }
+
         })
 
         socket.on('pick-starter-cards', function (data) {
             const { role } = data
 
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
-            const starterCards = game.getStarterCards(data);
+            const player1StarterCards = game.getStarterCards(data);
 
             if (!game.players.map(p => p.cardsOnHand === null).includes(true)) {
                 // sending to individual socketid (private message)
-                GAME_IO.to(`${socket.id}`).emit('starter-cards-picked', { starterCards });
+                GAME_IO.to(`${socket.id}`).emit('starter-cards-picked', { starterCards: player1StarterCards });
 
                 const player2StarterCards = game.players[+!role].cardsOnHand;
                 // sending to all clients in 'game' room except sender

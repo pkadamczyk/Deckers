@@ -1,4 +1,4 @@
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED, SERVER_READY } from "../actionTypes"
 import { SOCKET } from "../actions/game";
 export const GAME_STATE = {
     BUSY: 1,
@@ -40,6 +40,9 @@ export default (state = DEFAULT_STATE, action) => {
     switch (action.type) {
         case CONNECTED_TO_GAME:
             return handleConnectToGame(state, action);
+
+        case SERVER_READY:
+            return handleServerReady(state, action)
 
         case STARTER_CARDS_PICKED:
             return handlePickStarterCards(state, action)
@@ -93,6 +96,13 @@ function handleConnectToGame(state, action) {
         deckCardsAmount: action.gameInfo.playerDeckCardsAmount - 3,
         enemyDeckCardsAmount: action.gameInfo.enemyDeckCardsAmount - 3,
     };
+}
+
+function handleServerReady(state, action) {
+    const { gameInfo } = state;
+    const { starterCards } = action
+
+    return { ...state, gameInfo: { ...gameInfo, starterCards: starterCards } }
 }
 
 function handlePickStarterCards(state, action) {
@@ -173,6 +183,7 @@ function handlePlayerDrawCard(state, action) {
     let { card } = action;
     card.position = cardsOnHand.length;
 
+    debugger
     if (playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
     let playerGoldAmount = playerHeroGold - CARD_DRAW_COST;
     deckCardsAmount--;
