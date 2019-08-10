@@ -186,9 +186,45 @@ router.post("/:usr_id/game/abandon", loginRequired, ensureCorrectUser, async fun
         if (!user.inGame) throw new Error("User is not in game");
 
         user.inGame = false;
+        user.currentGame = null;
+
         await user.save()
 
         res.status(200).json({});
+    } catch (err) {
+        console.log(err)
+        return next(err);
+    }
+})
+
+// Reconnect
+router.post("/:usr_id/game/reconnect", loginRequired, ensureCorrectUser, async function (req, res, next) {
+    try {
+        const userPromise = User.findById(req.params.usr_id).deepPopulate('decks.cards.card');
+        const user = await userPromise;
+        if (!user.inGame) throw new Error("User is not in game");
+
+        const gamePromise = Game.findById(user.currentGame).deepPopulate('players');
+        const foundGame = await gamePromise;
+        if (foundGame.isFinished) throw new Error("Game finished");
+
+        const playerIndex = foundGame.players.findIndex(player => player.user._id.equals(user._id))
+        if (playerIndex == -1) throw new Error("No such user in game data");
+
+        console.log(`${user.username} is reconnecting`);
+
+        const enemyIndex = foundGame.players.findIndex((p, i) => playerIndex !== i);
+        const enemyObject = foundGame.players[enemyIndex];
+        const enemyPromise = User.findById(enemyObject.user._id).deepPopulate('decks.cards.card');
+        const enemy = await enemyPromise;
+
+        res.status(200).json({
+            gameId: foundGame._id,
+            player: user.username,
+            enemy: enemy.username,
+
+            role: playerIndex,
+        });
     } catch (err) {
         console.log(err)
         return next(err);

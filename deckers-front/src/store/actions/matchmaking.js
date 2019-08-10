@@ -1,6 +1,6 @@
 import { apiCall } from "../../services/api";
-import { connectedToGame } from './game';
-import { CHOOSE_DECK, ABANDONED_GAME } from '../actionTypes';
+import { connectedToGame, SOCKET, reconnectedToGame } from './game';
+import { CHOOSE_DECK, ABANDONED_GAME, RECONNECTED_TO_GAME } from '../actionTypes';
 
 export const chooseDeck = (deck_id) => ({
     type: CHOOSE_DECK,
@@ -37,6 +37,21 @@ export function abandonGame(user_id) {
             return apiCall("post", `http://localhost:8080/${user_id}/game/abandon`, {})
                 .then(res => {
                     dispatch(gameAbandoned(res));
+                })
+                .catch(err => {
+                    reject(); // indicate the API call failed
+                });
+        });
+    };
+}
+
+export function reconnectToGame(user_id, history) {
+    return dispatch => {
+        return new Promise((resolve, reject) => {
+            return apiCall("post", `http://localhost:8080/${user_id}/game/reconnect`, {})
+                .then(res => {
+                    dispatch(reconnectedToGame(res));
+                    history.push("/gameplay")
                 })
                 .catch(err => {
                     reject(); // indicate the API call failed

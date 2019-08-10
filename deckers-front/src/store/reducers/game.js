@@ -1,4 +1,4 @@
-import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED, SERVER_READY } from "../actionTypes"
+import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED, SERVER_READY, RECONNECTED_TO_GAME, SERVER_RECONNECTED } from "../actionTypes"
 import { SOCKET } from "../actions/game";
 export const GAME_STATE = {
     BUSY: 1,
@@ -40,6 +40,12 @@ export default (state = DEFAULT_STATE, action) => {
     switch (action.type) {
         case CONNECTED_TO_GAME:
             return handleConnectToGame(state, action);
+
+        case RECONNECTED_TO_GAME:
+            return handleReconnectToGame(state, action);
+
+        case SERVER_RECONNECTED:
+            return handleServerReconnect(state, action);
 
         case SERVER_READY:
             return handleServerReady(state, action)
@@ -89,13 +95,52 @@ export default (state = DEFAULT_STATE, action) => {
 };
 
 function handleConnectToGame(state, action) {
+    const { gameInfo } = action
+
     return {
         ...state,
-        isMyTurn: !!action.gameInfo.role,
-        gameInfo: action.gameInfo,
-        deckCardsAmount: action.gameInfo.playerDeckCardsAmount - 3,
-        enemyDeckCardsAmount: action.gameInfo.enemyDeckCardsAmount - 3,
+        isMyTurn: !!gameInfo.role,
+        gameInfo: gameInfo,
+        deckCardsAmount: gameInfo.playerDeckCardsAmount - 3,
+        enemyDeckCardsAmount: gameInfo.enemyDeckCardsAmount - 3,
     };
+}
+
+function handleReconnectToGame(state, action) {
+    const { gameInfo } = action
+
+    return {
+        ...state,
+        gameInfo: gameInfo,
+    }
+}
+
+function handleServerReconnect(state, action) {
+    const { gameInfo } = state;
+    const { data } = action
+    const { currentRound, currentPlayer, playersDataArray } = data;
+
+    const playerInfo = playersDataArray[gameInfo.role]
+    const enemyInfo = playersDataArray[+!gameInfo.role]
+
+    const newState = {
+        currentRound,
+        isMyTurn: currentPlayer === gameInfo.role,
+
+        cardsOnBoard: playerInfo.cardsOnBoard,
+        cardsOnHand: playerInfo.cardsOnHand.map((c, i) => ({ ...c, position: i })),
+        playerHeroHealth: playerInfo.health,
+        playerHeroGold: playerInfo.gold,
+        deckCardsAmount: playerInfo.cardsLeftInDeck,
+
+        enemyCardsOnBoard: enemyInfo.cardsOnBoard,
+        enemyCardsOnHand: enemyInfo.cardsOnHand,
+        enemyHeroHealth: enemyInfo.health,
+        enemyHeroGold: enemyInfo.gold,
+        enemyDeckCardsAmount: enemyInfo.cardsLeftInDeck,
+    }
+
+    return { ...state, ...newState }
 }
 
 function handleServerReady(state, action) {
@@ -183,7 +228,6 @@ function handlePlayerDrawCard(state, action) {
     let { card } = action;
     card.position = cardsOnHand.length;
 
-    debugger
     if (playerHeroGold < CARD_DRAW_COST) throw (new Error("Not enough gold"));
     let playerGoldAmount = playerHeroGold - CARD_DRAW_COST;
     deckCardsAmount--;

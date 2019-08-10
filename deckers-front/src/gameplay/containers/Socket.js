@@ -2,7 +2,18 @@ import React, { Component } from 'react';
 import { connect } from "react-redux"
 import { withRouter } from 'react-router-dom';
 
-import { endTurnEvent, playerDrawCardEvent, enemyDrawCardEvent, enemySummonedCardEvent, enemyCardAttackedEvent, combatResultsComparison, clearGameData, starterCardsPicked, serverReadyEvent } from '../../store/actions/socket';
+import {
+    endTurnEvent,
+    playerDrawCardEvent,
+    enemyDrawCardEvent,
+    enemySummonedCardEvent,
+    enemyCardAttackedEvent,
+    combatResultsComparison,
+    clearGameData,
+    starterCardsPicked,
+    serverReadyEvent,
+    reconnectedToGameEvent
+} from '../../store/actions/socket';
 import { updateUserAfterGame, SOCKET } from '../../store/actions/game';
 class Socket extends Component {
     componentDidMount() {
@@ -42,6 +53,10 @@ class Socket extends Component {
 
         SOCKET.on('server-ready', (data) => {
             this.props.dispatch(serverReadyEvent(data));
+        })
+
+        SOCKET.on('player-reconnected', (data) => {
+            this.props.dispatch(reconnectedToGameEvent(data));
         })
     }
 

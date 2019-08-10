@@ -1,4 +1,4 @@
-import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED, SERVER_READY } from "../actionTypes";
+import { END_TURN, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED, SERVER_READY, RECONNECTED_TO_GAME, SERVER_RECONNECTED } from "../actionTypes";
 
 export const endTurnEvent = () => {
     return {
@@ -62,5 +62,12 @@ export const serverReadyEvent = ({ starterCards }) => {
     return {
         type: SERVER_READY,
         starterCards,
+    }
+}
+
+export const reconnectedToGameEvent = (data) => {
+    return {
+        type: SERVER_RECONNECTED,
+        data,
     }
 }

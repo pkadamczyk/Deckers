@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import openSocket from 'socket.io-client';
 import { Link, withRouter } from 'react-router-dom';
-import { connectToGame, abandonGame } from '../../store/actions/matchmaking';
+import { connectToGame, abandonGame, reconnectToGame } from '../../store/actions/matchmaking';
 let socket = openSocket('http://localhost:8080/matchmaking');
 
 class MatchmakingNavbar extends Component {
@@ -13,6 +13,7 @@ class MatchmakingNavbar extends Component {
         this.handleConnectToGame = this.handleConnectToGame.bind(this)
         this.handleOnClick = this.handleOnClick.bind(this)
         this.handleAbandon = this.handleAbandon.bind(this)
+        this.handleReconnectCall = this.handleReconnectCall.bind(this)
     }
 
     componentDidMount() {
@@ -40,11 +41,16 @@ class MatchmakingNavbar extends Component {
 
     handleAbandon() {
         const { usr_id, abandonGame } = this.props;
-        const { isBusy } = this.state;
 
         this.setState(state => ({ isBusy: !state.isBusy }))
         abandonGame(usr_id)
         setTimeout(() => this.setState(state => ({ isBusy: !state.isBusy })), 1000)
+    }
+
+    handleReconnectCall() {
+        const { usr_id, reconnectToGame, history } = this.props;
+
+        reconnectToGame(usr_id, history)
     }
 
     render() {
@@ -62,7 +68,7 @@ class MatchmakingNavbar extends Component {
                         </button>
                         :
                         <div>
-                            <button className="btn btn-danger" disabled={isBusy}>Reconnect</button>
+                            <button className="btn btn-danger" onClick={this.handleReconnectCall} disabled={isBusy}>Reconnect</button>
                             <button className="btn btn-danger" onClick={this.handleAbandon} disabled={isBusy}>Abandon</button>
                         </div>
                     }
@@ -81,4 +87,4 @@ function mapStateToProps(state) {
 }
 
 
-export default withRouter(connect(mapStateToProps, { connectToGame, abandonGame })(MatchmakingNavbar))
+export default withRouter(connect(mapStateToProps, { connectToGame, abandonGame, reconnectToGame })(MatchmakingNavbar))

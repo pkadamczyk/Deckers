@@ -220,14 +220,13 @@ class Game {
 
     getReconnectData() {
         const playersDataArray = this.players.map(player => {
+            const { cardsOnBoard, cardsOnHand, health, gold, deck, currentCard } = player
             return {
-                cardsOnBoard: player.cardsOnBoard,
-                cardsOnHand: player.cardsOnHand,
-
-                health: player.health,
-                gold: player.gold,
-
-                cardsLeftInDeck: player.deck.length - player.currentCard,
+                cardsOnBoard,
+                cardsOnHand,
+                health,
+                gold,
+                cardsLeftInDeck: deck.length - currentCard,
             }
         })
 
@@ -253,23 +252,21 @@ Game.LOSE_REWARD = 9;
 module.exports.connect = function (io) {
     const GAME_IO = io.of('/game');
 
-    //     // https://github.com/socketio/socket.io/blob/318d62/examples/chat/index.js#L36
-    //     // https://www.npmjs.com/package/roomdata
     GAME_IO.on('connection', async function (socket) {
         socket.on('disconnect', function () {
             console.log('Got disconnect!');
             roomdata.leaveRoom(socket);
         });
 
-        socket.on('reconnect', function ({ gameId, role }) {
-            console.log('Reconnected');
+        socket.on('player-reconnect', function ({ gameId }) {
+            console.log(`Reconnected to game ${gameId}`)
+
             roomdata.joinRoom(socket, "game-" + gameId);
+            const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
 
             const data = game.getReconnectData();
-            GAME_IO.to(`${socket.id}`).emit('server-ready', data);
-
-            console.log("Reconnect data:");
-            console.log(data);
+            // sending to individual socketid (private message)
+            GAME_IO.to(`${socket.id}`).emit('player-reconnected', data);
         });
 
         socket.on('join', async function ({ gameId, role }) {
