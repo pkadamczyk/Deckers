@@ -51,7 +51,7 @@ module.exports.connect = function (io) {
         socket.on('disconnect', function () {
             try {
                 const playerIndex = Matchmaking.gameMode[0].playersInQueue.findIndex(pl => pl.socket === socket)
-                console.log("Player in queue disconnected! " + playerIndex);
+                if (playerIndex !== -1) console.log("Player in queue disconnected! " + playerIndex);
                 Matchmaking.gameMode[0].playersInQueue.splice(playerIndex, 1);
             } catch (err) {
                 console.log(err);

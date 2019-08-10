@@ -17,6 +17,10 @@ class MatchmakingNavbar extends Component {
         this.handleSearchCancel = this.handleSearchCancel.bind(this)
     }
 
+    componentDidMount() {
+        socket = openSocket('http://localhost:8080/matchmaking');
+    }
+
     componentWillUnmount() {
         socket.disconnect()
     }
@@ -29,7 +33,7 @@ class MatchmakingNavbar extends Component {
     }
 
     handleOnClick() {
-        socket = openSocket('http://localhost:8080/matchmaking');
+        // socket = openSocket('http://localhost:8080/matchmaking');
 
         const { usr_id, deck_id } = this.props;
         this.setState(state => ({ isSearching: true }))
