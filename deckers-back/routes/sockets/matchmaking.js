@@ -6,6 +6,7 @@ const Matchmaking = {
         playersInQueue: []
     }]
 }
+
 const t = setInterval(teamPlayers, 3000);
 let gameSearch;
 
@@ -13,9 +14,8 @@ module.exports.connect = function (io) {
     gameSearch = io.of('/matchmaking');
     gameSearch.on('connection', function (socket) {
 
-        socket.on('join', async function ({ usr_id, deck_id, gameMode }) {
+        socket.on('join', async function ({ usr_id, deck_id, gameMode = 0 }) {
             // needs player id, searched mode(as number)
-            console.log("Player joined!!");
             try {
                 const user = await User.findById(usr_id);
                 if (user.inGame) throw new Error("Player already in game");
@@ -27,16 +27,35 @@ module.exports.connect = function (io) {
                 }
 
                 // Checks if player isnt already in queue
-                if (Matchmaking.gameMode[gameMode].playersInQueue.findIndex(pl => pl.usr_id === player.usr_id) != -1)
+                if (Matchmaking.gameMode[gameMode].playersInQueue.findIndex(pl => pl.usr_id === player.usr_id) !== -1)
                     throw new Error("Player already in queue");
 
                 Matchmaking.gameMode[gameMode].playersInQueue.push(player);
+                console.log("Player joined queue!");
+            } catch (err) {
+                console.log(err);
+            }
+        });
+
+        socket.on('leave-queue', function ({ usr_id, gameMode = 0 }) {
+            try {
+                const playerIndex = Matchmaking.gameMode[gameMode].playersInQueue.findIndex(pl => pl.usr_id === usr_id)
+                if (playerIndex === -1) throw new Error("Player wasnt in queue")
+                Matchmaking.gameMode[gameMode].playersInQueue.splice(playerIndex, 1);
+                console.log("Player left queue!");
             } catch (err) {
                 console.log(err);
             }
         });
 
         socket.on('disconnect', function () {
+            try {
+                const playerIndex = Matchmaking.gameMode[0].playersInQueue.findIndex(pl => pl.socket === socket)
+                console.log("Player in queue disconnected! " + playerIndex);
+                Matchmaking.gameMode[0].playersInQueue.splice(playerIndex, 1);
+            } catch (err) {
+                console.log(err);
+            }
         });
     });
 

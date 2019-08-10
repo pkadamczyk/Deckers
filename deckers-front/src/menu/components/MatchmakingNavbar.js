@@ -3,24 +3,18 @@ import { connect } from "react-redux";
 import openSocket from 'socket.io-client';
 import { Link, withRouter } from 'react-router-dom';
 import { connectToGame, abandonGame, reconnectToGame } from '../../store/actions/matchmaking';
-let socket = openSocket('http://localhost:8080/matchmaking');
+let socket;
 
 class MatchmakingNavbar extends Component {
     constructor(props) {
         super(props)
-        this.state = { isBusy: false }
+        this.state = { isBusy: false, isSearching: false }
 
         this.handleConnectToGame = this.handleConnectToGame.bind(this)
         this.handleOnClick = this.handleOnClick.bind(this)
         this.handleAbandon = this.handleAbandon.bind(this)
         this.handleReconnectCall = this.handleReconnectCall.bind(this)
-    }
-
-    componentDidMount() {
-        socket = openSocket('http://localhost:8080/matchmaking');
-        socket.on("game-ready", (data) => {
-            this.handleConnectToGame(data)
-        })
+        this.handleSearchCancel = this.handleSearchCancel.bind(this)
     }
 
     componentWillUnmount() {
@@ -35,8 +29,15 @@ class MatchmakingNavbar extends Component {
     }
 
     handleOnClick() {
+        socket = openSocket('http://localhost:8080/matchmaking');
+
         const { usr_id, deck_id } = this.props;
+        this.setState(state => ({ isSearching: true }))
         socket.emit('join', { usr_id, gameMode: 0, deck_id });
+
+        socket.on("game-ready", (data) => {
+            this.handleConnectToGame(data)
+        })
     }
 
     handleAbandon() {
@@ -53,9 +54,16 @@ class MatchmakingNavbar extends Component {
         reconnectToGame(usr_id, history)
     }
 
+    handleSearchCancel() {
+        const { usr_id } = this.props;
+        this.setState(state => ({ isSearching: !state.isSearching }))
+
+        socket.emit('leave-queue', { usr_id, gameMode: 0 });
+    }
+
     render() {
         const { deck_id, inGame } = this.props;
-        const { isBusy } = this.state;
+        const { isBusy, isSearching } = this.state;
 
         const isDeckSelected = !!deck_id;
 
@@ -63,8 +71,13 @@ class MatchmakingNavbar extends Component {
             <div className="mm-nav">
                 <div className="mm-options">
                     {!inGame ?
-                        <button className="btn btn-success" onClick={this.handleOnClick} disabled={!isDeckSelected}>
-                            Find game
+                        isSearching ?
+                            <button className="btn btn-success" onClick={this.handleSearchCancel}>
+                                Cancel
+                        </button>
+                            :
+                            <button className="btn btn-success" onClick={this.handleOnClick} disabled={!isDeckSelected}>
+                                Find game
                         </button>
                         :
                         <div>

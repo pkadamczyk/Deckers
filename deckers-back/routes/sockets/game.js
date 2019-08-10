@@ -196,7 +196,10 @@ class Game {
 
             // Rewards hard coded xD
             users[winner].currency.gold += Game.WIN_REWARD;
+            users[winner].inGame = false;
+
             users[+!winner].currency.gold += Game.LOSE_REWARD;
+            users[+!winner].inGame = false;
 
             await users.map(user => user.save())
             return users.map(usr => ({ gold: usr.currency.gold, id: usr._id })); // Returns only gold amount, no need for more now | id for user identyfication
@@ -254,8 +257,12 @@ module.exports.connect = function (io) {
 
     GAME_IO.on('connection', async function (socket) {
         socket.on('disconnect', function () {
-            console.log('Got disconnect!');
-            roomdata.leaveRoom(socket);
+            try {
+                console.log('Got disconnect!');
+                roomdata.leaveRoom(socket);
+            } catch (err) {
+                console.log(err)
+            }
         });
 
         socket.on('player-reconnect', function ({ gameId }) {
