@@ -32,9 +32,6 @@ class Board extends Component {
             let currentlyDraggedCard;
             currentlyDraggedCard = cardsOnHand[currentlyDraggedCardId];
 
-            console.log(currentlyDraggedCardId)
-            console.log(currentlyDraggedCard)
-
             isAffordable = playerGold >= currentlyDraggedCard.inGame.stats.cost;
         }
 

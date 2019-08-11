@@ -29,7 +29,6 @@ function getStyle(style, snapshot, cardsOnBoardLength, currentTarget) {
     if (currentTarget == PLAYER_HAND_ID) translate = `translate(${moveTo.x}px, ${moveTo.y}px)`
     else translate = cardsOnBoardLength == 0 ? `translate(${moveTo.x}px, ${moveTo.y + (window.innerHeight / 2)}px)` : `translate(${moveTo.x - 50}px, ${moveTo.y}px)`;
 
-    console.log(`Ratio: ${moveTo.y / window.innerHeight}`)
     return {
         ...style,
         transform: `${translate}`,
