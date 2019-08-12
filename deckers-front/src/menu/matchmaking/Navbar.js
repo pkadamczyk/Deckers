@@ -1,11 +1,46 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import openSocket from 'socket.io-client';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connectToGame, abandonGame, reconnectToGame } from '../../store/actions/matchmaking';
+
+import styled from "styled-components"
+import navBackground from '../../graphic/nav_background_03.png'
+import buttonBackground from '../../graphic/button_03.png'
+
 let socket;
 
-class MatchmakingNavbar extends Component {
+const StyledNavbar = styled.div`
+    width: 20%;
+    padding: 0;
+    background-image: url(${navBackground});
+    background-repeat: repeat-y;
+    background-size:contain;
+`
+
+const ButtonWrapper = styled.div`
+    text-align: center;
+    position: relative; 
+    top:26rem;
+`
+
+const Button = styled.button`
+    color: white;
+
+    margin: 1rem 0;
+    background-image: url(${buttonBackground});
+    background-size: cover;
+    width: 70%;
+    height: 3.3rem;
+    background-repeat: no-repeat;
+    border:none;
+    font-size: 1.4rem;
+
+    &:focus {outline:0;}
+    &:disabled {opacity: 0.65; }
+`
+
+class Navbar extends Component {
     constructor(props) {
         super(props)
         this.state = { isBusy: false, isSearching: false }
@@ -33,9 +68,8 @@ class MatchmakingNavbar extends Component {
     }
 
     handleOnClick() {
-        // socket = openSocket('http://localhost:8080/matchmaking');
-
         const { usr_id, deck_id } = this.props;
+
         this.setState(state => ({ isSearching: true }))
         socket.emit('join', { usr_id, gameMode: 0, deck_id });
 
@@ -72,25 +106,25 @@ class MatchmakingNavbar extends Component {
         const isDeckSelected = !!deck_id;
 
         return (
-            <div className="mm-nav">
-                <div className="mm-options">
+            <StyledNavbar>
+                <ButtonWrapper>
                     {!inGame ?
                         isSearching ?
-                            <button className="btn btn-success" onClick={this.handleSearchCancel}>
+                            <Button onClick={this.handleSearchCancel}>
                                 Cancel
-                        </button>
+                        </Button>
                             :
-                            <button className="btn btn-success" onClick={this.handleOnClick} disabled={!isDeckSelected}>
+                            <Button onClick={this.handleOnClick} disabled={!isDeckSelected}>
                                 Find game
-                        </button>
+                        </Button>
                         :
                         <div>
-                            <button className="btn btn-danger" onClick={this.handleReconnectCall} disabled={isBusy}>Reconnect</button>
-                            <button className="btn btn-danger" onClick={this.handleAbandon} disabled={isBusy}>Abandon</button>
+                            <Button onClick={this.handleReconnectCall} disabled={isBusy}>Reconnect</Button>
+                            <Button onClick={this.handleAbandon} disabled={isBusy}>Abandon</Button>
                         </div>
                     }
-                </div>
-            </div>
+                </ButtonWrapper>
+            </StyledNavbar>
         )
     }
 }
@@ -104,4 +138,4 @@ function mapStateToProps(state) {
 }
 
 
-export default withRouter(connect(mapStateToProps, { connectToGame, abandonGame, reconnectToGame })(MatchmakingNavbar))
+export default withRouter(connect(mapStateToProps, { connectToGame, abandonGame, reconnectToGame })(Navbar))

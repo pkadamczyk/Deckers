@@ -93,33 +93,6 @@ code {
   line-height: 3rem;
 }
 
-.mm-nav{
-  padding: 0;
-  /* width: 237px;
-  height: 608px; */
-  background-image: url('./graphic/nav_background_03.png');
-  background-repeat: repeat-y;
-  background-size:contain;
-  width:100%;
-  height: 100%;
-}
-.mm-options{
-  padding: 0;
-  width:100%;
-  text-align: center;
-  position: relative; 
-  top:26rem;
-}
-.mm-options button{
-  margin: 1rem 0;
-  background-image: url('./graphic/button_03.png');
-  background-size: cover;
-  width: 70%;
-  height: 3.3rem;
-  background-repeat: no-repeat;
-  border:none;
-  font-size: 1.4rem;
-}
 #avatar-holder{
   background-image: url('./graphic/border_img_01.png');
   background-size: contain;
@@ -198,11 +171,6 @@ code {
   height: auto;
 }
 
-MatchmakingNavbar{
-  margin: 0;
-  padding: 0;
-}
-
 body div{
   margin: 0;
   padding: 0;
@@ -218,8 +186,6 @@ body div{
   margin: 0;
   background-color: cadetblue;
 }
-
-
 
 .chest-item{
   background-image: url("./graphic/background_04.png");
@@ -702,28 +668,6 @@ hr{
   padding-top:10px;
   
 }
-.mm-deckSlot{
-  background-image: url('./graphic/title_03.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  margin:0px 10px;
-  margin-top: 5px;
-  widows: 100%;
-  height:45px;
-  border-radius: 5px;
-  color: white;
-}
-.mm-deck-name{
-  background-image: url('./graphic/title_03.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position-y: center;
-}
-
-.mm-card-name{
-  padding-top:10px;  
-}
 .AuthFormWrapper{
   height:100%;
   background-image: url('./graphic/background_02.PNG');
@@ -846,9 +790,6 @@ hr{
   width: 80%;
 }
 
-.mm-deckList{
-  height: 100%;
-}
 .mm-deck-item{
   display: inline-block;
   height: 95%;

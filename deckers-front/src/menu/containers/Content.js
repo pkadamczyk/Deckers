@@ -1,20 +1,22 @@
 import React, { Component } from "react";
-import Matchmaking from './Matchmaking';
+import Matchmaking from '../matchmaking/Matchmaking';
 import Profile from './Profile';
 import Shop from './Shop';
 import Cards from './Cards';
-import { Switch, Route} from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 
 class Content extends Component {
-    render() {
-      return (
-        <Switch>
-          <Route
+  render() {
+    return (
+      <Switch>
+        <Route
           exact
           path="/"
-          render={props => {return (
-            <h1> landing page</h1>
-          )}}
+          render={props => {
+            return (
+              <h1> landing page</h1>
+            )
+          }}
         />
         <Route
           exact
@@ -54,8 +56,8 @@ class Content extends Component {
           }}
         />
       </Switch>
-      );
-    }
+    );
   }
+}
 
-  export default Content;
+export default Content;
