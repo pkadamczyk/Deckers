@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Matchmaking from '../matchmaking/Matchmaking';
 import Profile from './Profile';
-import Shop from './Shop';
+import Shop from '../shop/Shop';
 import Cards from './Cards';
 import { Switch, Route } from "react-router-dom";
 
