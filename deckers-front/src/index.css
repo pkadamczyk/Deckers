@@ -256,129 +256,6 @@ hr{
   text-align: center;
 }
 
-.BookOfCards{
-  background-image: url('./graphic/background_book_01.png');
-  background-repeat: no-repeat;
-  background-size:contain;
-  background-position: center;
-  width:100%;
-  height: 100%;
-}
-
-.race-filters{
-  display: inline;
-  padding-top:10rem;
-}
-.race-filter-icon{
-  width: 3.5rem;
-  cursor:pointer;
-}
-.race-filter-skavens{
-  background-image: url('./graphic/race_filter_01.png');
-  background-repeat: no-repeat;
-  background-size:contain;
-  width: 4rem;
-  height: 4rem;
-  text-align: center;
-  padding-top: 0.2rem;
-  margin-bottom: 1rem;
-}
-.race-filter-order{
-  background-image: url('./graphic/race_filter_03.png');
-  background-repeat: no-repeat;
-  background-size:contain;
-  width: 4rem;
-  height: 4rem;
-  text-align: center;
-  padding-top: 0.2rem;
-  margin-bottom: 1rem;
-}
-.race-filter-dwarfs{
-  background-image: url('./graphic/race_filter_02.png');
-  background-repeat: no-repeat;
-  background-size:contain;
-  width: 4rem;
-  height: 4rem;
-  text-align: center;
-  padding-top: 0.2rem;
-  margin-bottom: 1rem;
-}
-.race-filter-forsaken{
-  background-image: url('./graphic/race_filter_04.png');
-  background-repeat: no-repeat;
-  background-size:contain;
-  width: 4rem;
-  height: 4rem;
-  text-align: center;
-  padding-top: 0.2rem;
-  margin-bottom: 1rem;
-}
-.class-filters{
-  padding-left:1rem;
-  /* padding-top:1rem; */
-  height: 1rem;
-}
-.class-filter{
-  display: inline-block;
-  background-image: url('./graphic/button_short_01.png');
-  background-repeat: no-repeat;
-  background-size:contain;
-  background-position:center;
-  width:12%;
-  height: auto;
-  text-align: center;
-  margin: 0 0.1rem;
-}
-.col-3-card-fixed{
-  height: 16rem;
-  padding-left: 0px;
-  padding-right: 0px;
-}
-.cards-place{
-  width: 90%;
-  height: 80%;
-  position: relative;
-  /* margin: auto; */
-  padding-left:5%;
-  /* padding-right:6%; */
-  padding-top:2.5rem;
-  margin-right: 0px;
-}
-.CardNavbar{
-  background-image: url('./graphic/nav_background_03.png');
-  background-repeat: repeat-y;
-  background-size:contain;
-  width:100%;
-  height: 100%;
-  color: white;
-  text-align: center;
-  width: 20.84%;
-  height: 100%;
-  position: fixed;
-}
-.card-item{
-  height:255px;
-  width:173px;
-  background-image: url("./graphic/card_front_01.png") !important;
-  background-repeat: no-repeat;
-  background-size: contain;
-  color:white;
-  padding: 0;
-  position: relative;
-  z-index: 2;
-
-}
-.card-item-bg{
-  height:255px;
-  width:173px;
-  background-image: url("./graphic/card_background_01.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  color:white;
-  padding: 0;
-  position: relative;
-  z-index: 0;
-}
 .card-item-portrait{
   background-image: url("./graphic/card_portrait_01.png");
   background-repeat: no-repeat;
@@ -392,33 +269,6 @@ hr{
   color:transparent;
   padding-left: 0.5rem;
   z-index: 1;
-}
-.card-item-cost{
-  background-repeat: no-repeat;
-  background-size: contain;
-  display: inline-block;
-  position: relative;
-  width: 15%;
-  /* top:0.4rem; */
-  left:0.4rem;
-  color: white;
-  padding-left: 0.5rem;
-}
-.card-item-cost-skaven{
-  background-image: url("./graphic/race_filter_01.png");
-}
-.card-item-cost-dwarf{
-  background-image: url("./graphic/race_filter_02.png");
-}
-.card-item-cost-forsaken{
-  background-image: url("./graphic/race_filter_04.png");
-}
-.card-item-cost-theorder{
-  background-image: url("./graphic/race_filter_03.png");
-}
-.card-title p{
-  display: inline;
-  margin-left: 1rem; 
 }
 .card-title{
   background-image: url("./graphic/title_03.png");
@@ -445,7 +295,7 @@ hr{
   padding-left: 0.5rem;
 }
 .card-item-class-icon{
-  background-image: url("./graphic/icon_class_assassin.PNG");
+  /* background-image: url("./graphic/icon_class_assassin.PNG"); */
   background-repeat: no-repeat;
   background-size: contain;
   display: inline-block;
@@ -520,77 +370,15 @@ hr{
   padding-right: 5px;
 }
 
-.btn-deck-create{
-  background-image: url('./graphic/button_04.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  border: none;
-  color:white;
-  border-radius: 10px;
-  font-size: 1.2rem;
-  width:5.3em;
-  height: 2.5rem;
-}
-.btn-deck-create2{
-  background-image: url('./graphic/button_04.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  border: none;
-  color:white;
-  border-radius: 10px;
-  font-size: 1.2rem;
-  height:3.6rem;
-
-}
-.cards-navbar-wrapper{
-  height: 100%;
-}
 .cards-navbar-header-wrapper{
   height: 90%;
-}
-
-.DeckCreationPanel{
-  position: relative;
-  bottom: 1rem;
-  text-align: center;
-  width: 100%;
-  margin: auto;
-}
-.DeckCreationPanel-creating{
-  width: 100%;
-  position: absolute;
-  top: 560px;
-}
-.DeckList{
-  padding-right: 0.2rem;
-  width: 100%;
-}
-.DeckList p{
-  padding: 0 2rem;
-  width: 100%;
-}
-.CardsDecksHeader{
-  width: 80%;
-  background-image: url('./graphic/button_03.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  height: 4.70rem;
-  font-size:1.5rem;
-  padding-top: 1rem;
-  /* padding-right: 2rem; */
-  margin: auto;
 }
 
 .CardsDecksHeader p{
   margin-block-end:0;
   text-align: center;
 }
-.DeckItself{
-  padding-top:15px;
-  text-align: center;
-  color:rgb(4, 7, 20);
-}
+
 .deckSlot{
   background-color: white;
   margin:0px 10px;
@@ -705,26 +493,6 @@ hr{
   width: 45px;
   flex-direction: row-reverse;
 }
-.CardListDeck{
-  background-image: url('./graphic/button_long_03.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  margin:0px 10px;
-  margin-top: 5px;
-  widows: 100%;
-  height:3rem;
-  width: 80%;
-  
-  border-radius: 5px;
-  color: white
-}
-.CardListDeck p{
-  display: inline-block;
-  font-size: 2rem;
-  margin-block-end: 0;
-  padding: 0;
-  width: 80%;
-}
 
 .mm-deck-item{
   display: inline-block;
@@ -740,30 +508,6 @@ hr{
   margin: 1.25% 1.66%; 
   padding-top:10px;
 }
-.addCardToDeck{
-  position: relative;
-  top:2.8rem;
-  left:2.35rem;
-}
-.delete-deck-btn{
-  display: none;
-  position: relative;
-  left:0.1rem;
-  background-image: url('./graphic/button_X.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  color:transparent;
-  cursor: pointer;
-  border: none;
-
-}
-
-.CardListDeck:hover .delete-deck-btn {display: inline-block;}
-
-
-
-
 
 /* UKRADZIONE W CHUJ */
 .cards {

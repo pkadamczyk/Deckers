@@ -3,10 +3,77 @@ import { connect } from 'react-redux';
 import {
     createNewDeck, submitDeck, cancelDeckCreation, removeCardFromDeck, editDeck,
     updateDeck, removeDeck
-} from '../../store/actions/decks';
-import CardsDeckItem from '../components/CardsDeckItem';
-import CardsDeckSlot from '../components/CardsDeckSlot';
-import CardsDeckSlotInEdit from '../components/CardsDeckSlotInEdit';
+} from '../../../store/actions/decks';
+import CardsDeckItem from './CardsDeckItem';
+import CardsDeckSlot from '../../components/CardsDeckSlot';
+import CardsDeckSlotInEdit from '../../components/CardsDeckSlotInEdit';
+
+import styled from "styled-components"
+import wrapperBackground from '../../../graphic/nav_background_03.png';
+import headerBackground from '../../../graphic/button_03.png';
+import buttonBackground from '../../../graphic/button_04.png';
+
+const Wrapper = styled.div`
+    background-image: url(${wrapperBackground});
+    background-repeat: repeat-y;
+    background-size:contain;
+    width:100%;
+    height: 100%;
+    color: white;
+    text-align: center;
+    width: 20.84%;
+    height: 100%;
+    position: fixed;
+`
+
+const Idle = styled.div`
+height:100%;
+    display: flex;
+    width:100%;
+    flex-direction: column;
+    justify-content: center;
+`
+
+const List = styled.div`
+    padding-right: 0.2rem;
+    width: 100%;
+`
+
+const Header = styled.div`
+    width: 80%;
+    background-image: url(${headerBackground});
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 4.70rem;
+    font-size:1.5rem;
+    padding-top: 1rem;
+    margin: auto;
+`
+
+const Button = styled.button`
+    background-image: url(${buttonBackground});
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    margin: auto 10% 10% 10%;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    height:3.6rem;
+`
+
+const Create = styled.div`
+    padding-top:15px;
+    text-align: center;
+    color:rgb(4, 7, 20);
+`
+
+const CreatePanel = styled.div`
+    width: 100%;
+    position: absolute;
+    top: 560px;
+`
 
 class CardsNavbar extends Component {
     constructor(props) {
@@ -52,8 +119,6 @@ class CardsNavbar extends Component {
         this.props.removeDeck(this.props.usr_id, deck_id)
     }
 
-
-
     render() {
         const { createNewDeck, decks, currentState, cards, cancelDeckCreation, removeCardFromDeck,
             editDeck, editDeckName } = this.props;
@@ -81,40 +146,42 @@ class CardsNavbar extends Component {
                 removeCardFromDeck={removeCardFromDeck}
             />
         ));
+
+
+        const placeholder = currentState === "creating" ? " Deck name" : editDeckName;
         return (
             // WHILE IDLE
-            <div className="CardNavbar">
-                {currentState === "idle" && (<div className="cards-navbar-wrapper">
-                    <div className="cards-navbar-header-wrapper">
-                        <div className="DeckList">
-                            <div className="CardsDecksHeader">
+            <Wrapper>
+                {currentState === "idle" && (
+                    <Idle>
+                        <List>
+                            <Header>
                                 <p>Yours decks:</p>
-                            </div>
+                            </Header>
                             {decks.length === 0 && <p>You don't have any decks yet, go on and create one!</p>}
-                            {decks.length !== 0 && currentState === "idle" && (idleDecks)}
-                        </div>
-                    </div>
-                    <div className="DeckCreationPanel">
-                        <button onClick={createNewDeck}
-                                className="btn btn-deck-create2">Create new deck</button>
-                    </div></div>)}
+                            {decks.length !== 0 && (idleDecks)}
+                        </List>
+                        <Button onClick={createNewDeck}>Create new deck</Button>
+                    </Idle>)}
 
                 {/* WHILE CREATING NEW DECK */}
-                {currentState === "creating" && (<div>
-                    <div className="DeckItself">
-                        <input type="text" className="mb-2" placeholder="Deck name" name="deckName" onChange={this.handleChange} />
-                        {creatingDeckSlots}
+                {currentState === "creating" && (
+                    <div>
+                        <Create>
+                            <input type="text" placeholder={placeholder} name="deckName" onChange={this.handleChange} />
+                            {creatingDeckSlots}
+                        </Create>
+                        <CreatePanel>
+                            <Button onClick={this.handleSubmit} >Confirm</Button>
+                            <Button onClick={cancelDeckCreation} >Cancel</Button>
+                        </CreatePanel>
                     </div>
-                    <div className="DeckCreationPanel-creating">
-                        <button onClick={this.handleSubmit} className="btn btn-deck-create mr-2">Confirm</button>
-                        <button onClick={cancelDeckCreation} className="btn btn-deck-create ml-2">Cancel</button>
-                    </div>
-                </div>)}
+                )}
 
                 {/* WHILE EDITING */}
                 {currentState === "editing" && (<div>
                     <div className="DeckItself">
-                        <input type="text" className="mb-2" placeholder={editDeckName} name="deckName" onChange={this.handleChange} />
+                        <input type="text" className="mb-2" placeholder={placeholder} name="deckName" onChange={this.handleChange} />
                         {editingDeckSlots}
                         <div className="DeckCreationPanel-creating">
                             <button onClick={this.handleEdit} className="btn btn-success btn-deck-create mr-2">Confirm</button>
@@ -124,7 +191,7 @@ class CardsNavbar extends Component {
                 </div>)
 
                 }
-            </div>
+            </Wrapper>
         )
     }
 }
