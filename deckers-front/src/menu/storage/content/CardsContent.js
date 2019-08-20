@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import CardsCardItem from './CardsCardItem';
 
 import styled from "styled-components";
-import wrapperBackground from '../../graphic/background_book_01.png'
+import wrapperBackground from '../../../graphic/background_book_01.png'
 import RaceFilters from './RaceFilters';
 import ClassFilters from './ClassFilters';
-import { addCardToDeck } from '../../store/actions/decks';
+import { addCardToDeck } from '../../../store/actions/decks';
 
 export const RACE_LIST = {
     DWARF: 0,
@@ -33,7 +33,7 @@ const Wrapper = styled.div`
     background-size:contain;
     
     height: 100%;
-    width: 75%;
+    width: 80%;
 
     display: flex;
 `
@@ -72,6 +72,7 @@ class CardsContent extends Component {
 
         this.handleClassFilter = this.handleClassFilter.bind(this);
         this.handleRaceFilter = this.handleRaceFilter.bind(this);
+        this.handleAddCardToDeck = this.handleAddCardToDeck.bind(this);
     }
 
 

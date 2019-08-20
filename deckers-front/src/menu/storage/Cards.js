@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CardsContent from './CardsContent';
+import CardsContent from './content/CardsContent';
 import CardsNavbar from './navbar/CardsNavbar';
 
 import styled from "styled-components";
@@ -14,9 +14,7 @@ class Cards extends Component {
         return (
             <Row>
                 <CardsContent />
-                <div className="col-3">
-                    <CardsNavbar />
-                </div>
+                <CardsNavbar />
             </Row>
         )
     }

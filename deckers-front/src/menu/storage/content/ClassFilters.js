@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import styled from "styled-components";
 
 import ClassFilter from './ClassFilter';
-import warriorFilter from '../../graphic/icon_class_warrior.png';
-import hunterFilter from '../../graphic/icon_class_hunter.png';
-import assassinFilter from '../../graphic/icon_class_assassin.png';
-import mageFilter from '../../graphic/icon_class_mage.png';
-import knightFilter from '../../graphic/icon_class_knight.png';
-import priestFilter from '../../graphic/icon_class_priest.png';
-import warlockFilter from '../../graphic/icon_class_warlock.png';
-import merchantFilter from '../../graphic/icon_class_merchant.png';
+import warriorFilter from '../../../graphic/icon_class_warrior.png';
+import hunterFilter from '../../../graphic/icon_class_hunter.png';
+import assassinFilter from '../../../graphic/icon_class_assassin.png';
+import mageFilter from '../../../graphic/icon_class_mage.png';
+import knightFilter from '../../../graphic/icon_class_knight.png';
+import priestFilter from '../../../graphic/icon_class_priest.png';
+import warlockFilter from '../../../graphic/icon_class_warlock.png';
+import merchantFilter from '../../../graphic/icon_class_merchant.png';
 import { CLASS_LIST } from './CardsContent';
 
 const Row = styled.div`

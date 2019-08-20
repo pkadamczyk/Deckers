@@ -30,16 +30,11 @@ const Button = styled.button`
     background-repeat: no-repeat;
     background-color: transparent;
 
-    display: none;
     position: relative;
     left:0.1rem;
     color:transparent;
     cursor: pointer;
     border: none;
-
-    &:hover{
-        display: inline-block;
-    }
 `
 
 class CardsDeckItem extends Component {

@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 
 import styled from "styled-components"
-import cardItemBackground from '../../graphic/card_front_01.png';
-import cardTitleBackground from '../../graphic/title_03.png';
-import cardWrapperBackground from '../../graphic/card_background_01.png';
+import cardItemBackground from '../../../graphic/card_front_01.png';
+import cardTitleBackground from '../../../graphic/title_03.png';
+import cardWrapperBackground from '../../../graphic/card_background_01.png';
 
-import cardCostBoxSkaven from '../../graphic/race_filter_01.png';
-import cardCostBoxDwarf from '../../graphic/race_filter_02.png';
-import cardCostBoxForsaken from '../../graphic/race_filter_04.png';
-import cardCostBoxOrder from '../../graphic/race_filter_03.png';
+import cardCostBoxSkaven from '../../../graphic/race_filter_01.png';
+import cardCostBoxDwarf from '../../../graphic/race_filter_02.png';
+import cardCostBoxForsaken from '../../../graphic/race_filter_04.png';
+import cardCostBoxOrder from '../../../graphic/race_filter_03.png';
+import { RACE_LIST, CLASS_LIST } from './CardsContent';
 
 const CardItem = styled.div`
     height:255px;
@@ -64,9 +65,7 @@ class CardsCardItem extends Component {
     }
 
     render() {
-        const { card, currentState, deckIsFull } = this.props;
-        const races = ['Dwarf', 'Forsaken', 'TheOrder', 'Skaven']
-        const classes = ['Warrior', 'Hunter', 'Assasin', 'Mage', 'Knight', 'Priest', 'Warlock', 'Merchant', 'Spell'];
+        const { card, currentState, isDeckFull } = this.props;
 
         const costBoxBackgrounds = [cardCostBoxDwarf, cardCostBoxForsaken, cardCostBoxOrder, cardCostBoxSkaven]
         const costBoxBackground = costBoxBackgrounds[card.card.race]
@@ -79,10 +78,10 @@ class CardsCardItem extends Component {
                         <CardCostBox background={costBoxBackground}>
                             <p>{card.card.stats[0].cost}</p>
                         </CardCostBox>
-                        <p>{races[card.card.race]} {classes[card.card.role]}</p>
+                        <p>{Object.keys(RACE_LIST)[card.card.race]} {Object.keys(CLASS_LIST)[card.card.role]}</p>
                     </CardTitle>
 
-                    {(currentState === "creating" || currentState === "editing") && (deckIsFull === false) && (
+                    {currentState !== "idle" && (isDeckFull === false) && (
                         <Button onClick={this.handleOnClick}>Add to deck</Button>
                     )}
                 </CardItem>

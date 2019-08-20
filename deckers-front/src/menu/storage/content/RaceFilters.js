@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import styled from "styled-components";
 import RaceFilter from './RaceFilter';
 
-import dwarfBackground from '../../graphic/race_filter_02.png';
-import skavenBackground from '../../graphic/race_filter_01.png';
-import orderBackground from '../../graphic/race_filter_03.png';
-import forsakenBackground from '../../graphic/race_filter_04.png';
+import dwarfBackground from '../../../graphic/race_filter_02.png';
+import skavenBackground from '../../../graphic/race_filter_01.png';
+import orderBackground from '../../../graphic/race_filter_03.png';
+import forsakenBackground from '../../../graphic/race_filter_04.png';
 
-import dwarfFilter from '../../graphic/icon_race_dwarfs.png';
-import skavenFilter from '../../graphic/icon_race_skaven.png';
-import orderFilter from '../../graphic/icon_race_order.png';
-import forsakenFilter from '../../graphic/icon_race_forsaken.png';
+import dwarfFilter from '../../../graphic/icon_race_dwarfs.png';
+import skavenFilter from '../../../graphic/icon_race_skaven.png';
+import orderFilter from '../../../graphic/icon_race_order.png';
+import forsakenFilter from '../../../graphic/icon_race_forsaken.png';
 import { RACE_LIST } from './CardsContent';
 
 const Wrapper = styled.div`

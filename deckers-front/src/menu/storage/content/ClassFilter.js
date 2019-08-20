@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 
 import styled from "styled-components";
-import background from '../../graphic/button_short_01.png';
+import background from '../../../graphic/button_short_01.png';
 
 const Wrapper = styled.div`
     display: flex;
