@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Link } from 'react-router-dom';
 
 import wrapperBackground from '../../graphic/background_02.PNG'
@@ -78,9 +77,9 @@ class AuthForm extends Component {
 
     handleSubmit = e => {
         e.preventDefault();
-        const { signUp } = this.props;
+        const { login } = this.props;
 
-        const authType = signUp ? "register" : "login";
+        const authType = !login ? "register" : "login";
         this.props
             .onAuth(authType, this.state)
             .then(() => {
@@ -97,13 +96,16 @@ class AuthForm extends Component {
 
     render() {
         const { email, username, password } = this.state;
-        const { signUp, login, heading, buttonText } = this.props;
+        const { login } = this.props;
+
+        const heading = login ? 'Welcome! Please log in.' : "Register today!";
+        const buttonText = login ? "Log in" : "Sign me up!";
 
         return (
             <Wrapper>
                 <Form onSubmit={this.handleSubmit}>
                     <h2>{heading}</h2>
-                    <Label for="email">E-mail</Label>
+                    <Label htmlFor="email">E-mail</Label>
                     <Input
                         autoComplete="off"
                         id="email"
@@ -112,7 +114,7 @@ class AuthForm extends Component {
                         type="text"
                         value={email}
                     />
-                    <Label for="password">Password</Label>
+                    <Label htmlFor="password">Password</Label>
                     <Input
                         autoComplete="off"
                         id="password"
@@ -121,9 +123,9 @@ class AuthForm extends Component {
                         type="password"
                         value={password}
                     />
-                    {signUp && (
+                    {!login && (
                         <>
-                            <Label for="username">Username</Label>
+                            <Label htmlFor="username">Username</Label>
                             <Input
                                 id="username"
                                 autoComplete="off"
@@ -139,7 +141,7 @@ class AuthForm extends Component {
                     </Button>
 
                     {login && (<p>New here? <br /> You can signup <Link to="/register">here</Link></p>)}
-                    {signUp && (<p>Already signed up? <br />Login <Link to="/login">here</Link></p>)}
+                    {!login && (<p>Already signed up? <br />Login <Link to="/login">here</Link></p>)}
                 </Form>
             </Wrapper>
         );

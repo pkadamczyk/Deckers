@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Matchmaking from '../matchmaking/Matchmaking';
-import Profile from './Profile';
-import Shop from '../shop/Shop';
-import Cards from '../storage/Cards';
+import Matchmaking from './matchmaking/Matchmaking';
+import Profile from './profile/Profile';
+import Shop from './shop/Shop';
+import Cards from './storage/Cards';
 import { Switch, Route } from "react-router-dom";
 
 class Content extends Component {

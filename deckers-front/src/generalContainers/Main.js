@@ -1,90 +1,84 @@
 import React from "react";
-import Navbar from "../menu/components/Navbar";
-import Content from "../menu/containers/Content";
+import Navbar from "../menu/Navbar";
+import Content from "../menu/Content";
 import AuthForm from "../menu/auth/AuthForm";
 import Game from '../gameplay/containers/Game';
 import { Switch, Route, withRouter, Redirect } from "react-router-dom";
 import { authUser } from "../store/actions/auth";
 import { connect } from "react-redux";
 
+import styled from "styled-components"
+import wrapperBackground from '../graphic/background_03.png'
+
+const Wrapper = styled.div`
+    background-image: url(${wrapperBackground});
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    height:100%;
+    display: flex;
+`
+
+const WidthDiv = styled.div`
+    width: ${props => (props.width * 100) + "%"}
+`
+
 const Main = props => {
-  const { authUser, currentUser } = props;
-  return (
-    <Switch>
-      <Route exact path="/login" render={props => {
-        if (currentUser.isAuthenticated) {
-          return (
-            <Redirect to="/matchmaking" />
-          )
-        } else {
-          return (
-            <AuthForm
-              onAuth={authUser}
-              buttonText="Log in"
-              login
-              heading='Welcome! Please log in.'
-              {...props}
+    const { authUser, currentUser } = props;
+    return (
+        <Switch>
+            <Route exact path="/login" render={props => {
+                if (currentUser.isAuthenticated) return (<Redirect to="/matchmaking" />)
+                return (
+                    <AuthForm
+                        onAuth={authUser}
+                        login
+                        {...props}
+                    />
+                );
+            }}
+
             />
-          );
-        }
-      }}
-      />
-      <Route exact path="/register" render={props => {
-        if (currentUser.isAuthenticated) {
-          return (
-            <Redirect to="/matchmaking" />
-          )
-        } else {
-          return (
-            <AuthForm
-              onAuth={authUser}
-              signUp
-              buttonText="Sign me up!"
-              heading="Register today!"
-              {...props}
+            <Route exact path="/register" render={props => {
+                if (currentUser.isAuthenticated) return (<Redirect to="/matchmaking" />)
+                return (
+                    <AuthForm
+                        onAuth={authUser}
+                        {...props}
+                    />
+                );
+            }}
             />
-          );
-        }
-      }}
-      />
-      <Route exact path="/gameplay" render={props => {
-        if (currentUser.isAuthenticated) {
-          return (
-            <Game />
-          )
-        } else {
-          return (
-            <Redirect to="/login" />);
-        }
-      }}
-      />
-      <Route render={props => {
-        if (currentUser.isAuthenticated) {
-          return (
-            <div className="row main-menu">
-              <div className="col-2">
-                <Navbar />
-              </div>
-              <div className="col-10">
-                <Content />
-              </div>
-            </div>)
-        } else {
-          return (
-            <Redirect to="/login" />
-          )
-        }
-      }}
-      />
-    </Switch>
-  )
+
+            <Route exact path="/gameplay" render={props => {
+                if (currentUser.isAuthenticated) return (<Game />)
+                return (<Redirect to="/login" />);
+            }}
+            />
+
+            <Route render={props => {
+                if (currentUser.isAuthenticated) return (
+                    <Wrapper>
+                        <WidthDiv width={2 / 12}>
+                            <Navbar />
+                        </WidthDiv>
+                        <WidthDiv width={10 / 12}>
+                            <Content />
+                        </WidthDiv>
+                    </Wrapper>)
+                return (<Redirect to="/login" />)
+
+            }}
+            />
+        </Switch>
+    )
 }
 function mapStateToProps(state) {
-  return {
-    currentUser: state.currentUser,
-  };
+    return {
+        currentUser: state.currentUser,
+    };
 }
 
 export default withRouter(
-  connect(mapStateToProps, { authUser })(Main)
+    connect(mapStateToProps, { authUser })(Main)
 );
