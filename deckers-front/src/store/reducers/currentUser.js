@@ -8,36 +8,54 @@ const DEFAULT_STATE = {
 export default (state = DEFAULT_STATE, action) => {
     switch (action.type) {
         case SET_CURRENT_USER:
-            return {
-                // turn empty object into false or if there are keys, true
-                isAuthenticated: !!Object.keys(action.user).length,
-                user: action.user
-            };
+            return handleSetCurrentUser(state, action)
+
         case UPDATE_USER_AFTER_CHEST_PURCHASE:
-            let updatedUser = state.user;
-            //let userCards = state.user.cards.filter(card => card!==0);
-            updatedUser.cards = action.currentCards;
-            updatedUser.currency = action.currency;
-            return {
-                ...state,
-                user: updatedUser
-            }
+            return handleUpdateUserAfterChestPurchase(state, action)
+
         case UPDATE_USER_AFTER_DECKS_UPDATE:
-            let anotherUpdatedUser = state.user;
-            anotherUpdatedUser.decks = action.currentDecks;
-            return {
-                ...state,
-                user: anotherUpdatedUser
-            }
+            return handleUpdateUserDecks(state, action);
+
         case UPDATE_USER_AFTER_GAME:
             return handleGameOver(state, action)
 
         case ABANDONED_GAME:
             return handleAbandonedGame(state, action);
+
         default:
             return state;
     }
 };
+
+function handleSetCurrentUser(state, action) {
+    const { user } = action;
+
+    return {
+        // turn empty object into false or if there are keys, true
+        isAuthenticated: !!Object.keys(user).length,
+        user: user
+    };
+}
+
+function handleUpdateUserAfterChestPurchase(state, action) {
+    const { user } = state;
+    const { currentCards, currency } = action;
+
+    return {
+        ...state,
+        user: { ...user, cards: currentCards, currency }
+    }
+}
+
+function handleUpdateUserDecks(state, action) {
+    const { user } = state;
+    const { currentDecks } = action;
+
+    return {
+        ...state,
+        user: { ...user, decks: currentDecks }
+    }
+}
 
 function handleGameOver(state, action) {
     const { user } = state;
@@ -50,6 +68,7 @@ function handleGameOver(state, action) {
         ...user,
         currency: newCurrency
     }
+
     return { ...state, user: newUser }
 }
 

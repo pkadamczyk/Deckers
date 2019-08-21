@@ -45,14 +45,15 @@ class CardsDeckItem extends Component {
     }
 
     handleOnClick() {
-        const { deckContent, handleClick } = this.props;
+        const { deckContent, startDeckEdition } = this.props;
         const { cards, name, _id } = deckContent
 
-        handleClick(cards, name, _id)
+        startDeckEdition(cards, name, _id)
     }
 
     render() {
         const { deckContent, handleDeckDeletion } = this.props;
+
         return (
             <Wrapper>
                 <StyledP onClick={this.handleOnClick}>

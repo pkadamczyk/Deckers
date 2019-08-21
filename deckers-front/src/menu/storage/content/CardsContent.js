@@ -129,7 +129,7 @@ function mapStateToProps(state) {
     return {
         cards: state.currentUser.user.cards,
         currentState: state.decks.currentState,
-        isDeckFull: state.decks.full
+        isDeckFull: state.decks.isFull
     }
 }
 
