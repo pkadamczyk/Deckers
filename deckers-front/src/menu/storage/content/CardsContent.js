@@ -6,7 +6,7 @@ import styled from "styled-components";
 import wrapperBackground from '../../../graphic/background_book_01.png'
 import RaceFilters from './RaceFilters';
 import ClassFilters from './ClassFilters';
-import { addCardToDeck } from '../../../store/actions/decks';
+import { addCardToDeck } from '../../../store/actions/storage';
 
 export const RACE_LIST = {
     DWARF: 0,
@@ -128,8 +128,8 @@ class CardsContent extends Component {
 function mapStateToProps(state) {
     return {
         cards: state.currentUser.user.cards,
-        currentState: state.decks.currentState,
-        isDeckFull: state.decks.isFull
+        currentState: state.storage.currentState,
+        isDeckFull: state.storage.isFull
     }
 }
 

@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import {
     startDeckCreation, submitDeck, cancelDeckCreation, removeCardFromDeck, editDeck,
     updateDeck, removeDeck
-} from '../../../store/actions/decks';
+} from '../../../store/actions/storage';
 
 import styled from "styled-components"
 import wrapperBackground from '../../../graphic/nav_background_03.png';
-import { STORAGE_STATE } from '../../../store/reducers/decks';
+import { STORAGE_STATE } from '../../../store/reducers/storage';
 import NavbarIdle from './NavbarIdle';
 import NavbarBusy from './NavbarBusy';
 
@@ -114,12 +114,12 @@ class CardsNavbar extends Component {
 }
 function mapStateToProps(state) {
     return {
-        currentState: state.decks.currentState,
+        currentState: state.storage.currentState,
         decks: state.currentUser.user.decks,
-        cards: state.decks.cards,
+        cards: state.storage.cards,
         userId: state.currentUser.user._id,
-        oldDeckName: state.decks.oldDeckName,
-        deckId: state.decks.deck_id,
+        oldDeckName: state.storage.oldDeckName,
+        deckId: state.storage.deck_id,
     }
 }
 

@@ -10,7 +10,8 @@ import cardCostBoxDwarf from '../../../graphic/race_filter_02.png';
 import cardCostBoxForsaken from '../../../graphic/race_filter_04.png';
 import cardCostBoxOrder from '../../../graphic/race_filter_03.png';
 import { RACE_LIST, CLASS_LIST } from './CardsContent';
-import { STORAGE_STATE } from '../../../store/reducers/decks';
+import { STORAGE_STATE } from '../../../store/reducers/storage';
+
 const CardItem = styled.div`
     height:255px;
     width:173px;
