@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../menu/components/Navbar";
 import Content from "../menu/containers/Content";
-import AuthForm from "../menu/components/AuthForm";
+import AuthForm from "../menu/auth/AuthForm";
 import Game from '../gameplay/containers/Game';
 import { Switch, Route, withRouter, Redirect } from "react-router-dom";
 import { authUser } from "../store/actions/auth";

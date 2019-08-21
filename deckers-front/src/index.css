@@ -55,10 +55,6 @@ code {
   transition: all 0.3s;
 }
 
-.cursorTransform{
-  cursor: pointer ;
-}
-
 #player-info-nav{
   z-index: 999;
   margin: auto;
@@ -373,122 +369,6 @@ hr{
 .cards-navbar-header-wrapper{
   height: 90%;
 }
-
-.CardsDecksHeader p{
-  margin-block-end:0;
-  text-align: center;
-}
-
-/* .deckSlot{
-  background-color: white;
-  margin:0px 10px;
-  margin-top: 5px;
-  widows: 100%;
-  height:45px;
-  border-radius: 5px;
-} */
-
-.AuthFormWrapper{
-  height:100%;
-  background-image: url('./graphic/background_02.PNG');
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-.AuthFormItself{
-  background-image: url('./graphic/background_01.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  height:65%;
-  position: relative;
-  top: 7rem;
-  color: white;
-  text-shadow: 2px 1px #303433;
-  border-radius: 20px;
-  padding-top:20px;
-  padding-left: 0px;
-  padding-right:0px;
-  text-align: center;
-}
-
-.AuthFormItself input{
-  background-image: url('./graphic/form_input_03.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  width: 80%;
-  height: auto;
-  border: none;
-  color: white;
-  font-size: 1.7em;
-  padding-left: 15px;
-  padding-right: 15px;
-  border-radius: 10px;
-  text-shadow: 2px 1px #303433;
-}
-
-.AuthFormItself label{
-  font-size: 1.4rem;
-}
-
-.form-control-auth{
-  display: block;
-  margin: auto;
-}
-.auth-form-middle{
-  margin:0 0.6rem;
-}
-
-.AuthFormItself button{
-  background-image: url('./graphic/button_long_01.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  border-radius: 5px;
-  font-size: 2rem;
-  width:80%;
-  height: auto;
-  border: none;
-  color:white;
-  margin-top:0.3rem;
-  text-shadow: 2px 1px #303433;
-}
-.auth-additional-margin{
-  margin-top:2.2rem !important;
-}
-
-.authform-link-login{
-  background-image: url('./graphic/button_long_01.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  width: 100%;
-  height: 4rem;
-  border-radius: 5px;
-  font-size: 1.3rem;
-  margin:1.9rem auto;
-
-}
-.authform-link-login p{
-  margin-bottom: 0px;
-}
-
-.authform-link-register{
-  background-image: url('./graphic/button_long_02.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  width: 100%;
-  height: 4rem;
-  border-radius: 5px;
-  font-size: 1.3rem;
-  margin:0.2rem auto;
-}
-
-/* .cancel-card{
-  display: inline-block;
-  background-color: red;
-  color:white;
-  height: 45px;
-  width: 45px;
-  flex-direction: row-reverse;
-} */
 
 .mm-deck-item{
   display: inline-block;
