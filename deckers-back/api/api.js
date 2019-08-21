@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const { loginRequired, ensureCorrectUser } = require("./middleware/auth");
+const { loginRequired, ensureCorrectUser } = require("../middleware/auth");
 
-const Chest = require("./models/chest");
-const User = require("./models/user");
-const Option = require("./models/option");
-const Card = require("./models/card");
-const Game = require("./models/game");
+const Chest = require("../models/chest");
+const User = require("../models/user");
+const Option = require("../models/option");
+const Card = require("../models/card");
+const Game = require("../models/game");
 
 // Route for card upgrade
 router.post("/:usr_id/:card_id/upgrade", loginRequired, ensureCorrectUser, async function (req, res, next) {
@@ -55,15 +55,11 @@ router.post("/:id/shop/buy/:chest", loginRequired, ensureCorrectUser, async func
         let [foundChest, foundUser] = await Promise.all([await Chest.findOne({ name: req.params.chest }), await User.findById(req.params.id).deepPopulate('cards.card')])
         let cardAmounts = calculateCardAmounts(foundChest);
 
-        let currencyType = Object.keys(Chest.currencyList)[foundChest.price.currency]
-        if (foundUser.currency[currencyType] >= foundChest.price.amount) {
-            foundUser.currency[currencyType] -= foundChest.price.amount
-        }
-        else {
-            console.log("Not enough " + Object.keys(Chest.currencyList)[foundChest.price.currency]);
-            throw new Error("Not enough currency")
-        }
+        const currencyType = Object.keys(Chest.currencyList)[foundChest.price.currency]
+        if (foundUser.currency[currencyType] < foundChest.price.amount) throw new Error("Not enough currency")
 
+
+        foundUser.currency[currencyType] -= foundChest.price.amount
         //  Define the rarity of random cards
         await randomCardsRarity(cardAmounts);
 

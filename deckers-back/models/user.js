@@ -6,13 +6,10 @@ var deepPopulate = require('mongoose-deep-populate')(mongoose);
 var UserSchema = new mongoose.Schema({
     username: String,
     password: String,
-    // added for future uses (already implemented in auth) - Pszemek
     email: String,
-    profileImageUrl: String,
-    //
 
     currency: {
-        gold: { type: Number, default: 0 },
+        gold: { type: Number, default: 200 },
         gems: { type: Number, default: 0 }
     },
 

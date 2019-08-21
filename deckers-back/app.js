@@ -19,7 +19,7 @@ const authRoutes = require("./routes/auth");
 const optionRoutes = require("./routes/options");
 const chestRoutes = require("./routes/chests");
 
-const api = require("./api");
+const api = require("./api/api");
 
 //PART OF NEW AUTH - Pszemek
 app.use(cors());
