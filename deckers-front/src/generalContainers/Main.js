@@ -23,54 +23,63 @@ const WidthDiv = styled.div`
     width: ${props => (props.width * 100) + "%"}
 `
 
+const AppWrap = styled.div`
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+`
+
 const Main = props => {
     const { authUser, currentUser } = props;
     return (
-        <Switch>
-            <Route exact path="/login" render={props => {
-                if (currentUser.isAuthenticated) return (<Redirect to="/matchmaking" />)
-                return (
-                    <AuthForm
-                        onAuth={authUser}
-                        login
-                        {...props}
-                    />
-                );
-            }}
+        <AppWrap>
+            <Switch>
+                <Route exact path="/login" render={props => {
+                    if (currentUser.isAuthenticated) return (<Redirect to="/matchmaking" />)
+                    return (
+                        <AuthForm
+                            onAuth={authUser}
+                            login
+                            {...props}
+                        />
+                    );
+                }}
 
-            />
-            <Route exact path="/register" render={props => {
-                if (currentUser.isAuthenticated) return (<Redirect to="/matchmaking" />)
-                return (
-                    <AuthForm
-                        onAuth={authUser}
-                        {...props}
-                    />
-                );
-            }}
-            />
+                />
+                <Route exact path="/register" render={props => {
+                    if (currentUser.isAuthenticated) return (<Redirect to="/matchmaking" />)
+                    return (
+                        <AuthForm
+                            onAuth={authUser}
+                            {...props}
+                        />
+                    );
+                }}
+                />
 
-            <Route exact path="/gameplay" render={props => {
-                if (currentUser.isAuthenticated) return (<Game />)
-                return (<Redirect to="/login" />);
-            }}
-            />
+                <Route exact path="/gameplay" render={props => {
+                    if (currentUser.isAuthenticated) return (<Game />)
+                    return (<Redirect to="/login" />);
+                }}
+                />
 
-            <Route render={props => {
-                if (currentUser.isAuthenticated) return (
-                    <Wrapper>
-                        <WidthDiv width={2 / 12}>
-                            <Navbar />
-                        </WidthDiv>
-                        <WidthDiv width={10 / 12}>
-                            <Content />
-                        </WidthDiv>
-                    </Wrapper>)
-                return (<Redirect to="/login" />)
+                <Route render={props => {
+                    if (currentUser.isAuthenticated) return (
+                        <Wrapper>
+                            <WidthDiv width={2 / 12}>
+                                <Navbar />
+                            </WidthDiv>
+                            <WidthDiv width={10 / 12}>
+                                <Content />
+                            </WidthDiv>
+                        </Wrapper>)
+                    return (<Redirect to="/login" />)
 
-            }}
-            />
-        </Switch>
+                }}
+                />
+            </Switch>
+        </AppWrap>
     )
 }
 function mapStateToProps(state) {
