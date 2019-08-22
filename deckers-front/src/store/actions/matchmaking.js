@@ -1,6 +1,6 @@
 import { apiCall } from "../../services/api";
-import { connectedToGame, SOCKET, reconnectedToGame } from './game';
-import { CHOOSE_DECK, ABANDONED_GAME, RECONNECTED_TO_GAME } from '../actionTypes';
+import { connectedToGame, reconnectedToGame } from './game';
+import { CHOOSE_DECK, ABANDONED_GAME } from '../actionTypes';
 
 export const chooseDeck = (deck_id) => ({
     type: CHOOSE_DECK,

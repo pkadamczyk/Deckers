@@ -73,18 +73,16 @@ const GoldAmount = styled.div`
     background-image: url(${goldImg});
     background-size: contain;
     background-repeat: no-repeat;
-    padding-left: 1.4rem;
-    width:0.5rem;
-    height: auto;
+
+    padding-left: 1.8rem;
     margin-right: 1rem;
 `
 const GemAmount = styled.div`
     background-image: url(${gemImg});
     background-size: contain;
     background-repeat: no-repeat;
-    padding-left: 1.4rem;
-    width:0.5rem;
-    height: auto;
+
+    padding-left: 2rem;
     margin-right: 1rem;
 `
 
@@ -101,11 +99,14 @@ const Button = styled.button`
     color:white;
 
     margin: 10px 0;
+    cursor: pointer;
 `
 
 const CurrencyPanel = styled.div`
-    padding-left: 20%;
     margin: 20px 0;
+
+    display: flex;
+    justify-content: space-evenly;
 `
 
 class Navbar extends Component {
@@ -120,8 +121,8 @@ class Navbar extends Component {
 
                     <Username>{user.username}</Username>
                     <CurrencyPanel>
-                        <GoldAmount >{currency.gold}</GoldAmount>
-                        <GemAmount>{currency.gems}</GemAmount>
+                        <GoldAmount > {currency.gold}</GoldAmount>
+                        <GemAmount> {currency.gems}</GemAmount>
                     </CurrencyPanel>
 
                     <Button onClick={logout}>Logout</Button>

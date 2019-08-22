@@ -21,13 +21,14 @@ class DeckContainer extends Component {
     }
 
     render() {
-        const { decks } = this.props;
+        const { decks, pickedDeck } = this.props;
 
         let deckList = decks.map(deck => (
             <DeckItem
                 deck={deck}
                 key={deck._id}
                 chooseDeck={this.handleChooseDeck}
+                pickedDeck={pickedDeck}
             />
         ))
 
@@ -42,6 +43,7 @@ class DeckContainer extends Component {
 function mapStateToProps(state) {
     return {
         decks: state.currentUser.user.decks,
+        pickedDeck: state.matchmaking.deck,
     }
 }
 

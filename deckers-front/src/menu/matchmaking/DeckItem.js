@@ -9,15 +9,21 @@ const Wrapper = styled.div`
     display: inline-block;
     height: 95%;
     width:30%;
+
     background-image: url(${background});
     background-size: cover;
     background-repeat: no-repeat;
     background-color: transparent;
+
     color: white;
     text-align: center;
+
     border-radius: 10px;
     margin: 1.25% 1.66%; 
     padding-top:10px;
+    cursor: pointer;
+
+    opacity: ${props => props.isPicked ? "1" : "0.65"}
 `
 
 const Title = styled.h1`
@@ -46,7 +52,7 @@ class DeckItem extends Component {
     };
 
     render() {
-        const { deck } = this.props;
+        const { deck, pickedDeck } = this.props;
 
         let DeckSlots = deck.cards.map((card, index) => (
             <CardItem
@@ -56,8 +62,9 @@ class DeckItem extends Component {
             />
         ));
 
+        const isPicked = pickedDeck === deck._id
         return (
-            <Wrapper onClick={this.handleOnClick}>
+            <Wrapper onClick={this.handleOnClick} isPicked={isPicked}>
                 <Title>{deck.name}</Title>
                 <hr />
                 {DeckSlots}

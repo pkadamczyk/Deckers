@@ -8,11 +8,13 @@ const StyledButton = styled.button`
     background-size: cover;
     background-repeat: no-repeat;
 
-    margin: auto 10% 10% 10%;
+    margin: auto 0 10% 0;
     border: none;
     border-radius: 10px;
     font-size: 1.2rem;
     height:3.6rem;
+
+    color:white;
 `
 
 class Button extends Component {

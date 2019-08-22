@@ -35,9 +35,10 @@ const Button = styled.button`
     background-repeat: no-repeat;
     border:none;
     font-size: 1.4rem;
+    cursor: pointer;
 
     &:focus {outline:0;}
-    &:disabled {opacity: 0.65; }
+    &:disabled {opacity: 0.65; cursor: inherit}
 `
 
 class Navbar extends Component {

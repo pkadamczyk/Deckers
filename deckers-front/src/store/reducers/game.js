@@ -284,7 +284,8 @@ function handleEndTurn(state, action) {
 
 function handleEnemyCardAttack(state, action) {
     const { gameInfo } = state;
-    const { result, playerMinionId, enemyMinionId } = action
+    const { result } = action
+    // playerMinionId, enemyMinionId, action
     const { role } = gameInfo;
 
     let playerData = result[role];

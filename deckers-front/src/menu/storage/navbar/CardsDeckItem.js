@@ -14,7 +14,8 @@ const Wrapper = styled.div`
     width: 80%;
     
     border-radius: 5px;
-    color: white
+    color: white;
+    cursor: pointer;
 `
 
 const StyledP = styled.p`
@@ -30,9 +31,9 @@ const Button = styled.button`
     background-repeat: no-repeat;
     background-color: transparent;
 
-    position: relative;
-    left:0.1rem;
-    color:transparent;
+    width: 20px;
+    height: 20px;
+
     cursor: pointer;
     border: none;
 `
@@ -59,11 +60,7 @@ class CardsDeckItem extends Component {
                 <StyledP onClick={this.handleOnClick}>
                     {deckContent && deckContent.name}
                 </StyledP>
-                <Button
-                    onClick={e => handleDeckDeletion(deckContent._id)}
-                >
-                    X
-                </Button>
+                <Button onClick={e => handleDeckDeletion(deckContent._id)} />
             </Wrapper>
         )
     }

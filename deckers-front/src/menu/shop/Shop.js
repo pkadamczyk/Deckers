@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Chest from './Chest';
-import { buyChest, updateShopState } from '../../store/actions/shop';
+import { buyChest } from '../../store/actions/shop';
 
 import styled from "styled-components"
 import { SHOP_STATE } from '../../store/reducers/shop';
@@ -47,6 +47,7 @@ class Shop extends Component {
 
         const chestList = chests.map(chest => {
             const isAffordable = chest.price.amount <= Object.values(userCurrency)[chest.price.currency]
+            debugger
             return (
                 <Chest
                     key={chest._id}
