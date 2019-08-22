@@ -36,7 +36,7 @@ const Form = styled.form`
 const Input = styled.input`
     width: 80%;
     border: none;
-    color: white;
+    color: black;
     font-size: 1.7em;
     padding-left: 15px;
     padding-right: 15px;

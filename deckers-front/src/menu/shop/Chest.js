@@ -18,8 +18,9 @@ const Wrapper = styled.div`
     color:white;
     border-radius: 20px;
     padding-top:1.5rem;
-    z-index: 996;
     transition: all 0.3s;
+
+    opacity: ${props => props.isAffordable ? "1" : "0.65"}
 `
 
 const NameTag = styled.h3`
@@ -32,6 +33,7 @@ const ChestImg = styled.div`
     background-image: url(${chestItemNameImgImg});
     background-repeat: no-repeat;
     background-size: cover;
+
     width:50%;
     height: 9.6rem;
     margin: 1rem auto;
@@ -40,6 +42,7 @@ const Button = styled.button`
     background-image: url(${chestItemButtonImg}) !important;
     background-repeat: no-repeat;
     background-size: contain;
+
     border:none;
     color:white;
     font-size: 1rem;
@@ -47,9 +50,8 @@ const Button = styled.button`
     height:7rem;
     padding-bottom: 2.2rem;
     margin-top:0.8rem;
-    z-index: 999;
     background-color: transparent;
-    cursor: pointer;
+    cursor: ${props => props.isAffordable ? "pointer" : "inherit"}
 `
 
 const GoldImg = styled.span`
@@ -76,22 +78,22 @@ class Chest extends Component {
     }
 
     render() {
-        const { chest } = this.props;
+        const { chest, isAffordable } = this.props;
         const { price, name, cardAmount } = chest
 
         const chestInfo = Object.values(cardAmount).map((amount, i) => {
-            return amount !== 0 ? <li>{amount} guaranteed {Object.keys(cardAmount)[i + 1]} cards.</li> : null
+            return amount !== 0 ? <li key={`${i}${amount}`}>{amount} guaranteed {Object.keys(cardAmount)[i]} cards.</li> : null
         })
 
         return (
-            <Wrapper>
+            <Wrapper isAffordable={isAffordable}>
                 <NameTag >{name}</NameTag>
                 <ChestImg />
                 <div>
                     <p>This chest contains:</p>
                     <ul>{chestInfo}</ul>
                 </div>
-                <Button onClick={this.handleOnClick}>
+                <Button onClick={this.handleOnClick} disabled={!isAffordable}>
                     <GoldImg>{price.amount}</GoldImg>
                 </Button>
             </Wrapper>

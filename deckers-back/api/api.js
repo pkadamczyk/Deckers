@@ -50,9 +50,9 @@ router.post("/:usr_id/:card_id/upgrade", loginRequired, ensureCorrectUser, async
 });
 
 // Route for buying chests
-router.post("/:id/shop/buy/:chest", loginRequired, ensureCorrectUser, async function (req, res, next) {
+router.post("/:usr_id/shop/buy/:chest", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
-        let [foundChest, foundUser] = await Promise.all([await Chest.findOne({ name: req.params.chest }), await User.findById(req.params.id).deepPopulate('cards.card')])
+        let [foundChest, foundUser] = await Promise.all([await Chest.findOne({ name: req.params.chest }), await User.findById(req.params.usr_id).deepPopulate('cards.card')])
         let cardAmounts = calculateCardAmounts(foundChest);
 
         const currencyType = Object.keys(Chest.currencyList)[foundChest.price.currency]
@@ -80,6 +80,7 @@ router.post("/:id/shop/buy/:chest", loginRequired, ensureCorrectUser, async func
 
         await foundUser.deepPopulate('cards.card');
 
+        console.log("Chest bought")
         res.status(200).json({
             newCards: cards,
             currentCards: foundUser.cards,
@@ -370,7 +371,7 @@ async function randomCardsRarity(cardAmounts) {
                 return (random > min && random <= (min + array[i]));
             }) + 1;
 
-            console.log("Random rarity is: " + Object.keys(Card.rarityList)[x]);
+            // console.log("Random rarity is: " + Object.keys(Card.rarityList)[x]);
             cardAmounts[x]++;
         }
 
@@ -390,7 +391,7 @@ async function addCardsToArray(cardAmounts) {
             index++;
 
             let count = await Card.countDocuments({ rarity: index })
-            console.log("Cards amount: " + cardAmount + " " + Object.keys(Card.rarityList)[index]);
+            // console.log("Cards amount: " + cardAmount + " " + Object.keys(Card.rarityList)[index]);
             for (var i = 0; i < cardAmount; i++) {
                 let random = Math.floor(Math.random() * count);
 

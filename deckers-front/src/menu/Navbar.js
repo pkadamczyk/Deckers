@@ -50,7 +50,6 @@ const AvatarHoleder = styled.div`
 const Avatar = styled.div`
     height:80%;
     width:auto;
-    z-index: 999;
     position: relative;
     top:1.9rem;
     left:0.3rem;
