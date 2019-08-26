@@ -57,7 +57,7 @@ const CardList = styled.div`
 
     height: 80%;
     width:100%;
-    padding-left:5%;
+    padding-left:2%;
     padding-top:2.5rem;
 `
 

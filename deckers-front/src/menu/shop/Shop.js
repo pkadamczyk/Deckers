@@ -47,7 +47,7 @@ class Shop extends Component {
 
         const chestList = chests.map(chest => {
             const isAffordable = chest.price.amount <= Object.values(userCurrency)[chest.price.currency]
-            debugger
+
             return (
                 <Chest
                     key={chest._id}

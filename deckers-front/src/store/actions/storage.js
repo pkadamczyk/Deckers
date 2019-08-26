@@ -38,7 +38,7 @@ export const removeCardFromDeck = (slot) => ({
 export const submitDeck = (usr_id, deckToSend) => {
   return dispatch => {
     console.log(usr_id);
-    return apiCall("POST", `http://localhost:8080/${usr_id}/decks/create`, deckToSend)
+    return apiCall("POST", `/api/${usr_id}/decks/create`, deckToSend)
       .then(res => {
         dispatch(updateUserAfterDecksUpdate(res));
         dispatch(cancelDeckCreation());
@@ -53,7 +53,7 @@ export const submitDeck = (usr_id, deckToSend) => {
 export const updateDeck = (usr_id, deck_id, deckToSend) => {
   return dispatch => {
     console.log(usr_id);
-    return apiCall("POST", `http://localhost:8080/${usr_id}/decks/${deck_id}?_method=put`, deckToSend)
+    return apiCall("POST", `/api/${usr_id}/decks/${deck_id}?_method=put`, deckToSend)
       .then(res => {
         dispatch(updateUserAfterDecksUpdate(res));
         dispatch(cancelDeckCreation());
@@ -67,7 +67,7 @@ export const updateDeck = (usr_id, deck_id, deckToSend) => {
 export const removeDeck = (usr_id, deck_id) => {
   return dispatch => {
     console.log(usr_id);
-    return apiCall("POST", `http://localhost:8080/${usr_id}/decks/${deck_id}?_method=delete`)
+    return apiCall("POST", `/api/${usr_id}/decks/${deck_id}?_method=delete`)
       .then(res => {
         dispatch(updateUserAfterDecksUpdate(res));
       })

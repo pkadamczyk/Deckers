@@ -19,7 +19,7 @@ export const buyChest = (usr_id, chest_name) => {
     return dispatch => {
         return new Promise((resolve, reject) => {
             dispatch(updateShopState(SHOP_STATE.BUSY))
-            return apiCall("post", `http://localhost:8080/${usr_id}/shop/buy/${chest_name}`)
+            return apiCall("post", `/api/${usr_id}/shop/buy/${chest_name}`)
                 .then(res => {
                     dispatch(updateUserAfterChestPurchase(res))
                     dispatch(updateShopState(SHOP_STATE.IDLE))

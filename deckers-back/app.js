@@ -21,6 +21,9 @@ const chestRoutes = require("./routes/chests");
 
 const api = require("./api/api");
 
+const PORT = process.env.PORT || 8080
+const DATA_BASE_LINK = "mongodb+srv://kamo1234:kamo1234@cluster0-gklst.mongodb.net/deckers?retryWrites=true" // process.env.MONGODB_URI ||
+
 //PART OF NEW AUTH - Pszemek
 app.use(cors());
 app.use(bodyParser.json());
@@ -30,7 +33,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(express.static(__dirname + "/public"));
-mongoose.connect("mongodb+srv://kamo1234:kamo1234@cluster0-gklst.mongodb.net/deckers?retryWrites=true", {
+mongoose.connect(DATA_BASE_LINK, {
     useNewUrlParser: true
 });
 mongoose.Promise = Promise; // DODATKOWY CONFIG PROMISOW MONGOOSA - Pszemek (Auth)
@@ -40,11 +43,11 @@ app.use(methodOverride("_method"));
 //===============================
 //  ROUTES CONNECTIONS TO EXPRESS
 app.use(cardRoutes);
-app.use(authRoutes);
+app.use("/api", authRoutes);
 app.use(optionRoutes);
 app.use(chestRoutes);
 
-app.use(api);
+app.use("/api", api);
 
 app.use(function (req, res, next) {
     let err = new Error("Not Found");
@@ -61,7 +64,7 @@ app.use(function errorHandler(error, request, response, next) {
 });
 
 // SERVER CONFIG
-server.listen(8080, process.env.IP, function () {
+server.listen(PORT, process.env.IP, function () {
     console.log("Server started!");
 });
 

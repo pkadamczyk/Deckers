@@ -11,7 +11,7 @@ export function connectToGame(game_id, user_id, deck_id, history) {
     return dispatch => {
         // wrap our thunk in a promise so we can wait for the API call
         return new Promise((resolve, reject) => {
-            return apiCall("post", `http://localhost:8080/${user_id}/game/${game_id}`, { deck_id })
+            return apiCall("post", `/api/${user_id}/game/${game_id}`, { deck_id })
                 .then(res => {
                     console.log(res);
                     dispatch(connectedToGame(res));
@@ -34,7 +34,7 @@ export const gameAbandoned = (res) => {
 export function abandonGame(user_id) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            return apiCall("post", `http://localhost:8080/${user_id}/game/abandon`, {})
+            return apiCall("post", `/api/${user_id}/game/abandon`, {})
                 .then(res => {
                     dispatch(gameAbandoned(res));
                 })
@@ -48,7 +48,7 @@ export function abandonGame(user_id) {
 export function reconnectToGame(user_id, history) {
     return dispatch => {
         return new Promise((resolve, reject) => {
-            return apiCall("post", `http://localhost:8080/${user_id}/game/reconnect`, {})
+            return apiCall("post", `/api/${user_id}/game/reconnect`, {})
                 .then(res => {
                     dispatch(reconnectedToGame(res));
                     history.push("/gameplay")

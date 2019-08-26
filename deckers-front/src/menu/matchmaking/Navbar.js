@@ -7,6 +7,7 @@ import { connectToGame, abandonGame, reconnectToGame } from '../../store/actions
 import styled from "styled-components"
 import navBackground from '../../graphic/nav_background_03.png'
 import buttonBackground from '../../graphic/button_03.png'
+import { SOCKET_URL } from '../../generalContainers/App';
 
 let socket;
 
@@ -54,7 +55,7 @@ class Navbar extends Component {
     }
 
     componentDidMount() {
-        socket = openSocket('http://localhost:8080/matchmaking');
+        socket = openSocket(`${SOCKET_URL}/matchmaking`);
     }
 
     componentWillUnmount() {

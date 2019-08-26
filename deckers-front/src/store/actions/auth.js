@@ -41,7 +41,7 @@ export function reloadUser(email, userData) {
   return dispatch => {
     // wrap our thunk in a promise so we can wait for the API call
     return new Promise((resolve, reject) => {
-      return apiCall("post", `http://localhost:8080/${email}/reloadUser`, userData)
+      return apiCall("post", `/api/${email}/reloadUser`, userData)
         .then(({ token, availableChests, ...user }) => {
           localStorage.setItem("jwtToken", token);
           setAuthorizationToken(token);
@@ -60,7 +60,7 @@ export function authUser(type, userData) {
   return dispatch => {
     // wrap our thunk in a promise so we can wait for the API call
     return new Promise((resolve, reject) => {
-      return apiCall("post", `http://localhost:8080/${type}`, userData)
+      return apiCall("post", `/api/${type}`, userData)
         .then(({ token, availableChests, ...user }) => {
           localStorage.setItem("jwtToken", token);
           setAuthorizationToken(token);
