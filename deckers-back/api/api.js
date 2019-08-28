@@ -387,7 +387,7 @@ async function addCardsToArray(cardAmounts) {
         let cards = [];
 
         cards = await Promise.all(cardAmounts.map(async function (cardAmount, index) {
-            let arr = [];
+            let cardPromises = [];
             index++;
 
             let count = await Card.countDocuments({ rarity: index })
@@ -396,10 +396,10 @@ async function addCardsToArray(cardAmounts) {
                 let random = Math.floor(Math.random() * count);
 
                 // Again query all items but only fetch one offset by our random #
-                let foundCard = await Card.findOne({ rarity: index }).skip(random)
-                arr.push(foundCard);
+                const cardPromise = Card.findOne({ rarity: index, canBeDropped: true }).skip(random)
+                cardPromises.push(cardPromise);
             }
-            return arr;
+            return await Promise.all(cardPromises);
         }))
 
         return cards.reduce((total, amount) => {

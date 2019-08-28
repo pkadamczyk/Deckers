@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 const Chest = require("../models/chest");
+const Card = require("../models/card");
 
 router.post("/register", async function (req, res, next) {
     try {
@@ -38,7 +39,11 @@ router.post("/register", async function (req, res, next) {
 
 router.post("/login", async function (req, res, next) {
     try {
-        let [user, availableChests] = await Promise.all([fetchUser(req.body.email), fetchChests()])
+        const cardsPromise = Card.find({ isFree: true })
+        let [user, availableChests, freeCards] = await Promise.all([fetchUser(req.body.email), fetchChests(), cardsPromise])
+
+        const cardsToConcat = freeCards.filter(card => !user.cards.some(c => c.card._id.equals(card._id)))
+        user.cards = user.cards.concat(cardsToConcat.map(card => ({ level: 1, amount: 0, card })));
 
         let { id, username, email } = user;
         let isMatch = await user.comparePassword(req.body.password);
@@ -72,42 +77,6 @@ router.post("/login", async function (req, res, next) {
     }
 });
 
-router.post("/:email/reloadUser", async function (req, res, next) {
-    try {
-        let [user, availableChests] = await Promise.all([fetchUser(req.params.email), fetchChests()])
-
-        let { id, username, email } = user;
-        let isMatch = await user.comparePassword(req.body.password);
-        if (isMatch) {
-            let token = jwt.sign(
-                {
-                    id,
-                    username,
-                    email
-                },
-                process.env.SECRET_KEY
-            );
-            console.log(`${username} has been reloaded`)
-
-            user = prepareUserData(user)
-            return res.status(200).json({
-                user,
-                availableChests,
-                token
-            }
-            );
-        } else {
-            return next({
-                status: 400,
-                message: "Invalid Email/Password."
-            });
-        }
-    } catch (e) {
-        console.log(e)
-        return next({ status: 400, message: "Invalid Email/Password." });
-    }
-});
-
 module.exports = router;
 
 async function fetchUser(email) {
@@ -117,8 +86,7 @@ async function fetchUser(email) {
 
 async function fetchChests() {
     const foundChests = await Chest.find({})
-
-    let availableChests = foundChests.filter(chest => chest.isAvailable);
+    const availableChests = foundChests.filter(chest => chest.isAvailable);
 
     return availableChests
 }

@@ -37,25 +37,6 @@ export function logout() {
   };
 }
 
-export function reloadUser(email, userData) {
-  return dispatch => {
-    // wrap our thunk in a promise so we can wait for the API call
-    return new Promise((resolve, reject) => {
-      return apiCall("post", `/api/${email}/reloadUser`, userData)
-        .then(({ token, availableChests, ...user }) => {
-          localStorage.setItem("jwtToken", token);
-          setAuthorizationToken(token);
-          dispatch(setCurrentUser(user.user));
-          dispatch(setAvailableChests(availableChests));
-          resolve(); // indicate that the API call succeeded
-        })
-        .catch(err => {
-          reject(); // indicate the API call failed
-        });
-    });
-  };
-}
-
 export function authUser(type, userData) {
   return dispatch => {
     // wrap our thunk in a promise so we can wait for the API call

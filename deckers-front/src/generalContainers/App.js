@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import { configureStore } from "../store";
 import { BrowserRouter as Router } from "react-router-dom";
 import Main from './Main';
-import { setAuthorizationToken, setCurrentUser, reloadUser } from "../store/actions/auth";
+import { setAuthorizationToken, setCurrentUser, authUser } from "../store/actions/auth";
 import jwtDecode from "jwt-decode";
 
 export const SOCKET_URL = "http://localhost:8080";
@@ -15,7 +15,7 @@ if (localStorage.jwtToken) {
   //RELOAD USER GOES HERE
   try {
     let tokenDecoded = jwtDecode(localStorage.jwtToken);
-    store.dispatch(reloadUser(tokenDecoded.email));
+    store.dispatch(authUser("login", tokenDecoded));
     // store.dispatch(setCurrentUser(jwtDecode(localStorage.jwtToken)));
   } catch (e) {
     store.dispatch(setCurrentUser({}));
