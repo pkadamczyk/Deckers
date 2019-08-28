@@ -6,7 +6,7 @@ import Main from './Main';
 import { setAuthorizationToken, setCurrentUser, reloadUser } from "../store/actions/auth";
 import jwtDecode from "jwt-decode";
 
-export const SOCKET_URL = "https://deckers-backend.herokuapp.com";
+export const SOCKET_URL = "http://localhost:8080";
 const store = configureStore();
 
 if (localStorage.jwtToken) {

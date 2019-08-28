@@ -27,6 +27,22 @@ const roleList = Object.freeze({
     spell: 8
 });
 
+const Effect = Object.freeze({
+    EFFECT_LIST: {
+        HEAL: 1,
+        DAMAGE: 2,
+        SUMMON: 3,
+    },
+    TARGET_LIST: {
+        NONE: 0,
+        SINGLE_TARGET: 1,
+        AOE_ENEMY: 2,
+        AOE_ALLIES: 3,
+        AOE_ALL: 4,
+        SELF: 5,
+    }
+})
+
 var cardSchema = new mongoose.Schema({
     name: String,
     description: String,
@@ -49,13 +65,24 @@ var cardSchema = new mongoose.Schema({
         cost: Number,
         damage: Number,
         health: Number,
-    }]
+    }],
+
+    isFree: {
+        type: Boolean,
+        default: false
+    },
+
+    canBeDropped: {
+        type: Boolean,
+        default: true
+    }
 });
 
 Object.assign(cardSchema.statics, {
     rarityList,
     raceList,
-    roleList
+    roleList,
+    Effect
 });
 
 module.exports = mongoose.model("Card", cardSchema);

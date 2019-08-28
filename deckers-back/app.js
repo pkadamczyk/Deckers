@@ -42,7 +42,7 @@ app.use(methodOverride("_method"));
 
 //===============================
 //  ROUTES CONNECTIONS TO EXPRESS
-app.use(cardRoutes);
+app.use("/admin", cardRoutes);
 app.use("/api", authRoutes);
 app.use(optionRoutes);
 app.use(chestRoutes);

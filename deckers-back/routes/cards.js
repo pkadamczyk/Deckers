@@ -5,47 +5,31 @@ var Card = require("../models/card");
 var User = require("../models/user");
 
 // INDEX ROUTE
-router.get("/cards", function (req, res) {
-    Card.find({}, function (err, cards) {
-        if (err) {
-            console.log(err)
-        }
-        else {
-            res.render("cards/index", { cards: cards });
-        }
-    });
+router.get("/cards", async function (req, res) {
+    try {
+        const cards = await Card.find({})
+
+        res.status(200).json({ cards });
+    } catch (err) {
+        console.log(err)
+    }
 });
 
 // CREATE ROUTE
-router.post("/cards", function (req, res) {
-    let stats = [];
-    for (let i = 0; i < req.body.cost.length; i++) {
-        let statObject = {
-            cost: parseInt(req.body.cost[i]),
-            damage: parseInt(req.body.damage[i]),
-            health: parseInt(req.body.health[i]),
-        }
-        stats.push(statObject);
-    }
+router.post("/cards", async function (req, res) {
+    console.log(req.body)
 
-    //new item logic
-    let newCard = req.body.new;
-    newCard.stats = stats;
+    // new item logic
+    const newCard = req.body;
     console.log(newCard);
 
-    Card.create(newCard, function (err, createdCard) {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            res.redirect("/cards");
-        }
-    })
+    await Card.create(newCard)
+    res.status(200).json({});
 });
 
 // NEW ROUTE
 router.get("/cards/new", function (req, res) {
-    res.render("cards/new", { rarityList: Card.rarityList, raceList: Card.raceList, roleList: Card.roleList });
+    res.status(200).json({ rarityList: Card.rarityList, raceList: Card.raceList, roleList: Card.roleList, Effect: Card.Effect });
 })
 
 // SHOW ROUTE

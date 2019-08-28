@@ -5,6 +5,8 @@ import Shop from './shop/Shop';
 import Cards from './storage/Cards';
 import { Switch, Route } from "react-router-dom";
 
+import AdminPanel from "./admin"
+
 class Content extends Component {
     render() {
         return (
@@ -28,6 +30,10 @@ class Content extends Component {
                 <Route
                     exact path="/shop"
                     render={props => <Shop {...props} />}
+                />
+                <Route
+                    exact path="/admin"
+                    render={props => <AdminPanel />}
                 />
             </Switch>
         );

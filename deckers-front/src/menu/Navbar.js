@@ -143,6 +143,9 @@ class Navbar extends Component {
                 <Link to="/shop">
                     <Button>Shop</Button>
                 </Link>
+                <Link to="/admin">
+                    <Button>Admin</Button>
+                </Link>
             </Wrapper>
         );
     }
