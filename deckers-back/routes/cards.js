@@ -17,11 +17,8 @@ router.get("/cards", async function (req, res) {
 
 // CREATE ROUTE
 router.post("/cards", async function (req, res) {
-    console.log(req.body)
-
     // new item logic
     const newCard = req.body;
-    console.log(newCard);
 
     await Card.create(newCard)
     res.status(200).json({});

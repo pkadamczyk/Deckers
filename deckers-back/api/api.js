@@ -104,10 +104,15 @@ router.post("/:usr_id/decks/create", loginRequired, ensureCorrectUser, async fun
             name: req.body.name
         };
 
-        let foundUser = await fetchUser(req.params.usr_id);
-        let indexArr = req.body.cards.map(req_card_id => foundUser.cards.findIndex(usr_card_obj => usr_card_obj.card._id.equals(req_card_id)))
+        const cardsPromise = Card.find({ isFree: true })
+        const [foundUser, freeCards] = await Promise.all([fetchUser(req.params.usr_id), cardsPromise])
 
-        indexArr.forEach(index => newDeck.cards.push(foundUser.cards[index].card._id))
+        const cardsToConcat = freeCards.filter(card => !foundUser.cards.some(c => c.card._id.equals(card._id)))
+        const cards = foundUser.cards.concat(cardsToConcat.map(card => ({ level: 1, amount: 0, card })));
+
+        let indexArr = req.body.cards.map(req_card_id => cards.findIndex(usr_card_obj => usr_card_obj.card._id.equals(req_card_id)))
+
+        indexArr.forEach(index => newDeck.cards.push(cards[index].card._id))
 
         foundUser.decks.push(newDeck);
         await foundUser.deepPopulate("decks.cards");
@@ -152,10 +157,15 @@ router.put("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async fu
             cards: [],
             name: req.body.name
         };
-        let foundUser = await fetchUser(req.params.usr_id);
 
-        let indexArr = req.body.cards.map(req_card_id => foundUser.cards.findIndex(usr_card_obj => usr_card_obj.card._id.equals(req_card_id)))
-        indexArr.forEach(index => newDeck.cards.push(foundUser.cards[index].card._id))
+        const cardsPromise = Card.find({ isFree: true })
+        const [foundUser, freeCards] = await Promise.all([fetchUser(req.params.usr_id), cardsPromise])
+
+        const cardsToConcat = freeCards.filter(card => !foundUser.cards.some(c => c.card._id.equals(card._id)))
+        const cards = foundUser.cards.concat(cardsToConcat.map(card => ({ level: 1, amount: 0, card })));
+
+        let indexArr = req.body.cards.map(req_card_id => cards.findIndex(usr_card_obj => usr_card_obj.card._id.equals(req_card_id)))
+        indexArr.forEach(index => newDeck.cards.push(cards[index].card._id))
 
         let idx = foundUser.decks.findIndex(deck => deck._id.equals(req.params.deck_id));
         if (idx == -1) throw new Error("Deck not found");
@@ -302,7 +312,7 @@ function prepareDeck(deck, user) {
     deck = deck.map((card) => {
         foundCardObject = user.cards.find(cardObject => cardObject.card._id.equals(card._id))
 
-        return { ...card.toObject(), level: foundCardObject.level }
+        return { ...card.toObject(), level: foundCardObject ? foundCardObject.level : 1 }
     })
     // Shuffle deck
     return shuffle(deck);

@@ -1,5 +1,6 @@
 import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED, SERVER_READY, RECONNECTED_TO_GAME, SERVER_RECONNECTED } from "../actionTypes"
 import { SOCKET } from "../actions/game";
+import { invokeEffect } from "./helpers/effects";
 export const GAME_STATE = {
     BUSY: 1,
     TARGETING: 2,
@@ -7,7 +8,7 @@ export const GAME_STATE = {
 }
 export const CARD_DRAW_COST = 1;
 
-const MAX_HERO_HEALTH = 10;
+export const MAX_HERO_HEALTH = 10;
 const GOLD_ON_START = 1;
 export const MAX_CARDS_ON_HAND = 6;
 
@@ -187,6 +188,7 @@ function handleReorderCardsOnHand(state, action) {
 function handleSummonCard(state, action) {
     const { playerHeroGold, cardsOnHand, cardsOnBoard } = state;
     const { droppableDestination, droppableSource } = action;
+    let newState = { ...state }
 
     SOCKET.emit('card-summoned', {
         boardPosition: droppableDestination.index,
@@ -201,10 +203,21 @@ function handleSummonCard(state, action) {
 
     const cost = removed.inGame.stats.cost
     if (playerHeroGold < cost) throw (new Error("Not enough gold"));
-    let playerGoldAmount = playerHeroGold - cost;
 
-    destClone.splice(droppableDestination.index, 0, removed);
-    return { ...state, playerHeroGold: playerGoldAmount, cardsOnHand: sourceClone, cardsOnBoard: destClone };
+    // Ask for target if needed
+    // console.log("On summon: ")
+    // console.log(removed.effects.onSummon)
+    // debugger
+
+    const playerGoldAmount = playerHeroGold - cost;
+    if (removed.role !== 8) destClone.splice(droppableDestination.index, 0, removed);
+
+    newState = { ...newState, playerHeroGold: playerGoldAmount, cardsOnHand: sourceClone, cardsOnBoard: destClone }
+
+    // Make spell do its magic
+    if (removed.effects) newState = invokeEffect(removed.effects.onSummon[0], newState)
+
+    return { ...newState };
 }
 
 function handleEnemySummonCard(state, action) {

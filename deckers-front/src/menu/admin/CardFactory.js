@@ -43,7 +43,6 @@ class CardFactory extends Component {
         this.handleObjChange = this.handleObjChange.bind(this)
         this.handleEffectChange = this.handleEffectChange.bind(this)
         this.handleCheck = this.handleCheck.bind(this)
-
     }
 
     componentWillMount() {
@@ -60,9 +59,8 @@ class CardFactory extends Component {
     handleSubmit(e) {
         e.preventDefault();
         const { name, rarity, race, role, description, stats, cardEffects, isFree, canBeDropped } = this.state;
-        const data = { name, rarity, race, role, description, stats, cardEffects, isFree, canBeDropped }
+        const data = { name, rarity, race, role, description, stats, isFree, canBeDropped, effects: cardEffects }
 
-        console.log(this.state)
         return apiCall("post", `/admin/cards`, data)
             .then(res => {
                 this.setState({

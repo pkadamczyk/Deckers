@@ -80,8 +80,8 @@ class EnemyBoard extends Component {
                                     onMouseEnter={() => setTarget(myId)}
                                 >
                                     <div>{item.name}</div>
-                                    <div>Hp: {item.stats[item.level].health}</div>
-                                    <div>Dmg: {item.stats[item.level].damage}</div>
+                                    <div>Hp: {item.inGame.stats.health}</div>
+                                    <div>Dmg: {item.inGame.stats.damage}</div>
                                 </StyledItem>
                             )
                             }

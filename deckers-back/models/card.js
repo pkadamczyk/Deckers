@@ -35,11 +35,21 @@ const Effect = Object.freeze({
     },
     TARGET_LIST: {
         NONE: 0,
-        SINGLE_TARGET: 1,
-        AOE_ENEMY: 2,
-        AOE_ALLIES: 3,
-        AOE_ALL: 4,
-        SELF: 5,
+
+        AOE: {
+            ALL: 1,
+            ENEMY: 2,
+            ALLY: 3,
+
+            ALL_MINIONS: 4,
+            ENEMY_MINIONS: 5,
+            ALLY_MINIONS: 6,
+        },
+
+        SINGLE_TARGET: 7,
+        SELF: 8,
+        ENEMY_HERO: 9,
+        ALLY_HERO: 10,
     }
 })
 
@@ -75,7 +85,9 @@ var cardSchema = new mongoose.Schema({
     canBeDropped: {
         type: Boolean,
         default: true
-    }
+    },
+
+    effects: {}
 });
 
 Object.assign(cardSchema.statics, {

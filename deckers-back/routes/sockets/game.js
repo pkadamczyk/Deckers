@@ -45,7 +45,7 @@ class Player {
         this.gold = Player.GOLD_ON_START;
         this.health = Player.MAX_HERO_HEALTH;
 
-        this.deck = deck.map(card => ({ ...card, inGame: { stats: card.stats[card.level], isReady: false } }));
+        this.deck = deck.map(card => ({ ...card, inGame: { stats: card.stats[card.level - 1], isReady: false } }));
         this.currentCard = 0;
 
         this.cardsOnBoard = []

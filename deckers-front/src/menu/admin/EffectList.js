@@ -40,7 +40,7 @@ class EffectList extends Component {
         const index = e.target.name.slice(-1);
         const name = e.target.name.slice(0, -1);
 
-        const newEffect = { ...list[index], [name]: e.target.value }
+        const newEffect = { ...list[index], [name]: +e.target.value }
 
         let newEffectList = [...list]
         newEffectList[+index] = newEffect
@@ -53,7 +53,13 @@ class EffectList extends Component {
         const { list } = this.state;
         const { listId, Effect } = this.props;
 
-        const targetList = Object.values(Effect.TARGET_LIST).map((val, i) => <option value={val} key={i}>{Object.keys(Effect.TARGET_LIST)[i]}</option>)
+        const singleTargetList = Object.values(Effect.TARGET_LIST)
+            .filter(target => !(target instanceof Object))
+            .map((val, i) => <option value={val} key={i}>{Object.keys(Effect.TARGET_LIST)[val ? i + 1 : 0]}</option>)
+
+        const aoeTargetList = Object.values(Effect.TARGET_LIST.AOE).map((val, i) => <option value={val} key={i + 15}>{Object.keys(Effect.TARGET_LIST.AOE)[i]}</option>)
+        const targetList = aoeTargetList.concat(singleTargetList)
+
         const effectList = Object.values(Effect.EFFECT_LIST).map((val, i) => <option value={val} key={i}>{Object.keys(Effect.EFFECT_LIST)[i]}</option>)
 
         const htmlList = list.map((el, i) => (
