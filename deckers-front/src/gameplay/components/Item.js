@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { Draggable } from 'react-beautiful-dnd';
 import { CARD_WIDTH } from '../containers/Board';
 import { PLAYER_HAND_ID } from '../containers/PlayerHand';
+import { Effect } from '../../store/reducers/helpers/effects';
 
 const StyledItem = styled.div` 
     margin: 0 8px 0 0;
@@ -20,9 +21,26 @@ const StyledItem = styled.div`
     box-shadow: ${props => !props.canBeSummoned ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
 `;
 
-function getStyle(style, snapshot, cardsOnBoardLength, currentTarget) {
-    if (!snapshot.isDropAnimating) return style;
+function getStyle(style, snapshot, cardsOnBoardLength, currentTarget, card) {
+    // Handles card dragging and spell cards animations
+    if (!snapshot.isDropAnimating) {
+        if (card.effects && Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) && snapshot.isDragging) {
+            // console.log(card.effects.onSummon[0].target)
 
+            // Set cursor and reset it if not needed
+            document.body.style.cursor = (currentTarget === PLAYER_HAND_ID) || !currentTarget ? "default" : "pointer";
+
+            return {
+                ...style,
+                opacity: (currentTarget === PLAYER_HAND_ID) || !currentTarget ? "1" : "0",
+            };
+        }
+
+        return style;
+    }
+
+    // Drop animation
+    document.body.style.cursor = "default"; // Reset cursor 
     const { moveTo, curve, duration } = snapshot.dropAnimation;
     let translate;
 
@@ -45,7 +63,7 @@ class Content extends Component {
                 {...provided.dragHandleProps}
                 isDragging={snapshot.isDragging}
                 canBeSummoned={canBeSummoned}
-                style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget)}
+                style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget, item)}
             >
                 <div>{item.name}</div>
                 <div>Hp: {item.inGame.stats.health}</div>

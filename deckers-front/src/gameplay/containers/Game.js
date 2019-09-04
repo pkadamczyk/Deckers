@@ -23,7 +23,10 @@ import Socket from './Socket';
 
 import { PLAYER_BOARD_ID } from "./Board"
 import Starter from './Starter';
+import { Effect } from '../../store/reducers/helpers/effects';
 export const ENEMY_HERO_ID = "enemy-portrait"
+
+const SPELL_ROLE = 8;
 
 const GameWrapper = styled.div`
     width: 100%;
@@ -55,15 +58,23 @@ class Game extends Component {
     }
 
     handleCleanTarget() {
-        let { currentlyDragged, isTargetLocked } = this.state;
-        let shouldCleanTarget = currentlyDragged !== null && currentlyDragged.droppableId !== PLAYER_HAND_ID && !isTargetLocked;
-
-        if (shouldCleanTarget) this.setState({ currentTarget: PLAYER_BOARD_ID });
+        this.handleSetTarget(PLAYER_BOARD_ID)
     }
 
     handleSetTarget(id) {
         let { currentlyDragged, isTargetLocked } = this.state;
-        let shouldSetTarget = currentlyDragged !== null && currentlyDragged.droppableId !== PLAYER_HAND_ID && !isTargetLocked;
+        const { cardsOnHand } = this.props;
+
+        const isDragging = currentlyDragged !== null;
+        if (!isDragging) return this.setState({ currentTarget: null });
+
+        // Decide if target should be set, for attacking and spell targeting
+        const isMinionTargeting = currentlyDragged.droppableId !== PLAYER_HAND_ID
+        const isSpellTargeting = currentlyDragged.droppableId === PLAYER_HAND_ID && cardsOnHand[currentlyDragged.index].role === SPELL_ROLE
+
+        const isTargeting = isMinionTargeting || isSpellTargeting
+
+        const shouldSetTarget = isDragging && isTargeting && !isTargetLocked;
         if (shouldSetTarget) this.setState({ currentTarget: id });
     }
 
@@ -103,14 +114,27 @@ class Game extends Component {
                 source.index,
                 destination.index)
             );
-        } else {
-            this.props.dispatch(summonCard(
-                source,
-                destination
-            ));
-        }
+        } else this.handleSummonCard(source, destination, currentTarget);
+
         this.props.dispatch(setGameState(GAME_STATE.IDLE))
         this.setState({ currentTarget: null })
+    }
+
+    handleSummonCard(source, destination, target = null) {
+        const { cardsOnBoard } = this.props;
+        const card = cardsOnBoard[source.index];
+
+        // Check if any on summon needs target
+        // if (Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target)) {
+        //     // Acquire needed target
+        //     ;
+        // }
+
+        this.props.dispatch(summonCard(
+            source,
+            destination,
+            target
+        ));
     }
 
     render() {
@@ -164,7 +188,10 @@ class Game extends Component {
 
 function mapStateToProps(state) {
     return {
-        gameReady: !!state.game.currentRound
+        gameReady: !!state.game.currentRound,
+
+        cardsOnBoard: state.game.cardsOnBoard, // To determne what card has been summoned
+        cardsOnHand: state.game.cardsOnHand // To determine if target should be set
     }
 }
 

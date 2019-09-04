@@ -53,12 +53,12 @@ class EffectList extends Component {
         const { list } = this.state;
         const { listId, Effect } = this.props;
 
-        const singleTargetList = Object.values(Effect.TARGET_LIST)
+        const otherTargetList = Object.values(Effect.TARGET_LIST)
             .filter(target => !(target instanceof Object))
-            .map((val, i) => <option value={val} key={i}>{Object.keys(Effect.TARGET_LIST)[val ? i + 1 : 0]}</option>)
+            .map((val, i) => <option value={val} key={i}>{Object.keys(Effect.TARGET_LIST)[i]}</option>)
 
+        const singleTargetList = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).map((val, i) => <option value={val} key={i + 15}>{Object.keys(Effect.TARGET_LIST.SINGLE_TARGET)[i]}</option>)
         const aoeTargetList = Object.values(Effect.TARGET_LIST.AOE).map((val, i) => <option value={val} key={i + 15}>{Object.keys(Effect.TARGET_LIST.AOE)[i]}</option>)
-        const targetList = aoeTargetList.concat(singleTargetList)
 
         const effectList = Object.values(Effect.EFFECT_LIST).map((val, i) => <option value={val} key={i}>{Object.keys(Effect.EFFECT_LIST)[i]}</option>)
 
@@ -66,7 +66,15 @@ class EffectList extends Component {
             <Row key={i + Math.random()}>
                 Target:
                 <select name={`target${i}`} value={el.target} onChange={this.handleValueChange}>
-                    {targetList}
+                    <optgroup label="AOE">
+                        {aoeTargetList}
+                    </optgroup>
+                    <optgroup label="Single Target">
+                        {singleTargetList}
+                    </optgroup>
+                    <optgroup label="Other">
+                        {otherTargetList}
+                    </optgroup>
                 </select>
                 Effect:
                 <select name={`effect${i}`} value={el.effect} onChange={this.handleValueChange}>

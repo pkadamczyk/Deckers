@@ -39,10 +39,10 @@ export const reorderCardsInHand = (startIndex, endIndex) => ({
   startIndex, endIndex
 })
 
-export const summonCard = (droppableSource, droppableDestination) => {
+export const summonCard = (droppableSource, droppableDestination, target) => {
   return {
     type: SUMMON_CARD,
-    droppableSource, droppableDestination
+    droppableSource, droppableDestination, target
   }
 }
 

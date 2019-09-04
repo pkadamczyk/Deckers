@@ -4,6 +4,8 @@ import Portrait from "./Portrait"
 import { connect } from "react-redux"
 import styled from "styled-components"
 
+export const PLAYER_PORTRAIT_ID = "player-portrait";
+
 const Div = styled.div`
     height: 100px;
     width: 100px;

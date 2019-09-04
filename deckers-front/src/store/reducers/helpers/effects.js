@@ -1,6 +1,8 @@
 import { MAX_HERO_HEALTH } from "../game";
+import { ENEMY_PORTRAIT_ID } from "../../../gameplay/components/EnemyHero";
+import { PLAYER_PORTRAIT_ID } from "../../../gameplay/components/PlayerHero";
 
-const Effect = Object.freeze({
+export const Effect = Object.freeze({
     EFFECT_LIST: {
         HEAL: 1,
         DAMAGE: 2,
@@ -8,6 +10,9 @@ const Effect = Object.freeze({
     },
     TARGET_LIST: {
         NONE: 0,
+        SELF: 13,
+        ENEMY_HERO: 14,
+        ALLY_HERO: 15,
 
         AOE: {
             ALL: 1,
@@ -19,24 +24,30 @@ const Effect = Object.freeze({
             ALLY_MINIONS: 6,
         },
 
-        SINGLE_TARGET: 7,
-        SELF: 8,
-        ENEMY_HERO: 9,
-        ALLY_HERO: 10,
+        SINGLE_TARGET: {
+            ALL: 7,
+            ENEMY: 8,
+            ALLY: 9,
+
+            ALL_MINIONS: 10,
+            ENEMY_MINIONS: 11,
+            ALLY_MINIONS: 12,
+        },
     }
 
 })
 
-export function invokeEffect(effect, gameState) {
+export function invokeEffect(effect, gameState, pickedTarget = null) {
     let newState = { ...gameState }
 
     if (effect.effect === Effect.EFFECT_LIST.DAMAGE) effect.value = -Math.abs(effect.value);
-    const targetsMap = appendTargetsToMap(effect.target, gameState);
+    const targetsMap = !(pickedTarget === null) ? determineSingleTarget(pickedTarget, gameState) : appendTargetsToMap(effect.target, gameState);
 
     // Handles heal and damage for now
     for (let [key, value] of targetsMap.entries()) {
+
         //  In case value is a card array
-        if (Array.isArray(value)) {
+        if (Array.isArray(value) && !key.includes("minion")) {
             value = value.map(card => {
                 let newHealth = card.inGame.stats.health + effect.value
 
@@ -49,15 +60,47 @@ export function invokeEffect(effect, gameState) {
             value = value.filter(val => val !== null);
         }
         // In case of heroes
-        else {
+        else if (['enemyHeroHealth', 'playerHeroHealth'].includes(key)) {
             value += effect.value;
             if (value > MAX_HERO_HEALTH) value = MAX_HERO_HEALTH;
         }
+        // In case of single target
+        else {
+            const minionIndex = +key.slice(-1)
+            let minion = { ...value[minionIndex] };
+
+            let newHealth = minion.inGame.stats.health + effect.value
+
+            if (newHealth > minion.stats[minion.level - 1].health) newHealth = minion.stats[minion.level - 1].health
+
+            minion.inGame.stats = { ...minion.inGame.stats, health: newHealth }
+
+            // Prepare to save
+            const keyName = key.includes("enemy-minion") ? "enemyCardsOnBoard" : "cardsOnBoard";
+
+            let minionArray = value;
+            if (newHealth <= 0) minionArray[minionIndex] = null;
+
+            key = keyName
+            value = minionArray.filter(val => val !== null);
+        }
+
         newState[key] = value
     }
 
-    debugger
     return { ...newState };
+}
+
+function determineSingleTarget(target, state) {
+    const { enemyCardsOnBoard, cardsOnBoard, enemyHeroHealth, playerHeroHealth } = state
+
+    // Handles hero cases
+    if (target === ENEMY_PORTRAIT_ID) return new Map().set('enemyHeroHealth', enemyHeroHealth);
+    if (target === PLAYER_PORTRAIT_ID) return new Map().set('playerHeroHealth', playerHeroHealth);
+
+    // Handles minion cases
+    if (target.includes("enemy-minion")) return new Map().set(target, Array.from(enemyCardsOnBoard));
+    if (target.includes("player-minion")) return new Map().set(target, Array.from(cardsOnBoard));
 }
 
 function appendTargetsToMap(target, state) {

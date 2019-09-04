@@ -187,7 +187,7 @@ function handleReorderCardsOnHand(state, action) {
 
 function handleSummonCard(state, action) {
     const { playerHeroGold, cardsOnHand, cardsOnBoard } = state;
-    const { droppableDestination, droppableSource } = action;
+    const { droppableDestination, droppableSource, target } = action;
     let newState = { ...state }
 
     SOCKET.emit('card-summoned', {
@@ -215,7 +215,7 @@ function handleSummonCard(state, action) {
     newState = { ...newState, playerHeroGold: playerGoldAmount, cardsOnHand: sourceClone, cardsOnBoard: destClone }
 
     // Make spell do its magic
-    if (removed.effects) newState = invokeEffect(removed.effects.onSummon[0], newState)
+    if (removed.effects) newState = invokeEffect(removed.effects.onSummon[0], newState, target || null)
 
     return { ...newState };
 }
