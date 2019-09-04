@@ -114,8 +114,8 @@ function appendTargetsToMap(target, state) {
     const includeEnemyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.ENEMY_HERO]
     const includeAllyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.ALLY_HERO]
 
-    if (includeAllyBoard.includes(target)) targetsMap.set('enemyCardsOnBoard', Array.from(enemyCardsOnBoard));
-    if (includeEnemyBoard.includes(target)) targetsMap.set('cardsOnBoard', Array.from(cardsOnBoard));
+    if (includeEnemyBoard.includes(target)) targetsMap.set('enemyCardsOnBoard', Array.from(enemyCardsOnBoard));
+    if (includeAllyBoard.includes(target)) targetsMap.set('cardsOnBoard', Array.from(cardsOnBoard));
 
     if (includeEnemyHero.includes(target)) targetsMap.set('enemyHeroHealth', enemyHeroHealth);
     if (includeAllyHero.includes(target)) targetsMap.set('playerHeroHealth', playerHeroHealth);

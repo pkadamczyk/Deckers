@@ -121,14 +121,16 @@ class Game extends Component {
     }
 
     handleSummonCard(source, destination, target = null) {
-        const { cardsOnBoard } = this.props;
-        const card = cardsOnBoard[source.index];
+        const { cardsOnHand } = this.props;
+        const card = cardsOnHand[source.index];
 
-        // Check if any on summon needs target
-        // if (Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target)) {
-        //     // Acquire needed target
-        //     ;
-        // }
+        if (target === PLAYER_BOARD_ID) target = null;
+
+        let isSingleTarget = false
+        if (card.effects) isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target)
+        const cardNeedsTarget = card.role === SPELL_ROLE && isSingleTarget
+
+        if (target === null && cardNeedsTarget) return
 
         this.props.dispatch(summonCard(
             source,
