@@ -42,7 +42,6 @@ class Game extends Component {
         this.state = {
             currentlyDragged: null,
             currentTarget: null, // OBJECT THAT PLAYER IS CURRENTLY DRAGING OVER
-            isTargetLocked: false,
         }
 
         this.onDragEnd = this.onDragEnd.bind(this);
@@ -50,11 +49,6 @@ class Game extends Component {
         this.onDragUpdate = this.onDragUpdate.bind(this);
         this.handleCleanTarget = this.handleCleanTarget.bind(this);
         this.handleSetTarget = this.handleSetTarget.bind(this);
-        this.handleLockTarget = this.handleLockTarget.bind(this);
-    }
-
-    handleLockTarget() {
-        this.setState({ isTargetLocked: true })
     }
 
     handleCleanTarget() {
@@ -63,7 +57,7 @@ class Game extends Component {
     }
 
     handleSetTarget(id) {
-        let { currentlyDragged, isTargetLocked } = this.state;
+        let { currentlyDragged } = this.state;
         const { cardsOnHand } = this.props;
 
         const isDragging = currentlyDragged !== null;
@@ -75,7 +69,7 @@ class Game extends Component {
 
         const isTargeting = isMinionTargeting || isSpellTargeting
 
-        const shouldSetTarget = isDragging && isTargeting && !isTargetLocked;
+        const shouldSetTarget = isDragging && isTargeting;
         if (shouldSetTarget) this.setState({ currentTarget: id });
     }
 
@@ -98,13 +92,11 @@ class Game extends Component {
         let { source, destination } = result;
         let { currentTarget } = this.state;
 
-        this.setState({ currentlyDragged: null, isTargetLocked: false })
+        this.setState({ currentlyDragged: null })
 
         const { cardsOnHand } = this.props;
-        const card = cardsOnHand[source.index];
-        const isSpellDropped = card.role === SPELL_ROLE
-
-
+        const card = source.droppableId === PLAYER_HAND_ID ? cardsOnHand[source.index] : null;
+        const isSpellDropped = card !== null ? card.role === SPELL_ROLE : false;
 
         if (!destination && currentTarget === PLAYER_HAND_ID) { }
         // Takes care of single target spells, hopefully
@@ -189,7 +181,6 @@ class Game extends Component {
                         currentTarget={currentTarget}
                         handleCleanTarget={this.handleCleanTarget}
                         handleSetTarget={this.handleSetTarget}
-                        handleLockTarget={this.handleLockTarget}
                         currentlyDraggedCardId={currentlyDraggedCardId}
                     ></Board>
 

@@ -36,7 +36,6 @@ class Content extends Component {
     componentDidUpdate(prevProps) {
         const { snapshot, setIsDragging } = this.props;
         if (prevProps.snapshot.isDragging !== snapshot.isDragging) setIsDragging(snapshot.isDragging)
-        if (this.props.snapshot.isDropAnimating) this.props.lockTarget();
     }
 
     render() {
@@ -82,7 +81,6 @@ class Minion extends Component {
     render() {
         const { item, index, handleCleanTarget, handleSetTarget } = this.props;
         const { uniqueId } = this.state;
-        const lockTarget = this.props.handleLockTarget;
 
         const isDragDisabled = this.shouldDropBeDisabled()
         return (
@@ -93,7 +91,6 @@ class Minion extends Component {
             >
                 {(provided, snapshot) => (
                     <Content
-                        lockTarget={lockTarget}
                         provided={provided}
                         snapshot={snapshot}
                         isDragDisabled={isDragDisabled}

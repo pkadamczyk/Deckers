@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 
 class PlayerBoard extends Component {
     render() {
-        const { isMyTurn, items, placeholder, handleLockTarget, gameState, handleCleanTarget, handleSetTarget } = this.props
+        const { isMyTurn, items, placeholder, gameState, handleCleanTarget, handleSetTarget } = this.props
 
         const minions = items.map((item, index) => (
             <Minion
@@ -24,7 +24,6 @@ class PlayerBoard extends Component {
                 item={item}
                 index={index}
                 isMyTurn={isMyTurn}
-                handleLockTarget={handleLockTarget}
                 gameState={gameState}
 
                 handleCleanTarget={handleCleanTarget}
