@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import EnemyBoard from './EnemyBoard';
 import PlayerBoard from './PlayerBoard';
+import { SPELL_ROLE } from './Game';
 
 export const CARD_WIDTH = 100;
 export const MAX_CARDS_ON_BOARD = 4;
@@ -24,20 +25,10 @@ const DroppableDiv = styled.div`
 
 class Board extends Component {
     render() {
-        const { isMinionDragged, currentTarget, handleCleanTarget, handleSetTarget, handleLockTarget, currentlyDraggedCardId } = this.props;
-        const { enemyCardsOnBoard, cardsOnBoard, isMyTurn, cardsOnHand, playerGold, gameState } = this.props;
+        const { isMinionDragged, currentTarget, handleCleanTarget, handleSetTarget, handleLockTarget, } = this.props;
+        const { enemyCardsOnBoard, cardsOnBoard, isMyTurn, gameState } = this.props;
 
-        let isAffordable = true;
-        if (currentlyDraggedCardId !== null) {
-            let currentlyDraggedCard;
-            currentlyDraggedCard = cardsOnHand[currentlyDraggedCardId];
-
-            isAffordable = playerGold >= currentlyDraggedCard.inGame.stats.cost;
-        }
-
-        const isBoardFull = cardsOnBoard.length >= MAX_CARDS_ON_BOARD;
-        const isDropDisabled = isBoardFull || isMinionDragged || !isAffordable;
-
+        const isDropDisabled = this.shouldDropBeDisabled()
         return (
             <Droppable
                 droppableId={PLAYER_BOARD_ID}
@@ -69,6 +60,19 @@ class Board extends Component {
                 )}
             </Droppable>
         )
+    }
+
+    shouldDropBeDisabled() {
+        const { isMinionDragged, currentlyDraggedCardId } = this.props;
+        const { cardsOnBoard, cardsOnHand, playerGold } = this.props;
+
+        const currentlyDraggedCard = currentlyDraggedCardId !== null ? cardsOnHand[currentlyDraggedCardId] : null;
+        const isAffordable = currentlyDraggedCardId !== null ? playerGold >= currentlyDraggedCard.inGame.stats.cost : true
+
+        const isBoardFull = cardsOnBoard.length >= MAX_CARDS_ON_BOARD;
+        const isSpellDragged = currentlyDraggedCardId !== null ? currentlyDraggedCard.role === SPELL_ROLE : false
+
+        return isBoardFull || (isMinionDragged || isSpellDragged) || !isAffordable;
     }
 }
 

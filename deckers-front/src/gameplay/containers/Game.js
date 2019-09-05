@@ -26,7 +26,7 @@ import Starter from './Starter';
 import { Effect } from '../../store/reducers/helpers/effects';
 export const ENEMY_HERO_ID = "enemy-portrait"
 
-const SPELL_ROLE = 8;
+export const SPELL_ROLE = 8;
 
 const GameWrapper = styled.div`
     width: 100%;
@@ -58,6 +58,7 @@ class Game extends Component {
     }
 
     handleCleanTarget() {
+        console.log("Cleaning target")
         this.handleSetTarget(PLAYER_BOARD_ID)
     }
 
@@ -99,7 +100,15 @@ class Game extends Component {
 
         this.setState({ currentlyDragged: null, isTargetLocked: false })
 
+        const { cardsOnHand } = this.props;
+        const card = cardsOnHand[source.index];
+        const isSpellDropped = card.role === SPELL_ROLE
+
+
+
         if (!destination && currentTarget === PLAYER_HAND_ID) { }
+        // Takes care of single target spells, hopefully
+        else if (isSpellDropped && currentTarget !== PLAYER_HAND_ID) this.handleSummonCard(source, destination, currentTarget);
         // END_TARGETING
         else if (source.droppableId === PLAYER_BOARD_ID) {
             if (currentTarget.includes("enemy")) {
@@ -134,7 +143,7 @@ class Game extends Component {
 
         this.props.dispatch(summonCard(
             source,
-            destination,
+            destination || target,
             target
         ));
     }
@@ -172,6 +181,8 @@ class Game extends Component {
                     <PlayerHand
                         currentTarget={currentTarget}
                         isMinionDragged={isMinionDragged}
+                        handleCleanTarget={this.handleCleanTarget}
+                        handleSetTarget={this.handleSetTarget}
                     />
                     <Board
                         isMinionDragged={isMinionDragged}

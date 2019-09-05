@@ -25,6 +25,9 @@ const DroppableDiv = styled.div`
 class PlayerHand extends Component {
     render() {
         const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand: items, currentTarget } = this.props;
+        const cleanTarget = this.props.handleCleanTarget;
+        const setTarget = this.props.handleSetTarget;
+
         const isDropDisabled = isMinionDragged;
 
         return (
@@ -38,6 +41,8 @@ class PlayerHand extends Component {
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                         isDraggingOver={snapshot.isDraggingOver}
+                        onMouseLeave={() => cleanTarget()}
+                        onMouseEnter={() => setTarget(PLAYER_HAND_ID)}
                     >
                         {items.map((item, index) => (
                             <Item
