@@ -10,16 +10,22 @@ const Div = styled.div`
     height: 100px;
     width: 100px;
 
-    z-index:1;
     position: absolute;
+    z-index:1;
     left: 5px;
     bottom: 5px;
 `
 class PlayerHero extends Component {
     render() {
         const { health, gold, username } = this.props;
+        const cleanTarget = this.props.handleCleanTarget;
+        const setTarget = this.props.handleSetTarget;
+
         return (
-            <Div>
+            <Div
+                onMouseLeave={() => cleanTarget()}
+                onMouseEnter={() => setTarget(PLAYER_PORTRAIT_ID)}
+            >
                 <Portrait
                     health={health}
                     gold={gold}

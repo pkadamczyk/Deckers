@@ -164,12 +164,15 @@ class Game extends Component {
                     />
                     <EnemyDeck />
                     <EndTurnButton />
-
+                    <PlayerDeck />
+                    <PlayerHero
+                        handleCleanTarget={this.handleCleanTarget}
+                        handleSetTarget={this.handleSetTarget}
+                    />
                     <PlayerHand
                         currentTarget={currentTarget}
                         isMinionDragged={isMinionDragged}
                     />
-
                     <Board
                         isMinionDragged={isMinionDragged}
                         currentTarget={currentTarget}
@@ -179,8 +182,7 @@ class Game extends Component {
                         currentlyDraggedCardId={currentlyDraggedCardId}
                     ></Board>
 
-                    <PlayerDeck />
-                    <PlayerHero />
+
                 </GameWrapper>
                 <Socket />
             </DragDropContext>
