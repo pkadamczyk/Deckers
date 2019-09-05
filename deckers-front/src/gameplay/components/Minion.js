@@ -4,6 +4,8 @@ import styled from "styled-components"
 import { Draggable } from 'react-beautiful-dnd';
 import { CARD_WIDTH } from '../containers/Board';
 import { GAME_STATE } from '../../store/reducers/game';
+import { Effect } from '../../store/reducers/helpers/effects';
+import { SPELL_ROLE } from '../containers/Game';
 
 const StyledItem = styled.div` 
     margin: 0 8px 0 0;
@@ -12,12 +14,16 @@ const StyledItem = styled.div`
 
     background: ${props => props.isDragging ? 'lightgreen' : 'grey'};
 
-    border: ${props => props.isDragDisabled ? 'none' : '2px solid rgba(165, 255, 48, 0.7)'};
-    border-style: ${props => props.isDragDisabled ? 'none' : 'solid solid none solid'};
+    border: ${props => !props.isDragDisabled ? '2px solid rgba(165, 255, 48, 0.7)'
+        : props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
+    border-style: ${props => !props.isDragDisabled || props.canBeSpellTargeted ? 'solid solid none solid' : 'none'};
 
-    -webkit-box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
-    -moz-box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
-    box-shadow: ${props => props.isDragDisabled ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
+    -webkit-box-shadow: ${props => !props.isDragDisabled ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)"
+        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
+    -moz-box-shadow: ${props => !props.isDragDisabled ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)"
+        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
+    box-shadow: ${props => !props.isDragDisabled ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)"
+        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
 `;
 
 function getStyle(style, snapshot) {
@@ -39,7 +45,7 @@ class Content extends Component {
     }
 
     render() {
-        const { provided, snapshot, isDragDisabled, item, index } = this.props;
+        const { provided, snapshot, isDragDisabled, item, index, canBeSpellTargeted } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
 
@@ -50,6 +56,7 @@ class Content extends Component {
                 {...provided.dragHandleProps}
                 isDragging={snapshot.isDragging}
                 isDragDisabled={isDragDisabled}
+                canBeSpellTargeted={canBeSpellTargeted}
                 style={getStyle(provided.draggableProps.style, snapshot)}
 
                 onMouseLeave={() => cleanTarget()}
@@ -83,6 +90,8 @@ class Minion extends Component {
         const { uniqueId } = this.state;
 
         const isDragDisabled = this.shouldDropBeDisabled()
+        const canBeSpellTargeted = this.canBeSpellTargeted()
+
         return (
             <Draggable
                 draggableId={uniqueId}
@@ -97,6 +106,7 @@ class Minion extends Component {
                         item={item}
                         setIsDragging={this.setIsDragging}
                         index={index}
+                        canBeSpellTargeted={canBeSpellTargeted}
 
                         handleCleanTarget={handleCleanTarget}
                         handleSetTarget={handleSetTarget}
@@ -116,6 +126,23 @@ class Minion extends Component {
         // (gameState !== GAME_STATE.IDLE && !isDragging)
 
         return !isMyTurn || !item.inGame.isReady || !hasDamage || (gameState !== GAME_STATE.IDLE && !isDragging);;
+    }
+
+    canBeSpellTargeted() {
+        const { currentlyDraggedCardId, cardsOnHand } = this.props;
+        if (currentlyDraggedCardId === null) return false;
+
+        const currentlyDraggedCard = cardsOnHand[currentlyDraggedCardId]
+        const isSpellDragged = currentlyDraggedCard.role === SPELL_ROLE
+
+        if (!currentlyDraggedCard.effects) return false;
+        const spellTarget = currentlyDraggedCard.effects.onSummon[0].target;
+        const canBeTargeted = [
+            Effect.TARGET_LIST.SINGLE_TARGET.ALL,
+            Effect.TARGET_LIST.SINGLE_TARGET.ALLY,
+            Effect.TARGET_LIST.SINGLE_TARGET.ALLY_MINIONS].includes(spellTarget)
+
+        return canBeTargeted && isSpellDragged;
     }
 }
 

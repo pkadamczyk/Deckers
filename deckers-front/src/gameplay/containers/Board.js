@@ -25,8 +25,8 @@ const DroppableDiv = styled.div`
 
 class Board extends Component {
     render() {
-        const { isMinionDragged, currentTarget, handleCleanTarget, handleSetTarget } = this.props;
-        const { enemyCardsOnBoard, cardsOnBoard, isMyTurn, gameState } = this.props;
+        const { isMinionDragged, currentTarget, handleCleanTarget, handleSetTarget, currentlyDraggedCardId } = this.props;
+        const { enemyCardsOnBoard, cardsOnBoard, isMyTurn, gameState, cardsOnHand } = this.props;
 
         const isDropDisabled = this.shouldDropBeDisabled()
         return (
@@ -46,6 +46,8 @@ class Board extends Component {
                             items={enemyCardsOnBoard}
                             isMinionDragged={isMinionDragged}
                             currentTarget={currentTarget}
+                            currentlyDraggedCardId={currentlyDraggedCardId}
+
                             handleCleanTarget={handleCleanTarget}
                             handleSetTarget={handleSetTarget}
                         />
@@ -54,6 +56,7 @@ class Board extends Component {
                             isMyTurn={isMyTurn}
                             placeholder={provided.placeholder}
                             gameState={gameState}
+                            currentlyDraggedCardId={currentlyDraggedCardId}
 
                             handleCleanTarget={handleCleanTarget}
                             handleSetTarget={handleSetTarget}

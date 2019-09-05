@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import styled from "styled-components"
 
 import Minion from '../components/Minion';
+import { connect } from "react-redux"
 
 const Wrapper = styled.div`
     height: 50%;
@@ -16,7 +17,8 @@ const Wrapper = styled.div`
 
 class PlayerBoard extends Component {
     render() {
-        const { isMyTurn, items, placeholder, gameState, handleCleanTarget, handleSetTarget } = this.props
+        const { isMyTurn, items, placeholder, gameState, cardsOnHand, currentlyDraggedCardId } = this.props
+        const { handleCleanTarget, handleSetTarget } = this.props
 
         const minions = items.map((item, index) => (
             <Minion
@@ -25,6 +27,8 @@ class PlayerBoard extends Component {
                 index={index}
                 isMyTurn={isMyTurn}
                 gameState={gameState}
+                cardsOnHand={cardsOnHand}
+                currentlyDraggedCardId={currentlyDraggedCardId}
 
                 handleCleanTarget={handleCleanTarget}
                 handleSetTarget={handleSetTarget}
@@ -40,4 +44,10 @@ class PlayerBoard extends Component {
     }
 }
 
-export default PlayerBoard; 
+function mapStateToProps(state) {
+    return {
+        cardsOnHand: state.game.cardsOnHand,
+    }
+}
+
+export default connect(mapStateToProps)(PlayerBoard); 

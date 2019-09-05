@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Droppable } from 'react-beautiful-dnd';
 import { connect } from "react-redux"
 
-import Item from "../components/Item"
+import HandCard from "../components/HandCard"
 export const PLAYER_HAND_ID = "player-hand"
 
 const DroppableDiv = styled.div`
@@ -24,7 +24,7 @@ const DroppableDiv = styled.div`
 
 class PlayerHand extends Component {
     render() {
-        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand: items, currentTarget } = this.props;
+        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand: cards, currentTarget } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
 
@@ -44,8 +44,8 @@ class PlayerHand extends Component {
                         onMouseLeave={() => cleanTarget()}
                         onMouseEnter={() => setTarget(PLAYER_HAND_ID)}
                     >
-                        {items.map((item, index) => (
-                            <Item
+                        {cards.map((item, index) => (
+                            <HandCard
                                 key={item._id + index}
                                 item={item}
                                 index={index}
@@ -53,7 +53,7 @@ class PlayerHand extends Component {
                                 gold={gold}
                                 cardsOnBoard={cardsOnBoard}
                                 currentTarget={currentTarget}
-                            ></Item>
+                            ></HandCard>
                         ))}
                         {provided.placeholder}
                     </DroppableDiv>

@@ -5,6 +5,8 @@ import { connect } from "react-redux"
 import { Droppable } from 'react-beautiful-dnd';
 import styled from "styled-components"
 import { GAME_STATE } from '../../store/reducers/game';
+import { Effect } from '../../store/reducers/helpers/effects';
+import { SPELL_ROLE } from '../containers/Game';
 
 export const ENEMY_PORTRAIT_ID = "enemy-portrait";
 
@@ -17,12 +19,16 @@ const Div = styled.div`
     top: 5px;
     right: 5px;
 
-    border: ${props => (props.gameState === GAME_STATE.TARGETING) ? '2px solid rgba(255, 0, 0, 0.7)' : 'none'};
-    border-style: ${props => (props.gameState === GAME_STATE.TARGETING) ? 'solid solid none solid' : 'none'};
+    border: ${props => props.gameState === GAME_STATE.TARGETING ? '2px solid rgba(255, 0, 0, 0.7)'
+        : props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
+    border-style: ${props => props.gameState === GAME_STATE.TARGETING ? 'solid solid none solid' : 'none'};
 
-    -webkit-box-shadow: ${props => (props.gameState === GAME_STATE.TARGETING) ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
-    -moz-box-shadow: ${props => (props.gameState === GAME_STATE.TARGETING) ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
-    box-shadow: ${props => (props.gameState === GAME_STATE.TARGETING) ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
+    -webkit-box-shadow: ${props => props.gameState === GAME_STATE.TARGETING ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
+        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
+    -moz-box-shadow: ${props => (props.gameState === GAME_STATE.TARGETING) ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
+        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
+    box-shadow: ${props => (props.gameState === GAME_STATE.TARGETING) ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
+        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
 `
 class EnemyHero extends Component {
     render() {
@@ -33,6 +39,7 @@ class EnemyHero extends Component {
         const isBeingTargeted = currentTarget === ENEMY_PORTRAIT_ID;
         const isDropDisabled = !isMinionDragged || isBeingTargeted;
 
+        const canBeSpellTargeted = this.canBeSpellTargeted()
         return (
             <Droppable
                 droppableId={ENEMY_PORTRAIT_ID}
@@ -46,6 +53,7 @@ class EnemyHero extends Component {
                         gameState={gameState}
                         onMouseLeave={() => cleanTarget()}
                         onMouseEnter={() => setTarget(ENEMY_PORTRAIT_ID)}
+                        canBeSpellTargeted={canBeSpellTargeted}
                     >
                         <Portrait
                             username={username}
@@ -57,6 +65,20 @@ class EnemyHero extends Component {
             </Droppable>
         )
     }
+
+    canBeSpellTargeted() {
+        const { currentlyDraggedCardId, cardsOnHand } = this.props;
+        if (currentlyDraggedCardId === null) return false;
+
+        const currentlyDraggedCard = cardsOnHand[currentlyDraggedCardId]
+        const isSpellDragged = currentlyDraggedCard.role === SPELL_ROLE
+
+        if (!currentlyDraggedCard.effects) return false;
+        const spellTarget = currentlyDraggedCard.effects.onSummon[0].target;
+        const canBeTargeted = [Effect.TARGET_LIST.SINGLE_TARGET.ALL, Effect.TARGET_LIST.SINGLE_TARGET.ENEMY].includes(spellTarget)
+
+        return canBeTargeted && isSpellDragged;
+    }
 }
 
 function mapStateToProps(state) {
@@ -65,6 +87,7 @@ function mapStateToProps(state) {
         health: state.game.enemyHeroHealth,
         gold: state.game.enemyHeroGold,
         username: state.game.gameInfo.enemy,
+        cardsOnHand: state.game.cardsOnHand,
     }
 }
 

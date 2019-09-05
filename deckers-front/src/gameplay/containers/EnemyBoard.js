@@ -1,27 +1,9 @@
 import React, { Component } from 'react';
 
-import { Droppable } from 'react-beautiful-dnd';
 import styled from "styled-components"
 
 import { connect } from "react-redux"
-import { GAME_STATE } from '../../store/reducers/game';
-import { CARD_WIDTH } from './Board';
-
-const StyledItem = styled.div`
-    width: ${props => CARD_WIDTH + 'px'};
-    height: 130px;
-    padding: 8px;
-
-    background: tomato;
-    margin: 0 8px 0 0;
-
-    border: ${props => props.gameState === GAME_STATE.TARGETING ? '2px solid rgba(255, 0, 0, 0.7)' : 'none'};
-    border-style: ${props => props.gameState === GAME_STATE.TARGETING ? 'solid solid none solid' : 'none'};
-
-    -webkit-box-shadow: ${props => props.gameState === GAME_STATE.TARGETING ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
-    -moz-box-shadow: ${props => props.gameState === GAME_STATE.TARGETING ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
-    box-shadow: ${props => props.gameState === GAME_STATE.TARGETING ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
-`;
+import EnemyMinion from '../components/EnemyMinion';
 
 const DroppableDiv = styled.div`
     height: 50%;
@@ -42,52 +24,34 @@ class EnemyBoard extends Component {
         this.state = { flipped: null };
     }
 
-    shouldComponentUpdate(nextProps) {
-        if (this.props.items === nextProps.items) {
-            return false;
-        }
-        return true;
-    }
+    // shouldComponentUpdate(nextProps) {
+    //     if (this.props.items === nextProps.items) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
 
     render() {
-        const { currentTarget, isMinionDragged, gameState } = this.props;
-        const cleanTarget = this.props.handleCleanTarget;
-        const setTarget = this.props.handleSetTarget;
-        let isBeingTargeted;
-        let isDropDisabled;
+        const { currentTarget, isMinionDragged, gameState, currentlyDraggedCardId, cardsOnHand } = this.props;
+        const { handleCleanTarget, handleSetTarget } = this.props;
 
         return (
             <DroppableDiv>
-                {this.props.items.map((item, index) => {
-                    let myId = `enemy-minion-${index}`
+                {this.props.items.map((item, index) => (
+                    <EnemyMinion
+                        key={index + Math.random}
+                        index={index}
+                        currentTarget={currentTarget}
+                        isMinionDragged={isMinionDragged}
+                        item={item}
+                        gameState={gameState}
+                        currentlyDraggedCardId={currentlyDraggedCardId}
+                        cardsOnHand={cardsOnHand}
 
-                    isBeingTargeted = currentTarget === myId
-                    isDropDisabled = !isMinionDragged || isBeingTargeted
-
-                    return (
-                        <Droppable
-                            droppableId={myId}
-                            direction="horizontal"
-                            key={index + 20}
-                            isDropDisabled={isDropDisabled}
-                        >
-                            {(provided, snapshot) => (
-                                <StyledItem ref={provided.innerRef}
-                                    {...provided.droppableProps}
-                                    isDraggingOver={snapshot.isDraggingOver}
-                                    gameState={gameState}
-                                    onMouseLeave={() => cleanTarget()}
-                                    onMouseEnter={() => setTarget(myId)}
-                                >
-                                    <div>{item.name}</div>
-                                    <div>Hp: {item.inGame.stats.health}</div>
-                                    <div>Dmg: {item.inGame.stats.damage}</div>
-                                </StyledItem>
-                            )
-                            }
-                        </Droppable>
-                    )
-                })}
+                        handleCleanTarget={handleCleanTarget}
+                        handleSetTarget={handleSetTarget}
+                    />
+                ))}
             </DroppableDiv>
         )
     }
@@ -95,7 +59,8 @@ class EnemyBoard extends Component {
 
 function mapStateToProps(state) {
     return {
-        gameState: state.game.gameState
+        gameState: state.game.gameState,
+        cardsOnHand: state.game.cardsOnHand,
     }
 }
 

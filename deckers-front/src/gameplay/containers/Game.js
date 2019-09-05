@@ -52,7 +52,6 @@ class Game extends Component {
     }
 
     handleCleanTarget() {
-        console.log("Cleaning target")
         this.handleSetTarget(PLAYER_BOARD_ID)
     }
 
@@ -149,7 +148,7 @@ class Game extends Component {
             isMinionDragged = currentlyDragged.droppableId === PLAYER_BOARD_ID;
             isCardDragged = currentlyDragged.droppableId === PLAYER_HAND_ID;
         }
-        const currentlyDraggedCardId = isCardDragged ? currentlyDragged.index : null;
+        const currentlyDraggedCardId = isCardDragged ? currentlyDragged.index : null; // Used to determine and apply spell targeting css
 
         return (
 
@@ -162,6 +161,7 @@ class Game extends Component {
                         handleCleanTarget={this.handleCleanTarget}
                         handleSetTarget={this.handleSetTarget}
                         currentTarget={currentTarget}
+                        currentlyDraggedCardId={currentlyDraggedCardId}
                     />
                     <EnemyDeck />
                     <EndTurnButton />
@@ -169,6 +169,7 @@ class Game extends Component {
                     <PlayerHero
                         handleCleanTarget={this.handleCleanTarget}
                         handleSetTarget={this.handleSetTarget}
+                        currentlyDraggedCardId={currentlyDraggedCardId}
                     />
                     <PlayerHand
                         currentTarget={currentTarget}
