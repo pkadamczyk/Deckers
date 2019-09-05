@@ -55,6 +55,9 @@ class Board extends Component {
                             placeholder={provided.placeholder}
                             handleLockTarget={handleLockTarget}
                             gameState={gameState}
+
+                            handleCleanTarget={handleCleanTarget}
+                            handleSetTarget={handleSetTarget}
                         />
                     </DroppableDiv>
                 )}

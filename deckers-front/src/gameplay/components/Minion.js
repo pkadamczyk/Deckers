@@ -32,7 +32,7 @@ function getStyle(style, snapshot) {
     };
 }
 
-class Item extends Component {
+class Content extends Component {
     componentDidUpdate(prevProps) {
         const { snapshot, setIsDragging } = this.props;
         if (prevProps.snapshot.isDragging !== snapshot.isDragging) setIsDragging(snapshot.isDragging)
@@ -40,7 +40,9 @@ class Item extends Component {
     }
 
     render() {
-        const { provided, snapshot, isDragDisabled, item } = this.props;
+        const { provided, snapshot, isDragDisabled, item, index } = this.props;
+        const cleanTarget = this.props.handleCleanTarget;
+        const setTarget = this.props.handleSetTarget;
 
         return (
             <StyledItem
@@ -50,6 +52,9 @@ class Item extends Component {
                 isDragging={snapshot.isDragging}
                 isDragDisabled={isDragDisabled}
                 style={getStyle(provided.draggableProps.style, snapshot)}
+
+                onMouseLeave={() => cleanTarget()}
+                onMouseEnter={() => setTarget(`player-minion-${index}`)}
             >
                 <div>{item.name}</div>
                 <div>Hp: {item.inGame.stats.health}</div>
@@ -75,16 +80,11 @@ class Minion extends Component {
     }
 
     render() {
-        const { item, index, isMyTurn, gameState } = this.props;
-        const { isDragging } = this.state;
+        const { item, index, handleCleanTarget, handleSetTarget } = this.props;
+        const { uniqueId } = this.state;
         const lockTarget = this.props.handleLockTarget;
 
-        const hasDamage = item.inGame.stats.damage > 0;
-        // const isIdle = gameState === GAME_STATE.IDLE && !isDragging
-        const isDragDisabled = !isMyTurn || !item.inGame.isReady || !hasDamage || (gameState !== GAME_STATE.IDLE && !isDragging);;
-        // (gameState !== GAME_STATE.IDLE && !isDragging)
-
-        const { uniqueId } = this.state;
+        const isDragDisabled = this.shouldDropBeDisabled()
         return (
             <Draggable
                 draggableId={uniqueId}
@@ -92,18 +92,33 @@ class Minion extends Component {
                 isDragDisabled={isDragDisabled}
             >
                 {(provided, snapshot) => (
-                    <Item
+                    <Content
                         lockTarget={lockTarget}
                         provided={provided}
                         snapshot={snapshot}
                         isDragDisabled={isDragDisabled}
                         item={item}
                         setIsDragging={this.setIsDragging}
+                        index={index}
+
+                        handleCleanTarget={handleCleanTarget}
+                        handleSetTarget={handleSetTarget}
                     />
                 )}
             </Draggable>
         )
 
+    }
+
+    shouldDropBeDisabled() {
+        const { item, isMyTurn, gameState, } = this.props;
+        const { isDragging } = this.state;
+
+        const hasDamage = item.inGame.stats.damage > 0;
+        // const isIdle = gameState === GAME_STATE.IDLE && !isDragging
+        // (gameState !== GAME_STATE.IDLE && !isDragging)
+
+        return !isMyTurn || !item.inGame.isReady || !hasDamage || (gameState !== GAME_STATE.IDLE && !isDragging);;
     }
 }
 
