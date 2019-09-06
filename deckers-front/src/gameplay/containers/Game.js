@@ -61,6 +61,7 @@ class Game extends Component {
 
         const isDragging = currentlyDragged !== null;
         if (!isDragging) return this.setState({ currentTarget: null });
+        if (id === null) return this.setState({ currentTarget: PLAYER_BOARD_ID });
 
         // Decide if target should be set, for attacking and spell targeting
         const isMinionTargeting = currentlyDragged.droppableId !== PLAYER_HAND_ID

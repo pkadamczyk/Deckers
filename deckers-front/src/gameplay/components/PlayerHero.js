@@ -33,11 +33,11 @@ class PlayerHero extends Component {
         const setTarget = this.props.handleSetTarget;
 
         const canBeSpellTargeted = this.canBeSpellTargeted()
-
+        const setTargetId = canBeSpellTargeted ? PLAYER_PORTRAIT_ID : null
         return (
             <Div
                 onMouseLeave={() => cleanTarget()}
-                onMouseEnter={() => setTarget(PLAYER_PORTRAIT_ID)}
+                onMouseEnter={() => setTarget(setTargetId)}
                 canBeSpellTargeted={canBeSpellTargeted}
             >
                 <Portrait

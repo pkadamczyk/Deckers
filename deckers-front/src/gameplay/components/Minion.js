@@ -48,6 +48,8 @@ class Content extends Component {
         const { provided, snapshot, isDragDisabled, item, index, canBeSpellTargeted } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
+        const setTargetId = canBeSpellTargeted ? `player-minion-${index}` : null
+
 
         return (
             <StyledItem
@@ -60,7 +62,7 @@ class Content extends Component {
                 style={getStyle(provided.draggableProps.style, snapshot)}
 
                 onMouseLeave={() => cleanTarget()}
-                onMouseEnter={() => setTarget(`player-minion-${index}`)}
+                onMouseEnter={() => setTarget(setTargetId)}
             >
                 <div>{item.name}</div>
                 <div>Hp: {item.inGame.stats.health}</div>
@@ -68,6 +70,8 @@ class Content extends Component {
             </StyledItem>
         )
     }
+
+
 }
 
 class Minion extends Component {
@@ -116,18 +120,6 @@ class Minion extends Component {
         )
 
     }
-
-    shouldDropBeDisabled() {
-        const { item, isMyTurn, gameState, } = this.props;
-        const { isDragging } = this.state;
-
-        const hasDamage = item.inGame.stats.damage > 0;
-        // const isIdle = gameState === GAME_STATE.IDLE && !isDragging
-        // (gameState !== GAME_STATE.IDLE && !isDragging)
-
-        return !isMyTurn || !item.inGame.isReady || !hasDamage || (gameState !== GAME_STATE.IDLE && !isDragging);;
-    }
-
     canBeSpellTargeted() {
         const { currentlyDraggedCardId, cardsOnHand } = this.props;
         if (currentlyDraggedCardId === null) return false;
@@ -144,6 +136,19 @@ class Minion extends Component {
 
         return canBeTargeted && isSpellDragged;
     }
+
+    shouldDropBeDisabled() {
+        const { item, isMyTurn, gameState, } = this.props;
+        const { isDragging } = this.state;
+
+        const hasDamage = item.inGame.stats.damage > 0;
+        // const isIdle = gameState === GAME_STATE.IDLE && !isDragging
+        // (gameState !== GAME_STATE.IDLE && !isDragging)
+
+        return !isMyTurn || !item.inGame.isReady || !hasDamage || (gameState !== GAME_STATE.IDLE && !isDragging);;
+    }
+
+
 }
 
 export default Minion;

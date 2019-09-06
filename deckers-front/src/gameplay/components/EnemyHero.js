@@ -21,7 +21,7 @@ const Div = styled.div`
 
     border: ${props => props.gameState === GAME_STATE.TARGETING ? '2px solid rgba(255, 0, 0, 0.7)'
         : props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
-    border-style: ${props => props.gameState === GAME_STATE.TARGETING ? 'solid solid none solid' : 'none'};
+    border-style: ${props => props.gameState === GAME_STATE.TARGETING || props.canBeSpellTargeted ? 'solid solid none solid' : 'none'};
 
     -webkit-box-shadow: ${props => props.gameState === GAME_STATE.TARGETING ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
         : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
@@ -40,6 +40,7 @@ class EnemyHero extends Component {
         const isDropDisabled = !isMinionDragged || isBeingTargeted;
 
         const canBeSpellTargeted = this.canBeSpellTargeted()
+        const setTargetId = canBeSpellTargeted || isMinionDragged ? ENEMY_PORTRAIT_ID : null
         return (
             <Droppable
                 droppableId={ENEMY_PORTRAIT_ID}
@@ -52,7 +53,7 @@ class EnemyHero extends Component {
                         {...provided.droppableProps}
                         gameState={gameState}
                         onMouseLeave={() => cleanTarget()}
-                        onMouseEnter={() => setTarget(ENEMY_PORTRAIT_ID)}
+                        onMouseEnter={() => setTarget(setTargetId)}
                         canBeSpellTargeted={canBeSpellTargeted}
                     >
                         <Portrait

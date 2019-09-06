@@ -36,8 +36,9 @@ class EnemyMinion extends Component {
 
         const isBeingTargeted = currentTarget === myId
         const isDropDisabled = !isMinionDragged || isBeingTargeted
-        const canBeSpellTargeted = this.canBeSpellTargeted()
 
+        const canBeSpellTargeted = this.canBeSpellTargeted()
+        const setTargetId = canBeSpellTargeted || isMinionDragged ? myId : null
         return (
             <Droppable
                 droppableId={myId}
@@ -53,7 +54,7 @@ class EnemyMinion extends Component {
                         canBeSpellTargeted={canBeSpellTargeted}
 
                         onMouseLeave={() => cleanTarget()}
-                        onMouseEnter={() => setTarget(myId)}
+                        onMouseEnter={() => setTarget(setTargetId)}
                     >
                         <div>{item.name}</div>
                         <div>Hp: {item.inGame.stats.health}</div>
