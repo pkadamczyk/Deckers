@@ -19,10 +19,10 @@ export const enemyDrawCardEvent = () => {
     }
 }
 
-export const enemySummonedCardEvent = ({ card, boardPosition, handPosition }) => {
+export const enemySummonedCardEvent = ({ result, card, handPosition }) => {
     return {
+        result,
         card,
-        boardPosition,
         handPosition,
         type: ENEMY_SUMMON_CARD,
     }

@@ -1,6 +1,7 @@
 import { REORDER_CARDS_ON_HAND, SUMMON_CARD, END_TURN, SET_GAME_STATE, ATTACK_MINION, ATTACK_HERO, CONNECTED_TO_GAME, PLAYER_DRAW_CARD, ENEMY_DRAW_CARD, ENEMY_SUMMON_CARD, ENEMY_CARD_ATTACK, COMBAT_RESULTS_COMPARISON, RESET_GAME_DATA, STARTER_CARDS_PICKED, SERVER_READY, RECONNECTED_TO_GAME, SERVER_RECONNECTED } from "../actionTypes"
 import { SOCKET } from "../actions/game";
 import { invokeEffect } from "./helpers/effects";
+import { SPELL_ROLE } from "../../gameplay/containers/Game";
 export const GAME_STATE = {
     BUSY: 1,
     TARGETING: 2,
@@ -190,27 +191,23 @@ function handleSummonCard(state, action) {
     const { droppableDestination, droppableSource, target } = action;
     let newState = { ...state }
 
-    SOCKET.emit('card-summoned', {
-        boardPosition: droppableDestination.index,
-        handPosition: cardsOnHand[droppableSource.index].position,
-    });
-
     let sourceClone = Array.from(cardsOnHand);
     let destClone = Array.from(cardsOnBoard);
     let [removed] = sourceClone.splice(droppableSource.index, 1);
+
+    SOCKET.emit('card-summoned', {
+        boardPosition: droppableDestination ? droppableDestination.index : null,
+        handPosition: cardsOnHand[droppableSource.index].position,
+        target: target
+    });
 
     sourceClone = sourceClone.map(card => ({ ...card, position: card.position > removed.position ? card.position - 1 : card.position }))
 
     const cost = removed.inGame.stats.cost
     if (playerHeroGold < cost) throw (new Error("Not enough gold"));
 
-    // Ask for target if needed
-    // console.log("On summon: ")
-    // console.log(removed.effects.onSummon)
-    // debugger
-
     const playerGoldAmount = playerHeroGold - cost;
-    if (removed.role !== 8) destClone.splice(droppableDestination.index, 0, removed);
+    if (removed.role !== SPELL_ROLE) destClone.splice(droppableDestination.index, 0, removed);
 
     newState = { ...newState, playerHeroGold: playerGoldAmount, cardsOnHand: sourceClone, cardsOnBoard: destClone }
 
@@ -221,19 +218,18 @@ function handleSummonCard(state, action) {
 }
 
 function handleEnemySummonCard(state, action) {
-    const { enemyCardsOnHand, enemyCardsOnBoard, enemyHeroGold } = state;
-    const { handPosition, boardPosition, card } = action;
+    const { enemyCardsOnHand, enemyHeroGold } = state;
+    const { result, card, handPosition } = action;
+
+    const newState = handleCombatResultsComparison(state, { result })
 
     let sourceClone = Array.from(enemyCardsOnHand);
-    let destClone = Array.from(enemyCardsOnBoard);
     sourceClone.splice(handPosition, 1);
 
     const cost = card.inGame.stats.cost;
     let enemyGoldAmount = enemyHeroGold - cost;
 
-    destClone.splice(boardPosition, 0, card);
-
-    return { ...state, enemyHeroGold: enemyGoldAmount, enemyCardsOnHand: sourceClone, enemyCardsOnBoard: destClone };
+    return { ...newState, enemyHeroGold: enemyGoldAmount, enemyCardsOnHand: sourceClone };
 }
 
 function handlePlayerDrawCard(state, action) {

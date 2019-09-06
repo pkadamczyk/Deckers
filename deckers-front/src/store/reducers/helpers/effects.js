@@ -41,7 +41,7 @@ export function invokeEffect(effect, gameState, pickedTarget = null) {
     let newState = { ...gameState }
 
     if (effect.effect === Effect.EFFECT_LIST.DAMAGE) effect.value = -Math.abs(effect.value);
-    const targetsMap = !(pickedTarget === null) ? determineSingleTarget(pickedTarget, gameState) : appendTargetsToMap(effect.target, gameState);
+    const targetsMap = pickedTarget !== null ? determineSingleTarget(pickedTarget, gameState) : appendTargetsToMap(effect.target, gameState);
 
     // Handles heal and damage for now
     for (let [key, value] of targetsMap.entries()) {

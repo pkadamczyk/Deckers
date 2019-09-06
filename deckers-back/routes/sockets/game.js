@@ -3,6 +3,7 @@ var roomdata = require('roomdata');
 // var User = require("../../models/user");
 const DatabaseGame = require("../../models/game");
 const UserModel = require("../../models/user");
+const CardModel = require("../../models/card");
 
 const ROOMDATA_KEYS = {
     GAME: "GAME",
@@ -73,7 +74,8 @@ class Player {
         if (this.cardsOnBoard.length >= Game.MAX_CARDS_ON_BOARD) throw new Error("Board is full");
 
         const [summonedCard] = this.cardsOnHand.splice(handPosition, 1);
-        this.cardsOnBoard.splice(boardPosition, 0, summonedCard);
+
+        if (summonedCard.role !== CardModel.roleList.spell) this.cardsOnBoard.splice(boardPosition, 0, summonedCard);
 
         const cost = summonedCard.inGame.stats.cost;
         this.gold = this.gold - cost;
@@ -121,8 +123,88 @@ class Game {
         return this.players[this.currentPlayer].drawCard()
     }
 
-    handleCardSummonEvent(boardPosition, handPosition) {
-        return this.players[this.currentPlayer].summonCard(boardPosition, handPosition)
+    handleCardSummonEvent(boardPosition, handPosition, target) {
+        const card = this.players[this.currentPlayer].summonCard(boardPosition, handPosition)
+        if (card.effects) this.invokeCardEffect(card.effects.onSummon[0], target || null)
+
+        const result = this.players.map(player => ({ cardsOnBoard: player.cardsOnBoard, health: player.health }))
+        return { card, result };
+    }
+
+    invokeCardEffect(effect, target) {
+        if (effect.effect === CardModel.Effect.EFFECT_LIST.DAMAGE) effect.value = -Math.abs(effect.value);
+
+        if (Object.values(CardModel.Effect.TARGET_LIST.AOE).includes(effect.target)) this.applyEffectAoe(effect)
+        else if (target !== null) this.applyEffectToTarget(target, effect)
+    }
+
+    applyEffectToTarget(target, effect) {
+        const affectedPlayer = target.includes("enemy") ? +!this.currentPlayer : this.currentPlayer
+
+        if (target.includes("portrait")) {
+            this.players[affectedPlayer].health += effect.value
+
+            // Handles overheal
+            if (this.players[affectedPlayer].health > Player.MAX_HERO_HEALTH)
+                this.players[affectedPlayer].health = Player.MAX_HERO_HEALTH
+        }
+        else if (target.includes("minion")) {
+            const minionIndex = +key.slice(-1);
+
+            // Handles overheal
+            const newHealth = this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health + effect.value
+            const level = this.players[affectedPlayer].cardsOnBoard[minionIndex].level;
+
+            if (newHealth > this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health)
+                this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health
+            else this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = newHealth
+        }
+    }
+
+    applyEffectAoe(effect) {
+        const { Effect } = CardModel;
+        const { TARGET_LIST } = Effect
+
+        const includeEnemyBoard = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.AOE.ALL_MINIONS, TARGET_LIST.AOE.ENEMY_MINIONS]
+        const includeAllyBoard = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.AOE.ALL_MINIONS, TARGET_LIST.AOE.ALLY_MINIONS]
+
+        const includeEnemyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.ENEMY_HERO]
+        const includeAllyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.ALLY_HERO]
+
+        // Determines whose board should be affected
+        let affectedPlayers = [];
+        if (includeEnemyBoard.includes(effect.target)) affectedPlayers.push(+!this.currentPlayer)
+        if (includeAllyBoard.includes(effect.target)) affectedPlayers.push(this.currentPlayer)
+
+        affectedPlayers.map(player => {
+            for (let i = 0; i < this.players[player].cardsOnBoard.length; i++) {
+                this.players[player].cardsOnBoard[i].inGame.stats.health += effect.value
+
+                // Handles overheal
+                const level = his.players[player].cardsOnBoard[i].level;
+
+                if (this.players[player].cardsOnBoard[i].inGame.stats.health > this.players[player].cardsOnBoard[i].stats[level].health)
+                    this.players[player].cardsOnBoard[i].inGame.stats.health = this.players[player].cardsOnBoard[i].stats[level].health
+
+                // Place a null value in minion array if he died
+                if (this.players[player].cardsOnBoard[i].inGame.stats.health <= 0) this.players[player].cardsOnBoard[i] = null
+            }
+            // Filters out dead minions
+            this.players[player].cardsOnBoard.filter(card => card !== null)
+        })
+
+        // Determines whose hero should be affected
+        affectedPlayers = [];
+        if (includeEnemyHero.includes(effect.target)) affectedPlayers.push(+!this.currentPlayer)
+        if (includeAllyHero.includes(effect.target)) affectedPlayers.push(this.currentPlayer)
+
+        affectedPlayers.map(player => {
+            this.players[player].health += effect.value
+
+            // Handles overheal
+            if (this.players[player].health > Player.MAX_HERO_HEALTH)
+                this.players[player].health = Player.MAX_HERO_HEALTH
+        })
     }
 
     handleAttackOnHero(playerMinionId) {
@@ -344,14 +426,16 @@ module.exports.connect = function (io) {
             console.log(`Card drew!`)
         })
 
-        socket.on('card-summoned', function ({ boardPosition, handPosition }) {
+        socket.on('card-summoned', function ({ boardPosition, handPosition, target }) {
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
-            const card = game.handleCardSummonEvent(boardPosition, handPosition)
+            const { result, card } = game.handleCardSummonEvent(boardPosition, handPosition, target)
 
-            // sending to all clients in 'game' room except sender
+            // sending to individual socketid (private message)
+            GAME_IO.to(`${socket.id}`).emit('combat-results-comparison', { result });
+
             socket.to("game-" + game.gameId).emit('enemy-card-summoned', {
+                result,
                 card,
-                boardPosition,
                 handPosition
             });
 
