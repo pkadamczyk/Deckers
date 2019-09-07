@@ -149,16 +149,24 @@ class Game {
                 this.players[affectedPlayer].health = Player.MAX_HERO_HEALTH
         }
         else if (target.includes("minion")) {
-            const minionIndex = +key.slice(-1);
+            const minionIndex = +target.slice(-1);
+            const newHealth = this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health + effect.value
 
             // Handles overheal
-            const newHealth = this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health + effect.value
             const level = this.players[affectedPlayer].cardsOnBoard[minionIndex].level;
 
             if (newHealth > this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health)
                 this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health
-            else this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = newHealth
+            else this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = newHealth;
+
+            // Place a null value in minion array if he died
+            if (this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health <= 0)
+                this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
+
+            // Filters out dead minions 
+            this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
         }
+
     }
 
     applyEffectAoe(effect) {
@@ -181,7 +189,7 @@ class Game {
                 this.players[player].cardsOnBoard[i].inGame.stats.health += effect.value
 
                 // Handles overheal
-                const level = his.players[player].cardsOnBoard[i].level;
+                const level = this.players[player].cardsOnBoard[i].level;
 
                 if (this.players[player].cardsOnBoard[i].inGame.stats.health > this.players[player].cardsOnBoard[i].stats[level].health)
                     this.players[player].cardsOnBoard[i].inGame.stats.health = this.players[player].cardsOnBoard[i].stats[level].health
@@ -190,7 +198,7 @@ class Game {
                 if (this.players[player].cardsOnBoard[i].inGame.stats.health <= 0) this.players[player].cardsOnBoard[i] = null
             }
             // Filters out dead minions
-            this.players[player].cardsOnBoard.filter(card => card !== null)
+            this.players[player].cardsOnBoard = this.players[player].cardsOnBoard.filter(card => card !== null)
         })
 
         // Determines whose hero should be affected
