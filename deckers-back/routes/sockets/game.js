@@ -279,8 +279,17 @@ class Game {
         return true;
     }
 
-    async handleGameOver(winner) {
+    checkForGameOver() {
+        const deadPlayerIndex = this.players.findIndex(player => player.health <= 0)
+        if (deadPlayerIndex !== -1) return true
+        return false
+    }
+
+    async handleGameOver() {
         try {
+            const deadPlayerIndex = this.players.findIndex(player => player.health <= 0)
+            const winner = +!deadPlayerIndex
+
             const usersPromises = this.playersIdArray.map(id => UserModel.findById(id))
             const users = await Promise.all(usersPromises);
 
@@ -434,9 +443,18 @@ module.exports.connect = function (io) {
             console.log(`Card drew!`)
         })
 
-        socket.on('card-summoned', function ({ boardPosition, handPosition, target }) {
+        socket.on('card-summoned', async function ({ boardPosition, handPosition, target }) {
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
             const { result, card } = game.handleCardSummonEvent(boardPosition, handPosition, target)
+
+            const isGameOver = game.checkForGameOver()
+            if (isGameOver) {
+                const usersData = await game.handleGameOver();
+                // sending to all clients in 'game' room, including sender
+                GAME_IO.in("game-" + game.gameId).emit('user-data-update', { usersData });
+
+                return
+            }
 
             // sending to individual socketid (private message)
             GAME_IO.to(`${socket.id}`).emit('combat-results-comparison', { result });
@@ -454,13 +472,9 @@ module.exports.connect = function (io) {
             const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
             const result = game.handleAttackEvent(playerMinionId, enemyMinionId);
 
-            // Handle game over
-            const deadPlayerIndex = result.findIndex(player => player.health <= 0)
-            if (deadPlayerIndex !== -1) {
-                // sending to all clients in 'game' room, including sender
-                // GAME_IO.in("game-" + game.gameId).emit('game-over', { winner: +!deadPlayerIndex });
-
-                const usersData = await game.handleGameOver(+!deadPlayerIndex);
+            const isGameOver = game.checkForGameOver()
+            if (isGameOver) {
+                const usersData = await game.handleGameOver();
                 // sending to all clients in 'game' room, including sender
                 GAME_IO.in("game-" + game.gameId).emit('user-data-update', { usersData });
 

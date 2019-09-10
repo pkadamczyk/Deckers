@@ -7,7 +7,10 @@ import { drawCard, setGameState } from "../../store/actions/game"
 import { CARD_DRAW_COST, GAME_STATE, MAX_CARDS_ON_HAND } from '../../store/reducers/game';
 
 const StyledButton = styled.button`
-    width: 100%
+    width: 100%;
+
+    position:absolute;
+    z-index: 1;
 `;
 
 const Div = styled.div`
@@ -35,7 +38,6 @@ class PlayerDeck extends Component {
         const isHandFull = cardsOnHand.length >= MAX_CARDS_ON_HAND
 
         const isButtonDisabled = !isAffortable || !isMyTurn || gameState !== GAME_STATE.IDLE || !hasCards || isHandFull;
-
         return (
             <Div>
                 <Deck>
