@@ -46,7 +46,7 @@ class PlayerHand extends Component {
                     >
                         {cards.map((item, index) => (
                             <HandCard
-                                key={item._id + index}
+                                key={item._id + index + cards.length}
                                 item={item}
                                 index={index}
                                 isMyTurn={isMyTurn}
