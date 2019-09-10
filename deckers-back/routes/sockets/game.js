@@ -376,7 +376,7 @@ module.exports.connect = function (io) {
         });
 
         socket.on('join', async function ({ gameId, role }) {
-            console.log(`Joined game ${gameId}`)
+            console.log(`Joined game as role ${role} : ${gameId}`)
             roomdata.joinRoom(socket, "game-" + gameId);
 
             // Setup objects needed for multi, send ready signal with starting cards
@@ -390,10 +390,19 @@ module.exports.connect = function (io) {
                 // sending to individual socketid (private message)
                 const player1StarterCards = game.players[role].deck.slice(0, 4);
                 GAME_IO.to(`${socket.id}`).emit('server-ready', { starterCards: player1StarterCards });
+            }
+            if (role === 1) {
+                // Little bit random code, but it makes sure both players join game
+                const i = setInterval(() => {
+                    if (roomdata.get(socket, ROOMDATA_KEYS.GAME)) {
+                        const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
 
-                // sending to all clients in 'game' room except sender
-                const player2StarterCards = game.players[+!role].deck.slice(0, 4);
-                socket.to("game-" + game.gameId).emit('server-ready', { starterCards: player2StarterCards });
+                        // sending to all clients in 'game' room except sender
+                        const player2StarterCards = game.players[+!role].deck.slice(0, 4);
+                        GAME_IO.to(`${socket.id}`).emit('server-ready', { starterCards: player2StarterCards });
+                        clearInterval(i)
+                    }
+                }, 1000);
             }
         })
 
