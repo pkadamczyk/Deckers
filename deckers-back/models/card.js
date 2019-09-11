@@ -34,11 +34,6 @@ const Effect = Object.freeze({
         SUMMON: 3,
     },
     TARGET_LIST: {
-        NONE: 0,
-        SELF: 13,
-        ENEMY_HERO: 14,
-        ALLY_HERO: 15,
-
         AOE: {
             ALL: 1,
             ENEMY: 2,
@@ -57,7 +52,15 @@ const Effect = Object.freeze({
             ALL_MINIONS: 10,
             ENEMY_MINIONS: 11,
             ALLY_MINIONS: 12,
+            SELF: 13,
+            ENEMY_HERO: 14,
+            ALLY_HERO: 15,
         },
+        GENERAL: {
+            ENEMY: 16,
+            ALLY: 17,
+            ALL: 18,
+        }
     }
 })
 

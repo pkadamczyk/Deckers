@@ -9,11 +9,6 @@ export const Effect = Object.freeze({
         SUMMON: 3,
     },
     TARGET_LIST: {
-        NONE: 0,
-        SELF: 13,
-        ENEMY_HERO: 14,
-        ALLY_HERO: 15,
-
         AOE: {
             ALL: 1,
             ENEMY: 2,
@@ -32,9 +27,16 @@ export const Effect = Object.freeze({
             ALL_MINIONS: 10,
             ENEMY_MINIONS: 11,
             ALLY_MINIONS: 12,
+            SELF: 13,
+            ENEMY_HERO: 14,
+            ALLY_HERO: 15,
         },
+        GENERAL: {
+            ENEMY: 16,
+            ALLY: 17,
+            ALL: 18,
+        }
     }
-
 })
 
 export function invokeEffect(effect, gameState, pickedTarget = null) {
@@ -111,8 +113,8 @@ function appendTargetsToMap(target, state) {
     const includeEnemyBoard = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.AOE.ALL_MINIONS, TARGET_LIST.AOE.ENEMY_MINIONS]
     const includeAllyBoard = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.AOE.ALL_MINIONS, TARGET_LIST.AOE.ALLY_MINIONS]
 
-    const includeEnemyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.ENEMY_HERO]
-    const includeAllyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.ALLY_HERO]
+    const includeEnemyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.SINGLE_TARGET.ENEMY_HERO]
+    const includeAllyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.SINGLE_TARGET.ALLY_HERO]
 
     if (includeEnemyBoard.includes(target)) targetsMap.set('enemyCardsOnBoard', Array.from(enemyCardsOnBoard));
     if (includeAllyBoard.includes(target)) targetsMap.set('cardsOnBoard', Array.from(cardsOnBoard));

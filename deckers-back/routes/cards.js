@@ -25,8 +25,9 @@ router.post("/cards", async function (req, res) {
 });
 
 // NEW ROUTE
-router.get("/cards/new", function (req, res) {
-    res.status(200).json({ rarityList: Card.rarityList, raceList: Card.raceList, roleList: Card.roleList, Effect: Card.Effect });
+router.get("/cards/new", async function (req, res) {
+    const cards = await Card.find({})
+    res.status(200).json({ rarityList: Card.rarityList, raceList: Card.raceList, roleList: Card.roleList, Effect: Card.Effect, cards });
 })
 
 // SHOW ROUTE

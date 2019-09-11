@@ -89,8 +89,8 @@ class Game extends Component {
     };
 
     onDragEnd(result) {
-        let { source, destination } = result;
-        let { currentTarget } = this.state;
+        const { source, destination } = result;
+        const { currentTarget } = this.state;
 
         this.setState({ currentlyDragged: null })
 

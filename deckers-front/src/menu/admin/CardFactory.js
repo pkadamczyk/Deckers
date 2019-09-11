@@ -22,6 +22,7 @@ class CardFactory extends Component {
             raceList: null,
             roleList: null,
             Effect: null,
+            cards: null,
 
             name: "",
             rarity: 0,
@@ -48,9 +49,9 @@ class CardFactory extends Component {
     componentWillMount() {
         apiCall("get", `/admin/cards/new`)
             .then(res => {
-                const { rarityList, raceList, roleList, Effect } = res
+                const { rarityList, raceList, roleList, Effect, cards } = res
 
-                this.setState({ rarityList, raceList, roleList, Effect })
+                this.setState({ rarityList, raceList, roleList, Effect, cards })
             }).catch(err => {
                 console(err); // indicate the API call failed
             });
@@ -113,7 +114,7 @@ class CardFactory extends Component {
     };
 
     render() {
-        const { rarityList, raceList, roleList, Effect } = this.state;
+        const { rarityList, raceList, roleList, Effect, cards } = this.state;
         if (rarityList === null) return null
 
         const rarityOptions = Object.values(rarityList).map((val, i) => <option value={val} key={i}>{Object.keys(rarityList)[i]}</option>)
@@ -185,7 +186,7 @@ class CardFactory extends Component {
                         </tbody>
                     </table>
 
-                    <EffectList Effect={Effect} listId="onSummon" handleEffectChange={this.handleEffectChange} />
+                    <EffectList Effect={Effect} listId="onSummon" handleEffectChange={this.handleEffectChange} cards={cards} />
 
                     <Row>
                         <label>
