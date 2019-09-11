@@ -128,7 +128,7 @@ router.post("/:usr_id/decks/create", loginRequired, ensureCorrectUser, async fun
     }
 })
 
-// delete deck ---> fix z router.post na router.delete -Pszemek (taki ze mnie fullstack hehs)
+// delete deck 
 router.delete("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
         let foundUser = await fetchUser(req.params.usr_id);
@@ -243,7 +243,8 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
     try {
         const gamePromise = Game.findById(req.params.game_id).deepPopulate('players');
         const userPromise = User.findById(req.params.usr_id).deepPopulate('decks.cards.card');
-        const [foundGame, user] = await Promise.all([gamePromise, userPromise]);
+        const cardListPromise = Card.find({})
+        const [foundGame, user, cardList] = await Promise.all([gamePromise, userPromise, cardListPromise]);
 
         console.log(`Game id: ${req.params.game_id}`)
         if (foundGame.isFinished) throw new Error("Game finished");
@@ -275,6 +276,7 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
         }
 
         res.status(200).json({
+            cardList,
             gameId: foundGame._id,
             player: user.username,
             enemy: enemy.username,

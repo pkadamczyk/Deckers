@@ -1,6 +1,7 @@
 import { MAX_HERO_HEALTH } from "../game";
 import { ENEMY_PORTRAIT_ID } from "../../../gameplay/components/EnemyHero";
 import { PLAYER_PORTRAIT_ID } from "../../../gameplay/components/PlayerHero";
+import { MAX_CARDS_ON_BOARD } from "../../../gameplay/containers/Board";
 
 export const Effect = Object.freeze({
     EFFECT_LIST: {
@@ -39,9 +40,41 @@ export const Effect = Object.freeze({
     }
 })
 
-export function invokeEffect(effect, gameState, pickedTarget = null) {
-    let newState = { ...gameState }
+const SUMMONED_CARD_LEVEL = 0 // 0 is first level
 
+export function invokeEffect(effect, gameState, pickedTarget = null) {
+    if (effect.effect === Effect.EFFECT_LIST.DAMAGE && effect.effect === Effect.EFFECT_LIST.HEAL) return handleDamageAndHeal(effect, gameState, pickedTarget)
+    else if (effect.effect === Effect.EFFECT_LIST.SUMMON) return handleSummon(effect, gameState)
+}
+
+function handleSummon(effect, gameState) {
+    let newState = { ...gameState }
+    const { TARGET_LIST } = Effect
+
+    const includeEnemyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ENEMY]
+    const includeAllyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ALLY]
+    const card = newState.gameInfo.cardList.find(dbCard => dbCard._id === effect.value);
+
+    const gameCard = {
+        ...card,
+        inGame: {
+            isReady: false,
+            stats: card.stats[SUMMONED_CARD_LEVEL]
+        }
+    }
+
+    // Makes sure you dont have too many cards on board
+    const isEnemyBoardFull = newState.enemyCardsOnBoard.length >= MAX_CARDS_ON_BOARD
+    const isAllyBoardFull = newState.cardsOnBoard.length >= MAX_CARDS_ON_BOARD
+
+    if (includeEnemyBoard.includes(effect.target) && !isEnemyBoardFull) newState.enemyCardsOnBoard = [...newState.enemyCardsOnBoard, gameCard]
+    if (includeAllyBoard.includes(effect.target) && !isAllyBoardFull) newState.cardsOnBoard = [...newState.cardsOnBoard, gameCard]
+
+    return { ...newState };
+}
+
+function handleDamageAndHeal(effect, gameState, pickedTarget) {
+    let newState = { ...gameState }
     if (effect.effect === Effect.EFFECT_LIST.DAMAGE) effect.value = -Math.abs(effect.value);
     const targetsMap = pickedTarget !== null ? determineSingleTarget(pickedTarget, gameState) : appendTargetsToMap(effect.target, gameState);
 

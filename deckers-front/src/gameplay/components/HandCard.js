@@ -24,10 +24,12 @@ const StyledItem = styled.div`
 
 function getStyle(style, snapshot, cardsOnBoardLength, currentTarget, card) {
     const isSingleTargetSpell = card.effects ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
+    const isGeneralTargetSpell = card.effects ? Object.values(Effect.TARGET_LIST.GENERAL).includes(card.effects.onSummon[0].target) : false;
+    const shouldFadeOut = isSingleTargetSpell || isGeneralTargetSpell;
 
     // Handles card dragging and spell cards animations
     if (!snapshot.isDropAnimating) {
-        if (isSingleTargetSpell && snapshot.isDragging) {
+        if (shouldFadeOut && snapshot.isDragging) {
             // console.log(card.effects.onSummon[0].target)
 
             // Set cursor and reset it if not needed
@@ -44,7 +46,7 @@ function getStyle(style, snapshot, cardsOnBoardLength, currentTarget, card) {
 
     // Drop animation
     document.body.style.cursor = "default"; // Reset cursor
-    if (card.effects && isSingleTargetSpell && snapshot.isDragging)
+    if (card.effects && shouldFadeOut && snapshot.isDragging)
         return { ...style, opacity: "0" }
 
     const { moveTo, curve, duration } = snapshot.dropAnimation;

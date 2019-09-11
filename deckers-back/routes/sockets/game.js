@@ -97,6 +97,8 @@ class Game {
         this.currentRound = 1;
 
         this.players = databaseGame.players.map(player => new Player(player.deck));
+
+        CardModel.find({}).then(res => this.cardList = res)
     }
 
     handleAttackEvent(playerMinionId, enemyMinionId) {
@@ -132,6 +134,37 @@ class Game {
     }
 
     invokeCardEffect(effect, target) {
+        if (effect.effect === CardModel.Effect.EFFECT_LIST.DAMAGE && effect.effect === CardModel.Effect.EFFECT_LIST.HEAL)
+            this.handleHealAndDamageEffect(effect, target)
+        if (effect.effect === CardModel.Effect.EFFECT_LIST.SUMMON)
+            this.handleSummonEffect(effect)
+    }
+
+    handleSummonEffect(effect) {
+        const { Effect } = CardModel;
+        const { TARGET_LIST } = Effect
+
+        const includeEnemyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ENEMY]
+        const includeAllyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ALLY]
+        const card = this.cardList.find(dbCard => dbCard._id.equals(effect.value));
+
+        const gameCard = {
+            ...card.toObject(),
+            inGame: {
+                isReady: false,
+                stats: card.stats[Game.SUMMONED_CARD_LEVEL]
+            }
+        }
+
+        // Makes sure you dont have too many cards on board
+        const isEnemyBoardFull = this.players[+!this.currentPlayer].cardsOnBoard.length >= Game.MAX_CARDS_ON_BOARD
+        const isAllyBoardFull = this.players[this.currentPlayer].cardsOnBoard.length.length >= Game.MAX_CARDS_ON_BOARD
+
+        if (includeEnemyBoard.includes(effect.target) && !isEnemyBoardFull) this.players[+!this.currentPlayer].cardsOnBoard.push(gameCard)
+        if (includeAllyBoard.includes(effect.target) && !isAllyBoardFull) this.players[this.currentPlayer].cardsOnBoard.push(gameCard)
+    }
+
+    handleHealAndDamageEffect(effect, target) {
         if (effect.effect === CardModel.Effect.EFFECT_LIST.DAMAGE) effect.value = -Math.abs(effect.value);
 
         if (Object.values(CardModel.Effect.TARGET_LIST.AOE).includes(effect.target)) this.applyEffectAoe(effect)
@@ -166,7 +199,6 @@ class Game {
             // Filters out dead minions 
             this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
         }
-
     }
 
     applyEffectAoe(effect) {
@@ -347,6 +379,7 @@ Game.PLAYER_AMOUNT = 2;
 Game.CARD_DRAW_COST = 1; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
 Game.MAX_CARDS_ON_BOARD = 4; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
 Game.MAX_CARDS_ON_HAND = 6; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
+Game.SUMMONED_CARD_LEVEL = 0 // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
 
 Game.WIN_REWARD = 17;
 Game.LOSE_REWARD = 9;
@@ -398,7 +431,7 @@ module.exports.connect = function (io) {
                         const game = roomdata.get(socket, ROOMDATA_KEYS.GAME);
 
                         // sending to all clients in 'game' room except sender
-                        const player2StarterCards = game.players[+!role].deck.slice(0, 4);
+                        const player2StarterCards = game.players[role].deck.slice(0, 4);
                         GAME_IO.to(`${socket.id}`).emit('server-ready', { starterCards: player2StarterCards });
                         clearInterval(i)
                     }
