@@ -25,17 +25,16 @@ class Card {
         if (aProps.length != bProps.length) {
             return false;
         }
-
         for (var i = 0; i < aProps.length; i++) {
             var propName = aProps[i];
 
             // If values of same property are not equal,
             // objects are not equivalent
             if (a[propName] !== b[propName] && propName !== "_id") {
+
                 return false;
             }
         }
-
         // If we made it this far, objects
         // are considered equivalent
         return true;
@@ -146,10 +145,10 @@ class Game {
 
         const includeEnemyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ENEMY]
         const includeAllyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ALLY]
-        const card = this.cardList.find(dbCard => dbCard._id.equals(effect.value));
+        const card = this.cardList.find(dbCard => dbCard._id.equals(effect.value)).toObject();
 
         const gameCard = {
-            ...card.toObject(),
+            ...card,
             inGame: {
                 isReady: false,
                 stats: card.stats[Game.SUMMONED_CARD_LEVEL]
