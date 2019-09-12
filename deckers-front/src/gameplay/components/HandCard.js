@@ -5,6 +5,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { CARD_WIDTH } from '../containers/Board';
 import { PLAYER_HAND_ID } from '../containers/PlayerHand';
 import { Effect } from '../../store/reducers/helpers/effects';
+import { SPELL_ROLE } from '../containers/Game';
 
 const StyledItem = styled.div` 
     margin: 0 8px 0 0;
@@ -24,8 +25,8 @@ const StyledItem = styled.div`
 
 function getStyle(style, snapshot, cardsOnBoardLength, currentTarget, card) {
     const isSingleTargetSpell = card.effects ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
-    const isGeneralTargetSpell = card.effects ? Object.values(Effect.TARGET_LIST.GENERAL).includes(card.effects.onSummon[0].target) : false;
-    const shouldFadeOut = isSingleTargetSpell || isGeneralTargetSpell;
+    const isSpell = card.role === SPELL_ROLE
+    const shouldFadeOut = isSingleTargetSpell || isSpell;
 
     // Handles card dragging and spell cards animations
     if (!snapshot.isDropAnimating) {

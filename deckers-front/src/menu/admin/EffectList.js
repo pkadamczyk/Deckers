@@ -106,7 +106,7 @@ class EffectList extends Component {
             <Column>
                 <div>{listId} effects</div>
                 {htmlList}
-                <Row><button onClick={() => this.changeRowAmount(1)}>More</button> <button onClick={() => this.changeRowAmount(-1)}> Less</button></Row>
+                <Row><button type="button" onClick={() => this.changeRowAmount(1)}>More</button> <button type="button" onClick={() => this.changeRowAmount(-1)}> Less</button></Row>
             </Column >
         )
     }
