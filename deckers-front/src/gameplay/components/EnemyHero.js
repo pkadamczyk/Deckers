@@ -75,7 +75,7 @@ class EnemyHero extends Component {
         const isSpellDragged = currentlyDraggedCard.role === SPELL_ROLE
 
         if (!currentlyDraggedCard.effects) return false;
-        const spellTarget = currentlyDraggedCard.effects.onSummon[0].target;
+        const spellTarget = currentlyDraggedCard.effects.onSummon.length > 0 ? currentlyDraggedCard.effects.onSummon[0].target : null;
         const canBeTargeted = [Effect.TARGET_LIST.SINGLE_TARGET.ALL, Effect.TARGET_LIST.SINGLE_TARGET.ENEMY].includes(spellTarget)
 
         return canBeTargeted && isSpellDragged;

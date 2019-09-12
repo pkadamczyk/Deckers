@@ -126,20 +126,20 @@ class Game {
 
     handleCardSummonEvent(boardPosition, handPosition, target) {
         const card = this.players[this.currentPlayer].summonCard(boardPosition, handPosition)
-        if (card.effects) this.invokeCardEffect(card.effects.onSummon[0], target || null)
+        if (card.effects && card.effects.onSummon.length > 0) this.invokeCardEffect(card.effects.onSummon[0], target || null)
 
         const result = this.players.map(player => ({ cardsOnBoard: player.cardsOnBoard, health: player.health }))
         return { card, result };
     }
 
-    invokeCardEffect(effect, target) {
+    invokeCardEffect(effect, target, reversePlayers = false) {
         if (effect.effect === CardModel.Effect.EFFECT_LIST.DAMAGE && effect.effect === CardModel.Effect.EFFECT_LIST.HEAL)
             this.handleHealAndDamageEffect(effect, target)
         if (effect.effect === CardModel.Effect.EFFECT_LIST.SUMMON)
-            this.handleSummonEffect(effect)
+            this.handleSummonEffect(effect, reversePlayers)
     }
 
-    handleSummonEffect(effect) {
+    handleSummonEffect(effect, reversePlayers) {
         const { Effect } = CardModel;
         const { TARGET_LIST } = Effect
 
@@ -154,13 +154,14 @@ class Game {
                 stats: card.stats[Game.SUMMONED_CARD_LEVEL]
             }
         }
+        const currentPlayer = reversePlayers ? +!this.currentPlayer : this.currentPlayer
 
         // Makes sure you dont have too many cards on board
-        const isEnemyBoardFull = this.players[+!this.currentPlayer].cardsOnBoard.length >= Game.MAX_CARDS_ON_BOARD
-        const isAllyBoardFull = this.players[this.currentPlayer].cardsOnBoard.length.length >= Game.MAX_CARDS_ON_BOARD
+        const isEnemyBoardFull = this.players[currentPlayer].cardsOnBoard.length >= Game.MAX_CARDS_ON_BOARD
+        const isAllyBoardFull = this.players[currentPlayer].cardsOnBoard.length.length >= Game.MAX_CARDS_ON_BOARD
 
-        if (includeEnemyBoard.includes(effect.target) && !isEnemyBoardFull) this.players[+!this.currentPlayer].cardsOnBoard.push(gameCard)
-        if (includeAllyBoard.includes(effect.target) && !isAllyBoardFull) this.players[this.currentPlayer].cardsOnBoard.push(gameCard)
+        if (includeEnemyBoard.includes(effect.target) && !isEnemyBoardFull) this.players[currentPlayer].cardsOnBoard.push(gameCard)
+        if (includeAllyBoard.includes(effect.target) && !isAllyBoardFull) this.players[currentPlayer].cardsOnBoard.push(gameCard)
     }
 
     handleHealAndDamageEffect(effect, target) {
@@ -264,11 +265,8 @@ class Game {
     handleAttackOnMinion(playerMinionId, enemyMinionId) {
         let { currentPlayer, players } = this;
 
-        let playerCardsOnBoard = players[currentPlayer].cardsOnBoard;
-        let enemyCardsOnBoard = players[+!currentPlayer].cardsOnBoard; // WORKS ONLY ON 2 PLAYERS
-
-        let attackingMinion = { ...playerCardsOnBoard[playerMinionId] };
-        let attackedMinion = { ...enemyCardsOnBoard[enemyMinionId] };
+        let attackingMinion = players[currentPlayer].cardsOnBoard[playerMinionId];
+        let attackedMinion = players[+!currentPlayer].cardsOnBoard[enemyMinionId];
 
         if (!attackingMinion.inGame.isReady) throw (new Error("This minion is not ready"));
         attackingMinion.inGame.isReady = false;
@@ -276,11 +274,19 @@ class Game {
         attackedMinion.inGame.stats.health -= attackingMinion.inGame.stats.damage;
         attackingMinion.inGame.stats.health -= attackedMinion.inGame.stats.damage;
 
-        if (attackedMinion.inGame.stats.health <= 0) enemyCardsOnBoard.splice(enemyMinionId, 1);
-        else enemyCardsOnBoard[enemyMinionId] = attackedMinion;
+        if (attackedMinion.inGame.stats.health <= 0) {
+            players[+!currentPlayer].cardsOnBoard.splice(enemyMinionId, 1)
+            if (attackedMinion.effects && attackedMinion.effects.finalWords.length > 0)
+                this.invokeCardEffect(attackedMinion.effects.finalWords[0], null, true)
+        }
+        else players[+!currentPlayer].cardsOnBoard[enemyMinionId] = attackedMinion;
 
-        if (attackingMinion.inGame.stats.health <= 0) playerCardsOnBoard.splice(playerMinionId, 1);
-        else playerCardsOnBoard[playerMinionId] = attackingMinion;
+        if (attackingMinion.inGame.stats.health <= 0) {
+            players[currentPlayer].cardsOnBoard.splice(playerMinionId, 1);
+            if (attackingMinion.effects && attackingMinion.effects.finalWords.length > 0)
+                this.invokeCardEffect(attackingMinion.effects.finalWords[0])
+        }
+        else players[currentPlayer].cardsOnBoard[playerMinionId] = attackingMinion;
     }
 
     // Checks if frontend data equals backend data

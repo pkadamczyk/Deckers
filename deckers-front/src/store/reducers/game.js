@@ -212,7 +212,9 @@ function handleSummonCard(state, action) {
     newState = { ...newState, playerHeroGold: playerGoldAmount, cardsOnHand: sourceClone, cardsOnBoard: destClone }
 
     // Make spell do its magic
-    if (removed.effects) newState = invokeEffect(removed.effects.onSummon[0], newState, target || null)
+    if (removed.effects && removed.effects.onSummon.length > 0) {
+        newState = invokeEffect(removed.effects.onSummon[0], newState, target || null)
+    }
 
     return { ...newState };
 }
@@ -313,6 +315,8 @@ function handleAttackMinion(state, action) {
     const { cardsOnBoard, enemyCardsOnBoard } = state;
     const { playerMinionId, enemyMinionId } = action;
 
+    let newState = { ...state } // Needed for effects
+
     let attackingMinion = { ...cardsOnBoard[playerMinionId] };
     let attackedMinion = { ...enemyCardsOnBoard[enemyMinionId] };
 
@@ -331,7 +335,21 @@ function handleAttackMinion(state, action) {
     if (attackingMinion.inGame.stats.health <= 0) playerMinionArray.splice(playerMinionId, 1);
     else playerMinionArray[playerMinionId] = attackingMinion;
 
-    return { ...state, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray };
+    newState = { ...newState, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray }
+
+    // Make final words do its magic
+    // if (attackedMinion.inGame.stats.health <= 0) {
+    //     if (attackedMinion.effects && attackedMinion.effects.finalWords.length > 0)
+    //         newState = invokeEffect(attackedMinion.effects.finalWords[0], newState)
+    // }
+
+    // Make final words do its magic
+    if (attackingMinion.inGame.stats.health <= 0 && attackingMinion.effects) {
+        if (attackingMinion.effects && attackingMinion.effects.finalWords.length > 0)
+            newState = invokeEffect(attackingMinion.effects.finalWords[0], newState)
+    }
+
+    return { ...newState };
 }
 
 function handleAttackHero(state, action) {

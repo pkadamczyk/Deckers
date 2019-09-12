@@ -24,7 +24,7 @@ const StyledItem = styled.div`
 `;
 
 function getStyle(style, snapshot, cardsOnBoardLength, currentTarget, card) {
-    const isSingleTargetSpell = card.effects ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
+    const isSingleTargetSpell = card.effects && card.effects.onSummon.length > 0 ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
     const isSpell = card.role === SPELL_ROLE
     const shouldFadeOut = isSingleTargetSpell || isSpell;
 

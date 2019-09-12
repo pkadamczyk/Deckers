@@ -128,9 +128,11 @@ class Game extends Component {
         if (target === PLAYER_BOARD_ID) target = null;
 
         let isSingleTarget = false
-        if (card.effects) isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target)
+        if (card.effects) {
+            const spellTarget = card.effects.onSummon.length > 0 ? card.effects.onSummon[0].target : null;
+            isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(spellTarget)
+        }
         const cardNeedsTarget = card.role === SPELL_ROLE && isSingleTarget
-
         if (target === null && cardNeedsTarget) return
 
         this.props.dispatch(summonCard(

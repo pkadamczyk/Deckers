@@ -187,6 +187,7 @@ class CardFactory extends Component {
                     </table>
 
                     <EffectList Effect={Effect} listId="onSummon" handleEffectChange={this.handleEffectChange} cards={cards} />
+                    <EffectList Effect={Effect} listId="finalWords" handleEffectChange={this.handleEffectChange} cards={cards} />
 
                     <Row>
                         <label>
