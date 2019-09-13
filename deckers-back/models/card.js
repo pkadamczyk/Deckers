@@ -32,6 +32,7 @@ const Effect = Object.freeze({
         HEAL: 1,
         DAMAGE: 2,
         SUMMON: 3,
+        KILL_ON_CONDITION: 4,
     },
     TARGET_LIST: {
         AOE: {
