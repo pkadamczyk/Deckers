@@ -2,12 +2,14 @@ import { MAX_HERO_HEALTH } from "../game";
 import { ENEMY_PORTRAIT_ID } from "../../../gameplay/components/EnemyHero";
 import { PLAYER_PORTRAIT_ID } from "../../../gameplay/components/PlayerHero";
 import { MAX_CARDS_ON_BOARD } from "../../../gameplay/containers/Board";
+import { checkCondition } from "./helpers/checkCondition";
 
 export const Effect = Object.freeze({
     EFFECT_LIST: {
         HEAL: 1,
         DAMAGE: 2,
         SUMMON: 3,
+        KILL_ON_CONDITION: 4,
     },
     TARGET_LIST: {
         AOE: {
@@ -39,12 +41,64 @@ export const Effect = Object.freeze({
         }
     }
 })
+export const Condition = {
+    VARIABLE: {
+        HEALTH: 1,
+        DAMAGE: 2,
+        COST: 3,
+        RACE: 4,
+        CLASS: 5,
+    },
+    KEY_WORD: {
+        MORE: 1,
+        LESS: 2,
+        EQUAL: 3,
+    }
+}
 
 const SUMMONED_CARD_LEVEL = 0 // 0 is first level
 
 export function invokeEffect(effect, gameState, pickedTarget = null) {
     if (effect.effect === Effect.EFFECT_LIST.DAMAGE && effect.effect === Effect.EFFECT_LIST.HEAL) return handleDamageAndHeal(effect, gameState, pickedTarget)
     else if (effect.effect === Effect.EFFECT_LIST.SUMMON) return handleSummon(effect, gameState)
+    else if (effect.effect === Effect.EFFECT_LIST.KILL_ON_CONDITION) return handleKillOnCondition(effect, gameState, pickedTarget)
+}
+
+function handleKillOnCondition(effect, gameState, pickedTarget) {
+    let newState = { ...gameState }
+    const targetsMap = pickedTarget !== null ?
+        determineSingleTarget(pickedTarget, gameState) :
+        appendTargetsToMap(effect.target, gameState);
+
+    for (let [key, value] of targetsMap.entries()) {
+        //  In case value is a card array
+        if (Array.isArray(value) && !key.includes("minion")) {
+            value = value.map(card => {
+                const isConditionMeet = checkCondition(card, effect.value)
+
+                if (isConditionMeet) return null;
+                return card;
+            });
+            value = value.filter(val => val !== null);
+        }
+        // In case of single target
+        else if (key.includes("minion")) {
+            const minionIndex = +key.slice(-1)
+            const isConditionMeet = checkCondition(value[minionIndex], effect.value)
+
+            let minionArray = value;
+            if (isConditionMeet) minionArray[minionIndex] = null;
+
+            // Prepare to save
+            const keyName = key.includes("enemy-minion") ? "enemyCardsOnBoard" : "cardsOnBoard";
+
+            key = keyName
+            value = minionArray.filter(val => val !== null);
+        }
+        newState[key] = value
+    }
+
+    return { ...newState };
 }
 
 function handleSummon(effect, gameState) {

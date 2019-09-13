@@ -3,6 +3,7 @@ const CardModel = require("../../../models/card");
 
 const Card = require("./Card");
 const Player = require("./Player");
+const Effect = require("./Effect");
 
 class Game {
     constructor(databaseGame) {
@@ -51,10 +52,17 @@ class Game {
     }
 
     invokeCardEffect(effect, target, reversePlayers = false) {
-        if (effect.effect === CardModel.Effect.EFFECT_LIST.DAMAGE && effect.effect === CardModel.Effect.EFFECT_LIST.HEAL)
+        if (effect.effect === CardModel.Effect.EFFECT_LIST.DAMAGE || effect.effect === CardModel.Effect.EFFECT_LIST.HEAL)
             this.handleHealAndDamageEffect(effect, target)
-        if (effect.effect === CardModel.Effect.EFFECT_LIST.SUMMON)
+        else if (effect.effect === CardModel.Effect.EFFECT_LIST.SUMMON)
             this.handleSummonEffect(effect, reversePlayers)
+        else if (effect.effect === CardModel.Effect.EFFECT_LIST.KILL_ON_CONDITION)
+            this.handleKillOnCondition(effect, target)
+    }
+
+    handleKillOnCondition(effect, target) {
+        if (Object.values(CardModel.Effect.TARGET_LIST.AOE).includes(effect.target)) this.applyEffectAoe(effect)
+        else if (target !== null) this.applyEffectToTarget(target, effect)
     }
 
     handleSummonEffect(effect, reversePlayers) {
@@ -101,19 +109,26 @@ class Game {
         }
         else if (target.includes("minion")) {
             const minionIndex = +target.slice(-1);
-            const newHealth = this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health + effect.value
+            if (effect.effect === CardModel.Effect.EFFECT_LIST.KILL_ON_CONDITION) {
+                const isConditionMeet = Effect.checkCondition(this.players[affectedPlayer].cardsOnBoard[minionIndex], effect.value)
 
-            // Handles overheal
-            const level = this.players[affectedPlayer].cardsOnBoard[minionIndex].level;
+                // Place a null value in minion array if he died
+                if (isConditionMeet) this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
+            }
+            else {
+                const newHealth = this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health + effect.value
 
-            if (newHealth > this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health)
-                this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health
-            else this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = newHealth;
+                // Handles overheal
+                const level = this.players[affectedPlayer].cardsOnBoard[minionIndex].level;
 
-            // Place a null value in minion array if he died
-            if (this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health <= 0)
-                this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
+                if (newHealth > this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health)
+                    this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health
+                else this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = newHealth;
 
+                // Place a null value in minion array if he died
+                if (this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health <= 0)
+                    this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
+            }
             // Filters out dead minions 
             this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
         }

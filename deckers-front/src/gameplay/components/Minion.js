@@ -132,7 +132,9 @@ class Minion extends Component {
         const canBeTargeted = [
             Effect.TARGET_LIST.SINGLE_TARGET.ALL,
             Effect.TARGET_LIST.SINGLE_TARGET.ALLY,
-            Effect.TARGET_LIST.SINGLE_TARGET.ALLY_MINIONS].includes(spellTarget)
+            Effect.TARGET_LIST.SINGLE_TARGET.ALLY_MINIONS,
+            Effect.TARGET_LIST.SINGLE_TARGET.ALL_MINIONS,
+        ].includes(spellTarget)
 
         return canBeTargeted && isSpellDragged;
     }

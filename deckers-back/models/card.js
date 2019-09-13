@@ -65,6 +65,21 @@ const Effect = Object.freeze({
     }
 })
 
+const Condition = Object.freeze({
+    VARIABLE: {
+        HEALTH: 1,
+        DAMAGE: 2,
+        COST: 3,
+        RACE: 4,
+        CLASS: 5,
+    },
+    KEY_WORD: {
+        MORE: 1,
+        LESS: 2,
+        EQUAL: 3,
+    }
+})
+
 var cardSchema = new mongoose.Schema({
     name: String,
     description: String,
@@ -106,7 +121,8 @@ Object.assign(cardSchema.statics, {
     rarityList,
     raceList,
     roleList,
-    Effect
+    Effect,
+    Condition
 });
 
 module.exports = mongoose.model("Card", cardSchema);

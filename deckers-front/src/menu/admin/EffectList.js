@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import styled from "styled-components";
 import { SPELL_ROLE } from '../../gameplay/containers/Game';
+import ConditionForm from './ConditionForm';
 
 const Column = styled.div`
     display: flex;
@@ -18,11 +19,12 @@ class EffectList extends Component {
         super(props)
 
         this.state = {
-            list: [{ target: 0, effect: 0, value: 0 }],
+            list: [{ target: 0, effect: 1, value: 0 }],
         }
 
         this.changeRowAmount = this.changeRowAmount.bind(this)
         this.handleValueChange = this.handleValueChange.bind(this)
+        this.handleConditionChange = this.handleConditionChange.bind(this)
     }
 
     changeRowAmount(val) {
@@ -32,6 +34,21 @@ class EffectList extends Component {
         val > 0 ? newEffectList.push({ target: 0, effect: 0, value: 0 }) : newEffectList.pop()
 
         this.setState({ list: newEffectList })
+    };
+
+    handleConditionChange(data, index) {
+        const { list } = this.state;
+        const { handleEffectChange, listId } = this.props;
+
+        let newEffect
+        newEffect = { ...list[index], value: data }
+
+        let newEffectList = [...list]
+        newEffectList[+index] = newEffect
+
+        this.setState({ list: newEffectList });
+
+        handleEffectChange(listId, newEffectList);
     };
 
     handleValueChange(e) {
@@ -75,6 +92,10 @@ class EffectList extends Component {
             const singleTargetAvailable = el.effect !== Effect.EFFECT_LIST.SUMMON
             const generalTargetAvailable = el.effect === Effect.EFFECT_LIST.SUMMON
 
+            const isValueNumber = el.effect === Effect.EFFECT_LIST.HEAL || el.effect === Effect.EFFECT_LIST.DAMAGE
+            const isValueMinion = el.effect === Effect.EFFECT_LIST.SUMMON
+            const isValueCondition = el.effect === Effect.EFFECT_LIST.KILL_ON_CONDITION
+
             return (
                 <Row key={i + Math.random()}>
                     Effect:
@@ -94,10 +115,11 @@ class EffectList extends Component {
                         </optgroup>}
                     </select>
                     Value:
-                    {el.effect !== Effect.EFFECT_LIST.SUMMON && <input name={`value${i}`} type="number" value={el.value} onChange={this.handleValueChange} />}
-                    {el.effect === Effect.EFFECT_LIST.SUMMON && <select name={`value${i}`} value={el.value} onChange={this.handleValueChange}>
+                    {isValueNumber && <input name={`value${i}`} type="number" value={el.value} onChange={this.handleValueChange} />}
+                    {isValueMinion && <select name={`value${i}`} value={el.value} onChange={this.handleValueChange}>
                         {cardList}
                     </select>}
+                    {isValueCondition && <ConditionForm index={i} handleConditionChange={this.handleConditionChange} currentValue={el.value} />}
                 </Row>
             )
         })
