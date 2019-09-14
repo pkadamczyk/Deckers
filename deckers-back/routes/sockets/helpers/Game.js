@@ -31,12 +31,7 @@ class Game {
         this.currentPlayer = (this.currentPlayer + 1) % Game.PLAYER_AMOUNT;
         this.currentRound++;
 
-        let cardsOnBoard = this.players[this.currentPlayer].cardsOnBoard;
-
-        for (let i = 0; i < cardsOnBoard.length; i++) cardsOnBoard[i].inGame.isReady = true;
-
-        const income = Math.ceil(this.currentRound / 2) > 5 ? 5 : Math.ceil(this.currentRound / 2);
-        this.players[this.currentPlayer].gold += income;
+        this.players[this.currentPlayer].handleEndTurn(this.currentRound)
     }
 
     handleCardDrawEvent() {
@@ -71,6 +66,7 @@ class Game {
 
         const includeEnemyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ENEMY]
         const includeAllyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ALLY]
+
         const card = this.cardList.find(dbCard => dbCard._id.equals(effect.value)).toObject();
 
         const gameCard = {
@@ -80,6 +76,8 @@ class Game {
                 stats: card.stats[Game.SUMMONED_CARD_LEVEL]
             }
         }
+
+        console.log(gameCard)
         const currentPlayer = reversePlayers ? +!this.currentPlayer : this.currentPlayer
 
         // Makes sure you dont have too many cards on board
@@ -113,7 +111,13 @@ class Game {
                 const isConditionMeet = Effect.checkCondition(this.players[affectedPlayer].cardsOnBoard[minionIndex], effect.value)
 
                 // Place a null value in minion array if he died
-                if (isConditionMeet) this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
+                if (isConditionMeet) {
+                    if (this.players[affectedPlayer].cardsOnBoard[minionIndex].effects && this.players[affectedPlayer].cardsOnBoard[minionIndex].effects.finalWords.length > 0) {
+                        const reversePlayers = target.includes("enemy")
+                        this.invokeCardEffect(this.players[affectedPlayer].cardsOnBoard[minionIndex].effects.finalWords[0], null, reversePlayers)
+                    }
+                    this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
+                }
             }
             else {
                 const newHealth = this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health + effect.value
@@ -126,8 +130,14 @@ class Game {
                 else this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = newHealth;
 
                 // Place a null value in minion array if he died
-                if (this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health <= 0)
+                if (this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health <= 0) {
+                    if (this.players[affectedPlayer].cardsOnBoard[minionIndex].effects && this.players[affectedPlayer].cardsOnBoard[minionIndex].effects.finalWords.length > 0) {
+                        const reversePlayers = target.includes("enemy")
+                        this.invokeCardEffect(this.players[affectedPlayer].cardsOnBoard[minionIndex].effects.finalWords[0], null, reversePlayers)
+                    }
+
                     this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
+                }
             }
             // Filters out dead minions 
             this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)

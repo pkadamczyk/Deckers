@@ -23,6 +23,7 @@ class Player {
         this.currentCard++;
 
         this.cardsOnHand.push(card);
+        console.log(card)
 
         return card;
     }
@@ -41,6 +42,15 @@ class Player {
         this.gold = this.gold - cost;
 
         return summonedCard;
+    }
+
+    handleEndTurn(currentRound) {
+        // Set all card to be ready to move
+        for (let i = 0; i < this.cardsOnBoard.length; i++) this.cardsOnBoard[i].inGame.isReady = true;
+
+        // Add income to current gold
+        const income = Math.ceil(currentRound / 2) > 5 ? 5 : Math.ceil(currentRound / 2);
+        this.gold += income;
     }
 }
 
