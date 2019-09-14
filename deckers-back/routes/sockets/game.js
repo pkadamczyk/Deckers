@@ -290,7 +290,7 @@ module.exports.connect = function (io) {
         function gameOver(data) {
             game.in("game-" + roomdata.get(socket, "gameID")).emit('gameover', { winner: roomdata.get(socket, "currentPlayer") });
 
-            Game.findById(roomdata.get(socket, "gameID")).deepPopulate('players').exec(function (err, foundGame) {
+            DatabaseGame.findById(roomdata.get(socket, "gameID")).deepPopulate('players').exec(function (err, foundGame) {
                 foundGame.isFinished = true;
 
                 foundGame.players.forEach(function (player) {

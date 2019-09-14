@@ -4,6 +4,7 @@ const CardModel = require("../../../models/card");
 const Card = require("./Card");
 const Player = require("./Player");
 const Effect = require("./Effect");
+const config = require("./gameConfig")
 
 class Game {
     constructor(databaseGame) {
@@ -28,7 +29,7 @@ class Game {
     }
 
     handleEndTurnEvent() {
-        this.currentPlayer = (this.currentPlayer + 1) % Game.PLAYER_AMOUNT;
+        this.currentPlayer = (this.currentPlayer + 1) % config.PLAYER_AMOUNT;
         this.currentRound++;
 
         this.players[this.currentPlayer].handleEndTurn(this.currentRound)
@@ -73,16 +74,15 @@ class Game {
             ...card,
             inGame: {
                 isReady: false,
-                stats: card.stats[Game.SUMMONED_CARD_LEVEL]
+                stats: card.stats[config.SUMMONED_CARD_LEVEL]
             }
         }
 
-        console.log(gameCard)
         const currentPlayer = reversePlayers ? +!this.currentPlayer : this.currentPlayer
 
         // Makes sure you dont have too many cards on board
-        const isEnemyBoardFull = this.players[currentPlayer].cardsOnBoard.length >= Game.MAX_CARDS_ON_BOARD
-        const isAllyBoardFull = this.players[currentPlayer].cardsOnBoard.length.length >= Game.MAX_CARDS_ON_BOARD
+        const isEnemyBoardFull = this.players[currentPlayer].cardsOnBoard.length >= config.MAX_CARDS_ON_BOARD
+        const isAllyBoardFull = this.players[currentPlayer].cardsOnBoard.length.length >= config.MAX_CARDS_ON_BOARD
 
         if (includeEnemyBoard.includes(effect.target) && !isEnemyBoardFull) this.players[currentPlayer].cardsOnBoard.push(gameCard)
         if (includeAllyBoard.includes(effect.target) && !isAllyBoardFull) this.players[currentPlayer].cardsOnBoard.push(gameCard)
@@ -236,25 +236,54 @@ class Game {
     compareData(data) {
         const { currentRound, currentPlayer, cardsOnBoard, cardsOnHand, enemyCardsOnBoard, enemyCardsOnHand, enemyHeroHealth, playerHeroHealth, enemyHeroGold, playerHeroGold } = data
 
-        if (currentRound !== this.currentRound) return false;
-        if (currentPlayer !== this.currentPlayer) return false;
+        if (currentRound !== this.currentRound) {
+            console.log("Current round is not equal")
+            return false;
+        }
+        if (currentPlayer !== this.currentPlayer) {
+            console.log("Current player is not equal")
+            return false;
+        }
 
-        if (playerHeroHealth !== this.players[this.currentPlayer].health) return false;
-        if (enemyHeroHealth !== this.players[+!this.currentPlayer].health) return false;
+        if (playerHeroHealth !== this.players[this.currentPlayer].health) {
+            console.log("Current player health is not equal")
+            return false;
+        }
+        if (enemyHeroHealth !== this.players[+!this.currentPlayer].health) {
+            console.log("Opposite player health is not equal")
+            return false;
+        }
 
-        if (playerHeroGold !== this.players[this.currentPlayer].gold) return false;
-        if (enemyHeroGold !== this.players[+!this.currentPlayer].gold) return false;
+        if (playerHeroGold !== this.players[this.currentPlayer].gold) {
+            console.log("Current player gold is not equal")
+            return false;
+        }
+        if (enemyHeroGold !== this.players[+!this.currentPlayer].gold) {
+            console.log("Opposite player gold is not equal " + enemyHeroGold + " : " + this.players[+!this.currentPlayer].gold)
+            return false;
+        }
 
         const boardArr = this.players[this.currentPlayer].cardsOnBoard.map((card, i) => Card.compareCards(card, cardsOnBoard[i]))
-        if (boardArr.includes(false)) return false;
+        if (boardArr.includes(false)) {
+            console.log("Current player board is not equal")
+            return false;
+        }
 
         const handArr = cardsOnHand.map((card, i) => Card.compareCards(card, this.players[this.currentPlayer].cardsOnHand[card.position]))
-        if (handArr.includes(false)) return false;
-
+        if (handArr.includes(false)) {
+            console.log("Current player hand is not equal")
+            return false;
+        }
         const enemyBoardArr = this.players[+!this.currentPlayer].cardsOnBoard.map((card, i) => Card.compareCards(card, enemyCardsOnBoard[i]))
-        if (enemyBoardArr.includes(false)) return false;
+        if (enemyBoardArr.includes(false)) {
+            console.log("Opposite player board is not equal")
+            return false;
+        }
 
-        if (enemyCardsOnHand.length !== this.players[+!this.currentPlayer].cardsOnHand.length) return false;
+        if (enemyCardsOnHand.length !== this.players[+!this.currentPlayer].cardsOnHand.length) {
+            console.log("Opposite player hand is not equal")
+            return false;
+        }
 
         return true;
     }
@@ -274,10 +303,10 @@ class Game {
             const users = await Promise.all(usersPromises);
 
             // Rewards hard coded xD
-            users[winner].currency.gold += Game.WIN_REWARD;
+            users[winner].currency.gold += config.WIN_REWARD;
             users[winner].inGame = false;
 
-            users[+!winner].currency.gold += Game.LOSE_REWARD;
+            users[+!winner].currency.gold += config.LOSE_REWARD;
             users[+!winner].inGame = false;
 
             await users.map(user => user.save())
@@ -322,14 +351,5 @@ class Game {
         return data
     }
 }
-
-Game.PLAYER_AMOUNT = 2;
-Game.CARD_DRAW_COST = 1; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
-Game.MAX_CARDS_ON_BOARD = 4; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
-Game.MAX_CARDS_ON_HAND = 6; // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
-Game.SUMMONED_CARD_LEVEL = 0 // SAME VARIABLE ON CLIENT SIDE, CAREFUL WITH MODIFICATIONS
-
-Game.WIN_REWARD = 17;
-Game.LOSE_REWARD = 9;
 
 module.exports = Game
