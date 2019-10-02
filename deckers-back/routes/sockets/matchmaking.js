@@ -97,7 +97,7 @@ async function pairPlayers(gameMode, i) {
         await newGame.save();
 
         // Modify players inGame variable
-        [user1, user2].forEach(function (user) {
+        [user1, user2].map(user => {
             user.inGame = true;
             user.currentGame = newGame._id;
             user.save();
