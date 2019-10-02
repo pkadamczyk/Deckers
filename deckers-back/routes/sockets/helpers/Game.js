@@ -74,8 +74,9 @@ class Game {
             ...card,
             inGame: {
                 isReady: false,
-                stats: card.stats[config.SUMMONED_CARD_LEVEL]
-            }
+                stats: card.stats[config.SUMMONED_CARD_LEVEL - 1] // stats are array, starts at 0, levels starts at 1
+            },
+            level: config.SUMMONED_CARD_LEVEL
         }
 
         const currentPlayer = reversePlayers ? +!this.currentPlayer : this.currentPlayer
@@ -107,33 +108,44 @@ class Game {
         }
         else if (target.includes("minion")) {
             const minionIndex = +target.slice(-1);
+            const card = this.players[affectedPlayer].cardsOnBoard[minionIndex]
+
             if (effect.effect === CardModel.Effect.EFFECT_LIST.KILL_ON_CONDITION) {
-                const isConditionMeet = Effect.checkCondition(this.players[affectedPlayer].cardsOnBoard[minionIndex], effect.value)
+                const isConditionMeet = Effect.checkCondition(card, effect.value)
 
                 // Place a null value in minion array if he died
                 if (isConditionMeet) {
-                    if (this.players[affectedPlayer].cardsOnBoard[minionIndex].effects && this.players[affectedPlayer].cardsOnBoard[minionIndex].effects.finalWords.length > 0) {
+                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
+
+                    if (hasEffects) {
                         const reversePlayers = target.includes("enemy")
-                        this.invokeCardEffect(this.players[affectedPlayer].cardsOnBoard[minionIndex].effects.finalWords[0], null, reversePlayers)
+                        this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
                     }
                     this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
                 }
             }
             else {
-                const newHealth = this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health + effect.value
+                const card = this.players[affectedPlayer].cardsOnBoard[minionIndex]
+                const newHealth = card.inGame.stats.health + effect.value
 
                 // Handles overheal
-                const level = this.players[affectedPlayer].cardsOnBoard[minionIndex].level;
+                const level = card.level - 1; // Stats object starts at 0, level starts at 1
 
-                if (newHealth > this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health)
-                    this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = this.players[affectedPlayer].cardsOnBoard[minionIndex].stats[level].health
+                // console.log("Card stats: ")
+                // console.log(level)
+                // console.log(card.stats[level])
+
+                if (newHealth > card.stats[level].health)
+                    this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = card.health
                 else this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = newHealth;
 
                 // Place a null value in minion array if he died
                 if (this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health <= 0) {
-                    if (this.players[affectedPlayer].cardsOnBoard[minionIndex].effects && this.players[affectedPlayer].cardsOnBoard[minionIndex].effects.finalWords.length > 0) {
+                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
+
+                    if (hasEffects) {
                         const reversePlayers = target.includes("enemy")
-                        this.invokeCardEffect(this.players[affectedPlayer].cardsOnBoard[minionIndex].effects.finalWords[0], null, reversePlayers)
+                        this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
                     }
 
                     this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
@@ -164,10 +176,16 @@ class Game {
                 this.players[player].cardsOnBoard[i].inGame.stats.health += effect.value
 
                 // Handles overheal
-                const level = this.players[player].cardsOnBoard[i].level;
+                const card = this.players[player].cardsOnBoard[i]
+                const level = card.level - 1; // Stats array starts at 0, levels start at 1
 
-                if (this.players[player].cardsOnBoard[i].inGame.stats.health > this.players[player].cardsOnBoard[i].stats[level].health)
-                    this.players[player].cardsOnBoard[i].inGame.stats.health = this.players[player].cardsOnBoard[i].stats[level].health
+                // console.log("Card stats: ")
+                // console.log(level)
+                // console.log(card.name)
+                // console.log(card.stats[level])
+
+                if (this.players[player].cardsOnBoard[i].inGame.stats.health > card.stats[level].health)
+                    this.players[player].cardsOnBoard[i].inGame.stats.health = card.stats[level].health
 
                 // Place a null value in minion array if he died
                 if (this.players[player].cardsOnBoard[i].inGame.stats.health <= 0) this.players[player].cardsOnBoard[i] = null
@@ -219,15 +237,17 @@ class Game {
 
         if (attackedMinion.inGame.stats.health <= 0) {
             players[+!currentPlayer].cardsOnBoard.splice(enemyMinionId, 1)
-            if (attackedMinion.effects && attackedMinion.effects.finalWords.length > 0)
-                this.invokeCardEffect(attackedMinion.effects.finalWords[0], null, true)
+            const hasEffects = attackedMinion.effects && attackedMinion.effects.finalWords && attackedMinion.effects.finalWords.length > 0
+
+            if (hasEffects) this.invokeCardEffect(attackedMinion.effects.finalWords[0], null, true)
         }
         else players[+!currentPlayer].cardsOnBoard[enemyMinionId] = attackedMinion;
 
         if (attackingMinion.inGame.stats.health <= 0) {
             players[currentPlayer].cardsOnBoard.splice(playerMinionId, 1);
-            if (attackingMinion.effects && attackingMinion.effects.finalWords.length > 0)
-                this.invokeCardEffect(attackingMinion.effects.finalWords[0])
+            const hasEffects = attackingMinion.effects && attackingMinion.effects.finalWords && attackingMinion.effects.finalWords.length > 0
+
+            if (hasEffects) this.invokeCardEffect(attackingMinion.effects.finalWords[0])
         }
         else players[currentPlayer].cardsOnBoard[playerMinionId] = attackingMinion;
     }

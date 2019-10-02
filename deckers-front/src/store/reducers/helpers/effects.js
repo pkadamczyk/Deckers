@@ -56,10 +56,10 @@ export const Condition = {
     }
 }
 
-const SUMMONED_CARD_LEVEL = 0 // 0 is first level
+const SUMMONED_CARD_LEVEL = 1 // 1 is first level
 
 export function invokeEffect(effect, gameState, pickedTarget = null) {
-    if (effect.effect === Effect.EFFECT_LIST.DAMAGE && effect.effect === Effect.EFFECT_LIST.HEAL) return handleDamageAndHeal(effect, gameState, pickedTarget)
+    if (effect.effect === Effect.EFFECT_LIST.DAMAGE || effect.effect === Effect.EFFECT_LIST.HEAL) return handleDamageAndHeal(effect, gameState, pickedTarget)
     else if (effect.effect === Effect.EFFECT_LIST.SUMMON) return handleSummon(effect, gameState)
     else if (effect.effect === Effect.EFFECT_LIST.KILL_ON_CONDITION) return handleKillOnCondition(effect, gameState, pickedTarget)
 }
@@ -113,8 +113,9 @@ function handleSummon(effect, gameState) {
         ...card,
         inGame: {
             isReady: false,
-            stats: card.stats[SUMMONED_CARD_LEVEL]
-        }
+            stats: card.stats[SUMMONED_CARD_LEVEL - 1]
+        },
+        level: SUMMONED_CARD_LEVEL
     }
 
     // Makes sure you dont have too many cards on board
