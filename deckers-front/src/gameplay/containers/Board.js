@@ -56,6 +56,7 @@ class Board extends Component {
                             isMyTurn={isMyTurn}
                             placeholder={provided.placeholder}
                             gameState={gameState}
+                            currentTarget={currentTarget}
                             currentlyDraggedCardId={currentlyDraggedCardId}
 
                             handleCleanTarget={handleCleanTarget}

@@ -9,10 +9,10 @@ import { SPELL_ROLE } from '../containers/Game';
 
 const StyledItem = styled.div` 
     margin: 0 8px 0 0;
-    width: ${props => CARD_WIDTH + 'px'};
-    height: 130px;
+    width: ${props => props.isBeingTargeted ? (CARD_WIDTH + 10) + 'px' : CARD_WIDTH + 'px'};
+    height: ${props => props.isBeingTargeted ? "140px" : "130px"};
 
-    background: ${props => props.isDragging ? 'lightgreen' : 'grey'};
+    background: grey;
 
     border: ${props => !props.isDragDisabled ? '2px solid rgba(165, 255, 48, 0.7)'
         : props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
@@ -45,19 +45,20 @@ class Content extends Component {
     }
 
     render() {
-        const { provided, snapshot, isDragDisabled, item, index, canBeSpellTargeted } = this.props;
+        const { provided, snapshot, isDragDisabled, item, index, currentTarget, canBeSpellTargeted } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
         const setTargetId = canBeSpellTargeted ? `player-minion-${index}` : null
 
+        const isBeingTargeted = currentTarget === setTargetId
 
         return (
             <StyledItem
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
-                isDragging={snapshot.isDragging}
                 isDragDisabled={isDragDisabled}
+                isBeingTargeted={isBeingTargeted}
                 canBeSpellTargeted={canBeSpellTargeted}
                 style={getStyle(provided.draggableProps.style, snapshot)}
 
@@ -90,7 +91,7 @@ class Minion extends Component {
     }
 
     render() {
-        const { item, index, handleCleanTarget, handleSetTarget } = this.props;
+        const { item, index, handleCleanTarget, handleSetTarget, currentTarget } = this.props;
         const { uniqueId } = this.state;
 
         const isDragDisabled = this.shouldDropBeDisabled()
@@ -111,6 +112,7 @@ class Minion extends Component {
                         setIsDragging={this.setIsDragging}
                         index={index}
                         canBeSpellTargeted={canBeSpellTargeted}
+                        currentTarget={currentTarget}
 
                         handleCleanTarget={handleCleanTarget}
                         handleSetTarget={handleSetTarget}

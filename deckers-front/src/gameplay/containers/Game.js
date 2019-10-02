@@ -173,6 +173,7 @@ class Game extends Component {
                         handleCleanTarget={this.handleCleanTarget}
                         handleSetTarget={this.handleSetTarget}
                         currentlyDraggedCardId={currentlyDraggedCardId}
+                        currentTarget={currentTarget}
                     />
                     <PlayerHand
                         currentTarget={currentTarget}

@@ -11,8 +11,8 @@ import { SPELL_ROLE } from '../containers/Game';
 export const ENEMY_PORTRAIT_ID = "enemy-portrait";
 
 const Div = styled.div`
-    height: 100px;
-    width: 100px;
+    height: ${props => props.isBeingTargeted ? "110px" : "100px"};
+    width: ${props => props.isBeingTargeted ? "110px" : "100px"};
 
     position: absolute;
     z-index:1;
@@ -55,6 +55,7 @@ class EnemyHero extends Component {
                         onMouseLeave={() => cleanTarget()}
                         onMouseEnter={() => setTarget(setTargetId)}
                         canBeSpellTargeted={canBeSpellTargeted}
+                        isBeingTargeted={isBeingTargeted}
                     >
                         <Portrait
                             username={username}

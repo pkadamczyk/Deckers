@@ -8,8 +8,8 @@ import { SPELL_ROLE } from '../containers/Game';
 import { Effect } from '../../store/reducers/helpers/effects';
 
 const StyledItem = styled.div`
-    width: ${props => CARD_WIDTH + 'px'};
-    height: 130px;
+    width: ${props => props.isBeingTargeted ? (CARD_WIDTH + 10) + 'px' : CARD_WIDTH + 'px'};
+    height: ${props => props.isBeingTargeted ? "140px" : "130px"};
     padding: 8px;
 
     background: tomato;
@@ -39,6 +39,7 @@ class EnemyMinion extends Component {
 
         const canBeSpellTargeted = this.canBeSpellTargeted()
         const setTargetId = canBeSpellTargeted || isMinionDragged ? myId : null
+
         return (
             <Droppable
                 droppableId={myId}
@@ -49,9 +50,9 @@ class EnemyMinion extends Component {
                 {(provided, snapshot) => (
                     <StyledItem ref={provided.innerRef}
                         {...provided.droppableProps}
-                        isDraggingOver={snapshot.isDraggingOver}
                         gameState={gameState}
                         canBeSpellTargeted={canBeSpellTargeted}
+                        isBeingTargeted={isBeingTargeted}
 
                         onMouseLeave={() => cleanTarget()}
                         onMouseEnter={() => setTarget(setTargetId)}

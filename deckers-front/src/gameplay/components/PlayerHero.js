@@ -9,8 +9,8 @@ import { Effect } from '../../store/reducers/helpers/effects';
 export const PLAYER_PORTRAIT_ID = "player-portrait";
 
 const Div = styled.div`
-    height: 100px;
-    width: 100px;
+    height: ${props => props.isBeingTargeted ? "110px" : "100px"};
+    width: ${props => props.isBeingTargeted ? "110px" : "100px"};
 
     position: absolute;
     z-index:1;
@@ -28,17 +28,20 @@ const Div = styled.div`
 `
 class PlayerHero extends Component {
     render() {
-        const { health, gold, username } = this.props;
+        const { health, gold, username, currentTarget } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
 
+        const isBeingTargeted = currentTarget === PLAYER_PORTRAIT_ID;
         const canBeSpellTargeted = this.canBeSpellTargeted()
         const setTargetId = canBeSpellTargeted ? PLAYER_PORTRAIT_ID : null
+
         return (
             <Div
                 onMouseLeave={() => cleanTarget()}
                 onMouseEnter={() => setTarget(setTargetId)}
                 canBeSpellTargeted={canBeSpellTargeted}
+                isBeingTargeted={isBeingTargeted}
             >
                 <Portrait
                     health={health}

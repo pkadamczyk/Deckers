@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 
 class PlayerBoard extends Component {
     render() {
-        const { isMyTurn, items, placeholder, gameState, cardsOnHand, currentlyDraggedCardId } = this.props
+        const { isMyTurn, items, placeholder, gameState, cardsOnHand, currentTarget, currentlyDraggedCardId } = this.props
         const { handleCleanTarget, handleSetTarget } = this.props
 
         const minions = items.map((item, index) => (
@@ -28,6 +28,7 @@ class PlayerBoard extends Component {
                 isMyTurn={isMyTurn}
                 gameState={gameState}
                 cardsOnHand={cardsOnHand}
+                currentTarget={currentTarget}
                 currentlyDraggedCardId={currentlyDraggedCardId}
 
                 handleCleanTarget={handleCleanTarget}

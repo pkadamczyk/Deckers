@@ -3,7 +3,7 @@ import styled from "styled-components"
 
 const StyledPortrait = styled.div`
     height: 100%;
-    width:100%;
+    width: 100%;
 
     background: white;
     z-index: -1;
