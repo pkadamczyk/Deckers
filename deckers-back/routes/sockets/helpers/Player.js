@@ -32,16 +32,18 @@ class Player {
         const card = this.cardsOnHand[handPosition];
 
         if (this.gold < card.inGame.stats.cost) throw new Error("Not enough gold");
-        if (this.cardsOnBoard.length >= config.MAX_CARDS_ON_BOARD) throw new Error("Board is full");
 
-        const [summonedCard] = this.cardsOnHand.splice(handPosition, 1);
+        const isBoardFull = this.cardsOnBoard.length >= config.MAX_CARDS_ON_BOARD
+        const isSpell = card.role === CardModel.roleList.spell
+        if (isBoardFull && !isSpell) throw new Error("Board is full");
 
-        if (summonedCard.role !== CardModel.roleList.spell) this.cardsOnBoard.splice(boardPosition, 0, summonedCard);
+        this.cardsOnHand.splice(handPosition, 1); // delete card from hand
+        if (card.role !== CardModel.roleList.spell) this.cardsOnBoard.splice(boardPosition, 0, card); // and add to board
 
-        const cost = summonedCard.inGame.stats.cost;
-        this.gold = this.gold - cost;
+        const cost = card.inGame.stats.cost;
+        this.gold -= cost;
 
-        return summonedCard;
+        return card;
     }
 
     handleEndTurn(currentRound) {

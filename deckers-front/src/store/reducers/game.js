@@ -337,16 +337,17 @@ function handleAttackMinion(state, action) {
 
     newState = { ...newState, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray }
 
-    // Make final words do its magic
+    // Make final words do its magic (enemy)
     // if (attackedMinion.inGame.stats.health <= 0) {
     //     if (attackedMinion.effects && attackedMinion.effects.finalWords.length > 0)
     //         newState = invokeEffect(attackedMinion.effects.finalWords[0], newState)
     // }
 
     // Make final words do its magic
-    if (attackingMinion.inGame.stats.health <= 0 && attackingMinion.effects) {
-        if (attackingMinion.effects && attackingMinion.effects.finalWords.length > 0)
-            newState = invokeEffect(attackingMinion.effects.finalWords[0], newState)
+    if (attackingMinion.inGame.stats.health <= 0) {
+        const hasEffects = attackingMinion.effects && attackingMinion.effects.finalWords && attackingMinion.effects.finalWords.length > 0
+
+        if (hasEffects) newState = invokeEffect(attackingMinion.effects.finalWords[0], newState)
     }
 
     return { ...newState };
