@@ -49,9 +49,11 @@ class Content extends Component {
         const { provided, snapshot, isDragDisabled, item, index, currentTarget, canBeSpellTargeted } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
-        const setTargetId = canBeSpellTargeted ? `player-minion-${index}` : null
 
-        const isBeingTargeted = currentTarget === setTargetId
+        const myId = `player-minion-${index}`
+        const setTargetId = canBeSpellTargeted ? myId : null
+
+        const isBeingTargeted = currentTarget === myId
 
         return (
             <StyledItem
