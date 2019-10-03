@@ -6,6 +6,7 @@ import { CARD_WIDTH } from '../containers/Board';
 import { GAME_STATE } from '../../store/reducers/game';
 import { Effect } from '../../store/reducers/helpers/effects';
 import { SPELL_ROLE } from '../containers/Game';
+import { checkCondition } from '../../store/reducers/helpers/helpers/checkCondition';
 
 const StyledItem = styled.div` 
     margin: 0 8px 0 0;
@@ -123,14 +124,15 @@ class Minion extends Component {
 
     }
     canBeSpellTargeted() {
-        const { currentlyDraggedCardId, cardsOnHand } = this.props;
+        const { currentlyDraggedCardId, cardsOnHand, item } = this.props;
         if (currentlyDraggedCardId === null) return false;
 
         const currentlyDraggedCard = cardsOnHand[currentlyDraggedCardId]
         const isSpellDragged = currentlyDraggedCard.role === SPELL_ROLE
 
-        if (!currentlyDraggedCard.effects) return false;
-        const spellTarget = currentlyDraggedCard.effects.onSummon.length > 0 ? currentlyDraggedCard.effects.onSummon[0].target : null;
+        if (!currentlyDraggedCard.effects || !currentlyDraggedCard.effects.onSummon.length > 0) return false;
+        const spellTarget = currentlyDraggedCard.effects.onSummon[0].target;
+
         const canBeTargeted = [
             Effect.TARGET_LIST.SINGLE_TARGET.ALL,
             Effect.TARGET_LIST.SINGLE_TARGET.ALLY,
@@ -138,7 +140,13 @@ class Minion extends Component {
             Effect.TARGET_LIST.SINGLE_TARGET.ALL_MINIONS,
         ].includes(spellTarget)
 
-        return canBeTargeted && isSpellDragged;
+        // isConditionMeet needs to check if spell has any condition and if its meet
+        let isConditionMeet = true;
+        if (currentlyDraggedCard.effects.onSummon[0].effect === Effect.EFFECT_LIST.KILL_ON_CONDITION) {
+            isConditionMeet = checkCondition(item, currentlyDraggedCard.effects.onSummon[0].value) // value of effect hold condition
+        }
+
+        return canBeTargeted && isSpellDragged && isConditionMeet;
     }
 
     shouldDropBeDisabled() {

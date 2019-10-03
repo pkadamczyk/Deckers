@@ -99,8 +99,10 @@ class Game extends Component {
         const isSpellDropped = card !== null ? card.role === SPELL_ROLE : false;
 
         if (!destination && currentTarget === PLAYER_HAND_ID) { }
+
         // Takes care of single target spells, hopefully
         else if (isSpellDropped && currentTarget !== PLAYER_HAND_ID) this.handleSummonCard(source, destination, currentTarget);
+
         // END_TARGETING
         else if (source.droppableId === PLAYER_BOARD_ID) {
             if (currentTarget.includes("enemy")) {
@@ -132,8 +134,12 @@ class Game extends Component {
             const spellTarget = card.effects.onSummon.length > 0 ? card.effects.onSummon[0].target : null;
             isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(spellTarget)
         }
+
         const cardNeedsTarget = card.role === SPELL_ROLE && isSingleTarget
         if (target === null && cardNeedsTarget) return
+
+        // TODO
+        // If card has kill on condition it needs to check if target meets it
 
         this.props.dispatch(summonCard(
             source,
