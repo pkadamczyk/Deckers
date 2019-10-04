@@ -115,15 +115,17 @@ class Game {
             if (effect.effect === CardModel.Effect.EFFECT_LIST.KILL_ON_CONDITION) {
                 const isConditionMeet = Effect.checkCondition(card, effect.value)
 
-                // Place a null value in minion array if he died
+                // First kill the minion, then invoke final words
                 if (isConditionMeet) {
-                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
+                    // Marks minion as dead and filters it out, needs to be done before final words
+                    this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
+                    this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
 
+                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
                     if (hasEffects) {
                         const reversePlayers = target.includes("enemy")
                         this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
                     }
-                    this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
                 }
             }
             else {
