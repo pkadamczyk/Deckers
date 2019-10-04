@@ -18,7 +18,7 @@ import EnemyHand from '../components/EnemyHand';
 import EndTurnButton from '../components/EndTurnButton';
 
 import img from '../../graphic/background_02.PNG';
-import Board from './Board';
+import Board, { MAX_CARDS_ON_BOARD } from './Board';
 import Socket from './Socket';
 
 import { PLAYER_BOARD_ID } from "./Board"
@@ -124,22 +124,33 @@ class Game extends Component {
     }
 
     handleSummonCard(source, destination, target = null) {
-        const { cardsOnHand } = this.props;
+        const { cardsOnHand, cardsOnBoard } = this.props;
         const card = cardsOnHand[source.index];
 
         if (target === PLAYER_BOARD_ID) target = null;
 
-        let isSingleTarget = false
-        if (card.effects) {
-            const spellTarget = card.effects.onSummon.length > 0 ? card.effects.onSummon[0].target : null;
-            isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(spellTarget)
+        // Determines if card has any onSummon effect that need special care
+        // If not, simply summons the card
+        if (!(card.effects && card.effects.onSummon && card.effects.onSummon.length > 0)) {
+            this.props.dispatch(summonCard(
+                source,
+                destination || target,
+                target
+            ));
+            return
         }
 
-        const cardNeedsTarget = card.role === SPELL_ROLE && isSingleTarget
+        const spellTarget = card.effects.onSummon[0].target
+        const isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(spellTarget)
+
+        const isSpell = card.role === SPELL_ROLE
+        const cardNeedsTarget = isSpell && isSingleTarget
         if (target === null && cardNeedsTarget) return
 
-        // TODO
-        // If card has kill on condition it needs to check if target meets it
+        // If card is a summoning spell, check if theres a place for that card
+        const hasSummonEffect = card.effects.onSummon[0].effect === Effect.EFFECT_LIST.SUMMON
+        if (hasSummonEffect && isSpell)
+            if (cardsOnBoard.length >= MAX_CARDS_ON_BOARD) return
 
         this.props.dispatch(summonCard(
             source,
