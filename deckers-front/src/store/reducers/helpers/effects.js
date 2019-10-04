@@ -10,6 +10,7 @@ export const Effect = Object.freeze({
         DAMAGE: 2,
         SUMMON: 3,
         KILL_ON_CONDITION: 4,
+        STATS_SWAP: 5,
     },
     TARGET_LIST: {
         AOE: {
@@ -62,6 +63,50 @@ export function invokeEffect(effect, gameState, pickedTarget = null) {
     if (effect.effect === Effect.EFFECT_LIST.DAMAGE || effect.effect === Effect.EFFECT_LIST.HEAL) return handleDamageAndHeal(effect, gameState, pickedTarget)
     else if (effect.effect === Effect.EFFECT_LIST.SUMMON) return handleSummon(effect, gameState)
     else if (effect.effect === Effect.EFFECT_LIST.KILL_ON_CONDITION) return handleKillOnCondition(effect, gameState, pickedTarget)
+    else if (effect.effect === Effect.EFFECT_LIST.STATS_SWAP) return handleStatsSwap(effect, gameState, pickedTarget)
+}
+
+function handleStatsSwap(effect, gameState, pickedTarget) {
+    let newState = { ...gameState }
+    const targetsMap = pickedTarget !== null ?
+        determineSingleTarget(pickedTarget, gameState) :
+        appendTargetsToMap(effect.target, gameState);
+
+    for (let [key, value] of targetsMap.entries()) {
+        //  In case value is a card array
+        if (Array.isArray(value) && !key.includes("minion")) {
+            value = value.map(card => {
+                const temp = card.inGame.stats.health
+                card.inGame.stats.health = card.inGame.stats.damage;
+                card.inGame.stats.damage = temp;
+
+                if (card.inGame.stats.health <= 0) return null;
+                return card;
+            });
+            value = value.filter(val => val !== null);
+        }
+        // In case of single target
+        else if (key.includes("minion")) {
+            const minionIndex = +key.slice(-1)
+            const card = value[minionIndex];
+
+            const temp = card.inGame.stats.health;
+            card.inGame.stats.health = card.inGame.stats.damage;
+            card.inGame.stats.damage = temp;
+
+            let minionArray = value;
+            if (card.inGame.stats.health <= 0) minionArray[minionIndex] = null;
+
+            // Prepare to save
+            const keyName = key.includes("enemy-minion") ? "enemyCardsOnBoard" : "cardsOnBoard";
+
+            key = keyName
+            value = minionArray.filter(val => val !== null);
+        }
+        newState[key] = value
+    }
+
+    return { ...newState };
 }
 
 function handleKillOnCondition(effect, gameState, pickedTarget) {

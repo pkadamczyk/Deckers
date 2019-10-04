@@ -56,6 +56,13 @@ class Game {
             this.handleSummonEffect(effect, reversePlayers)
         else if (effect.effect === CardModel.Effect.EFFECT_LIST.KILL_ON_CONDITION)
             this.handleKillOnCondition(effect, target)
+        else if (effect.effect === CardModel.Effect.EFFECT_LIST.SWAP_STATS)
+            this.handleStatsSwap(effect, target)
+    }
+
+    handleStatsSwap(effect, target) {
+        if (Object.values(CardModel.Effect.TARGET_LIST.AOE).includes(effect.target)) this.applyEffectAoe(effect)
+        else if (target !== null) this.applyEffectToTarget(target, effect)
     }
 
     handleKillOnCondition(effect, target) {
@@ -117,6 +124,23 @@ class Game {
 
                 // First kill the minion, then invoke final words
                 if (isConditionMeet) {
+                    // Marks minion as dead and filters it out, needs to be done before final words
+                    this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
+                    this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
+
+                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
+                    if (hasEffects) {
+                        const reversePlayers = target.includes("enemy")
+                        this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
+                    }
+                }
+            }
+            else if (effect.effect === CardModel.Effect.EFFECT_LIST.SWAP_STATS) {
+                const temp = card.inGame.stats.health;
+                card.inGame.stats.health = card.inGame.stats.damage
+                card.inGame.stats.damage = temp
+
+                if (card.inGame.stats.health <= 0) {
                     // Marks minion as dead and filters it out, needs to be done before final words
                     this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
                     this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
