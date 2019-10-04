@@ -41,7 +41,9 @@ class Game {
 
     handleCardSummonEvent(boardPosition, handPosition, target) {
         const card = this.players[this.currentPlayer].summonCard(boardPosition, handPosition)
-        if (card.effects && card.effects.onSummon.length > 0) this.invokeCardEffect(card.effects.onSummon[0], target || null)
+
+        const hasOnSummonEffect = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
+        if (hasOnSummonEffect) this.invokeCardEffect(card.effects.onSummon[0], target || null)
 
         const result = this.players.map(player => ({ cardsOnBoard: player.cardsOnBoard, health: player.health }))
         return { card, result };
@@ -82,8 +84,8 @@ class Game {
         const currentPlayer = reversePlayers ? +!this.currentPlayer : this.currentPlayer
 
         // Makes sure you dont have too many cards on board
-        const isEnemyBoardFull = this.players[currentPlayer].cardsOnBoard.length >= config.MAX_CARDS_ON_BOARD
-        const isAllyBoardFull = this.players[currentPlayer].cardsOnBoard.length.length >= config.MAX_CARDS_ON_BOARD
+        const isEnemyBoardFull = this.players[+!currentPlayer].cardsOnBoard.length >= config.MAX_CARDS_ON_BOARD
+        const isAllyBoardFull = this.players[currentPlayer].cardsOnBoard.length >= config.MAX_CARDS_ON_BOARD
 
         if (includeEnemyBoard.includes(effect.target) && !isEnemyBoardFull) this.players[currentPlayer].cardsOnBoard.push(gameCard)
         if (includeAllyBoard.includes(effect.target) && !isAllyBoardFull) this.players[currentPlayer].cardsOnBoard.push(gameCard)
