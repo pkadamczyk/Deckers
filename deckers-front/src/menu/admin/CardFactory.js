@@ -29,10 +29,13 @@ class CardFactory extends Component {
             race: 0,
             role: 0,
             description: "",
-            stats: [{ cost: 0, health: 0, damage: 0 }, { cost: 0, health: 0, damage: 0 }, { cost: 0, health: 0, damage: 0 }],
+            stats: [{ cost: 0, health: 0, damage: 0, hasTaunt: false },
+            { cost: 0, health: 0, damage: 0, hasTaunt: false },
+            { cost: 0, health: 0, damage: 0, hasTaunt: false }],
 
             cardEffects: {
                 onSummon: [],
+                finalWords: [],
             },
 
             isFree: false,
@@ -70,10 +73,14 @@ class CardFactory extends Component {
                     race: 0,
                     role: 0,
                     description: "",
-                    stats: [{ cost: 0, health: 0, damage: 0 }, { cost: 0, health: 0, damage: 0 }, { cost: 0, health: 0, damage: 0 }],
+                    stats: [
+                        { cost: 0, health: 0, damage: 0, hasTaunt: false },
+                        { cost: 0, health: 0, damage: 0, hasTaunt: false },
+                        { cost: 0, health: 0, damage: 0, hasTaunt: false }],
 
                     cardEffects: {
                         onSummon: [],
+                        finalWords: [],
                     },
 
                     isFree: false,
@@ -105,7 +112,9 @@ class CardFactory extends Component {
         const index = e.target.name.slice(-1);
         const name = e.target.name.slice(0, -1);
 
-        const newStatsObj = { ...stats[index], [name]: +e.target.value }
+        let newStatsObj;
+        if (name === "hasTaunt") newStatsObj = { ...stats[index], [name]: e.target.checked }
+        else newStatsObj = { ...stats[index], [name]: +e.target.value }
 
         let newStats = [...stats]
         newStats[+index] = newStatsObj
@@ -165,6 +174,7 @@ class CardFactory extends Component {
                                 <th >Cost</th>
                                 <th >Damage</th>
                                 <th >Health</th>
+                                <th >Has Taunt</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -180,6 +190,9 @@ class CardFactory extends Component {
                                     <td>
                                         <input type="number" name={`health${i}`} placeholder='Health' value={statsObj.health} onChange={this.handleObjChange} />
                                     </td>
+                                    <td>
+                                        <input type="checkbox" name={`hasTaunt${i}`} checked={statsObj.hasTaunt} onChange={this.handleObjChange} />
+                                    </td>
                                 </tr>
                             )
                             )}
@@ -191,7 +204,7 @@ class CardFactory extends Component {
 
                     <Row>
                         <label>
-                            <input type="checkbox" value={isFree} name="isFree" onChange={this.handleCheck} />
+                            <input type="checkbox" checked={isFree} name="isFree" onChange={this.handleCheck} />
                             is free? If true everyone have it
                         </label>
                     </Row>

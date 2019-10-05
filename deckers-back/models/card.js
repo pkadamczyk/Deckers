@@ -103,6 +103,10 @@ var cardSchema = new mongoose.Schema({
         cost: Number,
         damage: Number,
         health: Number,
+        hasTaunt: {
+            type: Boolean,
+            default: false
+        }
     }],
 
     isFree: {

@@ -16,30 +16,32 @@ const StyledItem = styled.div`
     background: tomato;
     margin: 0 8px 0 0;
 
-    border: ${props => props.gameState === GAME_STATE.TARGETING ? '2px solid rgba(255, 0, 0, 0.7)'
+    border: ${props => props.canBeTargeted ? '2px solid rgba(255, 0, 0, 0.7)'
         : props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
-    border-style: ${props => props.gameState === GAME_STATE.TARGETING || props.canBeSpellTargeted ? 'solid solid none solid' : 'none'};
+    border-style: ${props => props.canBeTargeted || props.canBeSpellTargeted ? 'solid solid none solid' : 'none'};
 
-    -webkit-box-shadow: ${props => props.gameState === GAME_STATE.TARGETING ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
+    -webkit-box-shadow: ${props => props.canBeTargeted ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
         : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    -moz-box-shadow: ${props => props.gameState === GAME_STATE.TARGETING ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
+    -moz-box-shadow: ${props => props.canBeTargeted ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
         : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    box-shadow: ${props => props.gameState === GAME_STATE.TARGETING ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
+    box-shadow: ${props => props.canBeTargeted ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
         : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
 `
 
 class EnemyMinion extends Component {
     render() {
-        const { index, currentTarget, isMinionDragged, item, gameState } = this.props;
+        const { index, currentTarget, isMinionDragged, item, hasEnemyTauntOnBoard } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
         const myId = `enemy-minion-${index}`;
 
         const isBeingTargeted = currentTarget === myId
-        const isDropDisabled = !isMinionDragged || isBeingTargeted
+        const isDropDisabled = !isMinionDragged || isBeingTargeted || hasEnemyTauntOnBoard
 
         const canBeSpellTargeted = this.canBeSpellTargeted()
-        const setTargetId = canBeSpellTargeted || isMinionDragged ? myId : null
+        const couldBeTargeted = canBeSpellTargeted || isMinionDragged
+        const canBeTargeted = couldBeTargeted && (!hasEnemyTauntOnBoard || item.inGame.stats.hasTaunt)
+        const setTargetId = canBeTargeted ? myId : null
 
         return (
             <Droppable
@@ -51,7 +53,7 @@ class EnemyMinion extends Component {
                 {(provided, snapshot) => (
                     <StyledItem ref={provided.innerRef}
                         {...provided.droppableProps}
-                        gameState={gameState}
+                        canBeTargeted={canBeTargeted}
                         canBeSpellTargeted={canBeSpellTargeted}
                         isBeingTargeted={isBeingTargeted}
 

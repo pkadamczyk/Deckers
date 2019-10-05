@@ -32,7 +32,7 @@ class EnemyBoard extends Component {
     // }
 
     render() {
-        const { currentTarget, isMinionDragged, gameState, currentlyDraggedCardId, cardsOnHand } = this.props;
+        const { currentTarget, isMinionDragged, gameState, currentlyDraggedCardId, hasEnemyTauntOnBoard, cardsOnHand } = this.props;
         const { handleCleanTarget, handleSetTarget } = this.props;
 
         return (
@@ -43,6 +43,7 @@ class EnemyBoard extends Component {
                         index={index}
                         currentTarget={currentTarget}
                         isMinionDragged={isMinionDragged}
+                        hasEnemyTauntOnBoard={hasEnemyTauntOnBoard}
                         item={item}
                         gameState={gameState}
                         currentlyDraggedCardId={currentlyDraggedCardId}

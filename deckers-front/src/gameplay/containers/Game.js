@@ -161,7 +161,7 @@ class Game extends Component {
 
     render() {
         const { currentTarget, currentlyDragged } = this.state;
-        const { gameReady } = this.props;
+        const { gameReady, enemyCardsOnBoard } = this.props;
 
         let isMinionDragged, isCardDragged;
         if (currentlyDragged) {
@@ -169,6 +169,9 @@ class Game extends Component {
             isCardDragged = currentlyDragged.droppableId === PLAYER_HAND_ID;
         }
         const currentlyDraggedCardId = isCardDragged ? currentlyDragged.index : null; // Used to determine and apply spell targeting css
+
+        // Used to determine if enemy minions without taunt and hero can be targeted
+        const hasEnemyTauntOnBoard = enemyCardsOnBoard.map(card => card.inGame.stats.hasTaunt).includes(true)
 
         return (
 
@@ -182,6 +185,7 @@ class Game extends Component {
                         handleSetTarget={this.handleSetTarget}
                         currentTarget={currentTarget}
                         currentlyDraggedCardId={currentlyDraggedCardId}
+                        hasEnemyTauntOnBoard={hasEnemyTauntOnBoard}
                     />
                     <EnemyDeck />
                     <EndTurnButton />
@@ -204,6 +208,7 @@ class Game extends Component {
                         handleCleanTarget={this.handleCleanTarget}
                         handleSetTarget={this.handleSetTarget}
                         currentlyDraggedCardId={currentlyDraggedCardId}
+                        hasEnemyTauntOnBoard={hasEnemyTauntOnBoard}
                     ></Board>
 
 
@@ -219,7 +224,9 @@ function mapStateToProps(state) {
         gameReady: !!state.game.currentRound,
 
         cardsOnBoard: state.game.cardsOnBoard, // To determne what card has been summoned
-        cardsOnHand: state.game.cardsOnHand // To determine if target should be set
+        cardsOnHand: state.game.cardsOnHand, // To determine if target should be set
+
+        enemyCardsOnBoard: state.game.enemyCardsOnBoard, // To determine if minions without taunt can be targeted
     }
 }
 
