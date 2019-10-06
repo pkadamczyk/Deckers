@@ -11,6 +11,7 @@ export const Effect = Object.freeze({
         SUMMON: 3,
         KILL_ON_CONDITION: 4,
         STATS_SWAP: 5,
+        AOE_DEVOUR: 6,
     },
     TARGET_LIST: {
         AOE: {
@@ -64,6 +65,31 @@ export function invokeEffect(effect, gameState, pickedTarget = null) {
     else if (effect.effect === Effect.EFFECT_LIST.SUMMON) return handleSummon(effect, gameState)
     else if (effect.effect === Effect.EFFECT_LIST.KILL_ON_CONDITION) return handleKillOnCondition(effect, gameState, pickedTarget)
     else if (effect.effect === Effect.EFFECT_LIST.STATS_SWAP) return handleStatsSwap(effect, gameState, pickedTarget)
+    else if (effect.effect === Effect.EFFECT_LIST.AOE_DEVOUR) return handleDevour(effect, gameState)
+}
+
+function handleDevour(effect, gameState) {
+    let newState = { ...gameState }
+    const targetsMap = appendTargetsToMap(effect.target, gameState);
+
+    let biggestDamage = 0;
+    for (let [key, value] of targetsMap.entries()) {
+        //  In case value is a card array
+        if (Array.isArray(value) && !key.includes("minion")) {
+            value = value.map(card => {
+                if (biggestDamage < card.inGame.stats.damage) biggestDamage = card.inGame.stats.damage
+
+                return null;
+            });
+            value = value.filter(val => val !== null);
+        }
+        newState[key] = value
+    }
+
+    // Deal biggest damage to ally hero
+    newState.playerHeroHealth -= biggestDamage;
+
+    return { ...newState };
 }
 
 function handleStatsSwap(effect, gameState, pickedTarget) {

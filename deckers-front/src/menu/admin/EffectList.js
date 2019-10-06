@@ -19,7 +19,7 @@ class EffectList extends Component {
         super(props)
 
         this.state = {
-            list: [{ target: 0, effect: 1, value: 0 }],
+            list: [{ target: 1, effect: 1, value: 0 }],
         }
 
         this.changeRowAmount = this.changeRowAmount.bind(this)
@@ -88,8 +88,8 @@ class EffectList extends Component {
         ))
 
         const htmlList = list.map((el, i) => {
-            const aoeTargetAvailable = el.effect !== Effect.EFFECT_LIST.SUMMON
-            const singleTargetAvailable = el.effect !== Effect.EFFECT_LIST.SUMMON
+            const aoeTargetAvailable = el.effect !== Effect.EFFECT_LIST.SUMMON || el.effect === Effect.EFFECT_LIST.AOE_DEVOUR
+            const singleTargetAvailable = el.effect !== Effect.EFFECT_LIST.SUMMON && el.effect !== Effect.EFFECT_LIST.AOE_DEVOUR
             const generalTargetAvailable = el.effect === Effect.EFFECT_LIST.SUMMON
 
             const isValueNumber = el.effect === Effect.EFFECT_LIST.HEAL || el.effect === Effect.EFFECT_LIST.DAMAGE
