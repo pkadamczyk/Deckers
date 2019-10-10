@@ -4,6 +4,7 @@ const CardModel = require("../../../models/card");
 const Card = require("./Card");
 const Player = require("./Player");
 const Effect = require("./Effect");
+const EffectManager = require("./EffectManager");
 const config = require("./gameConfig")
 
 class Game {
@@ -16,6 +17,7 @@ class Game {
         this.currentRound = 1;
 
         this.players = databaseGame.players.map(player => new Player(player.deck));
+        this.effectManager = new EffectManager(this)
 
         CardModel.find({}).then(res => this.cardList = res)
     }
@@ -50,203 +52,7 @@ class Game {
     }
 
     invokeCardEffect(effect, target, reversePlayers = false) {
-        if (effect.effect === CardModel.Effect.EFFECT_LIST.DAMAGE || effect.effect === CardModel.Effect.EFFECT_LIST.HEAL)
-            this.handleHealAndDamageEffect(effect, target)
-        else if (effect.effect === CardModel.Effect.EFFECT_LIST.SUMMON)
-            this.handleSummonEffect(effect, reversePlayers)
-        else if (effect.effect === CardModel.Effect.EFFECT_LIST.KILL_ON_CONDITION)
-            this.handleKillOnCondition(effect, target)
-        else if (effect.effect === CardModel.Effect.EFFECT_LIST.SWAP_STATS)
-            this.handleStatsSwap(effect, target)
-        else if (effect.effect === CardModel.Effect.EFFECT_LIST.AOE_DEVOUR)
-            this.handleAoeDevour(effect, target)
-    }
-
-    handleAoeDevour(effect, target) {
-        if (Object.values(CardModel.Effect.TARGET_LIST.AOE).includes(effect.target)) this.applyEffectAoe(effect)
-    }
-
-    handleStatsSwap(effect, target) {
-        if (Object.values(CardModel.Effect.TARGET_LIST.AOE).includes(effect.target)) this.applyEffectAoe(effect)
-        else if (target !== null) this.applyEffectToTarget(target, effect)
-    }
-
-    handleKillOnCondition(effect, target) {
-        if (Object.values(CardModel.Effect.TARGET_LIST.AOE).includes(effect.target)) this.applyEffectAoe(effect)
-        else if (target !== null) this.applyEffectToTarget(target, effect)
-    }
-
-    handleSummonEffect(effect, reversePlayers) {
-        const { Effect } = CardModel;
-        const { TARGET_LIST } = Effect
-
-        const includeEnemyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ENEMY]
-        const includeAllyBoard = [TARGET_LIST.GENERAL.ALL, TARGET_LIST.GENERAL.ALLY]
-
-        const card = this.cardList.find(dbCard => dbCard._id.equals(effect.value)).toObject();
-
-        const gameCard = {
-            ...card,
-            inGame: {
-                isReady: false,
-                stats: card.stats[config.SUMMONED_CARD_LEVEL - 1] // stats are array, starts at 0, levels starts at 1
-            },
-            level: config.SUMMONED_CARD_LEVEL
-        }
-
-        const currentPlayer = reversePlayers ? +!this.currentPlayer : this.currentPlayer
-
-        // Makes sure you dont have too many cards on board
-        const isEnemyBoardFull = this.players[+!currentPlayer].cardsOnBoard.length >= config.MAX_CARDS_ON_BOARD
-        const isAllyBoardFull = this.players[currentPlayer].cardsOnBoard.length >= config.MAX_CARDS_ON_BOARD
-
-        if (includeEnemyBoard.includes(effect.target) && !isEnemyBoardFull) this.players[currentPlayer].cardsOnBoard.push(gameCard)
-        if (includeAllyBoard.includes(effect.target) && !isAllyBoardFull) this.players[currentPlayer].cardsOnBoard.push(gameCard)
-    }
-
-    handleHealAndDamageEffect(effect, target) {
-        if (effect.effect === CardModel.Effect.EFFECT_LIST.DAMAGE) effect.value = -Math.abs(effect.value);
-
-        if (Object.values(CardModel.Effect.TARGET_LIST.AOE).includes(effect.target)) this.applyEffectAoe(effect)
-        else if (target !== null) this.applyEffectToTarget(target, effect)
-    }
-
-    applyEffectToTarget(target, effect) {
-        const affectedPlayer = target.includes("enemy") ? +!this.currentPlayer : this.currentPlayer
-
-        if (target.includes("portrait")) {
-            this.players[affectedPlayer].health += effect.value
-
-            // Handles overheal
-            if (this.players[affectedPlayer].health > Player.MAX_HERO_HEALTH)
-                this.players[affectedPlayer].health = Player.MAX_HERO_HEALTH
-        }
-        else if (target.includes("minion")) {
-            const minionIndex = +target.slice(-1);
-            const card = this.players[affectedPlayer].cardsOnBoard[minionIndex]
-
-            if (effect.effect === CardModel.Effect.EFFECT_LIST.KILL_ON_CONDITION) {
-                const isConditionMeet = Effect.checkCondition(card, effect.value)
-
-                // First kill the minion, then invoke final words
-                if (isConditionMeet) {
-                    // Marks minion as dead and filters it out, needs to be done before final words
-                    this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
-                    this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
-
-                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
-                    if (hasEffects) {
-                        const reversePlayers = target.includes("enemy")
-                        this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
-                    }
-                }
-            }
-            else if (effect.effect === CardModel.Effect.EFFECT_LIST.SWAP_STATS) {
-                const temp = card.inGame.stats.health;
-                card.inGame.stats.health = card.inGame.stats.damage
-                card.inGame.stats.damage = temp
-
-                if (card.inGame.stats.health <= 0) {
-                    // Marks minion as dead and filters it out, needs to be done before final words
-                    this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
-                    this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
-
-                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
-                    if (hasEffects) {
-                        const reversePlayers = target.includes("enemy")
-                        this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
-                    }
-                }
-            }
-            else {
-                const card = this.players[affectedPlayer].cardsOnBoard[minionIndex]
-                const newHealth = card.inGame.stats.health + effect.value
-
-                // Handles overheal
-                const level = card.level - 1; // Stats object starts at 0, level starts at 1
-
-                if (newHealth > card.stats[level].health)
-                    this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = card.health
-                else this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health = newHealth;
-
-                // Place a null value in minion array if he died
-                if (this.players[affectedPlayer].cardsOnBoard[minionIndex].inGame.stats.health <= 0) {
-                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
-
-                    if (hasEffects) {
-                        const reversePlayers = target.includes("enemy")
-                        this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
-                    }
-
-                    this.players[affectedPlayer].cardsOnBoard[minionIndex] = null
-                }
-            }
-            // Filters out dead minions 
-            this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
-        }
-    }
-
-    applyEffectAoe(effect) {
-        const { Effect } = CardModel;
-        const { TARGET_LIST } = Effect
-        let helper = 0
-
-        const includeEnemyBoard = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.AOE.ALL_MINIONS, TARGET_LIST.AOE.ENEMY_MINIONS]
-        const includeAllyBoard = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.AOE.ALL_MINIONS, TARGET_LIST.AOE.ALLY_MINIONS]
-
-        const includeEnemyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.SINGLE_TARGET.ENEMY_HERO]
-        const includeAllyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.SINGLE_TARGET.ALLY_HERO]
-
-        // Determines whose board should be affected
-        let affectedPlayers = [];
-        if (includeEnemyBoard.includes(effect.target)) affectedPlayers.push(+!this.currentPlayer)
-        if (includeAllyBoard.includes(effect.target)) affectedPlayers.push(this.currentPlayer)
-
-        // CAREFUL: DOESNT APPLY FINAL WORDS
-        affectedPlayers.map(player => {
-            for (let i = 0; i < this.players[player].cardsOnBoard.length; i++) {
-                if (effect.effect === CardModel.Effect.EFFECT_LIST.AOE_DEVOUR) {
-                    const card = this.players[player].cardsOnBoard[i]
-                    if (helper < card.inGame.stats.damage) helper = card.inGame.stats.damage
-
-                    this.players[player].cardsOnBoard[i] = null
-                }
-                else {
-                    this.players[player].cardsOnBoard[i].inGame.stats.health += effect.value
-
-                    // Handles overheal
-                    const card = this.players[player].cardsOnBoard[i]
-                    const level = card.level - 1; // Stats array starts at 0, levels start at 1
-
-                    if (this.players[player].cardsOnBoard[i].inGame.stats.health > card.stats[level].health)
-                        this.players[player].cardsOnBoard[i].inGame.stats.health = card.stats[level].health
-
-                    // Place a null value in minion array if he died
-                    if (this.players[player].cardsOnBoard[i].inGame.stats.health <= 0) this.players[player].cardsOnBoard[i] = null
-                }
-            }
-            // Filters out dead minions
-            this.players[player].cardsOnBoard = this.players[player].cardsOnBoard.filter(card => card !== null)
-        })
-
-        // Determines whose hero should be affected
-        // CAREFUL: PROBABLY APPLY OTHER EFFECTS THAN DAMAGE AND HEAL TO HEROES
-        affectedPlayers = [];
-        if (includeEnemyHero.includes(effect.target)) affectedPlayers.push(+!this.currentPlayer)
-        if (includeAllyHero.includes(effect.target)) affectedPlayers.push(this.currentPlayer)
-
-        affectedPlayers.map(player => this.players[player].health += effect.value)
-
-        // Utilize helper variable for effects outside the loop
-        if (effect.effect === CardModel.Effect.EFFECT_LIST.AOE_DEVOUR) {
-            this.players[this.currentPlayer].health -= helper;
-        }
-
-        // Handles heroes overheal
-        this.players.map(player => {
-            if (player.health > Player.MAX_HERO_HEALTH) player.health = Player.MAX_HERO_HEALTH;
-            return player
-        })
+        this.effectManager.invokeCardEffect(effect, target, reversePlayers)
     }
 
     handleAttackOnHero(playerMinionId) {

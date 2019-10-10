@@ -244,11 +244,19 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
         const gamePromise = Game.findById(req.params.game_id).deepPopulate('players');
         const userPromise = User.findById(req.params.usr_id).deepPopulate('decks.cards.card');
         const cardListPromise = Card.find({})
-        const [foundGame, user, cardList] = await Promise.all([gamePromise, userPromise, cardListPromise]);
+        let [foundGame, user, cardList] = await Promise.all([gamePromise, userPromise, cardListPromise]);
 
         console.log(`Game id: ${req.params.game_id}`)
         if (foundGame.isFinished) throw new Error("Game finished");
-        if (!user.inGame) throw new Error("User not in game");
+
+        // Sometimes something bugs, give it another try
+        if (!user.inGame) {
+            await setTimeout(async function () {
+                console.log("Bing bong, łapiemy errora")
+                user = await User.findById(req.params.usr_id).deepPopulate('decks.cards.card');
+                if (!user.inGame) throw new Error("User not in game");
+            }, 1000);
+        }
 
         // Handle wrong user sytuation
         const playerIndex = foundGame.players.findIndex(player => player.user._id.equals(user._id))
