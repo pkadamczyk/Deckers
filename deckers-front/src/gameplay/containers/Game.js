@@ -101,27 +101,31 @@ class Game extends Component {
     onDragEnd(result) {
         const { source, destination } = result;
         const { currentTarget } = this.state;
+        const { cardsOnHand, gold, isMyTurn } = this.props;
 
         this.setState({ currentlyDragged: null })
 
-        const { cardsOnHand } = this.props;
         const card = source.droppableId === PLAYER_HAND_ID ? cardsOnHand[source.index] : null;
         const isSpellDropped = card !== null ? card.role === SPELL_ROLE : false;
 
+        const isAffordable = card !== null ? gold >= card.inGame.stats.cost : false;
+        const canBeSummoned = card !== null ? isMyTurn && isAffordable : false;
+
         if (!destination && currentTarget === PLAYER_HAND_ID) { }
+        // Card cant be summoned, operation should be canceled
+        else if ((!isAffordable || !canBeSummoned) && source.droppableId === PLAYER_HAND_ID) { }
 
         // Takes care of single target spells, hopefully
         else if (isSpellDropped && currentTarget !== PLAYER_HAND_ID) this.handleSummonCard(source, destination, currentTarget);
 
-        // END_TARGETING
+        // Attack enemy minion or hero
         else if (source.droppableId === PLAYER_BOARD_ID) {
             if (currentTarget.includes("enemy")) {
                 this.props.dispatch(attack(source, currentTarget));
-
-                this.props.dispatch(setGameState(GAME_STATE.IDLE))
             }
         }
-        // cards reordered in hand
+
+        // Cards reordered in hand
         else if (source.droppableId === destination.droppableId) {
             this.props.dispatch(reorderCardsInHand(
                 source.index,

@@ -24,7 +24,6 @@ const StyledItem = styled.div`
 `;
 
 function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummoned) {
-    console.log(canBeSummoned)
     const hasEffects = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
     const isSingleTargetSpell = hasEffects ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
 
@@ -34,7 +33,6 @@ function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummo
     // Handles card dragging and spell cards animations
     if (!snapshot.isDropAnimating) {
         if (shouldFadeOut && snapshot.isDragging) {
-            // console.log(card.effects.onSummon[0].target)
 
             // Set cursor and reset it if not needed
             document.body.style.cursor = (currentTarget === PLAYER_HAND_ID) || !currentTarget ? "default" : "pointer";
@@ -50,13 +48,13 @@ function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummo
 
     // Drop animation
     document.body.style.cursor = "default"; // Reset cursor
-    if (card.effects && shouldFadeOut && snapshot.isDragging)
+    if (hasEffects && shouldFadeOut && snapshot.isDragging)
         return { ...style, opacity: "0" }
 
     const { moveTo, curve, duration } = snapshot.dropAnimation;
     let translate;
 
-    if (currentTarget === PLAYER_HAND_ID) translate = `translate(${moveTo.x}px, ${moveTo.y}px)`
+    if (currentTarget === PLAYER_HAND_ID || !canBeSummoned) translate = `translate(${moveTo.x}px, ${moveTo.y}px)`
     else translate = cardsOnBoard.length === 0 ? `translate(${moveTo.x}px, ${moveTo.y + (window.innerHeight / 2)}px)` : `translate(${moveTo.x - 50}px, ${moveTo.y}px)`;
 
     return {
@@ -75,7 +73,7 @@ class Content extends Component {
                 {...provided.dragHandleProps}
                 isDragging={snapshot.isDragging}
                 canBeSummoned={canBeSummoned}
-                style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget, item, canBeSummoned)}
+                style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard, currentTarget, item, canBeSummoned)}
             >
                 <div>{item.name}</div>
                 <div>Hp: {item.inGame.stats.health}</div>
