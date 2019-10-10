@@ -57,15 +57,25 @@ class Game extends Component {
 
     handleSetTarget(id) {
         let { currentlyDragged } = this.state;
-        const { cardsOnHand } = this.props;
+        const { cardsOnHand, isMyTurn, gold } = this.props;
 
         const isDragging = currentlyDragged !== null;
         if (!isDragging) return this.setState({ currentTarget: null });
         if (id === null) return this.setState({ currentTarget: PLAYER_BOARD_ID });
 
+        const card = cardsOnHand[currentlyDragged.index]
+
+        // Make sure you can summon the card
+        if (currentlyDragged.droppableId === PLAYER_HAND_ID) {
+            if (!isMyTurn) return this.setState({ currentTarget: PLAYER_BOARD_ID }); // Check if its my turn
+
+            const isAffordable = gold >= card.inGame.stats.cost;
+            if (!isAffordable) return this.setState({ currentTarget: PLAYER_BOARD_ID }); // Check if i can afford dragged card
+        }
+
         // Decide if target should be set, for attacking and spell targeting
         const isMinionTargeting = currentlyDragged.droppableId !== PLAYER_HAND_ID
-        const isSpellTargeting = currentlyDragged.droppableId === PLAYER_HAND_ID && cardsOnHand[currentlyDragged.index].role === SPELL_ROLE
+        const isSpellTargeting = currentlyDragged.droppableId === PLAYER_HAND_ID && card.role === SPELL_ROLE
 
         const isTargeting = isMinionTargeting || isSpellTargeting
 
@@ -124,14 +134,18 @@ class Game extends Component {
     }
 
     handleSummonCard(source, destination, target = null) {
-        const { cardsOnHand, cardsOnBoard } = this.props;
+        const { cardsOnHand, cardsOnBoard, isMyTurn, gold } = this.props;
         const card = cardsOnHand[source.index];
 
         if (target === PLAYER_BOARD_ID) target = null;
 
+        const isAffordable = gold >= card.inGame.stats.cost;
+        if (!isAffordable || !isMyTurn) return
+
         // Determines if card has any onSummon effect that need special care
         // If not, simply summons the card
-        if (!(card.effects && card.effects.onSummon && card.effects.onSummon.length > 0)) {
+        const hasEffects = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
+        if (!hasEffects) {
             this.props.dispatch(summonCard(
                 source,
                 destination || target,
@@ -222,6 +236,8 @@ class Game extends Component {
 function mapStateToProps(state) {
     return {
         gameReady: !!state.game.currentRound,
+        isMyTurn: state.game.isMyTurn,
+        gold: state.game.playerHeroGold,
 
         cardsOnBoard: state.game.cardsOnBoard, // To determne what card has been summoned
         cardsOnHand: state.game.cardsOnHand, // To determine if target should be set

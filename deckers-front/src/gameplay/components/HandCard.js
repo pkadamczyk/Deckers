@@ -23,10 +23,13 @@ const StyledItem = styled.div`
     box-shadow: ${props => !props.canBeSummoned ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
 `;
 
-function getStyle(style, snapshot, cardsOnBoardLength, currentTarget, card) {
-    const isSingleTargetSpell = card.effects && card.effects.onSummon.length > 0 ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
+function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummoned) {
+    console.log(canBeSummoned)
+    const hasEffects = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
+    const isSingleTargetSpell = hasEffects ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
+
     const isSpell = card.role === SPELL_ROLE
-    const shouldFadeOut = isSingleTargetSpell || isSpell;
+    const shouldFadeOut = (isSingleTargetSpell || isSpell) && canBeSummoned;
 
     // Handles card dragging and spell cards animations
     if (!snapshot.isDropAnimating) {
@@ -54,7 +57,7 @@ function getStyle(style, snapshot, cardsOnBoardLength, currentTarget, card) {
     let translate;
 
     if (currentTarget === PLAYER_HAND_ID) translate = `translate(${moveTo.x}px, ${moveTo.y}px)`
-    else translate = cardsOnBoardLength === 0 ? `translate(${moveTo.x}px, ${moveTo.y + (window.innerHeight / 2)}px)` : `translate(${moveTo.x - 50}px, ${moveTo.y}px)`;
+    else translate = cardsOnBoard.length === 0 ? `translate(${moveTo.x}px, ${moveTo.y + (window.innerHeight / 2)}px)` : `translate(${moveTo.x - 50}px, ${moveTo.y}px)`;
 
     return {
         ...style,
@@ -72,7 +75,7 @@ class Content extends Component {
                 {...provided.dragHandleProps}
                 isDragging={snapshot.isDragging}
                 canBeSummoned={canBeSummoned}
-                style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget, item)}
+                style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard.length, currentTarget, item, canBeSummoned)}
             >
                 <div>{item.name}</div>
                 <div>Hp: {item.inGame.stats.health}</div>
@@ -87,9 +90,7 @@ class HandCard extends Component {
     constructor(props) {
         super(props);
         const uniqueId = '_' + Math.random().toString(36).substr(2, 9) + this.props.index;
-        this.state = {
-            uniqueId
-        }
+        this.state = { uniqueId }
     }
 
     render() {
