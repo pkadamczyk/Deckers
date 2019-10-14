@@ -10,6 +10,7 @@ const Button = styled.button`
     width:120px;
 
     position:absolute;
+    z-index: 1;
     left:1%;
     top: 50%;
 

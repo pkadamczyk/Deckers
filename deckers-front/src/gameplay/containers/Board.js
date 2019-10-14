@@ -6,7 +6,11 @@ import { connect } from 'react-redux';
 
 import EnemyBoard from './EnemyBoard';
 import PlayerBoard from './PlayerBoard';
+import SpellFix from './SpellFix';
+
 import { SPELL_ROLE } from './Game';
+import { Effect } from '../../store/reducers/helpers/effects';
+import { PLAYER_HAND_ID } from './PlayerHand';
 
 export const CARD_WIDTH = 100;
 export const MAX_CARDS_ON_BOARD = 4;
@@ -28,44 +32,51 @@ class Board extends Component {
         const { isMinionDragged, currentTarget, handleCleanTarget, handleSetTarget, currentlyDraggedCardId, hasEnemyTauntOnBoard } = this.props;
         const { enemyCardsOnBoard, cardsOnBoard, isMyTurn, gameState } = this.props;
 
-        const isDropDisabled = this.shouldDropBeDisabled()
+        let isDropDisabled = this.shouldDropBeDisabled()
+
+        // Should help with broken animations of aoe and general targeted spells
+        const isSpellFixNeeded = this.checkIfSpellFixIsNeeded()
+
         return (
-            <Droppable
-                droppableId={PLAYER_BOARD_ID}
-                direction="horizontal"
-                isDropDisabled={isDropDisabled}
-            >
-                {(provided, snapshot) => (
-                    <DroppableDiv
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        isDraggingOver={snapshot.isDraggingOver}
-                        items={cardsOnBoard}
-                    >
-                        <EnemyBoard
-                            items={enemyCardsOnBoard}
-                            isMinionDragged={isMinionDragged}
-                            currentTarget={currentTarget}
-                            currentlyDraggedCardId={currentlyDraggedCardId}
-                            hasEnemyTauntOnBoard={hasEnemyTauntOnBoard}
-
-                            handleCleanTarget={handleCleanTarget}
-                            handleSetTarget={handleSetTarget}
-                        />
-                        <PlayerBoard
+            <>
+                <Droppable
+                    droppableId={PLAYER_BOARD_ID}
+                    direction="horizontal"
+                    isDropDisabled={isDropDisabled}
+                >
+                    {(provided, snapshot) => (
+                        <DroppableDiv
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            isDraggingOver={snapshot.isDraggingOver}
                             items={cardsOnBoard}
-                            isMyTurn={isMyTurn}
-                            placeholder={provided.placeholder}
-                            gameState={gameState}
-                            currentTarget={currentTarget}
-                            currentlyDraggedCardId={currentlyDraggedCardId}
+                        >
+                            <SpellFix isNeeded={isSpellFixNeeded} />
+                            <EnemyBoard
+                                items={enemyCardsOnBoard}
+                                isMinionDragged={isMinionDragged}
+                                currentTarget={currentTarget}
+                                currentlyDraggedCardId={currentlyDraggedCardId}
+                                hasEnemyTauntOnBoard={hasEnemyTauntOnBoard}
 
-                            handleCleanTarget={handleCleanTarget}
-                            handleSetTarget={handleSetTarget}
-                        />
-                    </DroppableDiv>
-                )}
-            </Droppable>
+                                handleCleanTarget={handleCleanTarget}
+                                handleSetTarget={handleSetTarget}
+                            />
+                            <PlayerBoard
+                                items={cardsOnBoard}
+                                isMyTurn={isMyTurn}
+                                placeholder={provided.placeholder}
+                                gameState={gameState}
+                                currentTarget={currentTarget}
+                                currentlyDraggedCardId={currentlyDraggedCardId}
+
+                                handleCleanTarget={handleCleanTarget}
+                                handleSetTarget={handleSetTarget}
+                            />
+                        </DroppableDiv>
+                    )}
+                </Droppable>
+            </>
         )
     }
 
@@ -80,6 +91,27 @@ class Board extends Component {
         const isSpellDragged = currentlyDraggedCardId !== null ? currentlyDraggedCard.role === SPELL_ROLE : false
 
         return isBoardFull || (isMinionDragged || isSpellDragged) || !isAffordable;
+    }
+
+    // Used to determine if non targeting spell is dragged, to help with animations
+    checkIfSpellFixIsNeeded() {
+        const { cardsOnHand, currentlyDragged } = this.props
+        if (!currentlyDragged) return false
+        if (!currentlyDragged.droppableId === PLAYER_HAND_ID) return false
+
+        const card = cardsOnHand[currentlyDragged.index]
+        if (!card) return false
+
+        const isSpell = card.role === SPELL_ROLE
+        if (!isSpell) return false
+
+        const hasEffects = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
+        if (!hasEffects) return false
+
+        const spellTarget = card.effects.onSummon[0].target
+        const isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(spellTarget)
+
+        return true
     }
 }
 

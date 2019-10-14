@@ -11,7 +11,6 @@ const StyledItem = styled.div`
     margin: 0 8px 0 0;
     width: ${props => CARD_WIDTH + 'px'};
     height: 130px;
-    transition: all cubic-bezier(0.2, 1, 0.1, 1) 0.8s;
 
     background: ${props => props.isDragging ? 'lightgreen' : 'grey'};
 

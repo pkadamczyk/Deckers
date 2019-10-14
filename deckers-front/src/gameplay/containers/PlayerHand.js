@@ -30,6 +30,18 @@ class PlayerHand extends Component {
 
         const isDropDisabled = isMinionDragged;
 
+        const handCards = cards.map((item, index) => (
+            <HandCard
+                key={item._id + index + cards.length}
+                item={item}
+                index={index}
+                isMyTurn={isMyTurn}
+                gold={gold}
+                cardsOnBoard={cardsOnBoard}
+                currentTarget={currentTarget}
+            ></HandCard>
+        ))
+
         return (
             <Droppable
                 droppableId={PLAYER_HAND_ID}
@@ -44,20 +56,11 @@ class PlayerHand extends Component {
                         onMouseLeave={() => cleanTarget()}
                         onMouseEnter={() => setTarget(PLAYER_HAND_ID)}
                     >
-                        {cards.map((item, index) => (
-                            <HandCard
-                                key={item._id + index + cards.length}
-                                item={item}
-                                index={index}
-                                isMyTurn={isMyTurn}
-                                gold={gold}
-                                cardsOnBoard={cardsOnBoard}
-                                currentTarget={currentTarget}
-                            ></HandCard>
-                        ))}
+                        {handCards}
                         {provided.placeholder}
                     </DroppableDiv>
-                )}
+                )
+                }
             </Droppable>
         )
     }

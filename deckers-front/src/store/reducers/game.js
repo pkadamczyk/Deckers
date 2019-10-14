@@ -212,7 +212,8 @@ function handleSummonCard(state, action) {
     newState = { ...newState, playerHeroGold: playerGoldAmount, cardsOnHand: sourceClone, cardsOnBoard: destClone }
 
     // Make spell do its magic
-    if (removed.effects && removed.effects.onSummon.length > 0) {
+    const hasEffects = removed.effects && removed.effects.onSummon && removed.effects.onSummon.length > 0
+    if (hasEffects) {
         newState = invokeEffect(removed.effects.onSummon[0], newState, target || null)
     }
 

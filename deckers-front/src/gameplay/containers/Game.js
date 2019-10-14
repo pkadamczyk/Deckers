@@ -93,6 +93,7 @@ class Game extends Component {
 
     onDragUpdate = (update) => {
         if (!update.destination) return
+
         if (this.state.currentTarget === PLAYER_HAND_ID || update.destination.droppableId === PLAYER_HAND_ID) {
             this.setState({ currentTarget: update.destination.droppableId });
         }
@@ -143,12 +144,21 @@ class Game extends Component {
 
         if (target === PLAYER_BOARD_ID) target = null;
 
+        const isSpell = card.role === SPELL_ROLE
+        const hasEffects = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
+        if (hasEffects) {
+            const spellTarget = card.effects.onSummon[0].target
+            const isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(spellTarget)
+
+            const cardNeedsTarget = isSpell && isSingleTarget
+            if (target === null && cardNeedsTarget) return
+        }
+
         const isAffordable = gold >= card.inGame.stats.cost;
         if (!isAffordable || !isMyTurn) return
 
         // Determines if card has any onSummon effect that need special care
         // If not, simply summons the card
-        const hasEffects = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
         if (!hasEffects) {
             this.props.dispatch(summonCard(
                 source,
@@ -157,13 +167,6 @@ class Game extends Component {
             ));
             return
         }
-
-        const spellTarget = card.effects.onSummon[0].target
-        const isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(spellTarget)
-
-        const isSpell = card.role === SPELL_ROLE
-        const cardNeedsTarget = isSpell && isSingleTarget
-        if (target === null && cardNeedsTarget) return
 
         // If card is a summoning spell, check if theres a place for that card
         const hasSummonEffect = card.effects.onSummon[0].effect === Effect.EFFECT_LIST.SUMMON
@@ -190,11 +193,11 @@ class Game extends Component {
 
         // Used to determine if enemy minions without taunt and hero can be targeted
         const hasEnemyTauntOnBoard = enemyCardsOnBoard.map(card => card.inGame.stats.hasTaunt).includes(true)
-
         return (
 
             <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate}>
                 <GameWrapper>
+
                     {!gameReady && <Starter />}
                     <EnemyHand />
                     <EnemyHero
@@ -221,6 +224,7 @@ class Game extends Component {
                         handleSetTarget={this.handleSetTarget}
                     />
                     <Board
+                        currentlyDragged={currentlyDragged}
                         isMinionDragged={isMinionDragged}
                         currentTarget={currentTarget}
                         handleCleanTarget={this.handleCleanTarget}

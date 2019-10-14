@@ -9,6 +9,9 @@ import { SPELL_ROLE } from '../containers/Game';
 import { checkCondition } from '../../store/reducers/helpers/helpers/checkCondition';
 
 const StyledItem = styled.div` 
+    position: relative;
+    z-index: 1;
+
     margin: 0 8px 0 0;
     width: ${props => props.isBeingTargeted ? (CARD_WIDTH + 10) + 'px' : CARD_WIDTH + 'px'};
     height: ${props => props.isBeingTargeted ? "140px" : "130px"};
