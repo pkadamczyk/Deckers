@@ -17,9 +17,9 @@ class Effect {
 
     invokeCardEffect(effect, target, reversePlayers = false) {
         if (Object.values(CardModel.Effect.TARGET_LIST.AOE).includes(effect.target)) this.applyEffectAoe(effect)
-        else if (target !== null) this.applyEffectToTarget(target, effect)
         else if (effect.effect === CardModel.Effect.EFFECT_LIST.SUMMON)
             this.handleSummonEffect(effect, reversePlayers)
+        else if (target !== null) this.applyEffectToTarget(target, effect)
     }
 
     handleSummonEffect(effect, reversePlayers) {
