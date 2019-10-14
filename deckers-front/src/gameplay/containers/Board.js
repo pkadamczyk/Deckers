@@ -95,9 +95,9 @@ class Board extends Component {
 
     // Used to determine if non targeting spell is dragged, to help with animations
     checkIfSpellFixIsNeeded() {
-        const { cardsOnHand, currentlyDragged } = this.props
+        const { cardsOnHand, currentlyDragged, playerGold } = this.props
         if (!currentlyDragged) return false
-        if (!currentlyDragged.droppableId === PLAYER_HAND_ID) return false
+        if (currentlyDragged.droppableId !== PLAYER_HAND_ID) return false
 
         const card = cardsOnHand[currentlyDragged.index]
         if (!card) return false
@@ -105,11 +105,11 @@ class Board extends Component {
         const isSpell = card.role === SPELL_ROLE
         if (!isSpell) return false
 
+        const isAffordable = playerGold >= card.inGame.stats.cost
+        if (!isAffordable) return false;
+
         const hasEffects = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
         if (!hasEffects) return false
-
-        const spellTarget = card.effects.onSummon[0].target
-        const isSingleTarget = Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(spellTarget)
 
         return true
     }

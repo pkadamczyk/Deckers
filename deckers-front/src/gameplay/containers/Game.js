@@ -112,15 +112,24 @@ class Game extends Component {
         const isAffordable = card !== null ? gold >= card.inGame.stats.cost : false;
         const canBeSummoned = card !== null ? isMyTurn && isAffordable : false;
 
-        if (!destination && currentTarget === PLAYER_HAND_ID) { }
+        if (destination === null && source.droppableId === PLAYER_HAND_ID) { }
+
+        // Cards reordered in hand
+        else if (source.droppableId === PLAYER_HAND_ID && source.droppableId === destination.droppableId) {
+            this.props.dispatch(reorderCardsInHand(
+                source.index,
+                destination.index)
+            );
+        }
+
+        // Targeting sometimes break, this should stop it
+        else if (!source) { }
+
         // Card cant be summoned, operation should be canceled
         else if ((!isAffordable || !canBeSummoned) && source.droppableId === PLAYER_HAND_ID) { }
 
         // Takes care of single target spells, hopefully
         else if (isSpellDropped && currentTarget !== PLAYER_HAND_ID) this.handleSummonCard(source, destination, currentTarget);
-
-        // Targeting sometimes break, this should stop it
-        else if (!source) { }
 
         // Attack enemy minion or hero
         else if (source.droppableId === PLAYER_BOARD_ID) {
@@ -128,14 +137,7 @@ class Game extends Component {
                 this.props.dispatch(attack(source, currentTarget));
             }
         }
-
-        // Cards reordered in hand
-        else if (source.droppableId === destination.droppableId) {
-            this.props.dispatch(reorderCardsInHand(
-                source.index,
-                destination.index)
-            );
-        } else this.handleSummonCard(source, destination, currentTarget);
+        else this.handleSummonCard(source, destination, currentTarget);
 
         this.props.dispatch(setGameState(GAME_STATE.IDLE))
         this.setState({ currentTarget: null })
