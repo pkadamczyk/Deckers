@@ -10,7 +10,7 @@ import { checkCondition } from '../../store/reducers/helpers/helpers/checkCondit
 
 const StyledItem = styled.div` 
     position: relative;
-    z-index: 1;
+    z-index: 0;
 
     margin: 0 8px 0 0;
     width: ${props => props.isBeingTargeted ? (CARD_WIDTH + 10) + 'px' : CARD_WIDTH + 'px'};

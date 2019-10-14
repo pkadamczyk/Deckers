@@ -119,6 +119,9 @@ class Game extends Component {
         // Takes care of single target spells, hopefully
         else if (isSpellDropped && currentTarget !== PLAYER_HAND_ID) this.handleSummonCard(source, destination, currentTarget);
 
+        // Targeting sometimes break, this should stop it
+        else if (!source) { }
+
         // Attack enemy minion or hero
         else if (source.droppableId === PLAYER_BOARD_ID) {
             if (currentTarget.includes("enemy")) {
