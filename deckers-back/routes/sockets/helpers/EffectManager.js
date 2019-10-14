@@ -117,10 +117,11 @@ class Effect {
         if (includeEnemyBoard.includes(effect.target)) affectedPlayers.push(+!this.gameRef.currentPlayer)
         if (includeAllyBoard.includes(effect.target)) affectedPlayers.push(this.gameRef.currentPlayer)
 
-        let effectsToInvoke = [];
+
         affectedPlayers.map(player => {
             const reversePlayers = player !== this.gameRef.currentPlayer
 
+            let effectsToInvoke = [];
             for (let i = 0; i < this.gameRef.players[player].cardsOnBoard.length; i++) {
                 const card = this.gameRef.players[player].cardsOnBoard[i]
 
@@ -143,14 +144,16 @@ class Effect {
 
                 const didMinionDie = this.gameRef.players[player].cardsOnBoard[i] === null
                 const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
-                if (hasEffects && didMinionDie) effectsToInvoke.push({ effect: card.effects.finalWords[0], reversePlayers })
+                if (hasEffects && didMinionDie) effectsToInvoke.push(card.effects.finalWords[0])
             }
 
             //  Filters out dead minions, needs to be done before final words
             this.gameRef.players[player].cardsOnBoard = this.gameRef.players[player].cardsOnBoard.filter(card => card !== null)
 
             for (let i = 0; i < effectsToInvoke.length; i++) {
-                this.invokeCardEffect(effectsToInvoke[i].effect, null, effectsToInvoke[i].reversePlayers)
+                console.log("Invoke effect")
+                console.log(effectsToInvoke[i])
+                this.invokeCardEffect(effectsToInvoke[i], null, reversePlayers)
             }
         })
 
