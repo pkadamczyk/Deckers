@@ -72,29 +72,15 @@ class Effect {
             if (effect.effect === EFFECT_LIST.KILL_ON_CONDITION) {
                 const isConditionMeet = this.checkCondition(card, effect.value)
 
-                // First kill the minion, then invoke final words
-                if (isConditionMeet) {
-                    // Marks minion as dead and filters it out, needs to be done before final words
-                    this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] = null
-                    this.gameRef.players[affectedPlayer].cardsOnBoard = this.gameRef.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
-
-                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
-                    if (hasEffects) this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
-                }
+                // Marks minion as dead and filters it out, needs to be done before final words
+                if (isConditionMeet) this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] = null
             }
             else if (effect.effect === EFFECT_LIST.SWAP_STATS) {
                 const temp = card.inGame.stats.health;
                 card.inGame.stats.health = card.inGame.stats.damage
                 card.inGame.stats.damage = temp
 
-                if (card.inGame.stats.health <= 0) {
-                    // Marks minion as dead and filters it out, needs to be done before final words
-                    this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] = null
-                    this.gameRef.players[affectedPlayer].cardsOnBoard = this.gameRef.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
-
-                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
-                    if (hasEffects) this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
-                }
+                if (card.inGame.stats.health <= 0) this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] = null
             }
             else {
                 card.inGame.stats.health += effect.value
@@ -104,17 +90,15 @@ class Effect {
                     card.inGame.stats.health = card.stats[card.level - 1].health
 
                 // Place a null value in minion array if he died
-                if (card.inGame.stats.health <= 0) {
-                    // Marks minion as dead and filters it out, needs to be done before final words
-                    this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] = null
-                    this.gameRef.players[affectedPlayer].cardsOnBoard = this.gameRef.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
-
-                    const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
-                    if (hasEffects) this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
-                }
+                if (card.inGame.stats.health <= 0) this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] = null
             }
-            // Filters out dead minions 
-            // this.players[affectedPlayer].cardsOnBoard = this.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
+
+            //  Filters out dead minions, needs to be done before final words
+            this.gameRef.players[affectedPlayer].cardsOnBoard = this.gameRef.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
+
+            const didMinionDie = this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] === null
+            const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
+            if (hasEffects && didMinionDie) this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
         }
     }
 
@@ -125,14 +109,15 @@ class Effect {
         const includeEnemyBoard = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.AOE.ALL_MINIONS, TARGET_LIST.AOE.ENEMY_MINIONS]
         const includeAllyBoard = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.AOE.ALL_MINIONS, TARGET_LIST.AOE.ALLY_MINIONS]
 
-        const includeEnemyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY, TARGET_LIST.SINGLE_TARGET.ENEMY_HERO]
-        const includeAllyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY, TARGET_LIST.SINGLE_TARGET.ALLY_HERO]
+        const includeEnemyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ENEMY]
+        const includeAllyHero = [TARGET_LIST.AOE.ALL, TARGET_LIST.AOE.ALLY]
 
         // Determines whose board should be affected
         let affectedPlayers = [];
         if (includeEnemyBoard.includes(effect.target)) affectedPlayers.push(+!this.gameRef.currentPlayer)
         if (includeAllyBoard.includes(effect.target)) affectedPlayers.push(this.gameRef.currentPlayer)
 
+        let effectsToInvoke = [];
         affectedPlayers.map(player => {
             const reversePlayers = player !== this.gameRef.currentPlayer
 
@@ -156,11 +141,16 @@ class Effect {
                     if (card.inGame.stats.health <= 0) this.gameRef.players[player].cardsOnBoard[i] = null
                 }
 
-                //Filters out dead minions, needs to be done before final words
-                this.gameRef.players[player].cardsOnBoard = this.gameRef.players[player].cardsOnBoard.filter(card => card !== null)
-
+                const didMinionDie = this.gameRef.players[player].cardsOnBoard[i] === null
                 const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
-                if (hasEffects) this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
+                if (hasEffects && didMinionDie) effectsToInvoke.push({ effect: card.effects.finalWords[0], reversePlayers })
+            }
+
+            //  Filters out dead minions, needs to be done before final words
+            this.gameRef.players[player].cardsOnBoard = this.gameRef.players[player].cardsOnBoard.filter(card => card !== null)
+
+            for (let i = 0; i < effectsToInvoke.length; i++) {
+                this.invokeCardEffect(effectsToInvoke[i].effect, null, effectsToInvoke[i].reversePlayers)
             }
         })
 
