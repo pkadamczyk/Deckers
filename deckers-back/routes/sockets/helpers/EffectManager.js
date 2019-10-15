@@ -72,7 +72,7 @@ class Effect {
             if (effect.effect === EFFECT_LIST.KILL_ON_CONDITION) {
                 const isConditionMeet = this.checkCondition(card, effect.value)
 
-                // Marks minion as dead and filters it out, needs to be done before final words
+                // Marks minion as dead 
                 if (isConditionMeet) this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] = null
             }
             else if (effect.effect === EFFECT_LIST.SWAP_STATS) {
@@ -94,9 +94,9 @@ class Effect {
             }
 
             //  Filters out dead minions, needs to be done before final words
+            const didMinionDie = this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] === null
             this.gameRef.players[affectedPlayer].cardsOnBoard = this.gameRef.players[affectedPlayer].cardsOnBoard.filter(card => card !== null)
 
-            const didMinionDie = this.gameRef.players[affectedPlayer].cardsOnBoard[minionIndex] === null
             const hasEffects = card.effects && card.effects.finalWords && card.effects.finalWords.length > 0
             if (hasEffects && didMinionDie) this.invokeCardEffect(card.effects.finalWords[0], null, reversePlayers)
         }
@@ -116,7 +116,6 @@ class Effect {
         let affectedPlayers = [];
         if (includeEnemyBoard.includes(effect.target)) affectedPlayers.push(+!this.gameRef.currentPlayer)
         if (includeAllyBoard.includes(effect.target)) affectedPlayers.push(this.gameRef.currentPlayer)
-
 
         affectedPlayers.map(player => {
             const reversePlayers = player !== this.gameRef.currentPlayer
