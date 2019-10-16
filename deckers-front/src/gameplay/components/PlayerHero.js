@@ -9,13 +9,13 @@ import { Effect } from '../../store/reducers/helpers/effects';
 export const PLAYER_PORTRAIT_ID = "player-portrait";
 
 const Div = styled.div`
-    height: ${props => props.isBeingTargeted ? "110px" : "100px"};
-    width: ${props => props.isBeingTargeted ? "110px" : "100px"};
+    height: ${props => props.isBeingTargeted ? "145px" : "140px"};
+    width: ${props => props.isBeingTargeted ? "125px" : "120px"};
 
     position: absolute;
     z-index:1;
-    left: 5px;
-    bottom: 5px;
+    right: 660px;
+    bottom: 15px;
 
     border: ${props => props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
     border-style: ${props => props.canBeSpellTargeted ? 'solid solid none solid' : 'none'};
@@ -24,7 +24,7 @@ const Div = styled.div`
     -moz-box-shadow: ${props => props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
     box-shadow: ${props => props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
 
-    transition: all 0.4s;
+    transition: all 0.2s;
 `
 class PlayerHero extends Component {
     render() {

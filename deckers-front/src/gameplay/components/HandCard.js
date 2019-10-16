@@ -12,6 +12,9 @@ const StyledItem = styled.div`
     width: ${props => CARD_WIDTH + 'px'};
     height: 130px;
 
+    transition: border 0.2s;
+    transition: background 0.2s;
+
     background: ${props => props.isDragging ? 'lightgreen' : 'grey'};
 
     border: ${props => !props.canBeSummoned ? 'none' : '2px solid rgba(165, 255, 48, 0.7)'};

@@ -12,6 +12,10 @@ const StyledItem = styled.div`
     position: relative;
     z-index: 0;
 
+    transition: width 0.2s;
+    transition: height 0.2s;
+    transition: border 0.2s;
+
     margin: 0 8px 0 0;
     width: ${props => props.isBeingTargeted ? (CARD_WIDTH + 10) + 'px' : CARD_WIDTH + 'px'};
     height: ${props => props.isBeingTargeted ? "140px" : "130px"};

@@ -11,13 +11,15 @@ import { SPELL_ROLE } from '../containers/Game';
 export const ENEMY_PORTRAIT_ID = "enemy-portrait";
 
 const Div = styled.div`
-    height: ${props => props.isBeingTargeted ? "110px" : "100px"};
-    width: ${props => props.isBeingTargeted ? "110px" : "100px"};
+    height: ${props => props.isBeingTargeted ? "145px" : "140px"};
+    width: ${props => props.isBeingTargeted ? "125px" : "120px"};
 
     position: absolute;
     z-index:1;
     top: 5px;
-    right: 5px;
+    left: 660px;
+
+    transition: all 0.2s;
 
     border: ${props => props.canBeTargeted ? '2px solid rgba(255, 0, 0, 0.7)'
         : props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};

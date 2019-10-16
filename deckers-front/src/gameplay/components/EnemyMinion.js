@@ -13,6 +13,8 @@ const StyledItem = styled.div`
     height: ${props => props.isBeingTargeted ? "140px" : "130px"};
     padding: 8px;
 
+    transition: all 0.2s;
+
     background: tomato;
     margin: 0 8px 0 0;
 
