@@ -120,6 +120,8 @@ var cardSchema = new mongoose.Schema({
         default: true
     },
 
+    imageID: String,
+
     effects: {}
 });
 

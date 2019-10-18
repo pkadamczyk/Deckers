@@ -3,7 +3,6 @@ import CardItem from './CardItem';
 
 import styled from "styled-components"
 import background from '../../graphic/nav_background_01.png';
-import titleImg from '../../graphic/title_03.png'
 
 const Wrapper = styled.div`
     display: inline-block;
@@ -27,7 +26,6 @@ const Wrapper = styled.div`
 `
 
 const Title = styled.h1`
-    background-image: url(${titleImg});
     background-size: contain;
     background-repeat: no-repeat;
     background-position-y: center;

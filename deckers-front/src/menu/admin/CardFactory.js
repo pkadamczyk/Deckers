@@ -25,6 +25,7 @@ class CardFactory extends Component {
             cards: null,
 
             name: "",
+            imageID: "",
             rarity: 0,
             race: 0,
             role: 0,
@@ -62,13 +63,14 @@ class CardFactory extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const { name, rarity, race, role, description, stats, cardEffects, isFree, canBeDropped } = this.state;
-        const data = { name, rarity, race, role, description, stats, isFree, canBeDropped, effects: cardEffects }
+        const { name, imageID, rarity, race, role, description, stats, cardEffects, isFree, canBeDropped } = this.state;
+        const data = { name, imageID, rarity, race, role, description, stats, isFree, canBeDropped, effects: cardEffects }
 
         return apiCall("post", `/admin/cards`, data)
             .then(res => {
                 this.setState({
                     name: "",
+                    imageID: "",
                     rarity: 0,
                     race: 0,
                     role: 0,
@@ -130,7 +132,7 @@ class CardFactory extends Component {
         const raceOptions = Object.values(raceList).map((val, i) => <option value={val} key={i}>{Object.keys(raceList)[i]}</option>)
         const roleOptions = Object.values(roleList).map((val, i) => <option value={val} key={i}>{Object.keys(roleList)[i]}</option>)
 
-        const { name, rarity, race, role, description, stats, isFree, canBeDropped } = this.state;
+        const { name, imageID, rarity, race, role, description, stats, isFree, canBeDropped } = this.state;
 
         return (
             <Column >
@@ -138,6 +140,11 @@ class CardFactory extends Component {
                     <Row>
                         <label htmlFor="name">Name</label>
                         <input type="text" id="name" placeholder="Name" name="name" value={name} onChange={this.handleChange} />
+                    </Row>
+
+                    <Row>
+                        <label htmlFor="imageID">Name</label>
+                        <input type="text" id="imageID" placeholder="ImageID" name="imageID" value={imageID} onChange={this.handleChange} />
                     </Row>
 
                     <Row>

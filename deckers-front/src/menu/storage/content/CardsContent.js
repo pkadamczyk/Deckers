@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import CardsCardItem from './CardsCardItem';
 
 import styled from "styled-components";
-import wrapperBackground from '../../../graphic/background_book_01.png'
 import RaceFilters from './RaceFilters';
 import ClassFilters from './ClassFilters';
 import { addCardToDeck } from '../../../store/actions/storage';
@@ -67,7 +66,6 @@ const PageTurn = styled.div`
         cursor: ${props => !props.disable ? "pointer" : "inherit"};
     }
 `
-
 
 class CardsContent extends Component {
     constructor(props) {

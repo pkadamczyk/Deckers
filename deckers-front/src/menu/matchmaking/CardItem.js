@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import styled from "styled-components"
-import titleImg from '../../graphic/title_03.png'
 
 const CardRect = styled.div`
-    background-image: url(${titleImg});
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 
 import styled from "styled-components"
 import cardItemBackground from '../../../graphic/card_front_01.png';
-import cardTitleBackground from '../../../graphic/title_03.png';
-import cardWrapperBackground from '../../../graphic/card_background_01.png';
 
 import cardCostBoxSkaven from '../../../graphic/race_filter_01.png';
 import cardCostBoxDwarf from '../../../graphic/race_filter_02.png';
 import cardCostBoxForsaken from '../../../graphic/race_filter_04.png';
 import cardCostBoxOrder from '../../../graphic/race_filter_03.png';
-import card_portrait from '../../../graphic/card_1.png';
 import { RACE_LIST, CLASS_LIST } from './CardsContent';
 import { STORAGE_STATE } from '../../../store/reducers/storage';
+
+import images from "../../../graphic/card_portraits/forsaken"
 
 const Card = styled.div`
     height:255px;
@@ -23,8 +22,7 @@ const Card = styled.div`
 `
 
 const CostBox = styled.div`
-    background-image: url(${props => props.background});
-    background-repeat: no-repeat;
+    background: ${props => `url(${props.background}) no-repeat`};
     background-size: contain;
 
     display: inline-block;
@@ -36,7 +34,7 @@ const CostBox = styled.div`
 
 const Wrapper = styled.div`
     margin: 0 2%;
-    background-image: url(${card_portrait});
+    background-image: url(${props => props.imageURL});
     background-repeat: no-repeat;
     background-size: contain;
 `
@@ -94,9 +92,10 @@ class CardsCardItem extends Component {
 
         const costBoxBackgrounds = [cardCostBoxDwarf, cardCostBoxForsaken, cardCostBoxOrder, cardCostBoxSkaven]
         const costBoxBackground = costBoxBackgrounds[card.race]
+        const imageURL = images.get(card.imageID)
 
         return (
-            <Wrapper>
+            <Wrapper imageURL={imageURL}>
 
                 <Card>
                     <CostBox background={costBoxBackground}>
