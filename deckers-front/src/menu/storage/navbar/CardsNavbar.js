@@ -20,7 +20,7 @@ const Wrapper = styled.div`
     height: 100%;
     color: white;
     text-align: center;
-    width: 20%;
+    width: 19%;
 
     margin-left:auto;
 `

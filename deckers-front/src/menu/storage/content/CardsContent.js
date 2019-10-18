@@ -27,6 +27,8 @@ export const CLASS_LIST = {
     SPELL: 8
 };
 
+const CARDS_ON_PAGE = 8
+
 const Wrapper = styled.div`
     height: 100%;
     width: 80%;
@@ -34,28 +36,44 @@ const Wrapper = styled.div`
 
 const Row = styled.div`
     display: flex;
-    height: 100%;
     justify-content: space-evenly; 
 
     max-width: 900px;
-    margin: auto;
+`
+
+const Column = styled.div`
+    display: flex;
+    height: 100%;
+    flex-direction: column;
 `
 
 const CardList = styled.div`
     margin-left: 3%;
 
     display:flex;
-    flex-direction: column;
-    justify-content: space-around;
+    flex-direction: row;
+    justify-content: space-between;
 
     width:100%;
+    height: 90%;
     padding-top:1.5rem;
 `
+
+const PageTurn = styled.div`
+    width: 9%;
+
+    :hover{
+        background: ${props => !props.disable ? "black" : "none"};
+        cursor: ${props => !props.disable ? "pointer" : "inherit"};
+    }
+`
+
 
 class CardsContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            currentPage: 1,
             pickedRace: null,
             pickedClass: null,
             allCards: this.props.cards,
@@ -64,6 +82,8 @@ class CardsContent extends Component {
         this.handleClassFilter = this.handleClassFilter.bind(this);
         this.handleRaceFilter = this.handleRaceFilter.bind(this);
         this.handleAddCardToDeck = this.handleAddCardToDeck.bind(this);
+
+        this.handleChangePage = this.handleChangePage.bind(this);
     }
 
 
@@ -81,16 +101,24 @@ class CardsContent extends Component {
         this.props.dispatch(addCardToDeck(card))
     }
 
+    handleChangePage(step) {
+        const { currentPage } = this.state;
+
+        let newPage = currentPage + step;
+        if (newPage < 1) newPage = 1;
+        this.setState({ currentPage: newPage })
+    }
+
     render() {
         const { cards, currentState, isDeckFull } = this.props;
-        const { pickedRace, pickedClass } = this.state;
+        const { pickedRace, pickedClass, currentPage } = this.state;
 
         let cardsToDisplay = cards.sort((f, s) => (f.card.stats[f.level - 1].cost - s.card.stats[s.level - 1].cost));
 
         if (pickedRace !== null) cardsToDisplay = cardsToDisplay.filter(card => card.card.race === pickedRace)
         if (pickedClass !== null) cardsToDisplay = cardsToDisplay.filter(card => card.card.role === pickedClass)
 
-        cardsToDisplay = cardsToDisplay.filter((card, index) => index <= 7).map(card =>
+        cardsToDisplay = cardsToDisplay.filter((card, index) => index < (CARDS_ON_PAGE * currentPage) && index >= (CARDS_ON_PAGE * (currentPage - 1))).map(card =>
             <CardsCardItem
                 card={card}
                 key={card._id}
@@ -99,20 +127,22 @@ class CardsContent extends Component {
                 addCardToDeck={this.handleAddCardToDeck}
             />)
 
-        let halfWayThough = Math.floor(cardsToDisplay.length / 2)
-
-        let arrayFirstHalf = cardsToDisplay.slice(0, halfWayThough);
-        let arraySecondHalf = cardsToDisplay.slice(halfWayThough, cardsToDisplay.length);
+        let arrayFirstHalf = cardsToDisplay.slice(0, Math.ceil(CARDS_ON_PAGE / 2));
+        let arraySecondHalf = cardsToDisplay.slice(Math.ceil(CARDS_ON_PAGE / 2), cardsToDisplay.length);
 
         return (
             <Wrapper>
                 <CardList>
-                    <Row>
-                        {arrayFirstHalf}
-                    </Row>
-                    <Row>
-                        {arraySecondHalf}
-                    </Row>
+                    <PageTurn onClick={() => this.handleChangePage(-1)} disable={currentPage === 1} />
+                    <Column>
+                        <Row>
+                            {arrayFirstHalf}
+                        </Row>
+                        <Row>
+                            {arraySecondHalf}
+                        </Row>
+                    </Column>
+                    <PageTurn onClick={() => this.handleChangePage(1)} disable={cardsToDisplay.length < CARDS_ON_PAGE} />
                 </CardList>
                 <RaceFilters applyRaceFilter={this.handleRaceFilter} pickedRace={pickedRace} />
                 <ClassFilters applyClassFilter={this.handleClassFilter} pickedClass={pickedClass} />
