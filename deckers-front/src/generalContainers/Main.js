@@ -19,15 +19,17 @@ const Wrapper = styled.div`
     display: flex;
 `
 
-const WidthDiv = styled.div`
-    width: ${props => (props.width * 100) + "%"}
-`
-
 const AppWrap = styled.div`
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100vh;
+`
+
+const Column = styled.div`
+    width:100%;
+    height: 100%;
+    flex-direction: column;
 `
 
 const Main = props => {
@@ -67,13 +69,12 @@ const Main = props => {
                 <Route render={props => {
                     if (currentUser.isAuthenticated) return (
                         <Wrapper>
-                            <WidthDiv width={2 / 12}>
+                            <Column>
                                 <Navbar />
-                            </WidthDiv>
-                            <WidthDiv width={10 / 12}>
                                 <Content />
-                            </WidthDiv>
-                        </Wrapper>)
+                            </Column>
+                        </Wrapper>
+                    )
                     return (<Redirect to="/login" />)
 
                 }}

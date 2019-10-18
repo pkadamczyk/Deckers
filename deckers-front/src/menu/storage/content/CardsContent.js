@@ -28,37 +28,28 @@ export const CLASS_LIST = {
 };
 
 const Wrapper = styled.div`
-    background-image: url(${wrapperBackground});
-    background-repeat: no-repeat;
-    background-size:contain;
-    
     height: 100%;
     width: 80%;
-
-    display: flex;
-`
-
-const Column = styled.div`
-    display: flex;
-    width:100%;
-    flex-direction: column;
-    justify-content: center;
 `
 
 const Row = styled.div`
     display: flex;
     height: 100%;
+    justify-content: space-evenly; 
+
+    max-width: 900px;
+    margin: auto;
 `
 
 const CardList = styled.div`
+    margin-left: 3%;
+
     display:flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: space-around;
 
-    height: 80%;
     width:100%;
-    padding-left:2%;
-    padding-top:2.5rem;
+    padding-top:1.5rem;
 `
 
 class CardsContent extends Component {
@@ -108,18 +99,23 @@ class CardsContent extends Component {
                 addCardToDeck={this.handleAddCardToDeck}
             />)
 
+        let halfWayThough = Math.floor(cardsToDisplay.length / 2)
+
+        let arrayFirstHalf = cardsToDisplay.slice(0, halfWayThough);
+        let arraySecondHalf = cardsToDisplay.slice(halfWayThough, cardsToDisplay.length);
+
         return (
             <Wrapper>
-                <Column>
+                <CardList>
                     <Row>
-                        <CardList>
-                            {cardsToDisplay}
-                        </CardList>
-
-                        <RaceFilters applyRaceFilter={this.handleRaceFilter} pickedRace={pickedRace} />
+                        {arrayFirstHalf}
                     </Row>
-                    <ClassFilters applyClassFilter={this.handleClassFilter} pickedClass={pickedClass} />
-                </Column>
+                    <Row>
+                        {arraySecondHalf}
+                    </Row>
+                </CardList>
+                <RaceFilters applyRaceFilter={this.handleRaceFilter} pickedRace={pickedRace} />
+                <ClassFilters applyClassFilter={this.handleClassFilter} pickedClass={pickedClass} />
             </Wrapper>
         )
     }

@@ -14,10 +14,15 @@ import forsakenFilter from '../../../graphic/icon_race_forsaken.png';
 import { RACE_LIST } from './CardsContent';
 
 const Wrapper = styled.div`
+    height: 100%;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-left: auto;
+
+    position: absolute;
+    left: 0;
+    top: 0;
 `
 
 class RaceFilters extends Component {

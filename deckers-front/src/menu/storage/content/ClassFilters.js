@@ -15,6 +15,11 @@ import { CLASS_LIST } from './CardsContent';
 const Row = styled.div`
     display: flex;
     justify-content: space-evenly;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80%;
 `
 
 class ClassFilters extends Component {
