@@ -37,6 +37,8 @@ const Wrapper = styled.div`
     background-image: url(${props => props.imageURL});
     background-repeat: no-repeat;
     background-size: contain;
+
+    position: relative;
 `
 
 const Button = styled.button`
@@ -59,17 +61,32 @@ const Stats = styled.div`
     display: flex;
     justify-content: space-between; 
 
-    position: relative;
-    top: 141px;
+    position: absolute;
+    bottom: 20px;
     left: 10px;
     width: 88%;
     font-size: 21px;
 `
 const Class = styled.div`
-    font-size: 14px;
+    font-size: 12px;
 
     position: relative;
-    top: 9px;
+    top: 15px;
+`
+
+const Description = styled.div`
+    text-align: center;
+    width: 100%;
+    height: 55px;
+
+    position: absolute;
+    bottom: 32px;
+    font-size: 12px;
+`
+
+const CenterText = styled.div`
+    width:74%;
+    margin: auto;
 `
 
 class CardsCardItem extends Component {
@@ -107,6 +124,8 @@ class CardsCardItem extends Component {
                     )}
 
                     <Name>{card.name}</Name>
+
+                    <Description><CenterText>{card.description}</CenterText></Description>
 
                     <Stats>
                         <div>{card.stats[dbCard.level].damage}</div>
