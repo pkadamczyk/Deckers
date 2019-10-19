@@ -12,8 +12,38 @@ import { STORAGE_STATE } from '../../../store/reducers/storage';
 
 import images from "../../../graphic/card_portraits/forsaken"
 
+const Wrapper = styled.div`
+    margin: 0 2%;
+    margin-bottom: 10px;
+
+    background-image: url(${props => props.imageURL});
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    -webkit-user-select: none;        
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none;
+
+    position: relative;
+
+    :hover{
+        margin: ${props => props.canBePicked ? '0 calc(2% - 2px)' : "0 2%"};
+        margin-bottom: ${props => props.canBePicked ? '8px' : "10px"};
+
+        border-radius: 10px;
+        border: ${props => props.canBePicked ? '2px solid rgba(165, 255, 48, 0.7)' : "none"};
+        border-style:  ${props => props.canBePicked ? 'solid solid none solid' : 'none'};
+
+        -webkit-box-shadow:  ${props => props.canBePicked ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)" : "none"};
+        -moz-box-shadow: ${props => props.canBePicked ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)" : "none"};
+        box-shadow: ${props => props.canBePicked ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)" : "none"};
+        cursor: ${props => props.canBePicked ? "pointer" : "inherit"};
+    }
+`
+
 const Card = styled.div`
-    height:255px;
+    height:242px;
     width:173px;
     background-image: url(${cardItemBackground}) !important;
     background-repeat: no-repeat;
@@ -32,21 +62,6 @@ const CostBox = styled.div`
     padding-top: 3px;
 `
 
-const Wrapper = styled.div`
-    margin: 0 2%;
-    background-image: url(${props => props.imageURL});
-    background-repeat: no-repeat;
-    background-size: contain;
-
-    position: relative;
-`
-
-const Button = styled.button`
-    position: relative;
-    top:2.8rem;
-    left:2.35rem;
-`
-
 const Name = styled.div`
     font-size: 14px;
 
@@ -62,7 +77,7 @@ const Stats = styled.div`
     justify-content: space-between; 
 
     position: absolute;
-    bottom: 20px;
+    bottom: 7px;
     left: 10px;
     width: 88%;
     font-size: 21px;
@@ -80,7 +95,7 @@ const Description = styled.div`
     height: 55px;
 
     position: absolute;
-    bottom: 32px;
+    bottom: 19px;
     font-size: 12px;
 `
 
@@ -97,7 +112,9 @@ class CardsCardItem extends Component {
     }
 
     handleOnClick() {
-        const { card, addCardToDeck } = this.props;
+        const { card, addCardToDeck, isDeckFull, currentState } = this.props;
+        const canBePicked = currentState !== STORAGE_STATE.IDLE && (isDeckFull === false)
+        if (!canBePicked) return;
 
         addCardToDeck(card.card)
     }
@@ -111,18 +128,18 @@ class CardsCardItem extends Component {
         const costBoxBackground = costBoxBackgrounds[card.race]
         const imageURL = images.get(card.imageID)
 
+        // {currentState !== STORAGE_STATE.IDLE && (isDeckFull === false)
+        // <Button onClick={this.handleOnClick}>Add to deck</Button>
+
+        const canBePicked = currentState !== STORAGE_STATE.IDLE && (isDeckFull === false)
+
         return (
-            <Wrapper imageURL={imageURL}>
+            <Wrapper imageURL={imageURL} canBePicked={canBePicked} onClick={this.handleOnClick}>
 
                 <Card>
                     <CostBox background={costBoxBackground}>
                         <p>{card.stats[dbCard.level].cost}</p>
                     </CostBox>
-
-                    {currentState !== STORAGE_STATE.IDLE && (isDeckFull === false) && (
-                        <Button onClick={this.handleOnClick}>Add to deck</Button>
-                    )}
-
                     <Name>{card.name}</Name>
 
                     <Description><CenterText>{card.description}</CenterText></Description>

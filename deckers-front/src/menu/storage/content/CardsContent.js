@@ -58,7 +58,7 @@ const CardList = styled.div`
 
     width:100%;
     height: 90%;
-    padding-top:1.5rem;
+    padding-top: 1%;
 `
 
 const PageTurn = styled.div`
