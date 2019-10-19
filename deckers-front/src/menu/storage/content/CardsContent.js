@@ -7,6 +7,9 @@ import RaceFilters from './RaceFilters';
 import ClassFilters from './ClassFilters';
 import { addCardToDeck } from '../../../store/actions/storage';
 
+import leftArrow from '../../../graphic/slider_left.png';
+import rightArrow from '../../../graphic/slider_right.png';
+
 export const RACE_LIST = {
     DWARF: 0,
     FORSAKEN: 1,
@@ -59,11 +62,20 @@ const CardList = styled.div`
 `
 
 const PageTurn = styled.div`
-    width: 9%;
+    position: relative;
+    z-index: 2;
+
+    width: 12%;
+    transition: 0.3s all;
+
+    background: ${props => `url(${props.img}) no-repeat`};
+    background-position: center;
+    background-size: contain;
+    opacity: 0;
 
     :hover{
-        background: ${props => !props.disable ? "black" : "none"};
         cursor: ${props => !props.disable ? "pointer" : "inherit"};
+        opacity: ${props => !props.disable ? "1" : "0"};
     }
 `
 
@@ -101,15 +113,20 @@ class CardsContent extends Component {
 
     handleChangePage(step) {
         const { currentPage } = this.state;
+        const { cards } = this.props
+        const pageAmount = Math.ceil(cards.length / CARDS_ON_PAGE)
 
         let newPage = currentPage + step;
         if (newPage < 1) newPage = 1;
+        if (newPage > pageAmount) newPage = pageAmount;
+
         this.setState({ currentPage: newPage })
     }
 
     render() {
         const { cards, currentState, isDeckFull } = this.props;
         const { pickedRace, pickedClass, currentPage } = this.state;
+        const pageAmount = Math.ceil(cards.length / CARDS_ON_PAGE)
 
         let cardsToDisplay = cards.sort((f, s) => (f.card.stats[f.level - 1].cost - s.card.stats[s.level - 1].cost));
 
@@ -131,7 +148,7 @@ class CardsContent extends Component {
         return (
             <Wrapper>
                 <CardList>
-                    <PageTurn onClick={() => this.handleChangePage(-1)} disable={currentPage === 1} />
+                    <PageTurn onClick={() => this.handleChangePage(-1)} disable={currentPage === 1} img={leftArrow} />
                     <Column>
                         <Row>
                             {arrayFirstHalf}
@@ -140,7 +157,7 @@ class CardsContent extends Component {
                             {arraySecondHalf}
                         </Row>
                     </Column>
-                    <PageTurn onClick={() => this.handleChangePage(1)} disable={cardsToDisplay.length < CARDS_ON_PAGE} />
+                    <PageTurn onClick={() => this.handleChangePage(1)} disable={currentPage >= pageAmount} img={rightArrow} />
                 </CardList>
                 <RaceFilters applyRaceFilter={this.handleRaceFilter} pickedRace={pickedRace} />
                 <ClassFilters applyClassFilter={this.handleClassFilter} pickedClass={pickedClass} />
