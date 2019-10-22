@@ -13,6 +13,8 @@ import cardsRare from '../../graphic/cards_rare.svg'
 import cardsEpic from '../../graphic/cards_epic.svg'
 import cardsLegendary from '../../graphic/cards_legendary.svg'
 
+import images from "../../graphic/shop_items"
+
 const Wrapper = styled.div`
     position: relative;
     text-align: center;
@@ -36,9 +38,11 @@ const NameTag = styled.h4`
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+
+    border-radius: 15px;
 `
-const ChestImg = styled.div`
-    background-image: url(${chestItemNameImgImg});
+const ItemImg = styled.div`
+    background-image: url(${props => props.imageURL});
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
@@ -47,12 +51,12 @@ const ChestImg = styled.div`
     height: 100%;
     margin: 0 15%;
 `
-const ChestWrapper = styled.div`
+const ItemImgWrapper = styled.div`
     background: #eee;
 
     width: 106%;
     height: 120px;
-    margin: 5% 0;
+    margin: 0;
     padding: 3% 0;
 
     position: relative;
@@ -75,7 +79,6 @@ const Button = styled.button`
     margin: 0 auto;
     position: relative;
     bottom: 10px;
-
 `
 
 const GoldImg = styled.span`
@@ -93,18 +96,6 @@ const ListWrapper = styled.div`
     margin: 12px;
 `
 
-const LootInfo = styled.div`
-    height: 40px;
-    width: 45%;
-
-    background: #48BAFF;
-    border-radius: 5px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`
-
 const Guaranteed = styled.div`
     height: 40px;
     width: 90%;
@@ -116,8 +107,7 @@ const Guaranteed = styled.div`
 
     display:flex;
     align-items: center;
-    justify-content: space-between;
-
+    justify-content: center;
 `
 
 const Row = styled.div`
@@ -129,20 +119,7 @@ const Row = styled.div`
     justify-content: space-between;
 `
 
-const SVG = styled.div`
-    background-image: url(${props => props.svg});
-    background-repeat: no-repeat;
-    background-size: contain;
-    height: 25px;
-    width: 25px; 
-`
-
-const FlexboxDiv = styled.div`
-    display:flex;
-    align-items: center;
-`
-
-class Chest extends Component {
+class CurrencyPack extends Component {
     constructor(props) {
         super(props)
 
@@ -157,39 +134,29 @@ class Chest extends Component {
     }
 
     render() {
-        const cardsSvgArray = [cardsRandom, cardsCommon, cardsRare, cardsEpic, cardsLegendary]
+        const { item, isAffordable } = this.props;
+        const { amount, name, currency } = item
 
-        const { chest, isAffordable } = this.props;
-        const { price, name, cardAmount } = chest
-
-        const chestInfo = Object.values(cardAmount).filter((a, i) => i > 1).map((amount, i) => {
-            return amount !== 0 ? <FlexboxDiv key={`${i}${amount}`}>{amount}x <SVG svg={cardsSvgArray[i + 2]} /></FlexboxDiv> : null
-        })
-
-        const allCards = Object.values(cardAmount).reduce((a, b) => a + b, 0)
+        const imageUrl = images.get(item.imageID)
 
         return (
             <Wrapper isAffordable={isAffordable}>
-                <ChestWrapper>
-                    <ChestImg />
-                </ChestWrapper>
-
                 <NameTag >{name}</NameTag>
 
+                <ItemImgWrapper>
+                    <ItemImg imageURL={imageUrl} />
+                </ItemImgWrapper>
+
                 <ListWrapper>
-                    <Row><LootInfo> {allCards}x <SVG svg={cardsSvgArray[1]} /> </LootInfo><LootInfo>10x  <GoldImg /></LootInfo></Row>
-                    <Guaranteed>
-                        Guaranteed:
-                        <FlexboxDiv>{chestInfo}</FlexboxDiv>
-                    </Guaranteed>
+                    <Row><Guaranteed>{amount} <GoldImg /></Guaranteed></Row>
                 </ListWrapper>
 
                 <Button onClick={this.handleOnClick} disabled={!isAffordable}>
-                    <GoldImg>{price.amount}</GoldImg>
+                    <GoldImg>{amount}</GoldImg>
                 </Button>
             </Wrapper>
         );
     }
 }
 
-export default Chest;
+export default CurrencyPack;

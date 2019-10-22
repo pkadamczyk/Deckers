@@ -9,6 +9,9 @@ const Option = require("../models/option");
 const Card = require("../models/card");
 const Game = require("../models/game");
 
+const currencyPacks = require("./currencyPacks")
+
+
 // Route for card upgrade
 router.post("/:usr_id/:card_id/upgrade", loginRequired, ensureCorrectUser, async function (req, res, next) {
 

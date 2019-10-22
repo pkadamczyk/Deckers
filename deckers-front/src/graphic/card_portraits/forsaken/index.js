@@ -21,7 +21,7 @@ import warrior46 from './warrior46.png';
 import skeleton11 from './skeleton11.png';
 import squire11 from './squire11.png';
 
-const images = new Map;
+const images = new Map();
 
 images.set("assasin11", assasin11)
 images.set("assasin42", assasin42)

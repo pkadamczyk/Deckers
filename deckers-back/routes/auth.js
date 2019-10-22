@@ -6,6 +6,8 @@ const User = require("../models/user");
 const Chest = require("../models/chest");
 const Card = require("../models/card");
 
+const currencyPacks = require("../api/currencyPacks")
+
 router.post("/register", async function (req, res, next) {
     try {
         let [user, availableChests] = await Promise.all([await User.create(req.body), await fetchChests()])
@@ -24,6 +26,7 @@ router.post("/register", async function (req, res, next) {
         return res.status(200).json({
             user,
             availableChests,
+            currencyPacks,
             token
         });
     } catch (err) {
@@ -63,6 +66,7 @@ router.post("/login", async function (req, res, next) {
             return res.status(200).json({
                 user,
                 availableChests,
+                currencyPacks,
                 token
             });
         } else {

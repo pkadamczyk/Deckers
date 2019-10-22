@@ -1,11 +1,11 @@
-import { SET_AVAILABLE_CHESTS, UPDATE_SHOP_STATE } from "../actionTypes";
+import { SET_SHOP_DATA, UPDATE_SHOP_STATE } from "../actionTypes";
 import { apiCall } from "../../services/api";
 import { updateUserAfterChestPurchase } from './auth';
 import { SHOP_STATE } from "../reducers/shop";
 
-export const setAvailableChests = (chests) => ({
-    type: SET_AVAILABLE_CHESTS,
-    chests: chests
+export const setShopData = (data) => ({
+    type: SET_SHOP_DATA,
+    data: data
 });
 
 export const updateShopState = (newState) => {

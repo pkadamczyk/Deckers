@@ -1,6 +1,6 @@
 import { apiCall, setTokenHeader } from "../../services/api";
 import { SET_CURRENT_USER, UPDATE_USER_AFTER_CHEST_PURCHASE, UPDATE_USER_AFTER_DECKS_UPDATE } from "../actionTypes";
-import { setAvailableChests } from './shop';
+import { setShopData } from './shop';
 
 export function setCurrentUser(user) {
   return {
@@ -42,11 +42,11 @@ export function authUser(type, userData) {
     // wrap our thunk in a promise so we can wait for the API call
     return new Promise((resolve, reject) => {
       return apiCall("post", `/api/${type}`, userData)
-        .then(({ token, availableChests, ...user }) => {
+        .then(({ token, availableChests, currencyPacks, ...user }) => {
           localStorage.setItem("jwtToken", token);
           setAuthorizationToken(token);
           dispatch(setCurrentUser(user.user));
-          dispatch(setAvailableChests(availableChests));
+          dispatch(setShopData({ availableChests, currencyPacks }));
           resolve(); // indicate that the API call succeeded
         })
         .catch(err => {
