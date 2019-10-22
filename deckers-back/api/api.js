@@ -56,15 +56,12 @@ router.post("/:usr_id/:card_id/upgrade", loginRequired, ensureCorrectUser, async
 router.post("/:usr_id/shop/buy/:chest", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
         let [foundChest, foundUser] = await Promise.all([await Chest.findOne({ name: req.params.chest }), await User.findById(req.params.usr_id).deepPopulate('cards.card')])
-        let cardAmounts = calculateCardAmounts(foundChest);
+
+        const cardAmounts = Object.values(foundChest.toObject().cardAmount)
 
         const currencyType = Object.keys(Chest.currencyList)[foundChest.price.currency]
         if (foundUser.currency[currencyType] < foundChest.price.amount) throw new Error("Not enough currency")
-
-
-        foundUser.currency[currencyType] -= foundChest.price.amount
-        //  Define the rarity of random cards
-        await randomCardsRarity(cardAmounts);
+        foundUser.currency[currencyType] -= foundChest.price.amount;
 
         // Wait for rarity random, then random cards that will be added to player
         cards = await addCardsToArray(cardAmounts);
@@ -72,14 +69,12 @@ router.post("/:usr_id/shop/buy/:chest", loginRequired, ensureCorrectUser, async 
         let cardIndexes = cards.map(function (cardFromDb) {
             // Add cards that player didnt have earlier
             if (foundUser.cards.findIndex(card => cardFromDb._id.equals(card.card._id)) === -1) {
-                let newCard = { card: cardFromDb._id }
+                const newCard = { card: cardFromDb._id }
                 foundUser.cards.push(newCard);
             }
             return foundUser.cards.findIndex(card => cardFromDb._id.equals(card.card._id))
         })
-        cardIndexes.forEach(cardIndex => foundUser.cards[cardIndex].amount++);
-
-        // cards.forEach(card => console.log(card.name))
+        cardIndexes.map(cardIndex => foundUser.cards[cardIndex].amount++);
 
         await foundUser.deepPopulate('cards.card');
 
@@ -115,7 +110,7 @@ router.post("/:usr_id/decks/create", loginRequired, ensureCorrectUser, async fun
 
         let indexArr = req.body.cards.map(req_card_id => cards.findIndex(usr_card_obj => usr_card_obj.card._id.equals(req_card_id)))
 
-        indexArr.forEach(index => newDeck.cards.push(cards[index].card._id))
+        indexArr.map(index => newDeck.cards.push(cards[index].card._id))
 
         foundUser.decks.push(newDeck);
         await foundUser.deepPopulate("decks.cards");
@@ -168,7 +163,7 @@ router.put("/:usr_id/decks/:deck_id", loginRequired, ensureCorrectUser, async fu
         const cards = foundUser.cards.concat(cardsToConcat.map(card => ({ level: 1, amount: 0, card })));
 
         let indexArr = req.body.cards.map(req_card_id => cards.findIndex(usr_card_obj => usr_card_obj.card._id.equals(req_card_id)))
-        indexArr.forEach(index => newDeck.cards.push(cards[index].card._id))
+        indexArr.map(index => newDeck.cards.push(cards[index].card._id))
 
         let idx = foundUser.decks.findIndex(deck => deck._id.equals(req.params.deck_id));
         if (idx == -1) throw new Error("Deck not found");
@@ -372,34 +367,26 @@ async function cardsCheck(card, user) {
     }
 }
 
-function calculateCardAmounts(chest) {
-    let array = [];
-    Object.keys(chest.cardAmount).forEach(key => array.push(chest.cardAmount[key]))
-    array.splice(0, 1);
-    return array;
-}
-
 async function randomCardsRarity(cardAmounts) {
     try {
-        let foundOption = await Option.findOne({ short: "randomCardRarity" })
-        let max = foundOption.values.reduce((a, b) => a + b, 0);
+        const array = [0, 0, 0, 0];
+        const foundOption = await Option.findOne({ short: "randomCardRarity" })
+        const max = foundOption.values.reduce((a, b) => a + b, 0);
+        const valueArray = foundOption.values;
 
-        for (var j = 0; j < cardAmounts[0]; j++) {
-            let random = Math.random() * max;
+        for (let i = 0; i < cardAmounts[0]; i++) {
+            const random = Math.random() * max;
 
-            let valueArray = foundOption.values;
-            let x = valueArray.findIndex(function (el, i, array) {
-                let min = array.slice(0, i).reduce((x, y) => x + y, 0);
+            const rarity = valueArray.findIndex((el, i, array) => {
+                const min = array.slice(0, i).reduce((x, y) => x + y, 0);
 
                 return (random > min && random <= (min + array[i]));
-            }) + 1;
+            }); // +1 skips random as rarity
 
-            // console.log("Random rarity is: " + Object.keys(Card.rarityList)[x]);
-            cardAmounts[x]++;
+            array[rarity]++;
         }
 
-        cardAmounts.splice(0, 1);
-        return cardAmounts;
+        return array;
     } catch (err) {
         console.log(err);
     }
@@ -409,17 +396,24 @@ async function addCardsToArray(cardAmounts) {
     try {
         let cards = [];
 
-        cards = await Promise.all(cardAmounts.map(async function (cardAmount, index) {
-            let cardPromises = [];
-            index++;
+        //  Define the rarity of random cards
+        const randomedCards = await randomCardsRarity(cardAmounts);
 
-            let count = await Card.countDocuments({ rarity: index })
-            // console.log("Cards amount: " + cardAmount + " " + Object.keys(Card.rarityList)[index]);
-            for (var i = 0; i < cardAmount; i++) {
-                let random = Math.floor(Math.random() * count);
+        // Need to skip one as 0 is random cards
+        const cardsRarity = cardAmounts.slice(1).map((c, i) => c + randomedCards[i])
+
+        const cardDocumentsCount = await Promise.all(cardsRarity.map((c, i) => Card.countDocuments({ rarity: (i + 1), canBeDropped: true })))
+
+        cards = await Promise.all(cardsRarity.map(async function (cardAmount, index) {
+            let cardPromises = [];
+
+            let count = cardDocumentsCount[index]
+
+            for (let i = 0; i < cardAmount; i++) {
+                const random = Math.floor(Math.random() * count);
 
                 // Again query all items but only fetch one offset by our random #
-                const cardPromise = Card.findOne({ rarity: index, canBeDropped: true }).skip(random)
+                const cardPromise = Card.findOne({ rarity: (index + 1), canBeDropped: true }).skip(random)
                 cardPromises.push(cardPromise);
             }
             return await Promise.all(cardPromises);
