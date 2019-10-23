@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DeckContainer from './DeckContainer';
+import Content from './Content';
 import Navbar from './Navbar';
 
 import styled from "styled-components"
@@ -13,7 +13,7 @@ class Matchmaking extends Component {
     render() {
         return (
             <Row >
-                <DeckContainer />
+                <Content />
                 <Navbar />
             </Row>
         )

@@ -10,7 +10,7 @@ const currencyPacks = require("../api/currencyPacks")
 
 router.post("/register", async function (req, res, next) {
     try {
-        let [user, availableChests] = await Promise.all([await User.create(req.body), await fetchChests()])
+        let [user, availableChests] = await Promise.all([await createNewUser(req.body), await fetchChests()])
 
         let { id, username, email } = user;
         let token = jwt.sign(
@@ -101,4 +101,16 @@ function prepareUserData(user) {
     delete data.__v;
 
     return data
+}
+
+async function createNewUser(data) {
+    const card = await Card.findOne()
+
+    const dummyDeck = { name: "aaa", cards: [] }
+    for (let index = 0; index < 10; index++) {
+        dummyDeck.cards.push(card)
+    }
+
+    data.decks = [dummyDeck, dummyDeck, dummyDeck]
+    return User.create(data)
 }

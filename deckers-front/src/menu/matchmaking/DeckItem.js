@@ -4,31 +4,57 @@ import CardItem from './CardItem';
 import styled from "styled-components"
 import background from '../../graphic/nav_background_01.png';
 
-const Wrapper = styled.div`
-    display: inline-block;
-    height: 95%;
-    width:30%;
+const CARDS_IN_ROW = 5;
 
-    background-image: url(${background});
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-color: transparent;
+const Wrapper = styled.div`
+    width: 100%;
 
     color: white;
     text-align: center;
 
     border-radius: 10px;
-    margin: 1.25% 1.66%; 
-    padding-top:10px;
-    cursor: pointer;
+    background: #eee;
 
-    opacity: ${props => props.isPicked ? "1" : "0.65"}
+    margin: auto; 
+    padding-top:10px;
+
+    display: flex;
+    flex-direction: column;
+
+    cursor: pointer;
+    opacity: 1;
 `
 
-const Title = styled.h1`
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position-y: center;
+const Row = styled.div`
+    display: flex;
+    justify-content: space-evenly; 
+    width:100%;
+
+    max-width: 900px;
+    margin:auto
+`
+
+const Top = styled.div`
+    display:flex;
+    justify-content: flex-end;
+    width: 95%;
+`
+
+const DeckNumber = styled.div`
+    width: 10%;
+    background: ${props => props.isActive ? "#eee" : "#ddd"};
+    text-align: center;
+
+    cursor: pointer;
+
+    -webkit-user-select: none;        
+    -moz-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none;
+
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 5px 5px 0px 0px;
+    border-radius: 5px 5px 0px 0px; 
 `
 
 class DeckItem extends Component {
@@ -50,23 +76,31 @@ class DeckItem extends Component {
     };
 
     render() {
-        const { deck, pickedDeck } = this.props;
+        const { deck, pickedDeck, pickDeck } = this.props;
 
-        let DeckSlots = deck.cards.map((card, index) => (
+        let cardsToDisplay = deck.cards.map((card, index) => (
             <CardItem
                 key={card._id + index}
-                deckSlot={card}
+                card={card}
                 deckSlotNumber={index}
             />
         ));
 
-        const isPicked = pickedDeck === deck._id
+        let arrayFirstHalf = cardsToDisplay.slice(0, CARDS_IN_ROW);
+        let arraySecondHalf = cardsToDisplay.slice(CARDS_IN_ROW, cardsToDisplay.length);
+
         return (
-            <Wrapper onClick={this.handleOnClick} isPicked={isPicked}>
-                <Title>{deck.name}</Title>
-                <hr />
-                {DeckSlots}
-            </Wrapper>
+            <>
+                <Top>
+                    <DeckNumber isActive={pickedDeck === 0} onClick={() => pickDeck(0)}>1</DeckNumber>
+                    <DeckNumber isActive={pickedDeck === 1} onClick={() => pickDeck(1)}>2</DeckNumber>
+                    <DeckNumber isActive={pickedDeck === 2} onClick={() => pickDeck(2)}>3</DeckNumber>
+                </Top>
+                <Wrapper onClick={this.handleOnClick}>
+                    <Row>{arrayFirstHalf}</Row>
+                    <Row>{arraySecondHalf}</Row>
+                </Wrapper>
+            </>
         )
     }
 }
