@@ -47,6 +47,7 @@ const Column = styled.div`
     display: flex;
     height: 100%;
     flex-direction: column;
+    justify-content: center;
 `
 
 const CardList = styled.div`

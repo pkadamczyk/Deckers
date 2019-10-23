@@ -26,6 +26,7 @@ const Wrapper = styled.div`
     user-select: none;
 
     position: relative;
+    height: 100%;
 
     :hover{
         margin: ${props => props.canBePicked ? '0 calc(2% - 2px)' : "0 2%"};
@@ -43,8 +44,7 @@ const Wrapper = styled.div`
 `
 
 const Card = styled.div`
-    height:242px;
-    width:173px;
+    height: 100%;
     background-image: url(${cardItemBackground}) !important;
     background-repeat: no-repeat;
     background-size: contain;
@@ -65,8 +65,9 @@ const CostBox = styled.div`
 const Name = styled.div`
     font-size: 14px;
 
-    position: relative;
-    top: 102px;
+    position: absolute;
+    top: 57%;
+    width: 100%;
 
     display: flex;
     justify-content: center;
@@ -95,13 +96,25 @@ const Description = styled.div`
     height: 55px;
 
     position: absolute;
-    bottom: 19px;
-    font-size: 12px;
+    top: 68%;
+    font-size: 11px;
 `
 
 const CenterText = styled.div`
     width:74%;
     margin: auto;
+`
+
+const AAA = styled.div`
+    height:${props => (props.size * 1.4) + "px"};
+    width: ${props => props.size + "px"};
+
+    max-height: 242px;
+    max-width: 173px;
+`
+
+const MarginAuto = styled.div`
+margin: auto;
 `
 
 class CardsCardItem extends Component {
@@ -119,7 +132,6 @@ class CardsCardItem extends Component {
         addCardToDeck(card.card)
     }
 
-    // <p>{Object.keys(RACE_LIST)[card.card.race]} {Object.keys(CLASS_LIST)[card.card.role]}</p>
     render() {
         const { card: dbCard, currentState, isDeckFull } = this.props;
         const { card } = dbCard;
@@ -128,29 +140,28 @@ class CardsCardItem extends Component {
         const costBoxBackground = costBoxBackgrounds[card.race]
         const imageURL = images.get(card.imageID)
 
-        // {currentState !== STORAGE_STATE.IDLE && (isDeckFull === false)
-        // <Button onClick={this.handleOnClick}>Add to deck</Button>
-
         const canBePicked = currentState !== STORAGE_STATE.IDLE && (isDeckFull === false)
-
+        const optimalSize = window.innerWidth * 0.15;
+        // 173
         return (
-            <Wrapper imageURL={imageURL} canBePicked={canBePicked} onClick={this.handleOnClick}>
+            <AAA size={optimalSize}>
+                <Wrapper imageURL={imageURL} canBePicked={canBePicked} onClick={this.handleOnClick}>
+                    <Card>
+                        <CostBox background={costBoxBackground}>
+                            <p>{card.stats[dbCard.level].cost}</p>
+                        </CostBox>
+                        <Name><MarginAuto>{card.name}</MarginAuto></Name>
 
-                <Card>
-                    <CostBox background={costBoxBackground}>
-                        <p>{card.stats[dbCard.level].cost}</p>
-                    </CostBox>
-                    <Name>{card.name}</Name>
+                        <Description><CenterText>{card.description}</CenterText></Description>
 
-                    <Description><CenterText>{card.description}</CenterText></Description>
-
-                    <Stats>
-                        <div>{card.stats[dbCard.level].damage}</div>
-                        <Class>{Object.keys(CLASS_LIST)[card.role]}</Class>
-                        <div>{card.stats[dbCard.level].damage}</div>
-                    </Stats>
-                </Card>
-            </Wrapper>
+                        <Stats>
+                            <div>{card.stats[dbCard.level].damage}</div>
+                            {/* <Class>{Object.keys(CLASS_LIST)[card.role]}</Class> */}
+                            <div>{card.stats[dbCard.level].damage}</div>
+                        </Stats>
+                    </Card>
+                </Wrapper>
+            </AAA>
         )
     }
 }
