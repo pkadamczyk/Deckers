@@ -145,21 +145,12 @@ const FlexboxDiv = styled.div`
 class Chest extends Component {
     constructor(props) {
         super(props)
-
-        this.handleOnClick = this.handleOnClick.bind(this);
-    }
-
-    handleOnClick() {
-        const { handleClick, userId, chest } = this.props;
-        const { name } = chest
-
-        handleClick(userId, name)
     }
 
     render() {
         const cardsSvgArray = [cardsRandom, cardsCommon, cardsRare, cardsEpic, cardsLegendary]
 
-        const { chest, isAffordable } = this.props;
+        const { chest, isAffordable, handleClick } = this.props;
         const { price, name, cardAmount } = chest
 
         const chestInfo = Object.values(cardAmount).filter((a, i) => i > 1).map((amount, i) => {
@@ -184,7 +175,7 @@ class Chest extends Component {
                     </Guaranteed>
                 </ListWrapper>
 
-                <Button onClick={this.handleOnClick} disabled={!isAffordable}>
+                <Button onClick={handleClick} disabled={!isAffordable}>
                     <GoldImg>{price.amount}</GoldImg>
                 </Button>
             </Wrapper>

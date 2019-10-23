@@ -55,7 +55,7 @@ router.post("/:usr_id/:card_id/upgrade", loginRequired, ensureCorrectUser, async
 // Route for buying chests
 router.post("/:usr_id/shop/buy/:chest", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
-        let [foundChest, foundUser] = await Promise.all([await Chest.findOne({ name: req.params.chest }), await User.findById(req.params.usr_id).deepPopulate('cards.card')])
+        let [foundChest, foundUser] = await Promise.all([await Chest.findById(req.params.chest), await User.findById(req.params.usr_id).deepPopulate('cards.card')])
 
         const cardAmounts = Object.values(foundChest.toObject().cardAmount)
 
@@ -86,6 +86,31 @@ router.post("/:usr_id/shop/buy/:chest", loginRequired, ensureCorrectUser, async 
         });
 
         foundUser.save()
+    } catch (err) {
+        console.log(err)
+        return next(err);
+    }
+});
+
+// Route for buying shop items, currently gold
+router.post("/:usr_id/shop/buy/item/:id", loginRequired, ensureCorrectUser, async function (req, res, next) {
+    try {
+        const user = await User.findById(req.params.usr_id).deepPopulate('cards.card')
+        const shopItem = currencyPacks.goldPacks.find(cp => cp.imageID === req.params.id)
+
+        const currencyType = Object.keys(Chest.currencyList)[shopItem.price.currency]
+        if (user.currency[currencyType] < shopItem.price.amount) throw new Error("Not enough currency")
+        user.currency[currencyType] -= shopItem.price.amount;
+
+        // Add whatever user bought
+        user.currency[Object.keys(Chest.currencyList)[shopItem.currency]] += shopItem.amount;
+
+        console.log("Item bought")
+        res.status(200).json({
+            currency: user.currency,
+        });
+
+        user.save()
     } catch (err) {
         console.log(err)
         return next(err);

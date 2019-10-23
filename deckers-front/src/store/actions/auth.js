@@ -1,5 +1,5 @@
 import { apiCall, setTokenHeader } from "../../services/api";
-import { SET_CURRENT_USER, UPDATE_USER_AFTER_CHEST_PURCHASE, UPDATE_USER_AFTER_DECKS_UPDATE } from "../actionTypes";
+import { SET_CURRENT_USER, UPDATE_USER_AFTER_PURCHASE, UPDATE_USER_AFTER_DECKS_UPDATE } from "../actionTypes";
 import { setShopData } from './shop';
 
 export function setCurrentUser(user) {
@@ -20,10 +20,10 @@ export function updateUserAfterDecksUpdate(res) {
   })
 }
 
-export function updateUserAfterChestPurchase(res) {
+export function updateUserAfterPurchase(res) {
 
   return ({
-    type: UPDATE_USER_AFTER_CHEST_PURCHASE,
+    type: UPDATE_USER_AFTER_PURCHASE,
     currency: res.currency,
     currentCards: res.currentCards
   })

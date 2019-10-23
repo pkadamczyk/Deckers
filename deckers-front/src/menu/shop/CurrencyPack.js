@@ -5,7 +5,9 @@ import chestItemImg from '../../graphic/background_04.png'
 import chestItemNameImg from '../../graphic/title_02.png'
 import chestItemNameImgImg from '../../graphic/shop_chest_01.PNG'
 import chestItemButtonImg from '../../graphic/button_long_04.png'
+
 import goldImg from '../../graphic/icon_currency_gold.PNG'
+import gemImg from '../../graphic/icon_currency_gem.PNG'
 
 import cardsRandom from '../../graphic/cards_random.svg'
 import cardsCommon from '../../graphic/cards_common.svg'
@@ -69,27 +71,30 @@ const Button = styled.button`
     border:none;
     border-radius: 10px;
 
-    color:white;
-    font-size: 1rem;
+    color:${props => props.disabled ? "red" : "white"};
+    font-size: 24px;
 
     width:45%;
+    height: 40px;
 
-    cursor: ${props => props.isAffordable ? "pointer" : "inherit"};
+    cursor: ${props => !props.disabled ? "pointer" : "inherit"};
 
     margin: 0 auto;
+    padding: 1% 0;
     position: relative;
     bottom: 10px;
 `
 
-const GoldImg = styled.span`
-    background-image: url(${goldImg});
+const CurrencyImg = styled.span`
+    background-image: url(${props => props.imageURL});
     background-size: contain;
     background-repeat: no-repeat;
-    padding-left: 2.5rem;
-    font-size: 1.6rem;
+    background-position: center;
+
+    padding-left: 1.5rem;
 
     height: 30px;
-    margin-left: 5%;
+    margin-left: 3%;
 `
 
 const ListWrapper = styled.div`
@@ -123,21 +128,16 @@ class CurrencyPack extends Component {
     constructor(props) {
         super(props)
 
-        this.handleOnClick = this.handleOnClick.bind(this);
-    }
-
-    handleOnClick() {
-        const { handleClick, userId, chest } = this.props;
-        const { name } = chest
-
-        handleClick(userId, name)
     }
 
     render() {
-        const { item, isAffordable } = this.props;
-        const { amount, name, currency } = item
+        const { item, isAffordable, handleClick } = this.props;
+        const { amount, name, price, currency } = item
 
         const imageUrl = images.get(item.imageID)
+        const currencyImgs = [goldImg, gemImg]
+        const priceImgUrl = currencyImgs[price.currency]
+        const rewardImgUrl = currencyImgs[currency]
 
         return (
             <Wrapper isAffordable={isAffordable}>
@@ -148,11 +148,11 @@ class CurrencyPack extends Component {
                 </ItemImgWrapper>
 
                 <ListWrapper>
-                    <Row><Guaranteed>{amount} <GoldImg /></Guaranteed></Row>
+                    <Row><Guaranteed>{amount} <CurrencyImg imageURL={rewardImgUrl} /></Guaranteed></Row>
                 </ListWrapper>
 
-                <Button onClick={this.handleOnClick} disabled={!isAffordable}>
-                    <GoldImg>{amount}</GoldImg>
+                <Button onClick={handleClick} disabled={!isAffordable} >
+                    {price.amount}<CurrencyImg imageURL={priceImgUrl} />
                 </Button>
             </Wrapper>
         );

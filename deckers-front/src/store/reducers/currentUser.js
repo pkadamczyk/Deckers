@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER, UPDATE_USER_AFTER_CHEST_PURCHASE, UPDATE_USER_AFTER_DECKS_UPDATE, UPDATE_USER_AFTER_GAME, ABANDONED_GAME } from "../actionTypes";
+import { SET_CURRENT_USER, UPDATE_USER_AFTER_PURCHASE, UPDATE_USER_AFTER_DECKS_UPDATE, UPDATE_USER_AFTER_GAME, ABANDONED_GAME } from "../actionTypes";
 
 const DEFAULT_STATE = {
     isAuthenticated: false, // hopefully be true, when logged in
@@ -10,8 +10,8 @@ export default (state = DEFAULT_STATE, action) => {
         case SET_CURRENT_USER:
             return handleSetCurrentUser(state, action)
 
-        case UPDATE_USER_AFTER_CHEST_PURCHASE:
-            return handleUpdateUserAfterChestPurchase(state, action)
+        case UPDATE_USER_AFTER_PURCHASE:
+            return handleUpdateUserAfterPurchase(state, action)
 
         case UPDATE_USER_AFTER_DECKS_UPDATE:
             return handleUpdateUserDecks(state, action);
@@ -37,9 +37,12 @@ function handleSetCurrentUser(state, action) {
     };
 }
 
-function handleUpdateUserAfterChestPurchase(state, action) {
+function handleUpdateUserAfterPurchase(state, action) {
     const { user } = state;
     const { currentCards, currency } = action;
+
+    // No need to update cards
+    if (!currentCards) return { ...state, user: { ...user, currency } }
 
     return {
         ...state,

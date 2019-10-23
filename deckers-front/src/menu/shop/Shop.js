@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Chest from './Chest';
-import { buyChest } from '../../store/actions/shop';
+import { buyChest, buyShopItem } from '../../store/actions/shop';
 
 import styled from "styled-components"
 import { SHOP_STATE } from '../../store/reducers/shop';
@@ -33,9 +33,10 @@ const Blackout = styled.div`
     height: 100%;
     width: 100%;
 
-    position: absolute;
+    position: fixed;
     left:0;
     top:0;
+    z-index: 10;
     
     display: flex;
 
@@ -58,22 +59,17 @@ class Shop extends Component {
     constructor(props) {
         super(props)
 
-        this.handleChestBuy = this.handleChestBuy.bind(this);
-    }
-
-    handleChestBuy(userId, name) {
-        this.props.dispatch(buyChest(userId, name))
     }
 
     render() {
-        const { chests, userId, buyChest, shopState, userCurrency, currencyPacks } = this.props;
+        const { chests, userId, buyChest, buyShopItem, shopState, userCurrency, currencyPacks } = this.props;
 
         const chestList = chests.map(chest => {
             const isAffordable = chest.price.amount <= Object.values(userCurrency)[chest.price.currency]
             return (
                 <Chest
                     key={chest._id}
-                    handleClick={buyChest}
+                    handleClick={buyChest.bind(this, userId, chest._id)}
                     userId={userId}
                     chest={chest}
                     isAffordable={isAffordable}
@@ -82,12 +78,11 @@ class Shop extends Component {
         })
 
         const goldPacks = currencyPacks.goldPacks.map((pack, i) => {
-            const isAffordable = true
+            const isAffordable = pack.price.amount <= Object.values(userCurrency)[pack.price.currency]
             return (
                 <CurrencyPack
                     key={i}
-                    handleClick={buyChest}
-                    userId={userId}
+                    handleClick={buyShopItem.bind(this, userId, pack.imageID)}
                     item={pack}
                     isAffordable={isAffordable}
                 />
@@ -137,4 +132,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { buyChest })(Shop);
+export default connect(mapStateToProps, { buyChest, buyShopItem })(Shop);
