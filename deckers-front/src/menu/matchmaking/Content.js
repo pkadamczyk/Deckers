@@ -5,12 +5,8 @@ import { connect } from 'react-redux';
 import styled from "styled-components"
 import { chooseDeck } from '../../store/actions/matchmaking';
 
-const Wrapper = styled.div`
-    width: 100%;
-`
-
 const DeckMenager = styled.div`
-    width: 80%;
+    width: 70%;
     margin: 2% auto;
 `
 
@@ -41,18 +37,15 @@ class Content extends Component {
         const currentDeck = decks[pickedDeck];
 
         return (
-            <Wrapper >
-                <DeckMenager>
-                    <DeckItem
-                        deck={currentDeck}
-                        key={currentDeck._id}
-                        chooseDeck={this.handleChooseDeck}
-                        pickDeck={this.handleDeckChange}
-                        pickedDeck={pickedDeck}
-                    />
-                </DeckMenager>
-
-            </Wrapper>
+            <DeckMenager>
+                <DeckItem
+                    deck={currentDeck}
+                    key={currentDeck._id}
+                    chooseDeck={this.handleChooseDeck}
+                    pickDeck={this.handleDeckChange}
+                    pickedDeck={pickedDeck}
+                />
+            </DeckMenager>
         )
     }
 }

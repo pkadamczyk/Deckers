@@ -8,21 +8,16 @@ import styled from "styled-components"
 import navBackground from '../../graphic/nav_background_03.png'
 import buttonBackground from '../../graphic/button_03.png'
 import { SOCKET_URL } from '../../generalContainers/App';
+import ChestRack from './ChestRack';
 
 let socket;
 
-const StyledNavbar = styled.div`
-    width: 20%;
-    padding: 0;
-    background-image: url(${navBackground});
-    background-repeat: repeat-y;
-    background-size:contain;
-`
-
 const ButtonWrapper = styled.div`
     text-align: center;
-    position: relative; 
-    top:26rem;
+    height: 30%;
+
+    background: #eee;
+    border-radius: 10px;
 `
 
 const Button = styled.button`
@@ -42,7 +37,19 @@ const Button = styled.button`
     &:disabled {opacity: 0.65; cursor: inherit}
 `
 
-class Navbar extends Component {
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    width: 25%;
+    height: 92%;
+    margin: 2% auto;
+
+    max-height: 540px;
+`
+
+class SideBar extends Component {
     constructor(props) {
         super(props)
         this.state = { isBusy: false, isSearching: false }
@@ -96,7 +103,7 @@ class Navbar extends Component {
 
     handleSearchCancel() {
         const { usr_id } = this.props;
-        this.setState(state => ({ isSearching: !state.isSearching }))
+        this.setState({ isSearching: false })
 
         socket.emit('leave-queue', { usr_id, gameMode: 0 });
     }
@@ -108,7 +115,9 @@ class Navbar extends Component {
         const isDeckSelected = !!deck_id;
 
         return (
-            <StyledNavbar>
+            <Wrapper>
+                <ChestRack />
+
                 <ButtonWrapper>
                     {!inGame ?
                         isSearching ?
@@ -119,14 +128,16 @@ class Navbar extends Component {
                             <Button onClick={this.handleOnClick} disabled={!isDeckSelected}>
                                 Find game
                         </Button>
-                        :
-                        <div>
+                        : <>
                             <Button onClick={this.handleReconnectCall} disabled={isBusy}>Reconnect</Button>
                             <Button onClick={this.handleAbandon} disabled={isBusy}>Abandon</Button>
-                        </div>
+                        </>
                     }
                 </ButtonWrapper>
-            </StyledNavbar>
+            </Wrapper>
+
+
+
         )
     }
 }
@@ -140,4 +151,4 @@ function mapStateToProps(state) {
 }
 
 
-export default withRouter(connect(mapStateToProps, { connectToGame, abandonGame, reconnectToGame })(Navbar))
+export default withRouter(connect(mapStateToProps, { connectToGame, abandonGame, reconnectToGame })(SideBar))
