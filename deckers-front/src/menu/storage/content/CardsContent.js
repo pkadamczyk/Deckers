@@ -66,7 +66,10 @@ const PageTurn = styled.div`
     position: relative;
     z-index: 2;
 
-    width: 12%;
+    width: 7%;
+    margin-right: ${props => props.id === 0 ? "3%" : "0"};
+    margin-left: ${props => props.id === 1 ? "3%" : "0"};
+
     transition: 0.3s all;
 
     background: ${props => `url(${props.img}) no-repeat`};
@@ -149,7 +152,7 @@ class CardsContent extends Component {
         return (
             <Wrapper>
                 <CardList>
-                    <PageTurn onClick={() => this.handleChangePage(-1)} disable={currentPage === 1} img={leftArrow} />
+                    <PageTurn onClick={() => this.handleChangePage(-1)} disable={currentPage === 1} img={leftArrow} id={0} />
                     <Column>
                         <Row>
                             {arrayFirstHalf}
@@ -158,7 +161,7 @@ class CardsContent extends Component {
                             {arraySecondHalf}
                         </Row>
                     </Column>
-                    <PageTurn onClick={() => this.handleChangePage(1)} disable={currentPage >= pageAmount} img={rightArrow} />
+                    <PageTurn onClick={() => this.handleChangePage(1)} disable={currentPage >= pageAmount} img={rightArrow} id={1} />
                 </CardList>
                 <RaceFilters applyRaceFilter={this.handleRaceFilter} pickedRace={pickedRace} />
                 <ClassFilters applyClassFilter={this.handleClassFilter} pickedClass={pickedClass} />

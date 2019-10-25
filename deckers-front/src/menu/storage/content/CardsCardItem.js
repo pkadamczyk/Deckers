@@ -3,17 +3,17 @@ import React, { Component } from 'react';
 import styled from "styled-components"
 import cardItemBackground from '../../../graphic/card_front_01.png';
 
-import cardCostBoxSkaven from '../../../graphic/race_filter_01.png';
-import cardCostBoxDwarf from '../../../graphic/race_filter_02.png';
-import cardCostBoxForsaken from '../../../graphic/race_filter_04.png';
-import cardCostBoxOrder from '../../../graphic/race_filter_03.png';
-import { RACE_LIST, CLASS_LIST } from './CardsContent';
+import cardCostBoxSkaven from '../../../graphic/background_race_dwarfs.png';
+import cardCostBoxDwarf from '../../../graphic/background_race_skaven.png';
+import cardCostBoxOrder from '../../../graphic/background_race_order.png';
+import cardCostBoxForsaken from '../../../graphic/background_race_forsaken.png';
+
 import { STORAGE_STATE } from '../../../store/reducers/storage';
 
 import images from "../../../graphic/card_portraits/forsaken"
 
 const AAA = styled.div`
-    margin: 0 2% 10px 2%;
+    margin: 0 1% 10px 1%;
     border: 2px solid transparent;
 
     :hover{
@@ -70,7 +70,7 @@ const Name = styled.div`
     font-size: 14px;
 
     position: absolute;
-    top: 57%;
+    top: 59%;
     width: 100%;
 
     display: flex;
@@ -100,7 +100,7 @@ const Description = styled.div`
     height: 55px;
 
     position: absolute;
-    top: 68%;
+    top: 70%;
     font-size: 11px;
 `
 

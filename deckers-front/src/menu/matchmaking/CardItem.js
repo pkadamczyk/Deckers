@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import styled from "styled-components"
 import cardItemBackground from '../../graphic/card_front_01.png';
 
-import cardCostBoxSkaven from '../../graphic/race_filter_01.png';
-import cardCostBoxDwarf from '../../graphic/race_filter_02.png';
-import cardCostBoxForsaken from '../../graphic/race_filter_04.png';
-import cardCostBoxOrder from '../../graphic/race_filter_03.png';
+import cardCostBoxSkaven from '../../graphic/background_race_skaven.png';
+import cardCostBoxDwarf from '../../graphic/background_race_dwarfs.png';
+import cardCostBoxForsaken from '../../graphic/background_race_forsaken.png';
+import cardCostBoxOrder from '../../graphic/background_race_order.png';
+
 import { STORAGE_STATE } from '../../store/reducers/storage';
 
 import images from "../../graphic/card_portraits/forsaken"
@@ -23,7 +24,6 @@ const Wrapper = styled.div`
 
     position: relative;
     height: 100%;
-
 `
 
 const Card = styled.div`

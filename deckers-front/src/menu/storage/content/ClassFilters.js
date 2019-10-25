@@ -2,14 +2,7 @@ import React, { Component } from 'react';
 import styled from "styled-components";
 
 import ClassFilter from './ClassFilter';
-import warriorFilter from '../../../graphic/icon_class_warrior.png';
-import hunterFilter from '../../../graphic/icon_class_hunter.png';
-import assassinFilter from '../../../graphic/icon_class_assassin.png';
-import mageFilter from '../../../graphic/icon_class_mage.png';
-import knightFilter from '../../../graphic/icon_class_knight.png';
-import priestFilter from '../../../graphic/icon_class_priest.png';
-import warlockFilter from '../../../graphic/icon_class_warlock.png';
-import merchantFilter from '../../../graphic/icon_class_merchant.png';
+import { classImages } from '../../../graphic/card_fliters';
 import { CLASS_LIST } from './CardsContent';
 
 const Row = styled.div`
@@ -26,15 +19,15 @@ class ClassFilters extends Component {
     render() {
         const { applyClassFilter, pickedClass } = this.props;
 
-        const classImgsList = [warriorFilter, hunterFilter, assassinFilter, mageFilter, knightFilter, priestFilter, warlockFilter, merchantFilter]
-        const classFilterList = classImgsList.map((img, i) =>
-            <ClassFilter
+        let classFilterList = [];
+        for (let [key, img] of classImages) {
+            classFilterList.push(<ClassFilter
                 img={img}
-                applyFilter={() => applyClassFilter(Object.values(CLASS_LIST)[i])}
+                applyFilter={() => applyClassFilter(Object.values(CLASS_LIST)[key])}
                 key={'_' + Math.random().toString(36).substr(2, 9)}
-                isPicked={pickedClass === Object.values(CLASS_LIST)[i] || pickedClass === null}
-            />
-        )
+                isPicked={pickedClass === Object.values(CLASS_LIST)[key] || pickedClass === null}
+            />)
+        }
 
         return (
             <Row>
