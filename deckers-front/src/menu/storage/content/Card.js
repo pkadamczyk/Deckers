@@ -12,7 +12,7 @@ import { STORAGE_STATE } from '../../../store/reducers/storage';
 
 import images from "../../../graphic/card_portraits/forsaken"
 
-const AAA = styled.div`
+const Wrapper = styled.div`
     margin: 0 1% 10px 1%;
     border: 2px solid transparent;
 
@@ -28,7 +28,7 @@ const AAA = styled.div`
 `
 
 
-const Wrapper = styled.div`
+const Portrait = styled.div`
     background-image: url(${props => props.imageURL});
     background-repeat: no-repeat;
     background-size: contain;
@@ -47,7 +47,7 @@ const Wrapper = styled.div`
     max-width: 173px;
 `
 
-const Card = styled.div`
+const Info = styled.div`
     height: 100%;
     background-image: url(${cardItemBackground}) !important;
     background-repeat: no-repeat;
@@ -113,7 +113,7 @@ const MarginAuto = styled.div`
 margin: auto;
 `
 
-class CardsCardItem extends Component {
+class Card extends Component {
     constructor(props) {
         super(props);
 
@@ -140,9 +140,9 @@ class CardsCardItem extends Component {
         const optimalSize = window.innerWidth * 0.15;
         // 173
         return (
-            <AAA canBePicked={canBePicked}>
-                <Wrapper imageURL={imageURL} onClick={this.handleOnClick} size={optimalSize}>
-                    <Card>
+            <Wrapper canBePicked={canBePicked}>
+                <Portrait imageURL={imageURL} onClick={this.handleOnClick} size={optimalSize}>
+                    <Info>
                         <CostBox background={costBoxBackground}>
                             <p>{card.stats[dbCard.level].cost}</p>
                         </CostBox>
@@ -155,11 +155,11 @@ class CardsCardItem extends Component {
                             {/* <Class>{Object.keys(CLASS_LIST)[card.role]}</Class> */}
                             <div>{card.stats[dbCard.level].damage}</div>
                         </Stats>
-                    </Card>
-                </Wrapper>
-            </AAA>
+                    </Info>
+                </Portrait>
+            </Wrapper>
         )
     }
 }
 
-export default CardsCardItem;
+export default Card;

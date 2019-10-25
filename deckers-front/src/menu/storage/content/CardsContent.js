@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import CardsCardItem from './CardsCardItem';
+import Info from './Card';
 
 import styled from "styled-components";
 import RaceFilters from './RaceFilters';
@@ -138,7 +138,7 @@ class CardsContent extends Component {
         if (pickedClass !== null) cardsToDisplay = cardsToDisplay.filter(card => card.card.role === pickedClass)
 
         cardsToDisplay = cardsToDisplay.filter((card, index) => index < (CARDS_ON_PAGE * currentPage) && index >= (CARDS_ON_PAGE * (currentPage - 1))).map(card =>
-            <CardsCardItem
+            <Info
                 card={card}
                 key={card._id}
                 currentState={currentState}
