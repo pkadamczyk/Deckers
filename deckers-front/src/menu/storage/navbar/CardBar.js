@@ -3,33 +3,30 @@ import React, { Component } from 'react';
 import styled from "styled-components"
 
 const Wrapper = styled.div`
-    background-color: white;
+    background-color: #eee;
     margin:0px 10px;
     margin-top: 5px;
-    widows: 100%;
-    height:45px;
+    height: 8%;
     border-radius: 5px;
 
     display: flex;
 `
 
 const Button = styled.button`
-    display: inline-block;
-    background-color: red;
+    background-color: #dd0000;
     color:white;
-    height: 45px;
-    width: 45px;
-    flex-direction: row-reverse;
-    margin-left:auto;
+    height: 100%;
+    width: 40px;
+
+    border: none;
+    border-radius: 5px;
 `
 
 const Text = styled.p`
-    color: black;
     margin:auto;
 `
 
-
-class CardsDeckSlot extends Component {
+class CardBar extends Component {
     constructor(props) {
         super(props);
 
@@ -54,4 +51,4 @@ class CardsDeckSlot extends Component {
         )
     }
 }
-export default CardsDeckSlot;
+export default CardBar;

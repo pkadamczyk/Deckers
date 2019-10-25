@@ -55,7 +55,7 @@ const CardList = styled.div`
 
     display:flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
 
     width:100%;
     height: 90%;

@@ -16,11 +16,8 @@ const Wrapper = styled.div`
     background-repeat: repeat-y;
     background-size:contain;
     
-    width:100%;
-    height: 100%;
-    color: white;
     text-align: center;
-    width: 19%;
+    width: 18%;
 
     margin-left:auto;
 `

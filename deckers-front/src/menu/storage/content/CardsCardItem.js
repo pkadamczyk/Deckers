@@ -12,10 +12,23 @@ import { STORAGE_STATE } from '../../../store/reducers/storage';
 
 import images from "../../../graphic/card_portraits/forsaken"
 
-const Wrapper = styled.div`
-    margin: 0 2%;
-    margin-bottom: 10px;
+const AAA = styled.div`
+    margin: 0 2% 10px 2%;
+    border: 2px solid transparent;
 
+    :hover{
+        border-radius: 10px;
+        border: ${props => props.canBePicked ? '2px solid rgba(165, 255, 48, 0.7)' : "2px solid transparent"};
+
+        -webkit-box-shadow:  ${props => props.canBePicked ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)" : "0px -1px 2px 3px transparent"};
+        -moz-box-shadow: ${props => props.canBePicked ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)" : "0px -1px 2px 3px transparent"};
+        box-shadow: ${props => props.canBePicked ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)" : "0px -1px 2px 3px transparent"};
+        cursor: ${props => props.canBePicked ? "pointer" : "inherit"};
+    }
+`
+
+
+const Wrapper = styled.div`
     background-image: url(${props => props.imageURL});
     background-repeat: no-repeat;
     background-size: contain;
@@ -26,21 +39,12 @@ const Wrapper = styled.div`
     user-select: none;
 
     position: relative;
-    height: 100%;
 
-    :hover{
-        margin: ${props => props.canBePicked ? '0 calc(2% - 2px)' : "0 2%"};
-        margin-bottom: ${props => props.canBePicked ? '8px' : "10px"};
+    height:${props => (props.size * 1.4) + "px"};
+    width: ${props => props.size + "px"};
 
-        border-radius: 10px;
-        border: ${props => props.canBePicked ? '2px solid rgba(165, 255, 48, 0.7)' : "none"};
-        border-style:  ${props => props.canBePicked ? 'solid solid none solid' : 'none'};
-
-        -webkit-box-shadow:  ${props => props.canBePicked ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)" : "none"};
-        -moz-box-shadow: ${props => props.canBePicked ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)" : "none"};
-        box-shadow: ${props => props.canBePicked ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)" : "none"};
-        cursor: ${props => props.canBePicked ? "pointer" : "inherit"};
-    }
+    max-height: 242px;
+    max-width: 173px;
 `
 
 const Card = styled.div`
@@ -105,14 +109,6 @@ const CenterText = styled.div`
     margin: auto;
 `
 
-const AAA = styled.div`
-    height:${props => (props.size * 1.4) + "px"};
-    width: ${props => props.size + "px"};
-
-    max-height: 242px;
-    max-width: 173px;
-`
-
 const MarginAuto = styled.div`
 margin: auto;
 `
@@ -144,8 +140,8 @@ class CardsCardItem extends Component {
         const optimalSize = window.innerWidth * 0.15;
         // 173
         return (
-            <AAA size={optimalSize}>
-                <Wrapper imageURL={imageURL} canBePicked={canBePicked} onClick={this.handleOnClick}>
+            <AAA canBePicked={canBePicked}>
+                <Wrapper imageURL={imageURL} onClick={this.handleOnClick} size={optimalSize}>
                     <Card>
                         <CostBox background={costBoxBackground}>
                             <p>{card.stats[dbCard.level].cost}</p>

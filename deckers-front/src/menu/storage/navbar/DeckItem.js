@@ -38,7 +38,7 @@ const Button = styled.button`
     border: none;
 `
 
-class CardsDeckItem extends Component {
+class DeckItem extends Component {
     constructor(props) {
         super(props)
 
@@ -60,9 +60,9 @@ class CardsDeckItem extends Component {
                 <StyledP onClick={this.handleOnClick}>
                     {deckContent && deckContent.name}
                 </StyledP>
-                <Button onClick={e => handleDeckDeletion(deckContent._id)} />
+                {/* <Button onClick={e => handleDeckDeletion(deckContent._id)} /> */}
             </Wrapper>
         )
     }
 }
-export default CardsDeckItem;
+export default DeckItem;

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import CardsDeckSlot from './CardsDeckSlot';
+import CardBar from './CardBar';
 
 import styled from "styled-components";
 import Button from './Button';
 
 const Data = styled.div`
+    height: 86%;
+    width:100%;
+
     padding-top:15px;
     text-align: center;
     color:rgb(4, 7, 20);
@@ -47,7 +50,7 @@ class NavbarBusy extends Component {
         const { cards, removeCardFromDeck, cancelDeckCreation } = this.props;
 
         const deckSlotsList = cards.map((card, index) => (
-            <CardsDeckSlot
+            <CardBar
                 key={card._id + " " + index}
                 card={card}
                 deckSlotNumber={index}
