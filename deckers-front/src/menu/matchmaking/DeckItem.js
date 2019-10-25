@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import CardItem from './CardItem';
 
 import styled from "styled-components"
-import background from '../../graphic/nav_background_01.png';
 
 const CARDS_IN_ROW = 5;
 
 const Wrapper = styled.div`
     width: 100%;
+    height: 100%;
 
     color: white;
     text-align: center;
@@ -16,7 +16,6 @@ const Wrapper = styled.div`
     background: #eee;
 
     margin: auto; 
-    padding-top:10px;
 
     display: flex;
     flex-direction: column;
@@ -27,8 +26,9 @@ const Wrapper = styled.div`
 
 const Row = styled.div`
     display: flex;
-    justify-content: space-evenly; 
+    justify-content: center; 
     width:100%;
+    height: 50%;
 
     max-width: 900px;
     margin:auto

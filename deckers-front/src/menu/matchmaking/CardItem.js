@@ -13,6 +13,10 @@ import { STORAGE_STATE } from '../../store/reducers/storage';
 import images from "../../graphic/card_portraits/forsaken"
 
 const Wrapper = styled.div`
+    margin: 10px 1% 10px 1%;
+`
+
+const Portrait = styled.div`
     background-image: url(${props => props.imageURL});
     background-repeat: no-repeat;
     background-size: contain;
@@ -23,10 +27,15 @@ const Wrapper = styled.div`
     user-select: none;
 
     position: relative;
-    height: 100%;
+
+    height:${props => (props.size * 1.4) + "px"};
+    width: ${props => props.size + "px"};
+
+    max-height: 193px;
+    max-width: 138px;
 `
 
-const Card = styled.div`
+const Info = styled.div`
     height: 100%;
     background-image: url(${cardItemBackground}) !important;
     background-repeat: no-repeat;
@@ -40,14 +49,13 @@ const CostBox = styled.div`
 
     font-weight: bold;
     width: 18%;
-    padding-top: 3px;
 `
 
 const Name = styled.div`
     font-size: 14px;
 
     position: absolute;
-    top: 57%;
+    top: 59%;
     width: 100%;
 
     display: flex;
@@ -59,8 +67,8 @@ const Stats = styled.div`
     justify-content: space-between; 
 
     position: absolute;
-    bottom: 7px;
-    left: 10px;
+    bottom: 1px;
+    left: 7px;
     width: 88%;
     font-size: 21px;
 `
@@ -77,23 +85,13 @@ const Description = styled.div`
     height: 55px;
 
     position: absolute;
-    top: 68%;
+    top: 70%;
     font-size: 11px;
 `
 
 const CenterText = styled.div`
     width:74%;
     margin: auto;
-`
-
-const AAA = styled.div`
-    height:${props => (props.size * 1.4) + "px"};
-    width: ${props => props.size + "px"};
-
-    max-height: 243px;
-    max-width: 173px;
-
-    margin-bottom: 10px;
 `
 
 const MarginAuto = styled.div`
@@ -122,12 +120,12 @@ class CardItem extends Component {
         const costBoxBackground = costBoxBackgrounds[card.race]
         const imageURL = images.get(card.imageID)
 
-        const optimalSize = window.innerWidth * 0.13;
+        const optimalSize = window.innerWidth * 0.12;
         // 173
         return (
-            <AAA size={optimalSize}>
-                <Wrapper imageURL={imageURL} >
-                    <Card>
+            <Wrapper >
+                <Portrait imageURL={imageURL} size={optimalSize}>
+                    <Info>
                         <CostBox background={costBoxBackground}>
                             <p>{card.stats[0].cost}</p>
                         </CostBox>
@@ -140,9 +138,9 @@ class CardItem extends Component {
                             {/* <Class>{Object.keys(CLASS_LIST)[card.role]}</Class> */}
                             <div>{card.stats[0].damage}</div>
                         </Stats>
-                    </Card>
-                </Wrapper>
-            </AAA>
+                    </Info>
+                </Portrait>
+            </Wrapper>
         )
     }
 }

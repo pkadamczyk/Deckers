@@ -42,7 +42,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: space-between;
 
-    width: 25%;
+    width: 24%;
     height: 92%;
     margin: 2% auto;
 
