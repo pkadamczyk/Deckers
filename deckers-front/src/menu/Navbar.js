@@ -76,16 +76,26 @@ const Button = styled.button`
     }
 `
 
-const PlayButton = styled(Button)`
-    margin: 0;
+const PlayButton = styled.button`
+    font-size: 1.5rem;
+    color:white;
+
+    position: relative;
+    z-index: 2;
+
     width: 106px;
     height: 68px;
-    border: none;
+    border:none;
+    cursor: pointer;
 
     border-radius: 10px;
     background-size: contain;
     background-repeat: no-repeat;
     background-image: url(${playButton});
+
+    :focus{
+        outline:0;
+    }
 `;
 
 const ButtonGroup = styled.div`
