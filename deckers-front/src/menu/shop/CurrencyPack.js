@@ -25,23 +25,26 @@ const Wrapper = styled.div`
 
     margin: 0 2%;
     color:white;
-    background: #b5b5b5;
+    background: #424858;
     border-radius: 20px;
     transition: all 0.3s;
 
     display:flex;
     flex-direction: column;
 
-    opacity: ${props => props.isAffordable ? "1" : "0.65"}
+    opacity: ${props => props.isAffordable ? "1" : "0.65"};
+
+    -webkit-box-shadow:  ${props => props.isAffordable ? "10px 10px 5px 0px rgba(0,0,0,0.75)" : "none"};
+    -moz-box-shadow: ${props => props.isAffordable ? "10px 10px 5px 0px rgba(0,0,0,0.75)" : "none"};
+    box-shadow: ${props => props.isAffordable ? "10px 10px 5px 0px rgba(0,0,0,0.75)" : "none"};
 `
 
-const NameTag = styled.h4`
-    background-image: url(${chestItemNameImg});
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+const NameTag = styled.h2`
+    text-shadow: 2px 2px #333;
+    margin: 10px 10px 0 10px;
 
-    border-radius: 15px;
+    border-radius: 10px;
+    background: #556574;
 `
 const ItemImg = styled.div`
     background-image: url(${props => props.imageURL});
@@ -54,15 +57,12 @@ const ItemImg = styled.div`
     margin: 0 15%;
 `
 const ItemImgWrapper = styled.div`
-    background: #eee;
+    background: #EDE3DE;
 
-    width: 106%;
+    width: calc(100% - 16px);
     height: 120px;
-    margin: 0;
+    margin: 4% 8px;
     padding: 3% 0;
-
-    position: relative;
-    left: -3%;
 
     border-radius: 10px;
 `
@@ -70,6 +70,7 @@ const ItemImgWrapper = styled.div`
 const Button = styled.button`
     border:none;
     border-radius: 10px;
+    background: #8FC320;
 
     color:${props => props.disabled ? "red" : "white"};
     font-size: 24px;
@@ -79,10 +80,12 @@ const Button = styled.button`
 
     cursor: ${props => !props.disabled ? "pointer" : "inherit"};
 
-    margin: 0 auto;
-    padding: 1% 0;
-    position: relative;
-    bottom: 10px;
+    margin: auto;
+    transition: all 0.2s;
+
+    :hover{
+        background: ${props => !props.disabled ? "9FD430" : "8FC320"};
+    }
 `
 
 const CurrencyImg = styled.span`
@@ -98,21 +101,33 @@ const CurrencyImg = styled.span`
 `
 
 const ListWrapper = styled.div`
-    margin: 12px;
+    margin: 0 8px;
+    padding: 4px 0;
+    border-radius: 10px;
+    background: #EDE3DE;
+
+    height: 100px;
+    margin-bottom: 8px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 `
 
 const Guaranteed = styled.div`
     height: 40px;
     width: 90%;
-    background: #48BAFF;
+    background: #FDFAF8;
     border-radius: 5px;
 
-    margin: 7px auto;
+    margin: auto;
     padding: 0 8px;
 
     display:flex;
     align-items: center;
     justify-content: center;
+
+    color: #555;
 `
 
 const Row = styled.div`
@@ -149,11 +164,13 @@ class CurrencyPack extends Component {
 
                 <ListWrapper>
                     <Row><Guaranteed>{amount} <CurrencyImg imageURL={rewardImgUrl} /></Guaranteed></Row>
+
+                    <Button onClick={handleClick} disabled={!isAffordable} >
+                        {price.amount}<CurrencyImg imageURL={priceImgUrl} />
+                    </Button>
                 </ListWrapper>
 
-                <Button onClick={handleClick} disabled={!isAffordable} >
-                    {price.amount}<CurrencyImg imageURL={priceImgUrl} />
-                </Button>
+
             </Wrapper>
         );
     }

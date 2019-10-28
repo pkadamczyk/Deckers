@@ -7,6 +7,8 @@ import styled from "styled-components"
 import { SHOP_STATE } from '../../store/reducers/shop';
 import CurrencyPack from './CurrencyPack';
 
+import background from '../../graphic/background_03.png'
+
 const Row = styled.div`
     display: flex;
     height: 75%;
@@ -51,8 +53,11 @@ const BlackoutText = styled.div`
 `
 
 const Wrapper = styled.div`
-    background: #ddd;
-    padding: 2% 0;
+    background-image: url(${background});
+    background-size: cover;
+    padding: 1% 0;
+
+    font-family: 'Lato', sans-serif;
 `
 
 class Shop extends Component {
