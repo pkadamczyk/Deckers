@@ -87,7 +87,7 @@ class Shop extends Component {
             return (
                 <CurrencyPack
                     key={i}
-                    handleClick={buyShopItem.bind(this, userId, pack.imageID)}
+                    handleClick={buyShopItem.bind(this, userId, pack.id)}
                     item={pack}
                     isAffordable={isAffordable}
                 />
@@ -95,17 +95,24 @@ class Shop extends Component {
         })
 
         const gemPacks = currencyPacks.gemPacks.map((pack, i) => {
-            const isAffordable = false
             return (
                 <CurrencyPack
                     key={i}
-                    handleClick={buyChest}
-                    userId={userId}
+                    handleClick={buyShopItem.bind(this, userId, pack.id)}
                     item={pack}
-                    isAffordable={isAffordable}
+                    isAffordable={false}
                 />
             );
         })
+
+        const testPacks = currencyPacks.testPacks.map((pack, i) => (
+            <CurrencyPack
+                key={i}
+                handleClick={buyShopItem.bind(this, userId, pack.id)}
+                item={pack}
+                isAffordable={true}
+            />
+        ))
 
         return (
             <Wrapper>
@@ -121,6 +128,10 @@ class Shop extends Component {
                 <SubTitle>Gems</SubTitle>
                 <Row>
                     {gemPacks}
+                </Row>
+                <SubTitle>For Tests</SubTitle>
+                <Row>
+                    {testPacks}
                 </Row>
             </Wrapper>
         )

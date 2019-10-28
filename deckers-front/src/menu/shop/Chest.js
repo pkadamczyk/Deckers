@@ -81,7 +81,8 @@ const Button = styled.button`
 
     :hover{
         background: ${props => !props.disabled ? "#9FD430" : "#8FC320"};
-    }
+    };
+    :focus { outline: none; }
 `
 
 const GoldImg = styled.span`

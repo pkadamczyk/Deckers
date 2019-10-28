@@ -85,7 +85,8 @@ const Button = styled.button`
 
     :hover{
         background: ${props => !props.disabled ? "9FD430" : "8FC320"};
-    }
+    };
+    :focus { outline: none; }
 `
 
 const CurrencyImg = styled.span`
@@ -154,6 +155,8 @@ class CurrencyPack extends Component {
         const priceImgUrl = currencyImgs[price.currency]
         const rewardImgUrl = currencyImgs[currency]
 
+        const isFree = price.amount === 0;
+
         return (
             <Wrapper isAffordable={isAffordable}>
                 <NameTag >{name}</NameTag>
@@ -166,7 +169,7 @@ class CurrencyPack extends Component {
                     <Row><Guaranteed>{amount} <CurrencyImg imageURL={rewardImgUrl} /></Guaranteed></Row>
 
                     <Button onClick={handleClick} disabled={!isAffordable} >
-                        {price.amount}<CurrencyImg imageURL={priceImgUrl} />
+                        {isFree ? "Free" : (<>{price.amount} <CurrencyImg imageURL={priceImgUrl} /> </>)}
                     </Button>
                 </ListWrapper>
 

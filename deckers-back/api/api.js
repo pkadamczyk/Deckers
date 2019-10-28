@@ -96,7 +96,9 @@ router.post("/:usr_id/shop/buy/:chest", loginRequired, ensureCorrectUser, async 
 router.post("/:usr_id/shop/buy/item/:id", loginRequired, ensureCorrectUser, async function (req, res, next) {
     try {
         const user = await User.findById(req.params.usr_id).deepPopulate('cards.card')
-        const shopItem = currencyPacks.goldPacks.find(cp => cp.imageID === req.params.id)
+
+        const shopItems = [].concat(currencyPacks.goldPacks).concat(currencyPacks.gemPacks).concat(currencyPacks.testPacks)
+        const shopItem = shopItems.find(cp => cp.id == req.params.id)
 
         const currencyType = Object.keys(Chest.currencyList)[shopItem.price.currency]
         if (user.currency[currencyType] < shopItem.price.amount) throw new Error("Not enough currency")
