@@ -1,9 +1,14 @@
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt"); // new Auth
-var deepPopulate = require('mongoose-deep-populate')(mongoose);
+const deepPopulate = require('mongoose-deep-populate')(mongoose);
 
+const tagList = {
+    user: 0,
+    admin: 1,
+    tester: 2
+}
 
-var UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     username: String,
     password: String,
     email: String,
@@ -35,6 +40,12 @@ var UserSchema = new mongoose.Schema({
     currentGame: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Game"
+    },
+
+    tag: {
+        type: Number,
+        default: 0,
+        enum: tagList
     }
 });
 
@@ -60,6 +71,10 @@ UserSchema.methods.comparePassword = async function (candidatePassword, next) {
         return err;
     }
 };
+
+Object.assign(UserSchema.statics, {
+    tagList,
+});
 
 // UserSchema.plugin(passportLocalMongoose); new Auth introduced - Pszemek
 UserSchema.plugin(deepPopulate);

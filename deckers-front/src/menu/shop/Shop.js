@@ -67,15 +67,15 @@ class Shop extends Component {
     }
 
     render() {
-        const { chests, userId, buyChest, buyShopItem, shopState, userCurrency, currencyPacks } = this.props;
+        const { chests, user, buyChest, buyShopItem, shopState, currencyPacks, tagList } = this.props;
 
         const chestList = chests.map(chest => {
-            const isAffordable = chest.price.amount <= Object.values(userCurrency)[chest.price.currency]
+            const isAffordable = chest.price.amount <= Object.values(user.currency)[chest.price.currency]
             return (
                 <Chest
                     key={chest._id}
-                    handleClick={buyChest.bind(this, userId, chest._id)}
-                    userId={userId}
+                    handleClick={buyChest.bind(this, user._id, chest._id)}
+                    userId={user._id}
                     chest={chest}
                     isAffordable={isAffordable}
                 />
@@ -83,11 +83,11 @@ class Shop extends Component {
         })
 
         const goldPacks = currencyPacks.goldPacks.map((pack, i) => {
-            const isAffordable = pack.price.amount <= Object.values(userCurrency)[pack.price.currency]
+            const isAffordable = pack.price.amount <= Object.values(user.currency)[pack.price.currency]
             return (
                 <CurrencyPack
                     key={i}
-                    handleClick={buyShopItem.bind(this, userId, pack.id)}
+                    handleClick={buyShopItem.bind(this, user._id, pack.id)}
                     item={pack}
                     isAffordable={isAffordable}
                 />
@@ -98,7 +98,7 @@ class Shop extends Component {
             return (
                 <CurrencyPack
                     key={i}
-                    handleClick={buyShopItem.bind(this, userId, pack.id)}
+                    handleClick={buyShopItem.bind(this, user._id, pack.id)}
                     item={pack}
                     isAffordable={false}
                 />
@@ -108,12 +108,13 @@ class Shop extends Component {
         const testPacks = currencyPacks.testPacks.map((pack, i) => (
             <CurrencyPack
                 key={i}
-                handleClick={buyShopItem.bind(this, userId, pack.id)}
+                handleClick={buyShopItem.bind(this, user._id, pack.id)}
                 item={pack}
                 isAffordable={true}
             />
         ))
 
+        const hasAccess = user.tag === tagList.admin || user.tag === tagList.tester;
         return (
             <Wrapper>
                 {(shopState === SHOP_STATE.BUSY && <Blackout><BlackoutText>Please wait...</BlackoutText></Blackout>)}
@@ -129,10 +130,10 @@ class Shop extends Component {
                 <Row>
                     {gemPacks}
                 </Row>
-                <SubTitle>For Tests</SubTitle>
-                <Row>
-                    {testPacks}
-                </Row>
+                {hasAccess && <><SubTitle>For Tests</SubTitle>
+                    <Row>
+                        {testPacks}
+                    </Row></>}
             </Wrapper>
         )
     }
@@ -143,8 +144,8 @@ function mapStateToProps(state) {
         shopState: state.shop.shopState,
         chests: state.shop.chests,
         currencyPacks: state.shop.currencyPacks,
-        userId: state.currentUser.user._id,
-        userCurrency: state.currentUser.user.currency,
+        user: state.currentUser.user,
+        tagList: state.config.tagList,
     };
 }
 

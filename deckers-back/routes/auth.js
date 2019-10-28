@@ -8,6 +8,10 @@ const Card = require("../models/card");
 
 const currencyPacks = require("../api/currencyPacks")
 
+const localConfig = {
+    tagList: User.tagList,
+}
+
 router.post("/register", async function (req, res, next) {
     try {
         let [user, availableChests] = await Promise.all([await createNewUser(req.body), await fetchChests()])
@@ -27,6 +31,7 @@ router.post("/register", async function (req, res, next) {
             user,
             availableChests,
             currencyPacks,
+            config: localConfig,
             token
         });
     } catch (err) {
@@ -67,6 +72,7 @@ router.post("/login", async function (req, res, next) {
                 user,
                 availableChests,
                 currencyPacks,
+                config: localConfig,
                 token
             });
         } else {

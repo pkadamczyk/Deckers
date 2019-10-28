@@ -119,7 +119,9 @@ const Block = styled.div`
 
 class Navbar extends Component {
     render() {
-        const { user, logout, currency } = this.props;
+        const { user, tagList, logout } = this.props;
+
+        const isAdmin = user.tag === tagList.admin
         return (
             <Wrapper>
                 <ButtonGroup>
@@ -140,17 +142,17 @@ class Navbar extends Component {
                         <Button>Shop</Button>
                     </Link>
 
-                    <Link to="/admin">
+                    {isAdmin && <Link to="/admin">
                         <Button>Admin</Button>
-                    </Link>
+                    </Link>}
 
                     <Button onClick={logout}>Logout</Button>
                 </ButtonGroup>
 
                 <Block>
                     <CurrencyPanel>
-                        <GoldAmount > {currency.gold}</GoldAmount>
-                        <GemAmount> {currency.gems}</GemAmount>
+                        <GoldAmount > {user.currency.gold}</GoldAmount>
+                        <GemAmount> {user.currency.gems}</GemAmount>
                     </CurrencyPanel>
                 </Block>
                 <Block>
@@ -165,7 +167,7 @@ class Navbar extends Component {
 function mapStateToProps(state) {
     return {
         user: state.currentUser.user,
-        currency: state.currentUser.user.currency
+        tagList: state.config.tagList,
     };
 }
 
