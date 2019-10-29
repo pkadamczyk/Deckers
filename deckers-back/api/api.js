@@ -66,15 +66,16 @@ router.post("/:usr_id/shop/buy/:chest", loginRequired, ensureCorrectUser, async 
         // Wait for rarity random, then random cards that will be added to player
         cards = await addCardsToArray(cardAmounts);
 
-        let cardIndexes = cards.map(function (cardFromDb) {
+        let cardIndexes = cards.map(function (cardObj) {
             // Add cards that player didnt have earlier
-            if (foundUser.cards.findIndex(card => cardFromDb._id.equals(card.card._id)) === -1) {
-                const newCard = { card: cardFromDb._id }
+            if (foundUser.cards.findIndex(card => cardObj.card._id.equals(card.card._id)) === -1) {
+                const newCard = { card: cardObj.card._id }
+                console.log("New card unlocked: " + cardObj.card.name)
                 foundUser.cards.push(newCard);
             }
-            return foundUser.cards.findIndex(card => cardFromDb._id.equals(card.card._id))
+            return foundUser.cards.findIndex(card => cardObj.card._id.equals(card.card._id))
         })
-        cardIndexes.map(cardIndex => foundUser.cards[cardIndex].amount++);
+        cardIndexes.map((cardIndex, i) => foundUser.cards[cardIndex].amount += cards[i].amount);
 
         await foundUser.deepPopulate('cards.card');
 
@@ -402,17 +403,16 @@ async function randomCardsRarity(cardAmounts) {
         const valueArray = foundOption.values;
 
         for (let i = 0; i < cardAmounts[0]; i++) {
-            const random = Math.random() * max;
+            const random = Math.floor(Math.random() * max);
 
             const rarity = valueArray.findIndex((el, i, array) => {
                 const min = array.slice(0, i).reduce((x, y) => x + y, 0);
 
                 return (random > min && random <= (min + array[i]));
-            }); // +1 skips random as rarity
+            });
 
             array[rarity]++;
         }
-
         return array;
     } catch (err) {
         console.log(err);
@@ -429,26 +429,42 @@ async function addCardsToArray(cardAmounts) {
         // Need to skip one as 0 is random cards
         const cardsRarity = cardAmounts.slice(1).map((c, i) => c + randomedCards[i])
 
-        const cardDocumentsCount = await Promise.all(cardsRarity.map((c, i) => Card.countDocuments({ rarity: (i + 1), canBeDropped: true })))
+        const allCards = await Card.find({ canBeDropped: true })
+        const cardDocumentsCount = cardsRarity.map((card, i) => allCards.filter(c => c.rarity === (i + 1)).length)
 
-        cards = await Promise.all(cardsRarity.map(async function (cardAmount, index) {
-            let cardPromises = [];
+        cards = cardsRarity.map(function (cardAmount, index) {
+            if (cardAmount === 0) return []
+            // How much different cards can drop from chests
+            const cardSlots = cardAmount > 5 ? 2 : cardAmount > 10 ?
+                3 : cardAmount > 20 ?
+                    4 : cardAmount > 50 ?
+                        5 : 1;
 
-            let count = cardDocumentsCount[index]
+            const array = []
+            let count = cardDocumentsCount[index];
+            const cardsToPick = allCards.filter(c => c.rarity === (index + 1))
 
-            for (let i = 0; i < cardAmount; i++) {
+            // Random cards that are allowed to drop
+            for (let i = 0; i < cardSlots; i++) {
                 const random = Math.floor(Math.random() * count);
 
-                // Again query all items but only fetch one offset by our random #
-                const cardPromise = Card.findOne({ rarity: (index + 1), canBeDropped: true }).skip(random)
-                cardPromises.push(cardPromise);
+                const newCard = cardsToPick[random]
+                array.push({ card: newCard, amount: 0 });
+
+                count--;
+                cardsToPick.splice(random, 1)
             }
-            return await Promise.all(cardPromises);
-        }))
+
+            for (let i = 0; i < cardAmount; i++) {
+                const random = Math.floor(Math.random() * cardSlots);
+                array[random].amount++;
+            }
+            return array;
+        })
 
         return cards.reduce((total, amount) => {
             return total.concat(amount);
-        }, []);;
+        }, []);
     } catch (err) {
         console.log(err);
     }

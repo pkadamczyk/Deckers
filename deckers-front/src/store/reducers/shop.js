@@ -19,9 +19,10 @@ export default (state = DEFAULT_STATE, action) => {
             return { ...state, chests: availableChests, currencyPacks };
 
         case UPDATE_SHOP_STATE:
-            const { newState } = action
+            const { newState, data } = action
+            if (data) return { ...state, shopState: newState, lastDrop: data.newCards }
 
-            return { ...state, shopState: newState }
+            return { ...state, shopState: newState, lastDrop: null }
 
         default:
             return state;

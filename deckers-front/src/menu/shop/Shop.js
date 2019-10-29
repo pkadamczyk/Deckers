@@ -8,6 +8,7 @@ import { SHOP_STATE } from '../../store/reducers/shop';
 import CurrencyPack from './CurrencyPack';
 
 import background from '../../graphic/background_03.png'
+import Blackout from './Blackout';
 
 const Row = styled.div`
     display: flex;
@@ -31,27 +32,6 @@ const SubTitle = styled.div`
     font-size: 40px;
 `
 
-const Blackout = styled.div`
-    height: 100%;
-    width: 100%;
-
-    position: fixed;
-    left:0;
-    top:0;
-    z-index: 10;
-    
-    display: flex;
-
-    background: black;
-    opacity: 0.65;
-`
-
-const BlackoutText = styled.div`
-    color:white;
-    font-size: 30px;
-    margin:auto
-`
-
 const Wrapper = styled.div`
     background-image: url(${background});
     background-size: cover;
@@ -61,11 +41,6 @@ const Wrapper = styled.div`
 `
 
 class Shop extends Component {
-    constructor(props) {
-        super(props)
-
-    }
-
     render() {
         const { chests, user, buyChest, buyShopItem, shopState, currencyPacks, tagList } = this.props;
 
@@ -117,7 +92,7 @@ class Shop extends Component {
         const hasAccess = user.tag === tagList.admin || user.tag === tagList.tester;
         return (
             <Wrapper>
-                {(shopState === SHOP_STATE.BUSY && <Blackout><BlackoutText>Please wait...</BlackoutText></Blackout>)}
+                {(shopState === SHOP_STATE.BUSY && <Blackout></Blackout>)}
                 <SubTitle>Chests</SubTitle>
                 <Row>
                     {chestList}
@@ -130,10 +105,12 @@ class Shop extends Component {
                 <Row>
                     {gemPacks}
                 </Row>
-                {hasAccess && <><SubTitle>For Tests</SubTitle>
+                {hasAccess && <>
+                    <SubTitle>For Tests</SubTitle>
                     <Row>
                         {testPacks}
-                    </Row></>}
+                    </Row>
+                </>}
             </Wrapper>
         )
     }
@@ -146,6 +123,8 @@ function mapStateToProps(state) {
         currencyPacks: state.shop.currencyPacks,
         user: state.currentUser.user,
         tagList: state.config.tagList,
+
+        lastDrop: state.shop.lastDrop,
     };
 }
 

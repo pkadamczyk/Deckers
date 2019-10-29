@@ -8,10 +8,11 @@ export const setShopData = (data) => ({
     data: data
 });
 
-export const updateShopState = (newState) => {
+export const updateShopState = (newState, data) => {
     return {
         type: UPDATE_SHOP_STATE,
-        newState
+        newState,
+        data
     }
 }
 
@@ -22,7 +23,7 @@ export const buyChest = (usr_id, chest_name) => {
             return apiCall("post", `/api/${usr_id}/shop/buy/${chest_name}`)
                 .then(res => {
                     dispatch(updateUserAfterPurchase(res))
-                    dispatch(updateShopState(SHOP_STATE.IDLE))
+                    dispatch(updateShopState(SHOP_STATE.BUSY, res))
                 }).catch(err => {
                     reject(err); // indicate the API call failed
                 });
