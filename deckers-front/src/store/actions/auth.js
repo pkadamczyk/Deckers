@@ -1,6 +1,7 @@
 import { apiCall, setTokenHeader } from "../../services/api";
 import { SET_CURRENT_USER, UPDATE_USER_AFTER_PURCHASE, UPDATE_USER_AFTER_DECKS_UPDATE, SET_CONFIG } from "../actionTypes";
 import { setShopData } from './shop';
+import { chooseDeck } from "./matchmaking";
 
 export function setCurrentUser(user) {
   return {
@@ -55,6 +56,7 @@ export function authUser(type, userData) {
           setAuthorizationToken(token);
           dispatch(setShopData({ availableChests, currencyPacks }));
           dispatch(setConfig(config));
+          dispatch(chooseDeck(user.user.decks[1]._id));
           dispatch(setCurrentUser(user.user));
           resolve(); // indicate that the API call succeeded
         })
