@@ -20,6 +20,10 @@ const Wrapper = styled.div`
     width: 18%;
 
     margin-left:auto;
+
+    -webkit-box-shadow: -6px 0px 5px 6px rgba(0,0,0,0.75);
+    -moz-box-shadow: -6px 0px 5px 6px rgba(0,0,0,0.75);
+    box-shadow: -6px 0px 5px 6px rgba(0,0,0,0.75);
 `
 
 class CardsNavbar extends Component {

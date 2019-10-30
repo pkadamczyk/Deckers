@@ -18,10 +18,10 @@ const Wrapper = styled.nav`
     height: 10%;
 
     text-align: center;
-    background: black
+    background: #313747;
 
     text-shadow: 2px 1px #303433;
-    color: #fff;
+    color: #ede3de;
     transition: all 0.3s;
 
     -webkit-box-shadow: 0px 6px 6px 0px rgba(0,0,0,0.44);
