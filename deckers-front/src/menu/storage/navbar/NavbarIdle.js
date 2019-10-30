@@ -3,7 +3,6 @@ import DeckItem from './DeckItem';
 
 import styled from "styled-components";
 import headerBackground from '../../../graphic/button_03.png';
-import Button from './Button';
 
 const Idle = styled.div`
     height:100%;

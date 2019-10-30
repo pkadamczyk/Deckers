@@ -18,23 +18,33 @@ const ButtonWrapper = styled.div`
 
     background: #eee;
     border-radius: 10px;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `
 
 const Button = styled.button`
+    background: ${props => props.danger ? "#c8423e" : "#8FC320"} ;
     color: white;
 
-    margin: 1rem 0;
-    background-image: url(${buttonBackground});
-    background-size: cover;
     width: 70%;
-    height: 3.3rem;
-    background-repeat: no-repeat;
-    border:none;
-    font-size: 1.4rem;
-    cursor: pointer;
+    height: 50px;
+    margin: auto;
 
-    &:focus {outline:0;}
-    &:disabled {opacity: 0.65; cursor: inherit}
+    border:none;
+    border-radius: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.4s;
+
+    :focus {outline:0;};
+    :hover{ background: ${props => props.danger ? "#d9534f" : "#9FD430"}; };
+    :disabled {
+        opacity: 0.65;
+        cursor: inherit;
+        background: ${props => props.danger ? "#c8423e" : "#8FC320"} ;
+    }
 `
 
 const Wrapper = styled.div`
@@ -121,7 +131,7 @@ class SideBar extends Component {
                 <ButtonWrapper>
                     {!inGame ?
                         isSearching ?
-                            <Button onClick={this.handleSearchCancel}>
+                            <Button onClick={this.handleSearchCancel} danger>
                                 Cancel
                         </Button>
                             :
@@ -130,14 +140,11 @@ class SideBar extends Component {
                         </Button>
                         : <>
                             <Button onClick={this.handleReconnectCall} disabled={isBusy}>Reconnect</Button>
-                            <Button onClick={this.handleAbandon} disabled={isBusy}>Abandon</Button>
+                            <Button onClick={this.handleAbandon} disabled={isBusy} danger>Abandon</Button>
                         </>
                     }
                 </ButtonWrapper>
             </Wrapper>
-
-
-
         )
     }
 }

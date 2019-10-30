@@ -2,7 +2,25 @@ import React, { Component } from 'react';
 import CardBar from './CardBar';
 
 import styled from "styled-components";
-import Button from './Button';
+
+const Button = styled.button`
+    background: ${props => props.danger ? "#c8423e" : "#8FC320"} ;
+    color: white;
+
+    margin: auto 0 10% 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 24px;
+    height: 40px;
+    color:white;
+
+    cursor: pointer;
+
+    transition: all 0.2s;
+    
+    :hover{ background: ${props => props.danger ? "#d9534f" : "#9FD430"}; };
+    :focus { outline: none; }
+`
 
 const Data = styled.div`
     height: 86%;
@@ -65,8 +83,8 @@ class NavbarBusy extends Component {
                     {deckSlotsList}
                 </Data>
                 <Panel>
-                    <Button text="Confirm" handleOnClick={this.handleOnClick} />
-                    <Button text="Cancel" handleOnClick={cancelDeckCreation} />
+                    <Button onClick={this.handleOnClick} >Confirm</Button>
+                    <Button onClick={cancelDeckCreation} danger>Cancel</Button>
                 </Panel>
             </>
         )
