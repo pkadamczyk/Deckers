@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { updateShopState } from '../../store/actions/shop';
 import { SHOP_STATE } from '../../store/reducers/shop';
 import Card from './Card';
+import ProgressBar from './ProgressBar';
 
 const Wrapper = styled.div`
     height: 100%;
@@ -32,31 +33,32 @@ const Button = styled.button`
     border:none;
     border-radius: 10px;
     background: #8FC320;
+    color: white;
 
-    color:${props => props.disabled ? "red" : "white"};
     font-size: 24px;
 
-    width:45%;
+    width:20%;
     height: 40px;
 
-    cursor: ${props => !props.disabled ? "pointer" : "inherit"};
+    cursor: pointer;
 
     margin: auto;
     transition: all 0.2s;
 
-    :hover{
-        background: ${props => !props.disabled ? "9FD430" : "8FC320"};
-    };
+    :hover{ background: #9FD430; };
     :focus { outline: none; }
 `
 
 const LootDiv = styled.div`
-    height: 60%;
+    height: 70%;
     width: 83%;
     border-radius: 10px;
     padding-top: 2%;
 
     background: #EDE3DE;
+
+    opacity: ${props => props.isVisible ? "1" : "0"};
+    transition: all 0.5s;
 
     display: flex;
     align-items: center;
@@ -82,43 +84,50 @@ const Amount = styled.div`
     font-size: 25px;
 `
 
-
 class Blackout extends Component {
     constructor(props) {
         super(props)
-
+        this.state = { isVisible: false, shouldFadeIn: true }
         this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
         const { updateShopState } = this.props;
-        updateShopState(SHOP_STATE.IDLE, null)
+
+        this.setState({ isVisible: false })
+        setTimeout(() => updateShopState(SHOP_STATE.IDLE, null), 500)
     }
 
     render() {
-        const { lastDrop } = this.props;
+        const { lastDrop, user } = this.props;
+        let { isVisible, shouldFadeIn } = this.state;
+
         if (!lastDrop) return (
             <Wrapper>
                 <Text>Please wait...</Text>
             </Wrapper>
         );
 
-        // {card.amount}x {card.card.name}
-        const cardsList = lastDrop.map((card, i) =>
-            <Column key={i}>
-                <Amount>{card.amount}x</Amount>
-                <Card card={card.card} />
-            </Column>
-        )
+        if (shouldFadeIn) setTimeout(() => this.setState({ isVisible: true, shouldFadeIn: false }), 300)
+
+        const cardsList = lastDrop.map((card, i) => {
+            const userCardObj = user.cards.find(cardObj => cardObj.card._id === card.card._id);
+            return (
+                <Column key={i}>
+                    <Amount>{card.amount}x</Amount>
+                    <Card card={card.card} />
+                    <ProgressBar max={100} value={userCardObj.amount} />
+                </Column>
+            )
+        })
 
         return (
-            <Wrapper>
-                <LootDiv>
+            <Wrapper onClick={this.handleClick}>
+                <LootDiv onClick={(e) => e.stopPropagation()} isVisible={isVisible}>
                     <h2>Congratulations!</h2>
                     <Row>{cardsList}</Row>
                     <Button onClick={this.handleClick}>Ok</Button>
                 </LootDiv>
-
             </Wrapper>
         );
     }
@@ -127,6 +136,7 @@ class Blackout extends Component {
 function mapStateToProps(state) {
     return {
         lastDrop: state.shop.lastDrop,
+        user: state.currentUser.user,
     };
 }
 
