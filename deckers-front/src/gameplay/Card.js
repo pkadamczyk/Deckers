@@ -91,34 +91,48 @@ const MarginAuto = styled.div`
     margin: auto;
 `
 
+const Border = styled.div`
+    height:${props => (props.size * 1.4) + "px"};
+    width: ${props => props.size + "px"};
+
+    border: ${props => !props.haveBorder ? "2px solid transparent" : '2px solid rgba(165, 255, 48, 0.7)'};
+    border-style: solid solid none solid;
+
+    -webkit-box-shadow: ${props => !props.haveBorder ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
+    -moz-box-shadow: ${props => !props.haveBorder ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
+    box-shadow: ${props => !props.haveBorder ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
+`
+
 
 class Card extends Component {
     render() {
-        const { card, size = CARD_WIDTH } = this.props;
+        const { card, size = CARD_WIDTH, haveBorder } = this.props;
 
         const costBoxBackgrounds = [cardCostBoxDwarf, cardCostBoxForsaken, cardCostBoxOrder, cardCostBoxSkaven]
         const costBoxBackground = costBoxBackgrounds[card.race]
         const imageURL = images.get(card.imageID)
 
         return (
-            <Portrait
-                imageURL={imageURL}
-                size={size}
-            >
-                <Info>
-                    <CostBox background={costBoxBackground}>
-                        {card.inGame.stats.cost}
-                    </CostBox>
-                    <Name size={size}><MarginAuto>{card.name}</MarginAuto></Name>
+            <Border haveBorder={haveBorder} size={size}>
+                <Portrait
+                    imageURL={imageURL}
+                    size={size}
+                >
+                    <Info>
+                        <CostBox background={costBoxBackground}>
+                            {card.inGame.stats.cost}
+                        </CostBox>
+                        <Name size={size}><MarginAuto>{card.name}</MarginAuto></Name>
 
-                    <Description size={size}><CenterText>{card.description}</CenterText></Description>
+                        <Description size={size}><CenterText>{card.description}</CenterText></Description>
 
-                    <Stats>
-                        {card.inGame.stats.damage > 0 ? <div>{card.inGame.stats.damage}</div> : null}
-                        {card.inGame.stats.health > 0 ? <div>{card.inGame.stats.health}</div> : null}
-                    </Stats>
-                </Info>
-            </Portrait>
+                        <Stats>
+                            {card.inGame.stats.damage > 0 ? <div>{card.inGame.stats.damage}</div> : null}
+                            {card.inGame.stats.health > 0 ? <div>{card.inGame.stats.health}</div> : null}
+                        </Stats>
+                    </Info>
+                </Portrait>
+            </Border>
         )
     }
 }

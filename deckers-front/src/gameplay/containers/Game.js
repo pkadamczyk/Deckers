@@ -237,8 +237,6 @@ class Game extends Component {
                         currentlyDraggedCardId={currentlyDraggedCardId}
                         hasEnemyTauntOnBoard={hasEnemyTauntOnBoard}
                     ></Board>
-
-
                 </GameWrapper>
                 <Socket />
             </DragDropContext>

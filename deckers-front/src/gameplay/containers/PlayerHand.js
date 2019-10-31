@@ -8,18 +8,20 @@ import HandCard from "../components/HandCard"
 export const PLAYER_HAND_ID = "player-hand"
 
 const DroppableDiv = styled.div`
-    height: 26%;
-    width: 650px;
+    height: 35%;
+    width: ${props => ((props.cardsAmount * 70) + 65) + "px"};
+    transition: all 0.5s;
+    overflow: hidden;
 
-    background: ${props => props.isDraggingOver ? 'lightblue' : 'lightgrey'};
     display: flex;
+    align-items: flex-end;
     padding: 8px;
-    overflow: auto;
 
     position: absolute;
     bottom: 0;
     right: 0;
     z-index: 1;
+
 `;
 
 class PlayerHand extends Component {
@@ -39,6 +41,7 @@ class PlayerHand extends Component {
                 gold={gold}
                 cardsOnBoard={cardsOnBoard}
                 currentTarget={currentTarget}
+                cardsAmount={cards.length}
             ></HandCard>
         ))
 
@@ -50,6 +53,7 @@ class PlayerHand extends Component {
             >
                 {(provided, snapshot) => (
                     <DroppableDiv
+                        cardsAmount={cards.length}
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                         isDraggingOver={snapshot.isDraggingOver}

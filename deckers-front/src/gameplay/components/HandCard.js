@@ -7,19 +7,32 @@ import styled from "styled-components"
 import { PLAYER_HAND_ID } from '../containers/PlayerHand';
 import { Effect } from '../../store/reducers/helpers/effects';
 import { SPELL_ROLE } from '../containers/Game';
-import { CARD_WIDTH } from '../containers/Board';
+
+const START_ROTATION = -4;
+const END_ROTATION = 4;
 
 const CardWrap = styled.div`
     margin: 5px 5px 0 0;
-    border: ${props => !props.canBeSummoned ? "2px solid transparent" : '2px solid rgba(165, 255, 48, 0.7)'};
-    border-style: solid solid none solid;
 
-    -webkit-box-shadow: ${props => !props.canBeSummoned ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
-    -moz-box-shadow: ${props => !props.canBeSummoned ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
-    box-shadow: ${props => !props.canBeSummoned ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
-
-    height:${props => (CARD_WIDTH * 1.4) + "px"};
+    height:${props => (props.size * 1.4) + "px"};
     max-height: 242px;
+
+    transform: rotate(${props => props.cardRotation + "deg"});
+    
+    width: ${props => (props.size * 0.55) + "px"};
+`
+
+const Placeholder = styled.div`
+    position: relative;
+
+    width: ${props => (props.size * 0.55) + "px"};
+    height:${props => (props.size * 1.6) + "px"};
+    transition: margin 0.2s;
+
+    :hover{ 
+        margin-bottom: 30px;
+        z-index:3;
+    }
 `
 
 class HandCard extends Component {
@@ -30,13 +43,14 @@ class HandCard extends Component {
     }
 
     render() {
-        const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold } = this.props;
+        const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold, cardsAmount } = this.props;
         const { uniqueId } = this.state;
 
         const isAffordable = gold >= item.inGame.stats.cost;
         const canBeSummoned = isMyTurn && isAffordable;
 
         const isDragDisabled = !isMyTurn;
+        const cardAngle = (-START_ROTATION + END_ROTATION) / (cardsAmount - 1)
 
         return (
             <Draggable
@@ -44,23 +58,32 @@ class HandCard extends Component {
                 index={index}
                 isDragDisabled={isDragDisabled}
             >
-                {(provided, snapshot) => (
-                    <CardWrap
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        canBeSummoned={canBeSummoned}
-                        style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard, currentTarget, item, canBeSummoned)}
-                    >
-                        <Card card={item} />
-                    </CardWrap>
-                )}
+                {(provided, snapshot) => {
+                    let cardRotation = START_ROTATION + (cardAngle * index);
+                    if (snapshot.isDragging) cardRotation = 0;
+                    return (
+                        <Placeholder ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            size={120}
+                            style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard, currentTarget, item, canBeSummoned, cardRotation)}
+                        >
+                            <CardWrap
+                                cardRotation={cardRotation}
+                                index={index}
+                                size={120}
+                                className="card-wrap">
+                                <Card card={item} size={120} haveBorder={canBeSummoned} />
+                            </CardWrap>
+                        </Placeholder>
+                    )
+                }}
             </Draggable>
         )
     }
 }
 
-function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummoned) {
+function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummoned, cardRotation) {
     const hasEffects = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
     const isSingleTargetSpell = hasEffects ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
 
