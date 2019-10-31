@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { connect } from "react-redux"
 import { CARD_WIDTH } from '../containers/Board';
 
-
 const StyledDiv = styled.div`
     height: 18%;
     width: 650px;

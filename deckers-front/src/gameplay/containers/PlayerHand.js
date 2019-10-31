@@ -8,7 +8,7 @@ import HandCard from "../components/HandCard"
 export const PLAYER_HAND_ID = "player-hand"
 
 const DroppableDiv = styled.div`
-    height: 23%;
+    height: 26%;
     width: 650px;
 
     background: ${props => props.isDraggingOver ? 'lightblue' : 'lightgrey'};

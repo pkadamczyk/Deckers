@@ -9,7 +9,6 @@ import PlayerBoard from './PlayerBoard';
 import SpellFix from './SpellFix';
 
 import { SPELL_ROLE } from './Game';
-import { Effect } from '../../store/reducers/helpers/effects';
 import { PLAYER_HAND_ID } from './PlayerHand';
 
 export const CARD_WIDTH = 100;

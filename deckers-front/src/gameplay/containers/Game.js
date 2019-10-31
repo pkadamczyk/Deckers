@@ -187,23 +187,23 @@ class Game extends Component {
 
     render() {
         const { currentTarget, currentlyDragged } = this.state;
-        const { gameReady, enemyCardsOnBoard } = this.props;
+        const { enemyCardsOnBoard } = this.props;
 
         let isMinionDragged, isCardDragged;
         if (currentlyDragged) {
             isMinionDragged = currentlyDragged.droppableId === PLAYER_BOARD_ID;
             isCardDragged = currentlyDragged.droppableId === PLAYER_HAND_ID;
         }
-        const currentlyDraggedCardId = isCardDragged ? currentlyDragged.index : null; // Used to determine and apply spell targeting css
+        // Used to determine and apply spell targeting css
+        const currentlyDraggedCardId = isCardDragged ? currentlyDragged.index : null;
 
         // Used to determine if enemy minions without taunt and hero can be targeted
         const hasEnemyTauntOnBoard = enemyCardsOnBoard.map(card => card.inGame.stats.hasTaunt).includes(true)
-        return (
 
+        return (
             <DragDropContext onDragEnd={this.onDragEnd} onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate}>
                 <GameWrapper>
-
-                    {!gameReady && <Starter />}
+                    <Starter />
                     <EnemyHand />
                     <EnemyHero
                         isMinionDragged={isMinionDragged}
@@ -248,7 +248,6 @@ class Game extends Component {
 
 function mapStateToProps(state) {
     return {
-        gameReady: !!state.game.currentRound,
         isMyTurn: state.game.isMyTurn,
         gold: state.game.playerHeroGold,
 

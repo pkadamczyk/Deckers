@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import styled from "styled-components"
 
 import { CARD_WIDTH } from '../containers/Board';
+import Card from '../Card';
 
 const StyledItem = styled.div` 
     margin: 0 11px 0 0;
-    width: ${props => CARD_WIDTH + 'px'};
-    height: 130px;
+    width: ${props => props.size + 'px'};
+    height:${props => (props.size * 1.4) + "px"};
+    max-height: 242px;
 
     background: grey;
 
@@ -16,12 +18,13 @@ const StyledItem = styled.div`
     -webkit-box-shadow: ${props => props.isClicked ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
     -moz-box-shadow: ${props => props.isClicked ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
     box-shadow: ${props => props.isClicked ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
+
+    cursor: pointer;
 `;
 
 class NonDraggableCard extends Component {
     constructor(props) {
         super(props);
-        this.state = { isClicked: false }
 
         this.handleOnClick = this.handleOnClick.bind(this);
     }
@@ -30,30 +33,25 @@ class NonDraggableCard extends Component {
         const { selected, id, handleSelection, hasPicked } = this.props;
 
         if (!hasPicked) {
-            if (selected === null) {
-                this.setState((state) => ({ isClicked: !state.isClicked }))
-                handleSelection(id)
+            if (selected === id) {
+                return handleSelection(null)
             }
-            else if (selected === id) {
-                this.setState((state) => ({ isClicked: !state.isClicked }))
-                handleSelection(null)
-            }
+
+            handleSelection(id)
         }
     }
 
     render() {
-        const { card } = this.props;
-        const { isClicked } = this.state;
+        const { card, selected, id, size } = this.props;
 
+        const isClicked = selected === id
         return (
             <StyledItem
                 onClick={this.handleOnClick}
                 isClicked={isClicked}
+                size={size || CARD_WIDTH}
             >
-                <div>{card.name}</div>
-                <div>Hp: {card.stats[card.level].health}</div>
-                <div>Dmg: {card.stats[card.level].damage}</div>
-                <div>Cost: {card.stats[card.level].cost}</div>
+                <Card card={card} size={size} />
             </StyledItem>
         )
     }

@@ -23,10 +23,11 @@ const Button = styled.button`
     -moz-box-shadow: ${props => props.isMyTurn ? "0px 0px 18px 0px rgba(145,189,9,1)" : "none"};
     box-shadow: ${props => props.isMyTurn ? "0px 0px 18px 0px rgba(145,189,9,1)" : "none"};
 
-    &:hover {
+    :hover {
         background-color: ${props => props.isMyTurn ? "#85ab13" : "#bbbbbb"};
         border-color: ${props => props.isMyTurn ? "#85ab13" : "#bbbbbb"};
-    }
+    };
+    :focus { outline: none; }
 `;
 
 class EndTurnButton extends Component {

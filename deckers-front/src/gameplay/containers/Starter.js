@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
 
-import styled from "styled-components"
+import styled, { keyframes } from "styled-components"
 import { connect } from "react-redux"
 import NonDraggableCard from '../components/NonDraggableCard';
 import { pickStarterCards } from '../../store/actions/game';
+import { delayUnmounting } from '../../hocs/delayedComponent';
 
-const Wrapper = styled.div`
+const fadeIn = keyframes`
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+`;
+
+const Blackout = styled.div`
     height: 100%;
     width: 100%;
     margin: auto;
+
+    opacity: ${props => !props.gameReady ? "1" : "0"};
+    transition: all 0.5s;
 
     display: flex;
     align-items: center;
@@ -20,9 +29,24 @@ const Wrapper = styled.div`
     position:absolute;
 `;
 
+const ContentWrap = styled.div`
+    height: 60%;
+    width: 60%;
+    border-radius: 10px;
+    padding-top: 2%;
+
+    background: #EDE3DE;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+
+    animation: ${fadeIn} 0.5s linear;
+`
+
 const Row = styled.div`
     display: flex;
-    margin: 20px;
 `;
 
 const Text = styled.div`
@@ -30,7 +54,8 @@ const Text = styled.div`
     font-size: 24px;
 `;
 
-const BottomText = styled(Text)`
+const BottomText = styled.div`
+    font-size: 24px;
     margin-top:24px;
 `
 
@@ -48,12 +73,14 @@ const Button = styled.button`
     -moz-box-shadow:  0px 0px 18px 0px rgba(145,189,9,1);
     box-shadow: 0px 0px 18px 0px rgba(145,189,9,1);
 
-    &:hover {
+    :hover {
         background-color: #85ab13;
         border-color: #85ab13;
-    }
+    };
+    :focus { outline: none; }
 `;
 
+const DelayedBlackout = delayUnmounting(Blackout)
 class Starter extends Component {
     constructor(props) {
         super(props)
@@ -81,38 +108,37 @@ class Starter extends Component {
 
     render() {
         const { selected, text, hasPicked } = this.state;
-        const { cards } = this.props;
-
+        const { cards, gameReady } = this.props;
         const isReady = !!cards;
 
-        let primaryCards = null;
-        if (isReady) primaryCards = cards.slice(0, 3);
-        // const [replacementCard] = cards.slice(-1)
-
-        if (!isReady) return <Wrapper><Text>Loading...</Text></Wrapper>;
+        if (!isReady) return <Blackout><Text>Loading...</Text></Blackout>;
+        const primaryCards = cards.slice(0, 3);
 
         return (
-            <Wrapper>
-                <Text>{text}</Text>
-                <Row>
-                    {primaryCards.map((card, index) => (
-                        <NonDraggableCard
-                            key={card._id + index}
-                            card={card}
-                            handleSelection={this.handleSelection}
-                            id={index}
-                            selected={selected}
-                            hasPicked={hasPicked}
-                        ></NonDraggableCard>
-                    ))}
-                </Row>
-                {hasPicked ?
-                    <BottomText>Enemy is still choosing...</BottomText> :
-                    <Button onClick={this.handleOnClick}>
-                        Ready
+            <DelayedBlackout gameReady={gameReady} isMounted={!gameReady} delayTime={500}>
+                <ContentWrap>
+                    <h2>{text}</h2>
+                    <Row>
+                        {primaryCards.map((card, index) => (
+                            <NonDraggableCard
+                                key={card._id + index}
+                                card={card}
+                                handleSelection={this.handleSelection}
+                                id={index}
+                                selected={selected}
+                                hasPicked={hasPicked}
+                                size={150}
+                            />
+                        ))}
+                    </Row>
+                    {hasPicked ?
+                        <BottomText>Enemy is still choosing...</BottomText> :
+                        <Button onClick={this.handleOnClick}>
+                            Ready
                     </Button>
-                }
-            </Wrapper>
+                    }
+                </ContentWrap>
+            </DelayedBlackout>
         )
     }
 }
@@ -121,6 +147,7 @@ function mapStateToProps(state) {
     return {
         role: state.game.gameInfo.role,
         cards: state.game.gameInfo.starterCards,
+        gameReady: !!state.game.currentRound,
     }
 }
 
