@@ -80,7 +80,7 @@ class Board extends Component {
     }
 
     shouldDropBeDisabled() {
-        const { isMinionDragged, currentlyDraggedCardId } = this.props;
+        const { isMinionDragged, currentlyDraggedCardId, currentTarget } = this.props;
         const { cardsOnBoard, cardsOnHand, playerGold } = this.props;
 
         const currentlyDraggedCard = currentlyDraggedCardId !== null ? cardsOnHand[currentlyDraggedCardId] : null;
@@ -89,7 +89,7 @@ class Board extends Component {
         const isBoardFull = cardsOnBoard.length >= MAX_CARDS_ON_BOARD;
         const isSpellDragged = currentlyDraggedCardId !== null ? currentlyDraggedCard.role === SPELL_ROLE : false
 
-        return isBoardFull || (isMinionDragged || isSpellDragged) || !isAffordable;
+        return isBoardFull || (isMinionDragged || isSpellDragged) || !isAffordable || currentTarget === PLAYER_HAND_ID;
     }
 
     // Used to determine if non targeting spell is dragged, to help with animations

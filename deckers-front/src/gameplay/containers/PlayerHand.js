@@ -9,7 +9,6 @@ import { CARD_WIDTH } from './Board';
 export const PLAYER_HAND_ID = "player-hand"
 
 const DroppableDiv = styled.div`
-    height: ${props => (CARD_WIDTH * 1.4) + 10};
     width: ${props => CARD_WIDTH + ((props.cardsAmount * (CARD_WIDTH - 50)) + 20) + "px"};
     transition: all 0.5s;
     overflow: hidden;
@@ -29,11 +28,11 @@ const DroppableDiv = styled.div`
 
 class PlayerHand extends Component {
     render() {
-        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand: cards, currentTarget, currentlyDragged } = this.props;
+        const { isMinionDragged, isCardDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand: cards, currentTarget, currentlyDragged } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
 
-        const isDropDisabled = isMinionDragged;
+        const isDropDisabled = isMinionDragged || isCardDragged;
 
         const handCards = cards.map((item, index) => (
             <HandCard
@@ -46,7 +45,7 @@ class PlayerHand extends Component {
                 currentTarget={currentTarget}
                 cardsAmount={cards.length}
                 currentlyDragged={currentlyDragged}
-            ></HandCard>
+            />
         ))
 
         return (
@@ -65,7 +64,7 @@ class PlayerHand extends Component {
                         onMouseEnter={() => setTarget(PLAYER_HAND_ID)}
                     >
                         {handCards}
-                        {provided.placeholder}
+                        {/* {provided.placeholder} */}
                     </DroppableDiv>
                 )
                 }

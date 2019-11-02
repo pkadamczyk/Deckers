@@ -59,6 +59,7 @@ class Game extends Component {
         let { currentlyDragged } = this.state;
         const { cardsOnHand, isMyTurn, gold } = this.props;
 
+
         const isDragging = currentlyDragged !== null;
         if (!isDragging) return this.setState({ currentTarget: null });
         if (id === null) return this.setState({ currentTarget: PLAYER_BOARD_ID });
@@ -71,6 +72,8 @@ class Game extends Component {
 
             const isAffordable = gold >= card.inGame.stats.cost;
             if (!isAffordable) return this.setState({ currentTarget: PLAYER_BOARD_ID }); // Check if i can afford dragged card
+
+            if (id === PLAYER_HAND_ID) return this.setState({ currentTarget: PLAYER_HAND_ID });
         }
 
         // Decide if target should be set, for attacking and spell targeting
@@ -80,7 +83,9 @@ class Game extends Component {
         const isTargeting = isMinionTargeting || isSpellTargeting
 
         const shouldSetTarget = isDragging && isTargeting;
+
         if (shouldSetTarget) this.setState({ currentTarget: id });
+        else this.setState({ currentTarget: PLAYER_BOARD_ID })
     }
 
     onDragStart(start) {
@@ -116,10 +121,11 @@ class Game extends Component {
 
         // Cards reordered in hand
         else if (source.droppableId === PLAYER_HAND_ID && source.droppableId === destination.droppableId) {
-            this.props.dispatch(reorderCardsInHand(
-                source.index,
-                destination.index)
-            );
+            // Reordering cards couses only trouble, to be deleted
+            // this.props.dispatch(reorderCardsInHand(
+            //     source.index,
+            //     destination.index)
+            // );
         }
 
         // Targeting sometimes break, this should stop it
@@ -228,6 +234,7 @@ class Game extends Component {
                         handleCleanTarget={this.handleCleanTarget}
                         handleSetTarget={this.handleSetTarget}
                         currentlyDragged={currentlyDragged}
+                        isCardDragged={isCardDragged}
                     />
                     <Board
                         currentlyDragged={currentlyDragged}
