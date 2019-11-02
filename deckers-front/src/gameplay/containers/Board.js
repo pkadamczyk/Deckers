@@ -94,7 +94,11 @@ class Board extends Component {
 
     // Used to determine if non targeting spell is dragged, to help with animations
     checkIfSpellFixIsNeeded() {
-        const { cardsOnHand, currentlyDragged, playerGold } = this.props
+        const { cardsOnHand, currentlyDragged, playerGold, currentTarget, isMyTurn } = this.props
+
+        if (currentTarget === PLAYER_HAND_ID) return false;
+        if (!isMyTurn) return false;
+
         if (!currentlyDragged) return false
         if (currentlyDragged.droppableId !== PLAYER_HAND_ID) return false
 

@@ -10,15 +10,6 @@ const StyledItem = styled.div`
     height:${props => (props.size * 1.4) + "px"};
     max-height: 242px;
 
-    background: grey;
-
-    border: ${props => props.isClicked ? '2px solid rgba(255, 0, 0, 0.7)' : 'none'};
-    border-style: ${props => props.isClicked ? 'solid solid none solid' : 'none'};
-
-    -webkit-box-shadow: ${props => props.isClicked ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
-    -moz-box-shadow: ${props => props.isClicked ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
-    box-shadow: ${props => props.isClicked ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)" : "none"};
-
     cursor: pointer;
 `;
 
@@ -51,7 +42,7 @@ class NonDraggableCard extends Component {
                 isClicked={isClicked}
                 size={size || CARD_WIDTH}
             >
-                <Card card={card} size={size} />
+                <Card card={card} size={size} hasBorder={isClicked} borderColor="rgba(255, 0, 0, 0.7)" />
             </StyledItem>
         )
     }

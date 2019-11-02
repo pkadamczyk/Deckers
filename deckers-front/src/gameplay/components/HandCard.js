@@ -100,7 +100,7 @@ function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummo
     const isSingleTargetSpell = hasEffects ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
 
     const isSpell = card.role === SPELL_ROLE
-    const shouldFadeOut = (isSingleTargetSpell || isSpell) && canBeSummoned;
+    const shouldFadeOut = (isSingleTargetSpell || isSpell) && canBeSummoned && currentTarget !== PLAYER_HAND_ID;
 
     // Handles card dragging and spell cards animations
     if (!snapshot.isDropAnimating) {
@@ -127,7 +127,7 @@ function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummo
     let translate;
 
     // Special case, need own translate
-    if (isLastCard && currentTarget === PLAYER_HAND_ID) translate = `translate(${moveTo.x}px, ${moveTo.y + 30}px)`
+    if ((isLastCard && currentTarget === PLAYER_HAND_ID) || (isLastCard && !canBeSummoned)) translate = `translate(${moveTo.x}px, ${moveTo.y + 30}px)`
     else if (currentTarget === PLAYER_HAND_ID || !canBeSummoned) {
         translate = `translate(${moveTo.x + 50}px, ${moveTo.y}px)`
     }

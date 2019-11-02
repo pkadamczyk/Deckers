@@ -95,14 +95,14 @@ const Border = styled.div`
     height:${props => (props.size * 1.4) + "px"};
     width: ${props => props.size + "px"};
 
-    border: ${props => !props.hasBorder ? "transparent" : '2px solid ' + props.borderColor};
-    border-style:  solid solid none solid;
+    ${'' /* border: ${props => !props.hasBorder ? "transparent" : '2px solid ' + props.borderColor};
+    border-style:  solid solid none solid; */}
 
-    -webkit-box-shadow: ${props => !props.hasBorder ? "none" : "0px -1px 2px 3px " + props.borderColor};
-    -moz-box-shadow: ${props => !props.hasBorder ? "none" : "0px -1px 2px 3px " + props.borderColor};
-    box-shadow: ${props => !props.hasBorder ? "none" : "0px -1px 2px 3px " + props.borderColor};
+    -webkit-box-shadow: ${props => !props.hasBorder ? "none" : "0px 0px 4px 7px " + props.borderColor};
+    -moz-box-shadow: ${props => !props.hasBorder ? "none" : "0px 0px 4px 7px " + props.borderColor};
+    box-shadow: ${props => !props.hasBorder ? "none" : "0px 0px 4px 7px " + props.borderColor};
 
-    transition: all 0.4s;
+    transition: all 0.2s;
 `
 
 

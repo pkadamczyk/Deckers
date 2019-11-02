@@ -10,12 +10,9 @@ const Wrapper = styled.div`
     height: 50%;
     width: 100%;
     display: flex;
-    ${'' /* justify-content: center; */}
     margin: auto;
     
     margin-left: ${props => CARD_WIDTH * 0.5 + "px"};
-
-    background: white;
 `;
 
 class PlayerBoard extends Component {
