@@ -7,32 +7,7 @@ import { GAME_STATE } from '../../store/reducers/game';
 import { Effect } from '../../store/reducers/helpers/effects';
 import { SPELL_ROLE } from '../containers/Game';
 import { checkCondition } from '../../store/reducers/helpers/helpers/checkCondition';
-
-const StyledItem = styled.div` 
-    position: relative;
-    z-index: 0;
-
-    transition: width 0.2s;
-    transition: height 0.2s;
-    transition: border 0.2s;
-
-    margin: 0 8px 0 0;
-    width: ${props => props.isBeingTargeted ? (CARD_WIDTH + 10) + 'px' : CARD_WIDTH + 'px'};
-    height: ${props => props.isBeingTargeted ? "140px" : "130px"};
-
-    background: grey;
-
-    border: ${props => !props.isDragDisabled ? '2px solid rgba(165, 255, 48, 0.7)'
-        : props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
-    border-style: ${props => !props.isDragDisabled || props.canBeSpellTargeted ? 'solid solid none solid' : 'none'};
-
-    -webkit-box-shadow: ${props => !props.isDragDisabled ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)"
-        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    -moz-box-shadow: ${props => !props.isDragDisabled ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)"
-        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    box-shadow: ${props => !props.isDragDisabled ? "0px -1px 2px 3px rgba(165, 255, 48,0.7)"
-        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-`;
+import Card from '../Card';
 
 function getStyle(style, snapshot) {
     if (!snapshot.isDropAnimating) return style;
@@ -45,6 +20,20 @@ function getStyle(style, snapshot) {
         transition: `all ${curve} ${duration}s`,
     };
 }
+
+const CardWrap = styled.div`
+    position: relative;
+    z-index: 0;
+
+    transition: width 0.2s;
+    transition: height 0.2s;
+    transition: border 0.2s;
+
+    margin: 0 8px 0 0;
+
+    height:${props => (CARD_WIDTH * 1.4) + "px"};
+    width: ${props => CARD_WIDTH + "px"};
+`
 
 class Content extends Component {
     componentDidUpdate(prevProps) {
@@ -62,8 +51,12 @@ class Content extends Component {
 
         const isBeingTargeted = currentTarget === myId
 
+        const hasBorder = !isDragDisabled || canBeSpellTargeted
+        const borderColor = !isDragDisabled ? 'rgba(165, 255, 48, 0.7)'
+            : canBeSpellTargeted ? 'rgba(255, 153, 0, 0.7)' : 'transparent';
+
         return (
-            <StyledItem
+            <CardWrap
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
@@ -75,14 +68,10 @@ class Content extends Component {
                 onMouseLeave={() => cleanTarget()}
                 onMouseEnter={() => setTarget(setTargetId)}
             >
-                <div>{item.name}</div>
-                <div>Hp: {item.inGame.stats.health}</div>
-                <div>Dmg: {item.inGame.stats.damage}</div>
-            </StyledItem>
+                <Card card={item} hasBorder={hasBorder} borderColor={borderColor} />
+            </CardWrap>
         )
     }
-
-
 }
 
 class Minion extends Component {
@@ -163,13 +152,9 @@ class Minion extends Component {
         const { isDragging } = this.state;
 
         const hasDamage = item.inGame.stats.damage > 0;
-        // const isIdle = gameState === GAME_STATE.IDLE && !isDragging
-        // (gameState !== GAME_STATE.IDLE && !isDragging)
 
         return !isMyTurn || !item.inGame.isReady || !hasDamage || (gameState !== GAME_STATE.IDLE && !isDragging);;
     }
-
-
 }
 
 export default Minion;

@@ -11,19 +11,19 @@ import SpellFix from './SpellFix';
 import { SPELL_ROLE } from './Game';
 import { PLAYER_HAND_ID } from './PlayerHand';
 
-export const CARD_WIDTH = 100;
+export const CARD_WIDTH = 120;
 export const MAX_CARDS_ON_BOARD = 4;
 export const PLAYER_BOARD_ID = "player-board";
 
 const DroppableDiv = styled.div`
     height: 100%;
-    width: ${props => ((props.items.length + 1) * (CARD_WIDTH + 25)) + "px"};
+    width: ${props => ((props.items.length + 1) * (CARD_WIDTH + 8)) + "px"};
+    transition: all 0.4s;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: auto;
-    
-    padding: 8px;
 `;
 
 class Board extends Component {

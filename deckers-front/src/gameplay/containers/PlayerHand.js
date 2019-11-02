@@ -5,28 +5,31 @@ import { Droppable } from 'react-beautiful-dnd';
 import { connect } from "react-redux"
 
 import HandCard from "../components/HandCard"
+import { CARD_WIDTH } from './Board';
 export const PLAYER_HAND_ID = "player-hand"
 
 const DroppableDiv = styled.div`
-    height: 35%;
-    width: ${props => ((props.cardsAmount * 70) + 65) + "px"};
+    height: ${props => (CARD_WIDTH * 1.4) + 10};
+    width: ${props => CARD_WIDTH + ((props.cardsAmount * (CARD_WIDTH - 50)) + 20) + "px"};
     transition: all 0.5s;
     overflow: hidden;
 
     display: flex;
     align-items: flex-end;
     padding: 8px;
+    padding-left: 80px;
+    padding-top: 50px;
 
     position: absolute;
     bottom: 0;
     right: 0;
     z-index: 1;
-
+    margin-right: 20px;
 `;
 
 class PlayerHand extends Component {
     render() {
-        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand: cards, currentTarget } = this.props;
+        const { isMinionDragged, isMyTurn, gold, cardsOnBoard, cardsOnHand: cards, currentTarget, currentlyDragged } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
 
@@ -42,6 +45,7 @@ class PlayerHand extends Component {
                 cardsOnBoard={cardsOnBoard}
                 currentTarget={currentTarget}
                 cardsAmount={cards.length}
+                currentlyDragged={currentlyDragged}
             ></HandCard>
         ))
 

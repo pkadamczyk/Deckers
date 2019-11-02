@@ -227,6 +227,7 @@ class Game extends Component {
                         isMinionDragged={isMinionDragged}
                         handleCleanTarget={this.handleCleanTarget}
                         handleSetTarget={this.handleSetTarget}
+                        currentlyDragged={currentlyDragged}
                     />
                     <Board
                         currentlyDragged={currentlyDragged}

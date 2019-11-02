@@ -9,7 +9,7 @@ import { Effect } from '../../store/reducers/helpers/effects';
 export const PLAYER_PORTRAIT_ID = "player-portrait";
 
 const Div = styled.div`
-    height: ${props => props.isBeingTargeted ? "145px" : "140px"};
+    height: ${props => props.isBeingTargeted ? "125px" : "120px"};
     width: ${props => props.isBeingTargeted ? "125px" : "120px"};
 
     position: absolute;

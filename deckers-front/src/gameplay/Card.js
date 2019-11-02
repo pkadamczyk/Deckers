@@ -95,25 +95,27 @@ const Border = styled.div`
     height:${props => (props.size * 1.4) + "px"};
     width: ${props => props.size + "px"};
 
-    border: ${props => !props.haveBorder ? "2px solid transparent" : '2px solid rgba(165, 255, 48, 0.7)'};
-    border-style: solid solid none solid;
+    border: ${props => !props.hasBorder ? "transparent" : '2px solid ' + props.borderColor};
+    border-style:  solid solid none solid;
 
-    -webkit-box-shadow: ${props => !props.haveBorder ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
-    -moz-box-shadow: ${props => !props.haveBorder ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
-    box-shadow: ${props => !props.haveBorder ? "none" : "0px -1px 2px 3px rgba(165, 255, 48,0.7)"};
+    -webkit-box-shadow: ${props => !props.hasBorder ? "none" : "0px -1px 2px 3px " + props.borderColor};
+    -moz-box-shadow: ${props => !props.hasBorder ? "none" : "0px -1px 2px 3px " + props.borderColor};
+    box-shadow: ${props => !props.hasBorder ? "none" : "0px -1px 2px 3px " + props.borderColor};
+
+    transition: all 0.4s;
 `
 
 
 class Card extends Component {
     render() {
-        const { card, size = CARD_WIDTH, haveBorder } = this.props;
+        const { card, size = CARD_WIDTH, hasBorder, borderColor } = this.props;
 
         const costBoxBackgrounds = [cardCostBoxDwarf, cardCostBoxForsaken, cardCostBoxOrder, cardCostBoxSkaven]
         const costBoxBackground = costBoxBackgrounds[card.race]
         const imageURL = images.get(card.imageID)
 
         return (
-            <Border haveBorder={haveBorder} size={size}>
+            <Border hasBorder={hasBorder} borderColor={borderColor} size={size}>
                 <Portrait
                     imageURL={imageURL}
                     size={size}

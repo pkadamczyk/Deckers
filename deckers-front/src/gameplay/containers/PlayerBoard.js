@@ -4,20 +4,23 @@ import styled from "styled-components"
 
 import Minion from '../components/Minion';
 import { connect } from "react-redux"
+import { CARD_WIDTH } from './Board';
 
 const Wrapper = styled.div`
     height: 50%;
     width: 100%;
     display: flex;
-    justify-content: center;
+    ${'' /* justify-content: center; */}
     margin: auto;
     
-    padding: 8px;
+    margin-left: ${props => CARD_WIDTH * 0.5 + "px"};
+
+    background: white;
 `;
 
 class PlayerBoard extends Component {
     render() {
-        const { isMyTurn, items, placeholder, gameState, cardsOnHand, currentTarget, currentlyDraggedCardId } = this.props
+        const { isMyTurn, items, placeholder, gameState, cardsOnHand, cardsOnBoard, currentTarget, currentlyDraggedCardId } = this.props
         const { handleCleanTarget, handleSetTarget } = this.props
 
         const minions = items.map((item, index) => (
@@ -37,7 +40,7 @@ class PlayerBoard extends Component {
         ))
 
         return (
-            <Wrapper>
+            <Wrapper cardsOnBoard={cardsOnBoard}>
                 {minions}
                 {placeholder}
             </Wrapper>
@@ -48,6 +51,7 @@ class PlayerBoard extends Component {
 function mapStateToProps(state) {
     return {
         cardsOnHand: state.game.cardsOnHand,
+        cardsOnBoard: state.game.cardsOnBoard,
     }
 }
 

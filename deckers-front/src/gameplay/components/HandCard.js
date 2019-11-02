@@ -7,6 +7,7 @@ import styled from "styled-components"
 import { PLAYER_HAND_ID } from '../containers/PlayerHand';
 import { Effect } from '../../store/reducers/helpers/effects';
 import { SPELL_ROLE } from '../containers/Game';
+import { CARD_WIDTH, MAX_CARDS_ON_BOARD } from '../containers/Board';
 
 const START_ROTATION = -4;
 const END_ROTATION = 4;
@@ -19,15 +20,17 @@ const CardWrap = styled.div`
 
     transform: rotate(${props => props.cardRotation + "deg"});
     
-    width: ${props => (props.size * 0.55) + "px"};
+    width: ${props => (props.size) + "px"};
 `
 
 const Placeholder = styled.div`
     position: relative;
 
-    width: ${props => (props.size * 0.55) + "px"};
-    height:${props => (props.size * 1.6) + "px"};
+    width: ${props => props.size + "px"};
+    height:${props => props.size * 1.6 + "px"};
     transition: margin 0.2s;
+
+    left: ${props => props.isLeftNeighborDragged ? (props.index - 1) * -50 + "px" : props.index * -50 + "px"};
 
     :hover{ 
         margin-bottom: 30px;
@@ -43,14 +46,19 @@ class HandCard extends Component {
     }
 
     render() {
-        const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold, cardsAmount } = this.props;
+        const { item, index, isMyTurn, cardsOnBoard, currentTarget, gold, cardsAmount, currentlyDragged } = this.props;
         const { uniqueId } = this.state;
 
         const isAffordable = gold >= item.inGame.stats.cost;
-        const canBeSummoned = isMyTurn && isAffordable;
+        const canBeSummoned = isMyTurn && isAffordable && cardsOnBoard.length < MAX_CARDS_ON_BOARD;
 
         const isDragDisabled = !isMyTurn;
         const cardAngle = (-START_ROTATION + END_ROTATION) / (cardsAmount - 1)
+
+        let isLeftNeighborDragged = false;
+        if (currentlyDragged) isLeftNeighborDragged = currentlyDragged.droppableId === PLAYER_HAND_ID ? currentlyDragged.index <= index - 1 : false;
+
+        const isLastCard = index + 1 === cardsAmount; // For animations
 
         return (
             <Draggable
@@ -61,19 +69,23 @@ class HandCard extends Component {
                 {(provided, snapshot) => {
                     let cardRotation = START_ROTATION + (cardAngle * index);
                     if (snapshot.isDragging) cardRotation = 0;
+
+                    const inSummoningState = snapshot.isDragging && currentTarget !== PLAYER_HAND_ID;
+                    const borderColor = inSummoningState ? "rgba(72, 186, 255,0.7)" : "rgba(165, 255, 48,0.7)"
                     return (
                         <Placeholder ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             size={120}
-                            style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard, currentTarget, item, canBeSummoned, cardRotation)}
+                            index={index}
+                            isLeftNeighborDragged={isLeftNeighborDragged}
+                            style={getStyle(provided.draggableProps.style, snapshot, cardsOnBoard, currentTarget, item, canBeSummoned, isLastCard)}
                         >
                             <CardWrap
                                 cardRotation={cardRotation}
                                 index={index}
-                                size={120}
-                                className="card-wrap">
-                                <Card card={item} size={120} haveBorder={canBeSummoned} />
+                                size={120}>
+                                <Card card={item} size={120} hasBorder={canBeSummoned} borderColor={borderColor} />
                             </CardWrap>
                         </Placeholder>
                     )
@@ -83,7 +95,7 @@ class HandCard extends Component {
     }
 }
 
-function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummoned, cardRotation) {
+function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummoned, isLastCard) {
     const hasEffects = card.effects && card.effects.onSummon && card.effects.onSummon.length > 0
     const isSingleTargetSpell = hasEffects ? Object.values(Effect.TARGET_LIST.SINGLE_TARGET).includes(card.effects.onSummon[0].target) : false;
 
@@ -114,8 +126,12 @@ function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummo
     const { moveTo, curve, duration } = snapshot.dropAnimation;
     let translate;
 
-    if (currentTarget === PLAYER_HAND_ID || !canBeSummoned) translate = `translate(${moveTo.x}px, ${moveTo.y}px)`
-    else translate = cardsOnBoard.length === 0 ? `translate(${moveTo.x}px, ${moveTo.y + (window.innerHeight / 2)}px)` : `translate(${moveTo.x - 50}px, ${moveTo.y}px)`;
+    // Special case, need own translate
+    if (isLastCard && currentTarget === PLAYER_HAND_ID) translate = `translate(${moveTo.x}px, ${moveTo.y + 30}px)`
+    else if (currentTarget === PLAYER_HAND_ID || !canBeSummoned) {
+        translate = `translate(${moveTo.x + 50}px, ${moveTo.y}px)`
+    }
+    else translate = cardsOnBoard.length === 0 ? `translate(${moveTo.x + (CARD_WIDTH * 0.5)}px, ${moveTo.y + (window.innerHeight / 2)}px)` : `translate(${moveTo.x}px, ${moveTo.y}px)`;
 
     return {
         ...style,
