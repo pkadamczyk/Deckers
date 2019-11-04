@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     display: flex;
     margin: auto;
     
-    margin-left: ${props => CARD_WIDTH * 0.5 + "px"};
+    margin-left: ${props => ((CARD_WIDTH * 0.5) + 4) + "px"};
 `;
 
 class PlayerBoard extends Component {

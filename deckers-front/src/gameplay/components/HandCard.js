@@ -50,7 +50,7 @@ class HandCard extends Component {
         const { uniqueId } = this.state;
 
         const isAffordable = gold >= item.inGame.stats.cost;
-        const canBeSummoned = isMyTurn && isAffordable && cardsOnBoard.length < MAX_CARDS_ON_BOARD;
+        const canBeSummoned = isMyTurn && isAffordable && (cardsOnBoard.length < MAX_CARDS_ON_BOARD || item.role === SPELL_ROLE);
 
         const isDragDisabled = !isMyTurn;
         const cardAngle = (-START_ROTATION + END_ROTATION) / (cardsAmount - 1)

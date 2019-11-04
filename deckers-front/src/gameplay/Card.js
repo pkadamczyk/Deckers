@@ -9,7 +9,6 @@ import cardCostBoxOrder from '../graphic/background_race_order.png';
 import cardCostBoxForsaken from '../graphic/background_race_forsaken.png';
 
 import images from "../graphic/card_portraits/forsaken";
-
 import { CARD_WIDTH } from './containers/Board';
 
 const Portrait = styled.div`
@@ -95,16 +94,12 @@ const Border = styled.div`
     height:${props => (props.size * 1.4) + "px"};
     width: ${props => props.size + "px"};
 
-    ${'' /* border: ${props => !props.hasBorder ? "transparent" : '2px solid ' + props.borderColor};
-    border-style:  solid solid none solid; */}
-
     -webkit-box-shadow: ${props => !props.hasBorder ? "none" : "0px 0px 4px 7px " + props.borderColor};
     -moz-box-shadow: ${props => !props.hasBorder ? "none" : "0px 0px 4px 7px " + props.borderColor};
     box-shadow: ${props => !props.hasBorder ? "none" : "0px 0px 4px 7px " + props.borderColor};
 
-    transition: all 0.2s;
+    transition: all 0.3s;
 `
-
 
 class Card extends Component {
     render() {

@@ -22,13 +22,6 @@ function getStyle(style, snapshot) {
 }
 
 const CardWrap = styled.div`
-    position: relative;
-    z-index: 0;
-
-    transition: width 0.2s;
-    transition: height 0.2s;
-    transition: border 0.2s;
-
     margin: 0 8px 0 0;
 
     height:${props => (CARD_WIDTH * 1.4) + "px"};

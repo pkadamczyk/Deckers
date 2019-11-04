@@ -2,33 +2,21 @@ import React, { Component } from 'react';
 import styled from "styled-components"
 
 import { Droppable } from 'react-beautiful-dnd';
-import { GAME_STATE } from '../../store/reducers/game';
 import { CARD_WIDTH } from '../containers/Board';
 import { SPELL_ROLE } from '../containers/Game';
 import { Effect } from '../../store/reducers/helpers/effects';
 import { checkCondition } from '../../store/reducers/helpers/helpers/checkCondition';
+import Card from '../Card';
+import { delayUnmounting } from '../../hocs/delayedComponent';
 
-const StyledItem = styled.div`
-    width: ${props => props.isBeingTargeted ? (CARD_WIDTH + 10) + 'px' : CARD_WIDTH + 'px'};
-    height: ${props => props.isBeingTargeted ? "140px" : "130px"};
-    padding: 8px;
-
-    transition: all 0.2s;
-
-    background: tomato;
+const CardWrap = styled.div`
     margin: 0 8px 0 0;
 
-    border: ${props => props.canBeTargeted ? '2px solid rgba(255, 0, 0, 0.7)'
-        : props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
-    border-style: ${props => props.canBeTargeted || props.canBeSpellTargeted ? 'solid solid none solid' : 'none'};
-
-    -webkit-box-shadow: ${props => props.canBeTargeted ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
-        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    -moz-box-shadow: ${props => props.canBeTargeted ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
-        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    box-shadow: ${props => props.canBeTargeted ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
-        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
+    height:${props => (CARD_WIDTH * 1.4) + "px"};
+    width: ${props => CARD_WIDTH + "px"};
 `
+
+// const DelayedCardWrap = delayUnmounting(CardWrap)
 
 class EnemyMinion extends Component {
     render() {
@@ -45,6 +33,10 @@ class EnemyMinion extends Component {
         const canBeTargeted = couldBeTargeted && (!hasEnemyTauntOnBoard || item.inGame.stats.hasTaunt)
         const setTargetId = canBeTargeted ? myId : null
 
+        // Card border styles
+        const alphaChannel = isBeingTargeted ? "0.7" : "0";
+        const borderColor = canBeSpellTargeted ? `rgba(255, 153, 0, ${alphaChannel})` : canBeTargeted ? `rgba(255, 0, 0, ${alphaChannel})` : 'transparent';
+
         return (
             <Droppable
                 droppableId={myId}
@@ -53,7 +45,8 @@ class EnemyMinion extends Component {
                 isDropDisabled={isDropDisabled}
             >
                 {(provided, snapshot) => (
-                    <StyledItem ref={provided.innerRef}
+                    <CardWrap isMounted={item.inGame.stats.health >= 0} delayTime={500}
+                        ref={provided.innerRef}
                         {...provided.droppableProps}
                         canBeTargeted={canBeTargeted}
                         canBeSpellTargeted={canBeSpellTargeted}
@@ -62,10 +55,8 @@ class EnemyMinion extends Component {
                         onMouseLeave={() => cleanTarget()}
                         onMouseEnter={() => setTarget(setTargetId)}
                     >
-                        <div>{item.name}</div>
-                        <div>Hp: {item.inGame.stats.health}</div>
-                        <div>Dmg: {item.inGame.stats.damage}</div>
-                    </StyledItem>
+                        <Card card={item} hasBorder={canBeTargeted} borderColor={borderColor} />
+                    </CardWrap>
                 )
                 }
             </Droppable>
