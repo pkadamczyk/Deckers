@@ -338,12 +338,6 @@ function handleAttackMinion(state, action) {
 
     newState = { ...newState, enemyCardsOnBoard: enemyMinionArray, cardsOnBoard: playerMinionArray }
 
-    // Make final words do its magic (enemy)
-    // if (attackedMinion.inGame.stats.health <= 0) {
-    //     if (attackedMinion.effects && attackedMinion.effects.finalWords.length > 0)
-    //         newState = invokeEffect(attackedMinion.effects.finalWords[0], newState)
-    // }
-
     // Make final words do its magic
     if (attackingMinion.inGame.stats.health <= 0) {
         const hasEffects = attackingMinion.effects && attackingMinion.effects.finalWords && attackingMinion.effects.finalWords.length > 0
@@ -364,6 +358,8 @@ function handleAttackHero(state, action) {
     playerMinion.inGame.isReady = false;
 
     let enemyHeroCurrentHp = enemyHeroHealth - playerMinion.inGame.stats.damage;
+    if (enemyHeroCurrentHp < 0) enemyHeroCurrentHp = 0;
+
     let playerMinionArray = [...cardsOnBoard];
     playerMinionArray.splice(playerMinionId, 1, playerMinion);
 

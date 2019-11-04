@@ -64,10 +64,8 @@ class Game {
         attackingMinion.inGame.isReady = false;
 
         // Move this to Player function?
-        let enemyHealth = players[+!currentPlayer].health;
-        enemyHealth = enemyHealth - attackingMinion.inGame.stats.damage;
-
-        players[+!currentPlayer].health = enemyHealth;
+        players[+!currentPlayer].health -= attackingMinion.inGame.stats.damage;
+        if (players[+!currentPlayer].health < 0) players[+!currentPlayer].health = 0;
     }
 
     handleAttackOnMinion(playerMinionId, enemyMinionId) {
