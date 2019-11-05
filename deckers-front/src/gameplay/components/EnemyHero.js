@@ -4,37 +4,37 @@ import Portrait from "./Portrait"
 import { connect } from "react-redux"
 import { Droppable } from 'react-beautiful-dnd';
 import styled from "styled-components"
-import { GAME_STATE } from '../../store/reducers/game';
 import { Effect } from '../../store/reducers/helpers/effects';
 import { SPELL_ROLE } from '../containers/Game';
 
 export const ENEMY_PORTRAIT_ID = "enemy-portrait";
 
-const Div = styled.div`
-    height: ${props => props.isBeingTargeted ? "145px" : "140px"};
-    width: ${props => props.isBeingTargeted ? "125px" : "120px"};
+const HitBox = styled.div`
+    height: 200px;
+    width: 200px;
 
     position: absolute;
     z-index:1;
     top: 5px;
     left: 660px;
 
-    transition: all 0.2s;
+    background-color: rgba(0,0,0,0);
+`
 
-    border: ${props => props.canBeTargeted ? '2px solid rgba(255, 0, 0, 0.7)'
-        : props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
-    border-style: ${props => props.canBeTargeted || props.canBeSpellTargeted ? 'solid solid none solid' : 'none'};
+const Div = styled.div`
+    height: 120px;
+    width: 120px;
+    margin: auto;
 
-    -webkit-box-shadow: ${props => props.canBeTargeted ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
-        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    -moz-box-shadow: ${props => (props.canBeTargeted) ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
-        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    box-shadow: ${props => (props.canBeTargeted) ? "0px -1px 2px 3px rgba(255, 0, 0,0.7)"
-        : props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
+    -webkit-box-shadow: ${props => !props.hasBorder ? "0px 0px 4px 7px rgba(0, 0, 0, 0.7)" : "0px 0px 4px 7px " + props.borderColor};
+    -moz-box-shadow: ${props => !props.hasBorder ? "0px 0px 4px 7px rgba(0, 0, 0, 0.7)" : "0px 0px 4px 7px " + props.borderColor};
+    box-shadow: ${props => !props.hasBorder ? "0px 0px 4px 7px rgba(0, 0, 0, 0.7)" : "0px 0px 4px 7px " + props.borderColor};
+
+    transition: all 0.3s;
 `
 class EnemyHero extends Component {
     render() {
-        const { health, gold, currentTarget, isMinionDragged, username, hasEnemyTauntOnBoard } = this.props;
+        const { health, gold, currentTarget, isMinionDragged, hasEnemyTauntOnBoard, avatarID } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
 
@@ -46,30 +46,36 @@ class EnemyHero extends Component {
         const canBeTargeted = couldBeTargeted && !hasEnemyTauntOnBoard
         const setTargetId = canBeTargeted ? ENEMY_PORTRAIT_ID : null
 
+        // Avatar border styles
+        const borderColor = canBeSpellTargeted ? `rgba(255, 153, 0, 0.7)` : isBeingTargeted ? `rgba(255, 0, 0, 0.7)` : "rgba(0, 0, 0, 0.7)";
+
         return (
-            <Droppable
-                droppableId={ENEMY_PORTRAIT_ID}
-                direction="horizontal"
-                isDropDisabled={isDropDisabled}
+            <HitBox
+                onMouseLeave={() => cleanTarget()}
+                onMouseEnter={() => setTarget(setTargetId)}
             >
-                {(provided, snapshot) => (
-                    <Div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        canBeTargeted={canBeTargeted}
-                        onMouseLeave={() => cleanTarget()}
-                        onMouseEnter={() => setTarget(setTargetId)}
-                        canBeSpellTargeted={canBeSpellTargeted}
-                        isBeingTargeted={isBeingTargeted}
-                    >
-                        <Portrait
-                            username={username}
-                            health={health}
-                            gold={gold}
-                        />
-                    </Div>
-                )}
-            </Droppable>
+                <Droppable
+                    droppableId={ENEMY_PORTRAIT_ID}
+                    direction="horizontal"
+                    isDropDisabled={isDropDisabled}
+                >
+                    {(provided, snapshot) => (
+                        <Div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            canBeTargeted={canBeTargeted}
+                            borderColor={borderColor}
+                            hasBorder={canBeTargeted}
+                        >
+                            <Portrait
+                                health={health}
+                                gold={gold}
+                                avatarID={avatarID}
+                            />
+                        </Div>
+                    )}
+                </Droppable>
+            </HitBox>
         )
     }
 
@@ -93,7 +99,7 @@ function mapStateToProps(state) {
         gameState: state.game.gameState,
         health: state.game.enemyHeroHealth,
         gold: state.game.enemyHeroGold,
-        username: state.game.gameInfo.enemy,
+        avatarID: state.game.gameInfo.enemy.avatarID,
         cardsOnHand: state.game.cardsOnHand,
     }
 }

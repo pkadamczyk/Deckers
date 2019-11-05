@@ -7,7 +7,6 @@ import { SPELL_ROLE } from '../containers/Game';
 import { Effect } from '../../store/reducers/helpers/effects';
 import { checkCondition } from '../../store/reducers/helpers/helpers/checkCondition';
 import Card from '../Card';
-import { delayUnmounting } from '../../hocs/delayedComponent';
 
 const CardWrap = styled.div`
     margin: 0 8px 0 0;
@@ -15,8 +14,6 @@ const CardWrap = styled.div`
     height:${props => (CARD_WIDTH * 1.4) + "px"};
     width: ${props => CARD_WIDTH + "px"};
 `
-
-// const DelayedCardWrap = delayUnmounting(CardWrap)
 
 class EnemyMinion extends Component {
     render() {

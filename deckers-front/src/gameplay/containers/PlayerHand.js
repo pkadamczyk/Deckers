@@ -11,7 +11,7 @@ export const PLAYER_HAND_ID = "player-hand"
 const DroppableDiv = styled.div`
     width: ${props => CARD_WIDTH + ((props.cardsAmount * (CARD_WIDTH - 50)) + 20) + "px"};
     min-width: 210px;
-    height: 250px;
+    height: 230px;
     transition: all 0.5s;
     overflow: hidden;
 

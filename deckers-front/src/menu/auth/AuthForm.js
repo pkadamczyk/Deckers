@@ -5,6 +5,8 @@ import wrapperBackground from '../../graphic/background_02.PNG'
 import formBackground from '../../graphic/background_01.png'
 import buttonBackground from '../../graphic/button_long_01.png'
 
+import avatars from '../../graphic/avatars'
+
 import styled from "styled-components"
 
 const Wrapper = styled.div`
@@ -71,7 +73,7 @@ class AuthForm extends Component {
             email: "",
             username: "",
             password: "",
-            profileImageUrl: ""
+            avatarID: Math.floor(Math.random() * avatars.size)
         };
     }
 

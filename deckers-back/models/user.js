@@ -13,6 +13,11 @@ const UserSchema = new mongoose.Schema({
     password: String,
     email: String,
 
+    avatarID: {
+        type: Number,
+        default: 0,
+    },
+
     currency: {
         gold: { type: Number, default: 200 },
         gems: { type: Number, default: 0 }

@@ -8,27 +8,24 @@ import { Effect } from '../../store/reducers/helpers/effects';
 
 export const PLAYER_PORTRAIT_ID = "player-portrait";
 
-const Div = styled.div`
-    height: ${props => props.isBeingTargeted ? "125px" : "120px"};
-    width: ${props => props.isBeingTargeted ? "125px" : "120px"};
+const Wrapper = styled.div`
+    height: 120px;
+    width: 120px;
 
     position: absolute;
     z-index:1;
     right: 660px;
     bottom: 15px;
 
-    border: ${props => props.canBeSpellTargeted ? '2px solid rgba(255, 153, 0, 0.7)' : 'none'};
-    border-style: ${props => props.canBeSpellTargeted ? 'solid solid none solid' : 'none'};
+    -webkit-box-shadow: ${props => props.canBeSpellTargeted ? "0px 0px 4px 7px rgba(255, 153, 0,0.7)" : "0px 0px 4px 7px rgba(0, 0, 0, 0.7)"};
+    -moz-box-shadow: ${props => props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "0px 0px 4px 7px rgba(0, 0, 0, 0.7)"};
+    box-shadow: ${props => props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "0px 0px 4px 7px rgba(0, 0, 0, 0.7)"};
 
-    -webkit-box-shadow: ${props => props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    -moz-box-shadow: ${props => props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-    box-shadow: ${props => props.canBeSpellTargeted ? "0px -1px 2px 3px rgba(255, 153, 0,0.7)" : "none"};
-
-    transition: all 0.2s;
+    transition: all 0.3s;
 `
 class PlayerHero extends Component {
     render() {
-        const { health, gold, username, currentTarget } = this.props;
+        const { health, gold, currentTarget, avatarID } = this.props;
         const cleanTarget = this.props.handleCleanTarget;
         const setTarget = this.props.handleSetTarget;
 
@@ -37,7 +34,7 @@ class PlayerHero extends Component {
         const setTargetId = canBeSpellTargeted ? PLAYER_PORTRAIT_ID : null
 
         return (
-            <Div
+            <Wrapper
                 onMouseLeave={() => cleanTarget()}
                 onMouseEnter={() => setTarget(setTargetId)}
                 canBeSpellTargeted={canBeSpellTargeted}
@@ -46,9 +43,9 @@ class PlayerHero extends Component {
                 <Portrait
                     health={health}
                     gold={gold}
-                    username={username}
+                    avatarID={avatarID}
                 />
-            </Div>
+            </Wrapper>
         )
     }
 
@@ -71,7 +68,7 @@ function mapStateToProps(state) {
     return {
         health: state.game.playerHeroHealth,
         gold: state.game.playerHeroGold,
-        username: state.game.gameInfo.player,
+        avatarID: state.currentUser.user.avatarID,
         cardsOnHand: state.game.cardsOnHand,
     }
 }

@@ -64,7 +64,7 @@ module.exports.connect = function (io) {
 
 async function teamPlayers() {
     try {
-        Matchmaking.gameMode.forEach(function (gameMode, i) {
+        Matchmaking.gameMode.map(function (gameMode, i) {
             for (let i = 0; i < Math.floor(gameMode.playersInQueue.length / 2); i++) pairPlayers(gameMode, i);
         })
     } catch (err) {
@@ -105,12 +105,12 @@ async function pairPlayers(gameMode, i) {
 
         // Send info about game to players
         const roomName = (Date.now() + Math.random()).toString();
-        [player1, player2].forEach(player => player.socket.join(roomName));
+        [player1, player2].map(player => player.socket.join(roomName));
 
         console.log("Game ready!");
         gameSearch.in(roomName).emit('game-ready', { game_id: newGame._id });
 
-        [player1, player2].forEach(player => player.socket.leave(roomName));
+        [player1, player2].map(player => player.socket.leave(roomName));
 
         console.log(gameMode.playersInQueue);
     } catch (err) {

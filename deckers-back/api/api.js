@@ -313,7 +313,10 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
             cardList,
             gameId: foundGame._id,
             player: user.username,
-            enemy: enemy.username,
+            enemy: {
+                username: enemy.username,
+                avatarID: enemy.avatarID,
+            },
 
             role: playerIndex,
             playerDeckCardsAmount: userDeck.length,
