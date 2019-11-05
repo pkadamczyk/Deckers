@@ -15,7 +15,7 @@ const FullScreenDiv = styled.div`
     height: 100%;
 
     background-color: red;
-    opacity: ${props => props.isNeeded ? "0.2" : "0"};
+    opacity: ${props => props.isNeeded ? "0.05" : "0"};
 `
 
 class SpellFix extends Component {

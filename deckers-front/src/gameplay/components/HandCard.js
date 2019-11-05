@@ -128,10 +128,9 @@ function getStyle(style, snapshot, cardsOnBoard, currentTarget, card, canBeSummo
 
     // Special case, need own translate
     if ((isLastCard && currentTarget === PLAYER_HAND_ID) || (isLastCard && !canBeSummoned)) translate = `translate(${moveTo.x}px, ${moveTo.y + 30}px)`
-    else if (currentTarget === PLAYER_HAND_ID || !canBeSummoned) {
-        translate = `translate(${moveTo.x + 50}px, ${moveTo.y}px)`
-    }
-    else translate = cardsOnBoard.length === 0 ? `translate(${moveTo.x + (CARD_WIDTH * 0.5)}px, ${moveTo.y + (window.innerHeight / 2)}px)` : `translate(${moveTo.x}px, ${moveTo.y}px)`;
+    if (translate = cardsOnBoard.length === 0 && canBeSummoned) translate = `translate(${moveTo.x + (CARD_WIDTH * 0.5)}px, ${moveTo.y + (window.innerHeight / 2)}px)`
+    else if (currentTarget === PLAYER_HAND_ID || !canBeSummoned) translate = `translate(${moveTo.x + 50}px, ${moveTo.y}px)`
+    else translate = `translate(${moveTo.x}px, ${moveTo.y}px)`;
 
     return {
         ...style,

@@ -7,7 +7,7 @@ import cardReverse from "../../graphic/card_reverse.png"
 import { START_CARD_ROTATION, END_CARD_ROTATION } from './HandCard';
 
 const Wrapper = styled.div`
-    width: ${props => 110 + ((props.cardsAmount * 110) + 20) + "px"};
+    width: ${props => 110 + (props.cardsAmount * 110) + "px"};
     height: 230px;
     transition: width 0.5s;
 
