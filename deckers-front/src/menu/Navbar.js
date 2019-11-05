@@ -4,11 +4,12 @@ import { connect } from "react-redux";
 import { logout } from "../store/actions/auth";
 
 import styled from "styled-components"
-import avatarImg from '../graphic/avatar_01.png'
 import goldImg from '../graphic/icon_currency_gold.PNG'
 import gemImg from '../graphic/icon_currency_gem.PNG'
 import playButton from '../graphic/play_button.png'
 
+import avatars from "../graphic/avatars"
+import heroBackground from '../graphic/background_hero.png';
 
 const Wrapper = styled.nav`
     display: flex;
@@ -30,32 +31,54 @@ const Wrapper = styled.nav`
 `
 
 const Avatar = styled.div`
-    height: 50px;
-    width: 50px;
-    background-image: url(${avatarImg});
-    background-size:contain;
+    height: 100%;
+    width: 100%;
+    background-image: url(${props => props.img});
+    background-size: contain;
     background-repeat: no-repeat;
 `
+
+const AvatarBackground = styled.div`
+    height: 54px;
+    width: 54px;
+
+    background-image: url(${heroBackground});
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+`
+
+
 const Username = styled.div`
     font-size: 1.5rem;
     margin: auto;
 `
 
-const GoldAmount = styled.div`
+const GoldImg = styled.div`
     background-image: url(${goldImg});
     background-size: contain;
     background-repeat: no-repeat;
+    background-position: center;
 
-    padding-left: 1.8rem;
-    margin-right: 1rem;
+    height: 16px;
+    width: 16px;
+    margin-left: 4px;
 `
-const GemAmount = styled.div`
+const GemImg = styled.div`
     background-image: url(${gemImg});
     background-size: contain;
     background-repeat: no-repeat;
+    background-position: center;
 
-    padding-left: 2rem;
-    margin-right: 1rem;
+    height: 16px;
+    width: 16px;
+    margin-left: 4px;
+`
+
+const Currency = styled.div`
+    display:flex;
+    align-items:center;
+    justify-content: center;
 `
 
 const Button = styled.button`
@@ -102,10 +125,11 @@ const ButtonGroup = styled.div`
     width:100%;
     display:flex;
     flex-direction: row;
-    ${'' /* justify-content: flex-end; */}
 `
 
 const CurrencyPanel = styled.div`
+    display:flex;
+    flex-direction: column;
     justify-content: space-evenly;
 `
 
@@ -121,7 +145,9 @@ class Navbar extends Component {
     render() {
         const { user, tagList, logout } = this.props;
 
-        const isAdmin = user.tag === tagList.admin
+        const isAdmin = user.tag === tagList.admin;
+        const userAvatar = avatars.get(user.avatarID)
+
         return (
             <Wrapper>
                 <ButtonGroup>
@@ -151,12 +177,15 @@ class Navbar extends Component {
 
                 <Block>
                     <CurrencyPanel>
-                        <GoldAmount > {user.currency.gold}</GoldAmount>
-                        <GemAmount> {user.currency.gems}</GemAmount>
+                        <Currency>{user.currency.gold}<GoldImg /></Currency>
+                        <Currency>{user.currency.gems}<GemImg /></Currency>
                     </CurrencyPanel>
                 </Block>
                 <Block>
-                    <Avatar />
+                    <AvatarBackground>
+                        <Avatar img={userAvatar} />
+                    </AvatarBackground>
+
                     <Username>{user.username}</Username>
                 </Block>
             </Wrapper>
