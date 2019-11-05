@@ -9,8 +9,8 @@ import { Effect } from '../../store/reducers/helpers/effects';
 import { SPELL_ROLE } from '../containers/Game';
 import { CARD_WIDTH, MAX_CARDS_ON_BOARD } from '../containers/Board';
 
-const START_ROTATION = -4;
-const END_ROTATION = 4;
+export const START_CARD_ROTATION = -4;
+export const END_CARD_ROTATION = 4;
 
 const CardWrap = styled.div`
     margin: 5px 5px 0 0;
@@ -53,7 +53,7 @@ class HandCard extends Component {
         const canBeSummoned = isMyTurn && isAffordable && (cardsOnBoard.length < MAX_CARDS_ON_BOARD || item.role === SPELL_ROLE);
 
         const isDragDisabled = !isMyTurn;
-        const cardAngle = (-START_ROTATION + END_ROTATION) / (cardsAmount - 1)
+        const cardAngle = (-START_CARD_ROTATION + END_CARD_ROTATION) / (cardsAmount - 1)
 
         let isLeftNeighborDragged = false;
         if (currentlyDragged) isLeftNeighborDragged = currentlyDragged.droppableId === PLAYER_HAND_ID ? currentlyDragged.index <= index - 1 : false;
@@ -67,7 +67,7 @@ class HandCard extends Component {
                 isDragDisabled={isDragDisabled}
             >
                 {(provided, snapshot) => {
-                    let cardRotation = START_ROTATION + (cardAngle * index);
+                    let cardRotation = START_CARD_ROTATION + (cardAngle * index);
                     if (snapshot.isDragging) cardRotation = 0;
 
                     const inSummoningState = snapshot.isDragging && currentTarget !== PLAYER_HAND_ID;

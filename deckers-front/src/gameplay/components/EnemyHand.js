@@ -2,44 +2,62 @@ import React, { Component } from 'react';
 
 import styled from "styled-components";
 import { connect } from "react-redux"
-import { CARD_WIDTH } from '../containers/Board';
 
-const StyledDiv = styled.div`
-    height: 18%;
-    width: 650px;
+import cardReverse from "../../graphic/card_reverse.png"
+import { START_CARD_ROTATION, END_CARD_ROTATION } from './HandCard';
+
+const Wrapper = styled.div`
+    width: ${props => 110 + ((props.cardsAmount * 110) + 20) + "px"};
+    height: 230px;
+    transition: width 0.5s;
 
     position: absolute;
     left: 0;
     top: 0;
 
-    background: DodgerBlue;
+    margin-top: -30px;
+    margin-left: 20px;
+
     display: flex;
-    padding: 8px;
+    justify-content: center;
 `;
 
 const Card = styled.div` 
-    margin: -30px 8px 0 0;
-    width: ${props => CARD_WIDTH + 'px'};
-    height: 130px;
+    margin: 0 8px 0 0;
+    width: ${props => 110 + 'px'};
+    height: ${props => (110 * 1.4) + 'px'};
 
-    background: black;
+    transform: rotate(${props => -props.cardRotation + "deg"});
+
+    background-image: url(${cardReverse});
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    position:relative;
+    left: ${props => props.index * -50 + "px"};
 `;
 
 class EnemyHand extends Component {
     render() {
         const { cards } = this.props;
+        const cardsAmount = cards.length
 
         return (
-            <StyledDiv>
-                {cards.map((card) => {
+            <Wrapper cardsAmount={cardsAmount}>
+                {cards.map((card, index) => {
+                    const cardAngle = (-START_CARD_ROTATION + END_CARD_ROTATION) / (cardsAmount - 1);
+                    const cardRotation = START_CARD_ROTATION + (cardAngle * index);
+
                     const uniqueId = '_' + Math.random().toString(36).substr(2, 9);
                     return (
                         <Card
+                            cardRotation={cardRotation}
                             key={uniqueId}
-                        ></Card>
+                            index={index}
+                        />
                     )
                 })}
-            </StyledDiv>
+            </Wrapper>
         )
     }
 }
