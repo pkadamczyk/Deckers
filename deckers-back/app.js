@@ -1,5 +1,8 @@
 require("dotenv").config(); //new auth shit
 
+const User = require("./models/user");
+const Game = require("./models/game");
+
 const express = require("express");
 const app = express();
 const cors = require("cors"); //new auth shit
@@ -48,6 +51,16 @@ app.use(optionRoutes);
 app.use(chestRoutes);
 
 app.use("/api", api);
+
+// Set all old games as finished
+Game.find({}).then(games => games.map(game => {
+    game.isFinised = true
+    game.save()
+}))
+User.find({}).then(users => users.map(user => {
+    user.inGame = false
+    user.save()
+}))
 
 app.use(function (req, res, next) {
     let err = new Error("Not Found");
