@@ -9,16 +9,34 @@ import { CARD_DRAW_COST, GAME_STATE, MAX_CARDS_ON_HAND } from '../../store/reduc
 const StyledButton = styled.button`
     width: 100%;
 
-    position:absolute;
+    transition: 0.2s ease;
+    height:50px;
+    width: 100%;
+
+    background-color: ${props => !props.disabled ? "#749a02" : "#bbbbbb"};
+    border-color: ${props => !props.disabled ? "#749a02" : "#bbbbbb"};
+
+    color: white;
+
+    :hover {
+        background-color: ${props => !props.disabled ? "#85ab13" : "#bbbbbb"};
+        border-color: ${props => !props.disabled ? "#85ab13" : "#bbbbbb"};
+    };
+    :focus { outline: none; };
+
+    position: relative;
     z-index: 1;
 `;
 
-const Div = styled.div`
+const Wrapper = styled.div`
     position: absolute;
     right: 0;
-    bottom: 35%;
+    bottom: 42%;
 
     color: white;
+`
+const CardAmount = styled.div`
+    margin: auto;
 `
 class PlayerDeck extends Component {
     constructor(props) {
@@ -39,7 +57,7 @@ class PlayerDeck extends Component {
 
         const isButtonDisabled = !isAffortable || !isMyTurn || gameState !== GAME_STATE.IDLE || !hasCards || isHandFull;
         return (
-            <Div>
+            <Wrapper>
                 <Deck>
                     <StyledButton
                         onClick={() => this.handleOnClick()}
@@ -47,9 +65,9 @@ class PlayerDeck extends Component {
                     >
                         Buy card
                     </StyledButton>
-                    <div>Cards: {cardsLeft}</div>
+                    <CardAmount>Cards: {cardsLeft}</CardAmount>
                 </Deck>
-            </Div>
+            </Wrapper>
         )
     }
 }

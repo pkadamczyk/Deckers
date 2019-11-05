@@ -3,22 +3,26 @@ import { connect } from "react-redux"
 import styled from "styled-components"
 import Deck from "./Deck"
 
-const Div = styled.div`
+const Wrapper = styled.div`
     position: absolute;
     right: 0;
-    top: 18%;
+    top: 24%;
 
     color: white;
+`
+
+const CardAmount = styled.div`
+    margin: auto;
 `
 class EnemyDeck extends Component {
     render() {
         const { enemyDeckCardsAmount } = this.props
         return (
-            <Div>
+            <Wrapper>
                 <Deck >
-                    <div>Cards: {enemyDeckCardsAmount}</div>
+                    <CardAmount>Cards: {enemyDeckCardsAmount}</CardAmount>
                 </Deck>
-            </Div>
+            </Wrapper>
         )
     }
 }
