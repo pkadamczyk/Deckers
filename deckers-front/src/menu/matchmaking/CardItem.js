@@ -12,10 +12,6 @@ import { STORAGE_STATE } from '../../store/reducers/storage';
 
 import images from "../../graphic/card_portraits/forsaken"
 
-const Wrapper = styled.div`
-    margin: 10px 1% 10px 1%;
-`
-
 const Portrait = styled.div`
     background-image: url(${props => props.imageURL});
     background-repeat: no-repeat;
@@ -114,33 +110,30 @@ class CardItem extends Component {
     }
 
     render() {
-        const { card } = this.props;
+        const { card, size } = this.props;
 
         const costBoxBackgrounds = [cardCostBoxDwarf, cardCostBoxForsaken, cardCostBoxOrder, cardCostBoxSkaven]
         const costBoxBackground = costBoxBackgrounds[card.race]
         const imageURL = images.get(card.imageID)
 
-        const optimalSize = window.innerWidth * 0.12;
         // 173
         return (
-            <Wrapper >
-                <Portrait imageURL={imageURL} size={optimalSize}>
-                    <Info>
-                        <CostBox background={costBoxBackground}>
-                            <p>{card.stats[0].cost}</p>
-                        </CostBox>
-                        <Name><MarginAuto>{card.name}</MarginAuto></Name>
+            <Portrait imageURL={imageURL} size={size}>
+                <Info>
+                    <CostBox background={costBoxBackground}>
+                        <p>{card.stats[0].cost}</p>
+                    </CostBox>
+                    <Name><MarginAuto>{card.name}</MarginAuto></Name>
 
-                        <Description><CenterText>{card.description}</CenterText></Description>
+                    <Description><CenterText>{card.description}</CenterText></Description>
 
-                        <Stats>
-                            <div>{card.stats[0].damage}</div>
-                            {/* <Class>{Object.keys(CLASS_LIST)[card.role]}</Class> */}
-                            <div>{card.stats[0].damage}</div>
-                        </Stats>
-                    </Info>
-                </Portrait>
-            </Wrapper>
+                    <Stats>
+                        <div>{card.stats[0].damage}</div>
+                        {/* <Class>{Object.keys(CLASS_LIST)[card.role]}</Class> */}
+                        <div>{card.stats[0].health}</div>
+                    </Stats>
+                </Info>
+            </Portrait>
         )
     }
 }

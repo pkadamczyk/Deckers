@@ -7,6 +7,7 @@ const CARDS_IN_ROW = 5;
 
 const Wrapper = styled.div`
     width: 100%;
+    max-width: 750px;
     height: 100%;
 
     color: white;
@@ -22,22 +23,23 @@ const Wrapper = styled.div`
 
     cursor: pointer;
     opacity: 1;
+
+    justify-content: space-evenly;
 `
 
 const Row = styled.div`
     display: flex;
-    justify-content: center; 
+    justify-content: space-evenly; 
     width:100%;
-    height: 50%;
 
     max-width: 900px;
-    margin:auto
 `
 
 const Top = styled.div`
     display:flex;
     justify-content: flex-end;
     width: 95%;
+    max-width: 750px;
 `
 
 const DeckNumber = styled.div`
@@ -60,12 +62,28 @@ const DeckNumber = styled.div`
 class DeckItem extends Component {
     constructor(props) {
         super(props);
-
+        this.ref = React.createRef()
         this.state = {
             active: false,
+            cardSize: 100,
         };
 
-        this.handleOnClick = this.handleOnClick.bind(this)
+        this.handleOnClick = this.handleOnClick.bind(this);
+        this.updateDimensions = this.updateDimensions.bind(this);
+    }
+
+    componentDidMount() {
+        this.updateDimensions();
+        window.addEventListener("resize", this.updateDimensions);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.updateDimensions);
+    }
+
+    updateDimensions() {
+        // console.log(this.ref.current.offsetWidth)
+        this.setState({ cardSize: this.ref.current.offsetWidth / CARDS_IN_ROW })
     }
 
     handleOnClick() {
@@ -77,12 +95,15 @@ class DeckItem extends Component {
 
     render() {
         const { deck, pickedDeck, pickDeck } = this.props;
+        const { cardSize } = this.state // this.ref.current.offsetWidth;
 
+        console.log(cardSize)
         let cardsToDisplay = deck.cards.map((card, index) => (
             <CardItem
                 key={card._id + index}
                 card={card}
                 deckSlotNumber={index}
+                size={cardSize}
             />
         ));
 
@@ -96,7 +117,7 @@ class DeckItem extends Component {
                     <DeckNumber isActive={pickedDeck === 1} onClick={() => pickDeck(1)}>2</DeckNumber>
                     <DeckNumber isActive={pickedDeck === 2} onClick={() => pickDeck(2)}>3</DeckNumber>
                 </Top>
-                <Wrapper onClick={this.handleOnClick}>
+                <Wrapper onClick={this.handleOnClick} ref={this.ref} cardSize={cardSize}>
                     <Row>{arrayFirstHalf}</Row>
                     <Row>{arraySecondHalf}</Row>
                 </Wrapper>

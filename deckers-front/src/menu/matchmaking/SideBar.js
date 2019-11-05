@@ -53,8 +53,8 @@ const Wrapper = styled.div`
     justify-content: space-between;
 
     width: 24%;
-    height: 92%;
-    margin: 2% auto;
+    height: 79%;
+    margin: 4% auto 0 auto;
 
     max-height: 540px;
 `

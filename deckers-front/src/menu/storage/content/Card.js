@@ -153,7 +153,7 @@ class Card extends Component {
                         <Stats>
                             <div>{card.stats[dbCard.level].damage}</div>
                             {/* <Class>{Object.keys(CLASS_LIST)[card.role]}</Class> */}
-                            <div>{card.stats[dbCard.level].damage}</div>
+                            <div>{card.stats[dbCard.level].health}</div>
                         </Stats>
                     </Info>
                 </Portrait>

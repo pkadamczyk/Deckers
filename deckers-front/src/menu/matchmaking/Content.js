@@ -8,7 +8,7 @@ import { chooseDeck } from '../../store/actions/matchmaking';
 const DeckMenager = styled.div`
     width: 70%;
     height: 75%;
-    margin: 2% auto;
+    margin: 4% auto;
 
     max-width: 850px;
 `

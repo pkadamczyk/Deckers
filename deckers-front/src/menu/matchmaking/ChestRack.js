@@ -19,7 +19,6 @@ const Row = styled.div`
     display: flex;
     height: 46%;
     justify-content: space-evenly;
-    margin: 2%;
 `
 
 class ChestRack extends Component {

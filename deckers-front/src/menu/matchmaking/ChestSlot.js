@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 
 const Empty = styled.div`
     color: #ccc;
-    font-size: 35px;
+    font-size: 28px;
 
     text-align: center;
 
