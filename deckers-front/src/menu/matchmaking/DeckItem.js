@@ -68,7 +68,6 @@ class DeckItem extends Component {
             cardSize: 100,
         };
 
-        this.handleOnClick = this.handleOnClick.bind(this);
         this.updateDimensions = this.updateDimensions.bind(this);
     }
 
@@ -82,20 +81,12 @@ class DeckItem extends Component {
     }
 
     updateDimensions() {
-        // console.log(this.ref.current.offsetWidth)
         this.setState({ cardSize: this.ref.current.offsetWidth / CARDS_IN_ROW })
     }
 
-    handleOnClick() {
-        const { deck, chooseDeck } = this.props;
-
-        chooseDeck(deck._id);
-        this.setState({ active: true });
-    };
-
     render() {
         const { deck, pickedDeck, pickDeck } = this.props;
-        const { cardSize } = this.state // this.ref.current.offsetWidth;
+        const { cardSize } = this.state
 
         console.log(cardSize)
         let cardsToDisplay = deck.cards.map((card, index) => (
@@ -117,7 +108,7 @@ class DeckItem extends Component {
                     <DeckNumber isActive={pickedDeck === 1} onClick={() => pickDeck(1)}>2</DeckNumber>
                     <DeckNumber isActive={pickedDeck === 2} onClick={() => pickDeck(2)}>3</DeckNumber>
                 </Top>
-                <Wrapper onClick={this.handleOnClick} ref={this.ref} cardSize={cardSize}>
+                <Wrapper ref={this.ref} cardSize={cardSize}>
                     <Row>{arrayFirstHalf}</Row>
                     <Row>{arraySecondHalf}</Row>
                 </Wrapper>

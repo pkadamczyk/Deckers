@@ -117,6 +117,11 @@ async function createNewUser(data) {
         dummyDeck.cards.push(card)
     }
 
-    data.decks = [dummyDeck, dummyDeck, dummyDeck]
+    const dummyDecks = [{ ...dummyDeck }, { ...dummyDeck }, { ...dummyDeck }]
+    dummyDecks[0].name = "I"
+    dummyDecks[1].name = "II"
+    dummyDecks[2].name = "III"
+
+    data.decks = dummyDecks
     return User.create(data)
 }

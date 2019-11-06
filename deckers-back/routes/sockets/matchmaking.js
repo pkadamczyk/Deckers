@@ -42,7 +42,9 @@ module.exports.connect = function (io) {
                 const playerIndex = Matchmaking.gameMode[gameMode].playersInQueue.findIndex(pl => pl.usr_id === usr_id)
                 if (playerIndex === -1) throw new Error("Player wasnt in queue")
                 Matchmaking.gameMode[gameMode].playersInQueue.splice(playerIndex, 1);
+
                 console.log("Player left queue!");
+                console.log(Matchmaking.gameMode[gameMode].playersInQueue)
             } catch (err) {
                 console.log(err);
             }

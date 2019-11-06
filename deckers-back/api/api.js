@@ -254,7 +254,10 @@ router.post("/:usr_id/game/reconnect", loginRequired, ensureCorrectUser, async f
         res.status(200).json({
             gameId: foundGame._id,
             player: user.username,
-            enemy: enemy.username,
+            enemy: {
+                username: enemy.username,
+                avatarID: enemy.avatarID,
+            },
 
             role: playerIndex,
         });
@@ -290,14 +293,15 @@ router.post("/:usr_id/game/:game_id", loginRequired, ensureCorrectUser, async fu
 
         const enemyIndex = foundGame.players.findIndex((p, i) => playerIndex !== i);
         const enemyObject = foundGame.players[enemyIndex];
+
         const enemyPromise = User.findById(enemyObject.user._id).deepPopulate('decks.cards.card');
         const enemy = await enemyPromise;
 
-        const enemyDeck = enemy.decks.find(deck => deck._id.toString() === enemyObject.deckId).cards
+        const enemyDeck = enemy.decks[enemyObject.deckId].cards
         const enemyDeckCardsAmount = enemyDeck.length;
 
-        const deckId = user.decks.findIndex(deck => deck._id.equals(req.body.deck_id));
-        const userDeck = user.decks[deckId].cards;
+        const playerObject = foundGame.players[playerIndex];
+        const userDeck = user.decks[playerObject.deckId].cards;
 
         if (playerIndex === 0) {
             const gameDeck = prepareDeck(userDeck, user);

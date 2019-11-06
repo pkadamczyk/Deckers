@@ -56,7 +56,7 @@ export function authUser(type, userData) {
           setAuthorizationToken(token);
           dispatch(setShopData({ availableChests, currencyPacks }));
           dispatch(setConfig(config));
-          dispatch(chooseDeck(user.user.decks[1]._id));
+          dispatch(chooseDeck(0));
           dispatch(setCurrentUser(user.user));
           resolve(); // indicate that the API call succeeded
         })

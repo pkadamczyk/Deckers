@@ -14,7 +14,7 @@ module.exports.connect = function (io) {
         socket.on('disconnect', function () {
             try {
                 console.log('Got disconnect!');
-                roomdata.leaveRoom(socket);
+                // roomdata.leaveRoom(socket);
             } catch (err) {
                 console.log(err)
             }

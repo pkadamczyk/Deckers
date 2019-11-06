@@ -111,7 +111,7 @@ class Starter extends Component {
         const { cards, gameReady } = this.props;
         const isReady = !!cards;
 
-        if (!isReady) return <Blackout><Text>Loading...</Text></Blackout>;
+        if (!isReady) return <DelayedBlackout gameReady={gameReady} isMounted={!gameReady} delayTime={500}><Text>Loading...</Text></DelayedBlackout>;
         const primaryCards = cards.slice(0, 3);
 
         return (

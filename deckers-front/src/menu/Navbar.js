@@ -42,6 +42,8 @@ const AvatarBackground = styled.div`
     height: 54px;
     width: 54px;
 
+    margin-right: 5px;
+
     background-image: url(${heroBackground});
     background-repeat: no-repeat;
     background-size: cover;

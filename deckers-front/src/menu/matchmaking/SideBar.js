@@ -5,8 +5,6 @@ import { withRouter } from 'react-router-dom';
 import { connectToGame, abandonGame, reconnectToGame } from '../../store/actions/matchmaking';
 
 import styled from "styled-components"
-import navBackground from '../../graphic/nav_background_03.png'
-import buttonBackground from '../../graphic/button_03.png'
 import { SOCKET_URL } from '../../generalContainers/App';
 import ChestRack from './ChestRack';
 
@@ -73,6 +71,10 @@ class SideBar extends Component {
 
     componentDidMount() {
         socket = openSocket(`${SOCKET_URL}/matchmaking`);
+
+        socket.on("game-ready", (data) => {
+            this.handleConnectToGame(data)
+        })
     }
 
     componentWillUnmount() {
@@ -91,10 +93,6 @@ class SideBar extends Component {
 
         this.setState(state => ({ isSearching: true }))
         socket.emit('join', { usr_id, gameMode: 0, deck_id });
-
-        socket.on("game-ready", (data) => {
-            this.handleConnectToGame(data)
-        })
     }
 
     handleAbandon() {
@@ -119,10 +117,8 @@ class SideBar extends Component {
     }
 
     render() {
-        const { deck_id, inGame } = this.props;
+        const { inGame } = this.props;
         const { isBusy, isSearching } = this.state;
-
-        const isDeckSelected = !!deck_id;
 
         return (
             <Wrapper>
@@ -135,7 +131,7 @@ class SideBar extends Component {
                                 Cancel
                         </Button>
                             :
-                            <Button onClick={this.handleOnClick} disabled={!isDeckSelected}>
+                            <Button onClick={this.handleOnClick}>
                                 Find game
                         </Button>
                         : <>

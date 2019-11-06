@@ -17,7 +17,7 @@ class Content extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pickedDeck: 1,
+            pickedDeck: 0,
         }
 
         this.handleChooseDeck = this.handleChooseDeck.bind(this)
@@ -29,8 +29,7 @@ class Content extends Component {
     }
 
     handleDeckChange(newDeckNum) {
-        const { decks } = this.props;
-        this.props.dispatch(chooseDeck(decks[newDeckNum]._id))
+        this.props.dispatch(chooseDeck(newDeckNum))
         this.setState({ pickedDeck: newDeckNum });
     }
 
