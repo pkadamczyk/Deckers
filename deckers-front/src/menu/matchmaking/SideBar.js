@@ -7,6 +7,7 @@ import { connectToGame, abandonGame, reconnectToGame } from '../../store/actions
 import styled from "styled-components"
 import { SOCKET_URL } from '../../generalContainers/App';
 import ChestRack from './ChestRack';
+import { device } from '../../mediaQueries';
 
 let socket;
 
@@ -42,6 +43,11 @@ const Button = styled.button`
         opacity: 0.65;
         cursor: inherit;
         background: ${props => props.danger ? "#c8423e" : "#8FC320"} ;
+    };
+
+    @media ${device.laptopL} {
+        font-size: 32px;
+        height: 60px;
     }
 `
 

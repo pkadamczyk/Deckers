@@ -11,6 +11,7 @@ import cardCostBoxOrder from '../../graphic/background_race_order.png';
 import { STORAGE_STATE } from '../../store/reducers/storage';
 
 import images from "../../graphic/card_portraits/forsaken"
+import { device } from '../../mediaQueries';
 
 const Portrait = styled.div`
     background-image: url(${props => props.imageURL});
@@ -42,6 +43,18 @@ const CostBox = styled.div`
 
     font-weight: bold;
     width: 18%;
+
+    @media ${device.laptopL} {
+        font-size: 19px;
+        width: 17%;
+        height: 13%;
+    }
+    @media ${device.desktopS} {
+        font-size: 22px;
+    }
+    @media ${device.desktopS} {
+        font-size: 24px;
+    }
 `
 
 const Name = styled.div`
@@ -53,6 +66,14 @@ const Name = styled.div`
 
     display: flex;
     justify-content: center;
+
+    @media ${device.laptopL} {
+        font-size: 18px;
+    }
+    @media ${device.desktopS} {
+        font-size: 25px;
+        top: 57%;
+    }
 `
 
 const Stats = styled.div`
@@ -64,6 +85,15 @@ const Stats = styled.div`
     left: 7px;
     width: 88%;
     font-size: 21px;
+
+    @media ${device.laptopL} {
+        left: 9px;
+        font-size: 30px;
+    }
+    @media ${device.desktopS} {
+        left: 10px;
+        font-size: 36px;
+    }
 `
 
 const Description = styled.div`
@@ -74,6 +104,16 @@ const Description = styled.div`
     position: absolute;
     top: 70%;
     font-size: 11px;
+
+    @media ${device.laptopL} {
+        font-size: 13px;
+    }
+    @media ${device.desktopS} {
+        font-size: 15px;
+    }
+    @media ${device.desktopS} {
+        font-size: 17px;
+    }
 `
 
 const CenterText = styled.div`
@@ -112,7 +152,7 @@ class CardItem extends Component {
             <Portrait imageURL={imageURL} size={size}>
                 <Info>
                     <CostBox background={costBoxBackground}>
-                        <p>{card.stats[0].cost}</p>
+                        {card.stats[0].cost}
                     </CostBox>
                     <Name><MarginAuto>{card.name}</MarginAuto></Name>
 

@@ -16,7 +16,6 @@ const Wrapper = styled.nav`
     flex-direction: row;
 
     width: 100%;
-    height: 10%;
 
     text-align: center;
     background: #313747;
@@ -138,6 +137,7 @@ const CurrencyPanel = styled.div`
 const Block = styled.div`
     display:flex;
     flex-direction: row;
+    align-items: center;
     border-left: 1px solid #fff;
 
     padding: 6px 10px;
