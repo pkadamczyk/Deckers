@@ -7,8 +7,7 @@ const CARDS_IN_ROW = 5;
 
 const Wrapper = styled.div`
     width: 100%;
-    max-width: 750px;
-    height: 100%;
+    height: ${props => props.cardSize * 3 + "px"};
 
     color: white;
     text-align: center;
@@ -31,15 +30,12 @@ const Row = styled.div`
     display: flex;
     justify-content: space-evenly; 
     width:100%;
-
-    max-width: 900px;
 `
 
 const Top = styled.div`
     display:flex;
     justify-content: flex-end;
     width: 95%;
-    max-width: 750px;
 `
 
 const DeckNumber = styled.div`
@@ -81,14 +77,13 @@ class DeckItem extends Component {
     }
 
     updateDimensions() {
-        this.setState({ cardSize: this.ref.current.offsetWidth / CARDS_IN_ROW })
+        this.setState({ cardSize: this.ref.current.offsetWidth / (CARDS_IN_ROW + 0.6) })
     }
 
     render() {
         const { deck, pickedDeck, pickDeck } = this.props;
         const { cardSize } = this.state
 
-        console.log(cardSize)
         let cardsToDisplay = deck.cards.map((card, index) => (
             <CardItem
                 key={card._id + index}

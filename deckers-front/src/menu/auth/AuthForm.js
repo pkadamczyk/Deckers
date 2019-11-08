@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { Link } from 'react-router-dom';
 
 import wrapperBackground from '../../graphic/background_02.PNG'
-import formBackground from '../../graphic/background_auth.png'
-import buttonBackground from '../../graphic/button_long_01.png'
 
 import avatars from '../../graphic/avatars'
 

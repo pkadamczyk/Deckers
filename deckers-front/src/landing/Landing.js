@@ -100,6 +100,7 @@ const BackgroundImage = styled.div`
     background-repeat: no-repeat;
     background-size: cover;
     background-position-y: 45%;
+    background-position-x: center;
 
     opacity: ${props => props.opacity};
 `

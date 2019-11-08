@@ -9,8 +9,6 @@ const DeckMenager = styled.div`
     width: 70%;
     height: 75%;
     margin: 4% auto;
-
-    max-width: 850px;
 `
 
 class Content extends Component {

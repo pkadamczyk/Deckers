@@ -26,9 +26,6 @@ const Portrait = styled.div`
 
     height:${props => (props.size * 1.4) + "px"};
     width: ${props => props.size + "px"};
-
-    max-height: 193px;
-    max-width: 138px;
 `
 
 const Info = styled.div`
@@ -67,12 +64,6 @@ const Stats = styled.div`
     left: 7px;
     width: 88%;
     font-size: 21px;
-`
-const Class = styled.div`
-    font-size: 12px;
-
-    position: relative;
-    top: 15px;
 `
 
 const Description = styled.div`
