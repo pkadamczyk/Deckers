@@ -3,6 +3,7 @@ import Navbar from "../menu/Navbar";
 import Content from "../menu/Content";
 import AuthForm from "../menu/auth/AuthForm";
 import Game from '../gameplay/containers/Game';
+import Landing from "../landing/Landing"
 import { Switch, Route, withRouter, Redirect } from "react-router-dom";
 import { authUser } from "../store/actions/auth";
 import { connect } from "react-redux";
@@ -37,6 +38,14 @@ const Main = props => {
     return (
         <AppWrap>
             <Switch>
+                <Route exact path="/home" render={props => {
+                    return (
+                        <Landing
+                            {...props}
+                        />
+                    );
+                }} />
+
                 <Route exact path="/login" render={props => {
                     if (currentUser.isAuthenticated) return (<Redirect to="/matchmaking" />)
                     return (
@@ -75,7 +84,7 @@ const Main = props => {
                             </Column>
                         </Wrapper>
                     )
-                    return (<Redirect to="/login" />)
+                    return (<Redirect to="/home" />)
 
                 }}
                 />
