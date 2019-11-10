@@ -10,6 +10,7 @@ import playButton from '../graphic/play_button.png'
 
 import avatars from "../graphic/avatars"
 import heroBackground from '../graphic/background_hero.png';
+import { device } from "../mediaQueries";
 
 const Wrapper = styled.nav`
     display: flex;
@@ -53,6 +54,13 @@ const AvatarBackground = styled.div`
 const Username = styled.div`
     font-size: 1.5rem;
     margin: auto;
+
+    @media ${device.laptopL} {
+        font-size: 24px;
+    };
+    @media ${device.desktopS} {
+        font-size: 26px;
+    }
 `
 
 const GoldImg = styled.div`
@@ -64,6 +72,15 @@ const GoldImg = styled.div`
     height: 16px;
     width: 16px;
     margin-left: 4px;
+
+    @media ${device.laptopL} {
+        height: 18px;
+        width: 18px;
+    };
+    @media ${device.desktopS} {
+        height: 20px;
+        width: 20px;
+    }
 `
 const GemImg = styled.div`
     background-image: url(${gemImg});
@@ -74,53 +91,93 @@ const GemImg = styled.div`
     height: 16px;
     width: 16px;
     margin-left: 4px;
+
+    @media ${device.laptopL} {
+        height: 18px;
+        width: 18px;
+    };
+    @media ${device.desktopS} {
+        height: 20px;
+        width: 20px;
+    }
 `
 
 const Currency = styled.div`
+    font-size: 16px;
     display:flex;
     align-items:center;
     justify-content: center;
+
+    @media ${device.laptopL} {
+        font-size: 18px;
+    };
+    @media ${device.desktopS} {
+        font-size: 20px;
+    }
 `
 
 const Button = styled.button`
     border:none;
-    font-size: 1.5rem;
-    line-height: 2rem;
+    font-size: 24px;
     color:white;
+    transition: all 0.2s;
 
-    background: inherit;
+    background: #313747;
     height: 100%;
-    padding: 0 15px;
+    padding: 10px 15px;
     cursor: pointer;
 
     border-right: 1px solid #fff;
 
     :focus{
         outline:0;
+    };
+    :hover{ background: #202636};
+
+    @media ${device.laptopL} {
+        font-size: 27px;
+        padding: 0 20px;
+    };
+    @media ${device.desktopS} {
+        font-size: 29px;
+        padding: 0 25px;
     }
 `
-
 const PlayButton = styled.button`
-    font-size: 1.5rem;
-    color:white;
+    background: #8FC320;
+    color: white;
+
+    width: 100%;
+    height: 100%;
+    padding: 0 35px;
+    margin: auto;
 
     position: relative;
     z-index: 2;
 
-    width: 106px;
-    height: 68px;
     border:none;
+    font-size: 24px;
     cursor: pointer;
+    transition: all 0.4s;
 
-    border-radius: 10px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-image: url(${playButton});
 
-    :focus{
-        outline:0;
+    :focus {outline:0;};
+    :hover{ background: #9FD430};
+    :disabled {
+        opacity: 0.65;
+        cursor: inherit;
+        background: ${props => props.danger ? "#c8423e" : "#8FC320"} ;
+    };
+
+    @media ${device.laptopL} {
+        font-size: 27px;
+        padding: 0 40px;
+    };
+    @media ${device.desktopS} {
+        font-size: 29px;
+        padding: 0 45px;
     }
-`;
+`
 
 const ButtonGroup = styled.div`
     width:100%;
