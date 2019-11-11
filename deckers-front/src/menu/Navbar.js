@@ -17,6 +17,7 @@ const Wrapper = styled.nav`
     flex-direction: row;
 
     width: 100%;
+    height: 10%;
 
     text-align: center;
     background: #313747;
@@ -48,18 +49,26 @@ const AvatarBackground = styled.div`
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-`
 
+    @media ${device.laptopL} {
+        height: 65px;
+        width: 65px;
+    };
+    @media ${device.desktopS} {
+        height: 75px;
+        width: 75px;
+    }
+`
 
 const Username = styled.div`
     font-size: 1.5rem;
     margin: auto;
 
     @media ${device.laptopL} {
-        font-size: 24px;
+        font-size: 38px;
     };
     @media ${device.desktopS} {
-        font-size: 26px;
+        font-size: 42px;
     }
 `
 
@@ -74,12 +83,12 @@ const GoldImg = styled.div`
     margin-left: 4px;
 
     @media ${device.laptopL} {
-        height: 18px;
-        width: 18px;
+        height: 25px;
+        width: 25px;
     };
     @media ${device.desktopS} {
-        height: 20px;
-        width: 20px;
+        height: 30px;
+        width: 30px;
     }
 `
 const GemImg = styled.div`
@@ -93,12 +102,12 @@ const GemImg = styled.div`
     margin-left: 4px;
 
     @media ${device.laptopL} {
-        height: 18px;
-        width: 18px;
+        height: 25px;
+        width: 25px;
     };
     @media ${device.desktopS} {
-        height: 20px;
-        width: 20px;
+        height: 30px;
+        width: 30px;
     }
 `
 
@@ -109,10 +118,10 @@ const Currency = styled.div`
     justify-content: center;
 
     @media ${device.laptopL} {
-        font-size: 18px;
+        font-size: 25px;
     };
     @media ${device.desktopS} {
-        font-size: 20px;
+        font-size: 30px;
     }
 `
 
@@ -135,12 +144,12 @@ const Button = styled.button`
     :hover{ background: #202636};
 
     @media ${device.laptopL} {
-        font-size: 27px;
-        padding: 0 20px;
+        font-size: 32px;
+        padding: 0 30px;
     };
     @media ${device.desktopS} {
-        font-size: 29px;
-        padding: 0 25px;
+        font-size: 36px;
+        padding: 0 35px;
     }
 `
 const PlayButton = styled.button`
@@ -170,11 +179,11 @@ const PlayButton = styled.button`
     };
 
     @media ${device.laptopL} {
-        font-size: 27px;
+        font-size: 36px;
         padding: 0 40px;
     };
     @media ${device.desktopS} {
-        font-size: 29px;
+        font-size: 40px;
         padding: 0 45px;
     }
 `
@@ -213,10 +222,6 @@ class Navbar extends Component {
 
                     <Link to="/matchmaking">
                         <PlayButton>Play</PlayButton>
-                    </Link>
-
-                    <Link to="/profile">
-                        <Button>Profile</Button>
                     </Link>
 
                     <Link to="/cards">
