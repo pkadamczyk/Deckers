@@ -12,6 +12,7 @@ import dwarf from "../graphic/landing/cards/dwarf.png"
 import forsaken from "../graphic/landing/cards/forsaken.png"
 import order from "../graphic/landing/cards/order.png"
 import skaven from "../graphic/landing/cards/skaven.png"
+import { device } from "../mediaQueries";
 
 
 const PanelTitle = styled.div`
@@ -22,6 +23,13 @@ const PanelTitle = styled.div`
     display: flex;
     margin: 0 auto;
     align-items: center;
+
+    @media ${device.laptopL} {
+        font-size: 100px;
+    };
+    @media ${device.desktopS} {
+        font-size: 120px;
+    }
 `
 
 const Wrapper = styled.div`
@@ -63,6 +71,13 @@ const SubText = styled.div`
     text-align: center;
     font-size: 22px;
     text-shadow: 2px 2px #000;
+
+    @media ${device.laptopL} {
+        font-size: 28px;
+    };
+    @media ${device.desktopS} {
+        font-size: 32px;
+    }
 `
 
 const Logo = styled.div`
@@ -71,6 +86,15 @@ const Logo = styled.div`
     background-size: contain;
     height: 80px;
     width: 80px; 
+
+    @media ${device.laptopL} {
+        height: 100px;
+        width: 100px; 
+    };
+    @media ${device.desktopS} {
+        height: 120px;
+        width: 120px; 
+    }
 `
 
 const RaceColumn = styled.div`
