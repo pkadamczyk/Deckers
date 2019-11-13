@@ -2,40 +2,38 @@ import React, { Component } from 'react';
 
 import styled from "styled-components"
 import wrapperBackground from '../../../graphic/button_long_03.png';
-import buttonBackground from '../../../graphic/button_X.png';
+import { device } from '../../../mediaQueries';
 
 const Wrapper = styled.div`
     background-image: url(${wrapperBackground});
     background-size: cover;
     background-repeat: no-repeat;
     
-    margin:2% auto;
-    height:3rem;
+    margin: 3% auto;
     width: 80%;
     
     border-radius: 5px;
     color: white;
     cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `
 
-const StyledP = styled.p`
+const DeckNumber = styled.div`
     display: inline-block;
-    font-size: 2rem;
-    margin-block-end: 0;
+    font-size: 30px;
+
     padding: 0;
     width: 80%;
-`
-const Button = styled.button`
-    background-image: url(${buttonBackground});
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-color: transparent;
 
-    width: 20px;
-    height: 20px;
-
-    cursor: pointer;
-    border: none;
+    @media ${device.laptopL} {
+        font-size: 34px;
+    };
+    @media ${device.desktopS} {
+        font-size: 38px;
+    }
 `
 
 class DeckItem extends Component {
@@ -53,14 +51,13 @@ class DeckItem extends Component {
     }
 
     render() {
-        const { deckContent, handleDeckDeletion } = this.props;
+        const { deckContent } = this.props;
 
         return (
             <Wrapper>
-                <StyledP onClick={this.handleOnClick}>
+                <DeckNumber onClick={this.handleOnClick}>
                     {deckContent && deckContent.name}
-                </StyledP>
-                {/* <Button onClick={e => handleDeckDeletion(deckContent._id)} /> */}
+                </DeckNumber>
             </Wrapper>
         )
     }

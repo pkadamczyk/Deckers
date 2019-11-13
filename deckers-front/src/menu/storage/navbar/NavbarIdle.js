@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import DeckItem from './DeckItem';
 
 import styled from "styled-components";
-import headerBackground from '../../../graphic/button_03.png';
 
 const Idle = styled.div`
     height:100%;

@@ -1,22 +1,36 @@
 import React, { Component } from 'react';
 import styled from "styled-components";
+import { device } from '../../../mediaQueries';
 
 const Wrapper = styled.div`
     background-image: url(${props => props.img});
     background-repeat: no-repeat;
     background-size:contain;
+    background-position: center;
+    margin-bottom: 15%;
 
     opacity: ${props => props.isPicked ? "1" : "0.65"};
-    width: 4rem;
-    height: 4rem;
     text-align: center;
-    padding-top: 0.2rem;
-    margin-bottom: 1rem;
+    width: 64px;
+
+    @media ${device.laptopL} {
+        width: 77px;
+    };
+    @media ${device.desktopS} {
+        width: 88px;
+    }
 `
 
 const Icon = styled.img`
-    width: 3.5rem;
+    width: 56px;
     cursor: pointer;
+
+    @media ${device.laptopL} {
+        width: 71px;
+    };
+    @media ${device.desktopS} {
+        width: 80px;
+    }
 `
 
 class RaceFilter extends Component {

@@ -7,7 +7,7 @@ import { CLASS_LIST } from './CardsContent';
 
 const Row = styled.div`
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
 
     position: absolute;
     bottom: 0;

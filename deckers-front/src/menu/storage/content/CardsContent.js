@@ -39,8 +39,6 @@ const Wrapper = styled.div`
 const Row = styled.div`
     display: flex;
     justify-content: space-evenly; 
-
-    max-width: 900px;
 `
 
 const Column = styled.div`

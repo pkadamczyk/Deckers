@@ -2,28 +2,36 @@ import React, { Component } from 'react';
 import CardBar from './CardBar';
 
 import styled from "styled-components";
+import { device } from '../../../mediaQueries';
 
 const Button = styled.button`
     background: ${props => props.danger ? "#c8423e" : "#8FC320"} ;
     color: white;
 
-    margin: auto 0 10% 0;
+    margin: 10% 0;
     border: none;
     border-radius: 10px;
-    font-size: 24px;
+    font-size: 22px;
     height: 40px;
-    color:white;
 
     cursor: pointer;
 
     transition: all 0.2s;
     
     :hover{ background: ${props => props.danger ? "#d9534f" : "#9FD430"}; };
-    :focus { outline: none; }
+    :focus { outline: none; };
+
+    @media ${device.laptopL} {
+        height: 50px;
+        font-size: 27px;
+    };
+    @media ${device.desktopS} {
+        height: 60px;
+        font-size: 32px;
+    }
 `
 
 const Data = styled.div`
-    height: 86%;
     width:100%;
 
     padding-top:15px;
@@ -79,7 +87,6 @@ class NavbarBusy extends Component {
         return (
             <>
                 <Data>
-                    <input type="text" placeholder="Deck name" name="deckName" onChange={this.handleChange} value={deckName} />
                     {deckSlotsList}
                 </Data>
                 <Panel>

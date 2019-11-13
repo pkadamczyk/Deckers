@@ -11,6 +11,7 @@ import cardCostBoxForsaken from '../../../graphic/background_race_forsaken.png';
 import { STORAGE_STATE } from '../../../store/reducers/storage';
 
 import images from "../../../graphic/card_portraits/forsaken"
+import { device } from '../../../mediaQueries';
 
 const Wrapper = styled.div`
     margin: 0 1% 10px 1%;
@@ -43,8 +44,6 @@ const Portrait = styled.div`
     height:${props => (props.size * 1.4) + "px"};
     width: ${props => props.size + "px"};
 
-    max-height: 242px;
-    max-width: 173px;
 `
 
 const Info = styled.div`
@@ -59,11 +58,21 @@ const CostBox = styled.div`
     background: ${props => `url(${props.background}) no-repeat`};
     background-size: contain;
 
-    display: inline-block;
     font-weight: bold;
     width: 18%;
-    padding-left: 11px;
-    padding-top: 3px;
+    text-align: center;
+
+    @media ${device.laptopL} {
+        font-size: 19px;
+        width: 17%;
+        height: 13%;
+    }
+    @media ${device.desktopS} {
+        font-size: 26px;
+    }
+    @media ${device.desktopS} {
+        font-size: 31px;
+    }
 `
 
 const Name = styled.div`
@@ -75,6 +84,14 @@ const Name = styled.div`
 
     display: flex;
     justify-content: center;
+
+    @media ${device.laptopL} {
+        font-size: 22px;
+    }
+    @media ${device.desktopS} {
+        font-size: 28px;
+        top: 58%;
+    }
 `
 
 const Stats = styled.div`
@@ -86,12 +103,15 @@ const Stats = styled.div`
     left: 10px;
     width: 88%;
     font-size: 21px;
-`
-const Class = styled.div`
-    font-size: 12px;
 
-    position: relative;
-    top: 15px;
+    @media ${device.laptopL} {
+        left: 9px;
+        font-size: 30px;
+    }
+    @media ${device.desktopS} {
+        left: 15px;
+        font-size: 45px;
+    }
 `
 
 const Description = styled.div`
@@ -101,7 +121,17 @@ const Description = styled.div`
 
     position: absolute;
     top: 70%;
-    font-size: 11px;
+    font-size: 13px;
+
+    @media ${device.laptopL} {
+        font-size: 18px;
+    }
+    @media ${device.desktopS} {
+        font-size: 20px;
+    }
+    @media ${device.desktopL} {
+        font-size: 22px;
+    }
 `
 
 const CenterText = styled.div`
@@ -138,13 +168,12 @@ class Card extends Component {
 
         const canBePicked = currentState !== STORAGE_STATE.IDLE && (isDeckFull === false)
         const optimalSize = window.innerWidth * 0.15;
-        // 173
         return (
             <Wrapper canBePicked={canBePicked}>
                 <Portrait imageURL={imageURL} onClick={this.handleOnClick} size={optimalSize}>
                     <Info>
                         <CostBox background={costBoxBackground}>
-                            <p>{card.stats[dbCard.level].cost}</p>
+                            {card.stats[dbCard.level].cost}
                         </CostBox>
                         <Name><MarginAuto>{card.name}</MarginAuto></Name>
 
@@ -152,7 +181,6 @@ class Card extends Component {
 
                         <Stats>
                             <div>{card.stats[dbCard.level].damage}</div>
-                            {/* <Class>{Object.keys(CLASS_LIST)[card.role]}</Class> */}
                             <div>{card.stats[dbCard.level].health}</div>
                         </Stats>
                     </Info>

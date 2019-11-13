@@ -29,6 +29,8 @@ const Wrapper = styled.nav`
     -webkit-box-shadow: 0px 6px 6px 0px rgba(0,0,0,0.44);
     -moz-box-shadow: 0px 6px 6px 0px rgba(0,0,0,0.44);
     box-shadow: 0px 6px 6px 0px rgba(0,0,0,0.44);
+
+    position: relative;
 `
 
 const Avatar = styled.div`
