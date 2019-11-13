@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 
 import styled from "styled-components";
-import chestItemImg from '../../graphic/background_04.png'
-import chestItemNameImg from '../../graphic/title_02.png'
 import chestItemNameImgImg from '../../graphic/shop_chest_01.PNG'
-import chestItemButtonImg from '../../graphic/button_long_04.png'
 import goldImg from '../../graphic/icon_currency_gold.PNG'
 
 import cardsRandom from '../../graphic/cards_random.svg'
@@ -12,6 +9,7 @@ import cardsCommon from '../../graphic/cards_common.svg'
 import cardsRare from '../../graphic/cards_rare.svg'
 import cardsEpic from '../../graphic/cards_epic.svg'
 import cardsLegendary from '../../graphic/cards_legendary.svg'
+import { device } from '../../mediaQueries';
 
 const Wrapper = styled.div`
     position: relative;
@@ -40,7 +38,15 @@ const NameTag = styled.h2`
     margin: 10px 10px 0 10px;
 
     border-radius: 10px;
+    font-size: 35px;
     background: #556574;
+
+    @media ${device.laptopL} {
+        font-size: 40px;
+    };
+    @media ${device.desktopS} {
+        font-size: 50px;
+    }
 `
 const ChestImg = styled.div`
     background-image: url(${chestItemNameImgImg});
@@ -61,6 +67,13 @@ const ChestWrapper = styled.div`
     padding: 3% 0;
 
     border-radius: 10px;
+
+    @media ${device.laptopL} {
+        height: 140px;
+    };
+    @media ${device.desktopS} {
+        height: 160px;
+    }
 `
 
 const Button = styled.button`
@@ -82,7 +95,16 @@ const Button = styled.button`
     :hover{
         background: ${props => !props.disabled ? "#9FD430" : "#8FC320"};
     };
-    :focus { outline: none; }
+    :focus { outline: none; };
+
+    @media ${device.laptopL} {
+        height: 50px;
+        font-size: 28px;
+    };
+    @media ${device.desktopS} {
+        height: 60px;
+        font-size: 32px;
+    }
 `
 
 const GoldImg = styled.span`
@@ -95,6 +117,15 @@ const GoldImg = styled.span`
 
     height: 30px;
     margin-left: 3%;
+
+    @media ${device.laptopL} {
+        height: 35px;
+        padding-left: 2.5rem;
+    };
+    @media ${device.desktopS} {
+        height: 40px;
+        padding-left: 2.5rem;
+    }
 `
 
 const ListWrapper = styled.div`
@@ -109,6 +140,13 @@ const ListWrapper = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+
+    @media ${device.laptopL} {
+        height: 195px;
+    };
+    @media ${device.desktopS} {
+        height: 250px;
+    }
 `
 
 const LootInfo = styled.div`
@@ -122,6 +160,15 @@ const LootInfo = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media ${device.laptopL} {
+        height: 50px;
+        font-size: 23px;
+    };
+    @media ${device.desktopS} {
+        height: 60px;
+        font-size: 27px;
+    }
 `
 
 const Guaranteed = styled.div`
@@ -138,6 +185,15 @@ const Guaranteed = styled.div`
     justify-content: space-between;
 
     color: #555;
+
+    @media ${device.laptopL} {
+        height: 50px;
+        font-size: 23px;
+    };
+    @media ${device.desktopS} {
+        height: 60px;
+        font-size: 27px;
+    }
 `
 
 const Row = styled.div`
@@ -155,6 +211,15 @@ const SVG = styled.div`
     background-size: contain;
     height: 25px;
     width: 25px; 
+
+    @media ${device.laptopL} {
+        height: 30px;
+        width: 30px; 
+    };
+    @media ${device.desktopS} {
+        height: 30px;
+        width: 30px; 
+    }
 `
 
 const FlexboxDiv = styled.div`

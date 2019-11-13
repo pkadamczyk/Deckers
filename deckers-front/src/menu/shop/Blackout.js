@@ -6,6 +6,7 @@ import { updateShopState } from '../../store/actions/shop';
 import { SHOP_STATE } from '../../store/reducers/shop';
 import Card from './Card';
 import ProgressBar from './ProgressBar';
+import { device } from '../../mediaQueries';
 
 const Wrapper = styled.div`
     height: 100%;
@@ -46,14 +47,22 @@ const Button = styled.button`
     transition: all 0.2s;
 
     :hover{ background: #9FD430; };
-    :focus { outline: none; }
+    :focus { outline: none; };
+
+    @media ${device.laptopL} {
+        height: 50px;
+        font-size: 28px;
+    };
+    @media ${device.desktopS} {
+        height: 60px;
+        font-size: 32px;
+    }
 `
 
 const LootDiv = styled.div`
-    height: 70%;
     width: 83%;
     border-radius: 10px;
-    padding-top: 2%;
+    padding: 4% 0;
 
     background: #EDE3DE;
 
@@ -67,6 +76,7 @@ const LootDiv = styled.div`
 `
 
 const Row = styled.div`
+    padding: 20px;
     display: flex;
     justify-content: center;
     width: 100%;
@@ -82,6 +92,13 @@ const Column = styled.div`
 const Amount = styled.div`
     font-weight: bold;
     font-size: 25px;
+
+    @media ${device.laptopL} {
+        font-size: 32px;
+    }
+    @media ${device.desktopS} {
+        font-size: 38px;
+    }
 `
 
 class Blackout extends Component {

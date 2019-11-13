@@ -71,7 +71,7 @@ const Name = styled.div`
         font-size: 18px;
     }
     @media ${device.desktopS} {
-        font-size: 25px;
+        font-size: 22px;
         top: 57%;
     }
 `
@@ -81,8 +81,8 @@ const Stats = styled.div`
     justify-content: space-between; 
 
     position: absolute;
-    bottom: 1px;
     left: 7px;
+    bottom: 0;
     width: 88%;
     font-size: 21px;
 
@@ -111,7 +111,7 @@ const Description = styled.div`
     @media ${device.desktopS} {
         font-size: 15px;
     }
-    @media ${device.desktopS} {
+    @media ${device.desktopL} {
         font-size: 17px;
     }
 `

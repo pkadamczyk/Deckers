@@ -9,6 +9,7 @@ import cardCostBoxOrder from '../../graphic/background_race_order.png';
 import cardCostBoxForsaken from '../../graphic/background_race_forsaken.png';
 
 import images from "../../graphic/card_portraits/forsaken"
+import { device } from '../../mediaQueries';
 
 const Portrait = styled.div`
     background-image: url(${props => props.imageURL});
@@ -24,9 +25,6 @@ const Portrait = styled.div`
 
     height:${props => (props.size * 1.4) + "px"};
     width: ${props => props.size + "px"};
-
-    max-height: 242px;
-    max-width: 173px;
 
     margin: 0 10px;
 `
@@ -45,6 +43,18 @@ const CostBox = styled.div`
 
     font-weight: bold;
     width: 18%;
+
+    @media ${device.laptopL} {
+        font-size: 19px;
+        width: 17%;
+        height: 13%;
+    }
+    @media ${device.desktopS} {
+        font-size: 22px;
+    }
+    @media ${device.desktopS} {
+        font-size: 24px;
+    }
 `
 
 const Name = styled.div`
@@ -56,6 +66,13 @@ const Name = styled.div`
 
     display: flex;
     justify-content: center;
+
+    @media ${device.laptopL} {
+        font-size: 18px;
+    }
+    @media ${device.desktopS} {
+        font-size: 24px;
+    }
 `
 
 const Stats = styled.div`
@@ -63,10 +80,19 @@ const Stats = styled.div`
     justify-content: space-between; 
 
     position: absolute;
-    bottom: 7px;
+    bottom: 0;
     left: 8px;
     width: 88%;
     font-size: 21px;
+
+    @media ${device.laptopL} {
+        left: 9px;
+        font-size: 30px;
+    }
+    @media ${device.desktopS} {
+        left: 10px;
+        font-size: 36px;
+    }
 `
 const Description = styled.div`
     text-align: center;
@@ -76,6 +102,16 @@ const Description = styled.div`
     position: absolute;
     top: 70%;
     font-size: 11px;
+
+    @media ${device.laptopL} {
+        font-size: 13px;
+    }
+    @media ${device.desktopS} {
+        font-size: 15px;
+    }
+    @media ${device.desktopL} {
+        font-size: 17px;
+    }
 `
 
 const CenterText = styled.div`

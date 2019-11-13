@@ -133,7 +133,7 @@ const Button = styled.button`
 
     background: #313747;
     height: 100%;
-    padding: 10px 15px;
+    padding: 10px 25px;
     cursor: pointer;
 
     border-right: 1px solid #fff;

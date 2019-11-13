@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import styled from "styled-components";
+import { device } from '../../mediaQueries';
 
 const Background = styled.div`
     width: calc(100% - 20px);
@@ -11,6 +12,13 @@ const Background = styled.div`
 
     height: 25px;
     position: relative;
+
+    @media ${device.laptopL} {
+        height: 30px;
+    }
+    @media ${device.desktopS} {
+        height: 35px;
+    }
 `
 
 const Filler = styled.div`
@@ -22,11 +30,21 @@ const Filler = styled.div`
 
 const Text = styled.div`
     margin-top: -24px;
+    font-size: 18px;
 
     -webkit-user-select: none;        
     -moz-user-select: none; 
     -ms-user-select: none; 
     user-select: none;
+
+    @media ${device.laptopL} {
+        font-size: 22px;
+        margin-top: -30px;
+    }
+    @media ${device.desktopS} {
+        font-size: 26px;
+        margin-top: -36px;
+    }
 `
 
 class ProgressBar extends Component {

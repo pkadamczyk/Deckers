@@ -9,15 +9,14 @@ import CurrencyPack from './CurrencyPack';
 
 import background from '../../graphic/background_03.png'
 import Blackout from './Blackout';
+import { device } from '../../mediaQueries';
 
 const Row = styled.div`
     display: flex;
     height: 75%;
 
-    width: 96%;
+    width: 85%;
     margin: 0 auto;
-
-    max-width: 950px;
 `
 
 const SubTitle = styled.div`
@@ -25,11 +24,17 @@ const SubTitle = styled.div`
     align-items: center;
     justify-content: center;
 
-    width: 96%;
-    max-width: 950px;
+    width: 85%;
     margin: 0 auto;
 
-    font-size: 40px;
+    font-size: 50px;
+
+    @media ${device.laptopL} {
+        font-size: 65px;
+    };
+    @media ${device.desktopS} {
+        font-size: 75px;
+    }
 `
 
 const Wrapper = styled.div`
