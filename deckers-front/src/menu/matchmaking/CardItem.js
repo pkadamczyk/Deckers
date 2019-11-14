@@ -52,7 +52,7 @@ const CostBox = styled.div`
     @media ${device.desktopS} {
         font-size: 22px;
     }
-    @media ${device.desktopS} {
+    @media ${device.desktopL} {
         font-size: 24px;
     }
 `

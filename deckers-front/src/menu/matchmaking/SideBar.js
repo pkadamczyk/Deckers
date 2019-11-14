@@ -61,6 +61,10 @@ const Wrapper = styled.div`
     margin: 4% auto 0 auto;
 
     max-height: 540px;
+
+    @media ${device.desktopS} {
+        max-height: 712px;
+    }
 `
 
 class SideBar extends Component {
