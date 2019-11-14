@@ -167,7 +167,8 @@ class Card extends Component {
         const imageURL = images.get(card.imageID)
 
         const canBePicked = currentState !== STORAGE_STATE.IDLE && (isDeckFull === false)
-        const optimalSize = window.innerWidth * 0.15;
+
+        const optimalSize = window.innerWidth < 1400 ? window.innerWidth * 0.13 : window.innerWidth * 0.15
         return (
             <Wrapper canBePicked={canBePicked}>
                 <Portrait imageURL={imageURL} onClick={this.handleOnClick} size={optimalSize}>

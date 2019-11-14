@@ -49,12 +49,11 @@ const UserSchema = new mongoose.Schema({
 
     tag: {
         type: Number,
-        default: 0,
+        default: 2,
         enum: tagList
     }
 });
 
-// NEW AUTH - Pszemek
 UserSchema.pre("save", async function (next) {
     try {
         if (!this.isModified("password")) {
@@ -81,7 +80,6 @@ Object.assign(UserSchema.statics, {
     tagList,
 });
 
-// UserSchema.plugin(passportLocalMongoose); new Auth introduced - Pszemek
 UserSchema.plugin(deepPopulate);
 
 const User = mongoose.model("User", UserSchema);
