@@ -144,11 +144,11 @@ const Footer = styled.footer`
 
 const Button = styled.button`
     background: #8FC320 ;
-    width: 200px;
+    padding: 0 30px;
+    margin: 30px 0;
     color: white;
 
     height: 50px;
-    margin: auto;
 
     border:none;
     border-radius: 10px;
@@ -158,6 +158,15 @@ const Button = styled.button`
 
     :focus {outline:0;};
     :hover{ background: #9FD430;};
+
+    @media ${device.laptopL} {
+        height: 60px;
+        font-size: 28px;
+    };
+    @media ${device.desktopS} {
+        height: 70px;
+        font-size: 32px;
+    }
 `
 
 class Landing extends Component {
@@ -212,11 +221,13 @@ class Landing extends Component {
                     </OverlapPanel>
                 </TestedPaned>
                 <Footer>
-                    Made by me for myself
-                    <br />
-                    auu
+                    <SubText>
+                        Currently alpha version is online to see for everyone.
+                        <br />
+                        Please consider that it does not support touch or small narrow devices yet.
+                        </SubText>
                     <Link to="/login">
-                        <Button>For alpha testers</Button>
+                        <Button>Try alpha</Button>
                     </Link>
                 </Footer>
             </Wrapper>
