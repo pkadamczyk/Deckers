@@ -59,7 +59,8 @@ const CostBox = styled.div`
     background-size: contain;
 
     font-weight: bold;
-    width: 18%;
+    width: 30px;
+    height: 30px;
     text-align: center;
 
     @media ${device.laptopL} {
