@@ -6,6 +6,7 @@ import wrapperBackground from '../../graphic/background_02.PNG'
 import avatars from '../../graphic/avatars'
 
 import styled from "styled-components"
+import { device } from "../../mediaQueries";
 
 const Wrapper = styled.div`
     display: flex;
@@ -38,6 +39,8 @@ const Form = styled.form`
     -webkit-box-shadow:  10px 10px 5px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
     box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+
+    
 `
 
 const Input = styled.input`
@@ -47,6 +50,17 @@ const Input = styled.input`
 
     padding: 5px 15px;
     border-radius: 10px;
+    font-size: 24px;
+
+    @media ${device.laptopL} {
+        font-size: 26px;
+    }
+    @media ${device.desktopS} {
+        font-size: 28px;
+    }
+    @media ${device.desktopL} {
+        font-size: 30px;
+    }
 `
 
 const Button = styled.button`
@@ -68,7 +82,20 @@ const Button = styled.button`
     :disabled {
         opacity: 0.65;
         cursor: inherit;
-        background: ${props => props.danger ? "#c8423e" : "#8FC320"} ;
+        background: #8FC320} ;
+    };
+
+    @media ${device.laptopL} {
+        height: 50px;
+        font-size: 28px;
+
+        margin: 15px;
+    };
+    @media ${device.desktopS} {
+        height: 60px;
+        font-size: 32px;
+
+        margin: 20px;
     }
 `
 
@@ -78,6 +105,17 @@ const Label = styled.label`
 
     margin-bottom: 0;
     margin-top: 10px;
+    font-size: 22px;
+
+    @media ${device.laptopL} {
+        font-size: 24px;
+    }
+    @media ${device.desktopS} {
+        font-size: 26px;
+    }
+    @media ${device.desktopL} {
+        font-size: 28px;
+    }
 `
 
 const Title = styled.h2`
@@ -86,6 +124,31 @@ const Title = styled.h2`
 
     border-radius: 10px;
     background: #556574;
+    font-size: 32px;
+
+    @media ${device.laptopL} {
+        font-size: 34px;
+    }
+    @media ${device.desktopS} {
+        font-size: 42px;
+    }
+    @media ${device.desktopL} {
+        font-size: 48px;
+    }
+`
+
+const BottomText = styled.p`
+    font-size: 18px;
+
+    @media ${device.laptopL} {
+        font-size: 20px;
+    }
+    @media ${device.desktopS} {
+        font-size: 22px;
+    }
+    @media ${device.desktopL} {
+        font-size: 24px;
+    }
 `
 
 class AuthForm extends Component {
@@ -167,8 +230,8 @@ class AuthForm extends Component {
                     </Button>
                     {isWindowTooSmall && <p>We currently do not support your device </p>}
 
-                    {login && !isWindowTooSmall && (<p>New here? <br /> You can signup <Link to="/register">here</Link></p>)}
-                    {!login && !isWindowTooSmall && (<p>Already signed up? <br />Login <Link to="/login">here</Link></p>)}
+                    {login && !isWindowTooSmall && (<BottomText>New here? <br /> You can signup <Link to="/register">here</Link></BottomText>)}
+                    {!login && !isWindowTooSmall && (<BottomText>Already signed up? <br />Login <Link to="/login">here</Link></BottomText>)}
                 </Form>
             </Wrapper>
         );
