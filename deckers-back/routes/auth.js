@@ -14,7 +14,11 @@ const localConfig = {
 
 router.post("/register", async function (req, res, next) {
     try {
-        let [user, availableChests] = await Promise.all([await createNewUser(req.body), await fetchChests()])
+        const cardsPromise = Card.find({ isFree: true })
+        let [user, availableChests, freeCards] = await Promise.all([await createNewUser(req.body), await fetchChests(), cardsPromise])
+
+        const cardsToConcat = freeCards.filter(card => !user.cards.some(c => c.card._id.equals(card._id)))
+        user.cards = user.cards.concat(cardsToConcat.map(card => ({ level: 1, amount: 0, card })));
 
         let { id, username, email } = user;
         let token = jwt.sign(
